@@ -1,4 +1,5 @@
 import type { BandFile } from './data/types.ts';
+import type { PreviewResult } from './preview.ts';
 import { buildBandEntries, showRefs, sortBands, type BandEntry, type BandSort, type ShowRef } from './model.ts';
 import type { ThemePreference } from './view/theme.ts';
 
@@ -9,6 +10,8 @@ export interface TimeWindow {
 
 export interface AppState {
   readonly bundled: readonly BandFile[];
+  readonly previewResults: readonly PreviewResult[];
+  /** Drawable rows of the previews; derived from previewResults when they change. */
   readonly previews: readonly BandFile[];
   readonly hiddenBandIds: ReadonlySet<string>;
   readonly bandSort: BandSort;

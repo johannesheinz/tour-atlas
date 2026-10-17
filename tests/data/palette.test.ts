@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { CATEGORICAL_PALETTE, assignBandColors, hashedColor, oklchToHex } from '../../src/data/palette.ts';
+import { CATEGORICAL_PALETTE, assignBandColors, extendBandColors, hashedColor, oklchToHex } from '../../src/data/palette.ts';
 
 const band = (id: string, color: string | null = null) => ({ id, name: id, color });
 
@@ -24,6 +24,16 @@ describe('assignBandColors', () => {
     expect(colors.get('band-08')).toEqual(hashedColor('band-08'));
     expect(hashedColor('band-08')).toEqual(hashedColor('band-08'));
     expect(hashedColor('band-08').light).toMatch(/^#[0-9a-f]{6}$/);
+  });
+});
+
+describe('extendBandColors', () => {
+  it('gives new bands free slots without repainting existing ones', () => {
+    const published = assignBandColors([band('mu'), band('zeta')]);
+    const extended = extendBandColors(published, [band('alpha'), band('mu')]);
+    expect(extended.get('mu')).toEqual(CATEGORICAL_PALETTE[0]);
+    expect(extended.get('zeta')).toEqual(CATEGORICAL_PALETTE[1]);
+    expect(extended.get('alpha')).toEqual(CATEGORICAL_PALETTE[2]);
   });
 });
 

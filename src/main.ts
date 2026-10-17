@@ -7,7 +7,10 @@ import { createSelectors } from './selectors.ts';
 import { createStore } from './state.ts';
 import { createBundledStore } from './store/bundled.ts';
 import { parseUrlState, serializeUrlState } from './urlState.ts';
+import { createCountryLocator, type CountryLocator } from './data/countryLocator.ts';
+import { exportAll, mergePreviews, normalizedFileText, processPreviewFile, type PreviewResult } from './preview.ts';
 import { createBandList } from './view/bandList.ts';
+import { createPreviewPanel } from './view/previewPanel.ts';
 import { createDetail } from './view/detail.ts';
 import { h, requireElement } from './view/dom.ts';
 import { MAP_SETTINGS, createMapView } from './view/map.ts';
@@ -27,6 +30,7 @@ const knownBandIds = new Set(dataStore.listBands().map((file) => file.band.id));
 
 const state = createStore<AppState>({
   bundled: dataStore.listBands(),
+  previewResults: [],
   previews: [],
   hiddenBandIds: new Set(urlState.hiddenBandIds.filter((id) => knownBandIds.has(id))),
   bandSort: urlState.sort ?? 'name',
@@ -81,6 +85,16 @@ const detail = createDetail(requireElement(document, '#detail', HTMLElement), {
   onClear: () => state.set({ selectedShowIds: new Set() }),
 });
 
+const previewPanel = createPreviewPanel(requireElement(document, '#preview-panel', HTMLElement), {
+  onDownload: (preview) => {
+    const bandId = preview.normalized?.band.id;
+    if (bandId === undefined) throw new Error(`${preview.fileName} has nothing to download`);
+    downloadText(`${bandId}.json`, normalizedFileText(preview));
+  },
+  onRemove: (preview) => setPreviews(state.get().previewResults.filter((item) => item !== preview)),
+  onClearAll: () => setPreviews([]),
+});
+
 const search = createSearch(requireElement(document, '#search', HTMLDivElement), { onChoose: focusSearchResult });
 
 const followButton = h('button', { type: 'button', class: 'button button-small', 'aria-pressed': 'true' }, 'Follow timeline');
@@ -93,6 +107,19 @@ const toolbarHint = requireElement(document, '#toolbar-hint', HTMLParagraphEleme
 requireElement(document, '#zoom-in', HTMLButtonElement).addEventListener('click', () => map.zoomBy(1.6));
 requireElement(document, '#zoom-out', HTMLButtonElement).addEventListener('click', () => map.zoomBy(1 / 1.6));
 requireElement(document, '#fit-map', HTMLButtonElement).addEventListener('click', () => map.fitToData(true));
+
+const fileInput = h('input', { type: 'file', accept: '.json,application/json', multiple: true, class: 'visually-hidden', tabindex: '-1', 'aria-hidden': 'true' });
+document.body.append(fileInput);
+requireElement(document, '#preview-button', HTMLButtonElement).addEventListener('click', () => fileInput.click());
+fileInput.addEventListener('change', () => {
+  if (fileInput.files !== null) void previewFiles([...fileInput.files]);
+  fileInput.value = '';
+});
+requireElement(document, '#export-button', HTMLButtonElement).addEventListener('click', () => {
+  const current = state.get();
+  downloadText(`tour-atlas-export-${current.today}.json`, exportAll(current.bundled, current.previewResults));
+});
+mountDropZone();
 
 document.addEventListener('keydown', (event) => {
   if (event.key !== 'Escape' || event.defaultPrevented) return;
@@ -163,7 +190,79 @@ function renderAll() {
   });
   detail.render({ shows: select.selection(current, derived), mode: theme.mode });
   search.setIndex(select.searchIndex(derived));
+  previewPanel.render(current.previewResults);
   scheduleUrlUpdate();
+}
+
+let countryLocator: CountryLocator | null = null;
+
+async function previewFiles(files: readonly File[]) {
+  const current = state.get();
+  const published = new Map(current.bundled.map((file) => [file.band.id, file]));
+  countryLocator ??= createCountryLocator(world);
+  const options = { today: current.today, locateCountry: countryLocator };
+  const results = await Promise.all(
+    files.map(async (file) => {
+      const text = await file.text();
+      const bandId = bandIdHint(text);
+      return processPreviewFile(file.name, text, bandId === null ? undefined : published.get(bandId), options);
+    }),
+  );
+  setPreviews(mergePreviews(state.get().previewResults, results));
+  requireElement(document, '#preview-panel', HTMLElement).scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+/** The published version to diff against is looked up by band.id before validation. */
+function bandIdHint(text: string): string | null {
+  try {
+    const json: unknown = JSON.parse(text);
+    if (typeof json !== 'object' || json === null || !('band' in json)) return null;
+    const band = json.band;
+    return typeof band === 'object' && band !== null && 'id' in band && typeof band.id === 'string' ? band.id : null;
+  } catch {
+    return null;
+  }
+}
+
+function setPreviews(previewResults: readonly PreviewResult[]) {
+  state.set({ previewResults, previews: previewResults.flatMap((preview) => (preview.displayable === null ? [] : [preview.displayable])) });
+}
+
+function downloadText(fileName: string, text: string) {
+  const url = URL.createObjectURL(new Blob([text], { type: 'application/json' }));
+  const link = h('a', { href: url, download: fileName, class: 'visually-hidden' });
+  document.body.append(link);
+  link.click();
+  link.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
+function mountDropZone() {
+  const overlay = h('div', { class: 'drop-overlay', hidden: true, 'aria-hidden': 'true' }, h('p', {}, 'Drop band files to preview them'));
+  document.body.append(overlay);
+  let depth = 0;
+  const hasFiles = (event: DragEvent) => event.dataTransfer?.types.includes('Files') ?? false;
+  document.addEventListener('dragenter', (event) => {
+    if (!hasFiles(event)) return;
+    depth++;
+    overlay.hidden = false;
+  });
+  document.addEventListener('dragleave', (event) => {
+    if (!hasFiles(event)) return;
+    depth = Math.max(0, depth - 1);
+    if (depth === 0) overlay.hidden = true;
+  });
+  document.addEventListener('dragover', (event) => {
+    if (hasFiles(event)) event.preventDefault();
+  });
+  document.addEventListener('drop', (event) => {
+    if (!hasFiles(event)) return;
+    event.preventDefault();
+    depth = 0;
+    overlay.hidden = true;
+    const files = [...(event.dataTransfer?.files ?? [])].filter((file) => file.name.endsWith('.json') || file.type === 'application/json');
+    if (files.length > 0) void previewFiles(files);
+  });
 }
 
 function soloBand(bandId: string) {

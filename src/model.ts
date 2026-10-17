@@ -1,5 +1,5 @@
 import { parseIsoDate } from './data/dates.ts';
-import { assignBandColors, type BandColor } from './data/palette.ts';
+import { assignBandColors, extendBandColors, type BandColor } from './data/palette.ts';
 import type { BandFile, Show } from './data/types.ts';
 
 export interface BandEntry {
@@ -19,11 +19,12 @@ export interface ShowRef {
 
 export type BandSort = 'name' | 'next-show' | 'show-count';
 
-/** Bundled bands overlaid with previews (same id replaces). Colours are assigned over the merged set. */
+/** Bundled bands overlaid with previews (same id replaces). Published bands keep their colours when previews arrive. */
 export function buildBandEntries(bundled: readonly BandFile[], previews: readonly BandFile[]): BandEntry[] {
   const previewIds = new Set(previews.map((file) => file.band.id));
   const files = [...bundled.filter((file) => !previewIds.has(file.band.id)), ...previews];
-  const colors = assignBandColors(files.map((file) => file.band));
+  const publishedColors = assignBandColors(bundled.map((file) => file.band));
+  const colors = extendBandColors(publishedColors, previews.map((file) => file.band));
   return files.map((file) => {
     const color = colors.get(file.band.id);
     if (color === undefined) throw new Error(`no colour assigned to ${file.band.id}`);

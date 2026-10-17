@@ -26,10 +26,23 @@ const FALLBACK_CHROMA = 0.14;
  * Assignment covers all bands, so hiding a band never repaints the others.
  */
 export function assignBandColors(bands: readonly Band[]): ReadonlyMap<string, BandColor> {
-  const colors = new Map<string, BandColor>();
-  const withoutColor = bands.filter((band) => band.color === null).toSorted((a, b) => (a.id < b.id ? -1 : 1));
+  return extendBandColors(new Map(), bands);
+}
+
+/**
+ * Adds colours for `bands` without changing any colour already in `existing`:
+ * new bands take the palette slots still free, then hashed hues; an explicit band.color always wins.
+ * Used so previews never repaint published bands.
+ */
+export function extendBandColors(existing: ReadonlyMap<string, BandColor>, bands: readonly Band[]): ReadonlyMap<string, BandColor> {
+  const colors = new Map(existing);
+  const taken = new Set([...existing.values()]);
+  const freeSlots = CATEGORICAL_PALETTE.filter((slot) => !taken.has(slot));
+  const withoutColor = bands
+    .filter((band) => band.color === null && !colors.has(band.id))
+    .toSorted((a, b) => (a.id < b.id ? -1 : 1));
   withoutColor.forEach((band, index) => {
-    colors.set(band.id, CATEGORICAL_PALETTE[index] ?? hashedColor(band.id));
+    colors.set(band.id, freeSlots[index] ?? hashedColor(band.id));
   });
   for (const band of bands) {
     if (band.color !== null) colors.set(band.id, { light: band.color, dark: band.color });
