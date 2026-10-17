@@ -1,35 +1,48 @@
 import './styles.css';
 import world from 'virtual:world-topology';
-import { createDeriver, isInWindow, type AppState, type Derived } from './appState.ts';
-import { localToday } from './data/dates.ts';
+import { createDeriver, type AppState } from './appState.ts';
+import { addDays, formatIsoDate, localToday, parseIsoDate } from './data/dates.ts';
 import type { ShowRef } from './model.ts';
+import { createSelectors } from './selectors.ts';
 import { createStore } from './state.ts';
 import { createBundledStore } from './store/bundled.ts';
+import { parseUrlState, serializeUrlState } from './urlState.ts';
 import { createBandList } from './view/bandList.ts';
+import { createDetail } from './view/detail.ts';
 import { h, requireElement } from './view/dom.ts';
-import { MAP_SETTINGS, createMapView, type MapProps } from './view/map.ts';
-import { createTimeline, type TimelineLane } from './view/timeline.ts';
-import { parseIsoDate } from './data/dates.ts';
+import { MAP_SETTINGS, createMapView } from './view/map.ts';
+import { createSearch } from './view/search.ts';
+import type { SearchEntry } from './view/searchIndex.ts';
 import { applyThemePreference, readThemeColors, watchSystemTheme, type ThemeColors, type ThemePreference } from './view/theme.ts';
+import { DAY_MS } from './view/timeScale.ts';
+import { createTimeline } from './view/timeline.ts';
+
+const WINDOW_DEBOUNCE_MS = 150;
+const URL_DEBOUNCE_MS = 300;
+const SEARCH_FOCUS_TIMEOUT_MS = 1500;
 
 const dataStore = createBundledStore();
+const urlState = parseUrlState(location.hash);
+const knownBandIds = new Set(dataStore.listBands().map((file) => file.band.id));
+
 const state = createStore<AppState>({
   bundled: dataStore.listBands(),
   previews: [],
-  hiddenBandIds: new Set(),
-  bandSort: 'name',
+  hiddenBandIds: new Set(urlState.hiddenBandIds.filter((id) => knownBandIds.has(id))),
+  bandSort: urlState.sort ?? 'name',
   bandFilter: '',
   focusBandId: null,
   hoverShowIds: new Set(),
-  selectedShowIds: new Set(),
+  selectedShowIds: new Set(urlState.selectedShowIds),
   timeWindow: null,
-  followTimeline: true,
+  followTimeline: urlState.follow ?? true,
   theme: 'auto',
   today: localToday(new Date()),
 });
 dataStore.subscribe(() => state.set({ bundled: dataStore.listBands() }));
 
 const derive = createDeriver();
+const select = createSelectors(MAP_SETTINGS.maxBandsWithRoutes);
 let theme: ThemeColors = readThemeColors('auto');
 
 const idsOf = (shows: readonly ShowRef[] | null): ReadonlySet<string> => new Set((shows ?? []).map((ref) => ref.show.id));
@@ -39,27 +52,7 @@ const map = createMapView(requireElement(document, '#map', HTMLDivElement), worl
   onSelect: (shows) => state.set({ selectedShowIds: idsOf(shows) }),
 });
 
-const bandList = createBandList(requireElement(document, '#band-list', HTMLElement), {
-  onToggle(bandId, visible) {
-    const hidden = new Set(state.get().hiddenBandIds);
-    if (visible) hidden.delete(bandId);
-    else hidden.add(bandId);
-    state.set({ hiddenBandIds: hidden });
-  },
-  onSolo(bandId) {
-    const { bands } = derive(state.get());
-    state.set({ hiddenBandIds: new Set(bands.map((band) => band.file.band.id).filter((id) => id !== bandId)) });
-  },
-  onShowAll: () => state.set({ hiddenBandIds: new Set() }),
-  onHideAll: () => state.set({ hiddenBandIds: new Set(derive(state.get()).bands.map((band) => band.file.band.id)) }),
-  onFilter: (text) => state.set({ bandFilter: text }),
-  onSort: (sort) => state.set({ bandSort: sort }),
-  onFocusBand: (bandId) => state.set({ focusBandId: bandId }),
-});
-
-const WINDOW_DEBOUNCE_MS = 150;
-let windowTimer: number | undefined;
-
+let windowTimer: ReturnType<typeof setTimeout> | undefined;
 const timeline = createTimeline(requireElement(document, '#timeline', HTMLDivElement), {
   onHover: (shows) => state.set({ hoverShowIds: idsOf(shows) }),
   onSelect: (shows) => state.set({ selectedShowIds: idsOf(shows) }),
@@ -68,6 +61,27 @@ const timeline = createTimeline(requireElement(document, '#timeline', HTMLDivEle
     windowTimer = setTimeout(() => state.set({ timeWindow: window }), WINDOW_DEBOUNCE_MS);
   },
 });
+
+const bandList = createBandList(requireElement(document, '#band-list', HTMLElement), {
+  onToggle(bandId, visible) {
+    const hidden = new Set(state.get().hiddenBandIds);
+    if (visible) hidden.delete(bandId);
+    else hidden.add(bandId);
+    state.set({ hiddenBandIds: hidden });
+  },
+  onSolo: (bandId) => soloBand(bandId),
+  onShowAll: () => state.set({ hiddenBandIds: new Set() }),
+  onHideAll: () => state.set({ hiddenBandIds: new Set(derive(state.get()).bands.map((band) => band.file.band.id)) }),
+  onFilter: (text) => state.set({ bandFilter: text }),
+  onSort: (sort) => state.set({ bandSort: sort }),
+  onFocusBand: (bandId) => state.set({ focusBandId: bandId }),
+});
+
+const detail = createDetail(requireElement(document, '#detail', HTMLElement), {
+  onClear: () => state.set({ selectedShowIds: new Set() }),
+});
+
+const search = createSearch(requireElement(document, '#search', HTMLDivElement), { onChoose: focusSearchResult });
 
 const followButton = h('button', { type: 'button', class: 'button button-small', 'aria-pressed': 'true' }, 'Follow timeline');
 const fitTimelineButton = h('button', { type: 'button', class: 'button button-small' }, 'Fit timeline');
@@ -80,90 +94,45 @@ requireElement(document, '#zoom-in', HTMLButtonElement).addEventListener('click'
 requireElement(document, '#zoom-out', HTMLButtonElement).addEventListener('click', () => map.zoomBy(1 / 1.6));
 requireElement(document, '#fit-map', HTMLButtonElement).addEventListener('click', () => map.fitToData(true));
 
+document.addEventListener('keydown', (event) => {
+  if (event.key !== 'Escape' || event.defaultPrevented) return;
+  resetViews();
+});
+
 mountThemeSwitch(requireElement(document, '#theme-switch', HTMLFieldSetElement));
 watchSystemTheme(() => refreshTheme());
 
-let routeKey = '';
-let routeBandIds: ReadonlySet<string> = new Set();
-
-function routesFor(current: AppState, derived: Derived): ReadonlySet<string> {
-  const ids =
-    derived.visibleBands.length <= MAP_SETTINGS.maxBandsWithRoutes
-      ? derived.visibleBands.map((band) => band.file.band.id)
-      : [
-          ...(current.focusBandId === null ? [] : [current.focusBandId]),
-          ...[...current.selectedShowIds, ...current.hoverShowIds].flatMap((id) => derived.showsById.get(id)?.band.file.band.id ?? []),
-        ];
-  const key = [...new Set(ids)].toSorted().join(',');
-  if (key !== routeKey) {
-    routeKey = key;
-    routeBandIds = new Set(ids);
-  }
-  return routeBandIds;
-}
-
-let windowFilter: ((ref: ShowRef) => boolean) | null = null;
-let windowFilterKey: AppState['timeWindow'] = null;
-
-function windowFilterFor(current: AppState): ((ref: ShowRef) => boolean) | null {
-  const window = current.followTimeline ? current.timeWindow : null;
-  if (window !== windowFilterKey) {
-    windowFilterKey = window;
-    windowFilter = window === null ? null : (ref) => isInWindow(ref, window);
-  }
-  return windowFilter;
-}
-
-let lastFitShows: readonly ShowRef[] | null = null;
-let lastFitSource: [readonly ShowRef[], ((ref: ShowRef) => boolean) | null] | null = null;
-
-function fitShowsFor(derived: Derived, filter: ((ref: ShowRef) => boolean) | null): readonly ShowRef[] {
-  if (lastFitSource !== null && lastFitSource[0] === derived.visibleShows && lastFitSource[1] === filter && lastFitShows !== null) {
-    return lastFitShows;
-  }
-  const inWindow = filter === null ? derived.visibleShows : derived.visibleShows.filter(filter);
-  lastFitSource = [derived.visibleShows, filter];
-  lastFitShows = inWindow.length > 0 ? inWindow : derived.visibleShows;
-  return lastFitShows;
-}
-
+/** After a search, the next follow-timeline refit goes to the chosen shows instead of the whole window. */
+let searchFocus: { readonly shows: readonly ShowRef[]; readonly until: number } | null = null;
 let previousFitShows: readonly ShowRef[] | null = null;
 let previousVisibleBands: readonly unknown[] | null = null;
-let lanesKey: Derived['visibleBands'] | null = null;
-let lanes: readonly TimelineLane[] = [];
-
-function lanesFor(derived: Derived): readonly TimelineLane[] {
-  if (derived.visibleBands !== lanesKey) {
-    lanesKey = derived.visibleBands;
-    lanes = derived.visibleBands.map((band) => ({ band, shows: derived.refsByBand.get(band) ?? [] }));
-  }
-  return lanes;
-}
+let restoreWindow = urlState.from !== null && urlState.to !== null ? { from: urlState.from, to: urlState.to } : null;
 
 function renderAll() {
   const current = state.get();
   const derived = derive(current);
-  const filter = windowFilterFor(current);
-  const fitShows = fitShowsFor(derived, filter);
+  const filter = select.windowFilter(current);
+  const fitShows = select.fitShows(derived, filter);
 
-  const mapProps: MapProps = {
+  map.render({
     shows: derived.visibleShows,
     fitShows,
     isInWindow: filter,
-    routeBandIds: routesFor(current, derived),
+    routeBandIds: select.routeBandIds(current, derived),
     highlightedShowIds: current.hoverShowIds,
     selectedShowIds: current.selectedShowIds,
     focusBandId: current.focusBandId,
     theme,
-  };
-  map.render(mapProps);
+  });
   if (fitShows !== previousFitShows) {
-    map.fitToData(previousFitShows !== null);
+    const focus = searchFocus !== null && performance.now() < searchFocus.until ? searchFocus.shows : null;
+    if (focus === null) map.fitToData(previousFitShows !== null);
+    else map.fitToShows(focus, true);
     previousFitShows = fitShows;
   }
 
   timeline.render({
-    lanes: lanesFor(derived),
+    lanes: select.lanes(derived),
     highlightedShowIds: current.hoverShowIds,
     selectedShowIds: current.selectedShowIds,
     focusBandId: current.focusBandId,
@@ -171,8 +140,13 @@ function renderAll() {
     today: parseIsoDate(current.today).getTime(),
   });
   if (derived.visibleBands !== previousVisibleBands) {
-    timeline.fitToData(previousVisibleBands !== null);
+    const firstRender = previousVisibleBands === null;
+    timeline.fitToData(!firstRender);
     previousVisibleBands = derived.visibleBands;
+    if (firstRender && restoreWindow !== null) {
+      timeline.zoomToRange(parseIsoDate(restoreWindow.from).getTime(), parseIsoDate(restoreWindow.to).getTime() + DAY_MS, false);
+      restoreWindow = null;
+    }
   }
 
   followButton.setAttribute('aria-pressed', String(current.followTimeline));
@@ -187,6 +161,76 @@ function renderAll() {
     sort: current.bandSort,
     mode: theme.mode,
   });
+  detail.render({ shows: select.selection(current, derived), mode: theme.mode });
+  search.setIndex(select.searchIndex(derived));
+  scheduleUrlUpdate();
+}
+
+function soloBand(bandId: string) {
+  const { bands } = derive(state.get());
+  state.set({ hiddenBandIds: new Set(bands.map((band) => band.file.band.id).filter((id) => id !== bandId)) });
+}
+
+function focusSearchResult(entry: SearchEntry) {
+  const derived = derive(state.get());
+  if (entry.kind === 'band') {
+    const [bandId] = entry.bandIds;
+    if (bandId !== undefined) soloBand(bandId);
+    return;
+  }
+  const shows = entry.showIds.flatMap((id) => derived.showsById.get(id) ?? []);
+  if (shows.length === 0) return;
+  if (entry.kind === 'tour') {
+    const [bandId] = entry.bandIds;
+    if (bandId !== undefined) soloBand(bandId);
+  } else {
+    searchFocus = { shows, until: performance.now() + SEARCH_FOCUS_TIMEOUT_MS };
+    const { hiddenBandIds } = state.get();
+    if (entry.bandIds.some((bandId) => hiddenBandIds.has(bandId))) {
+      state.set({ hiddenBandIds: new Set([...hiddenBandIds].filter((bandId) => !entry.bandIds.includes(bandId))) });
+    }
+    map.fitToShows(shows, true);
+  }
+  state.set({ selectedShowIds: new Set(entry.showIds) });
+  const start = Math.min(...shows.map((ref) => ref.start));
+  const end = Math.max(...shows.map((ref) => ref.end)) + DAY_MS;
+  const padding = Math.max(7 * DAY_MS, (end - start) * 0.1);
+  timeline.zoomToRange(start - padding, end + padding, true);
+}
+
+function resetViews() {
+  searchFocus = null;
+  state.set({ selectedShowIds: new Set(), hoverShowIds: new Set(), focusBandId: null });
+  map.fitToData(true);
+  timeline.fitToData(true);
+}
+
+let urlTimer: ReturnType<typeof setTimeout> | undefined;
+
+function scheduleUrlUpdate() {
+  clearTimeout(urlTimer);
+  urlTimer = setTimeout(writeUrlState, URL_DEBOUNCE_MS);
+}
+
+function writeUrlState() {
+  const current = state.get();
+  const window = current.timeWindow;
+  const showWindow = window !== null && !timeline.isAtFit();
+  const hash = serializeUrlState({
+    hiddenBandIds: [...current.hiddenBandIds],
+    sort: current.bandSort === 'name' ? null : current.bandSort,
+    from: showWindow ? formatIsoDate(new Date(window.start)) : null,
+    to: showWindow ? addDays(formatIsoDate(new Date(window.end)), -1) : null,
+    selectedShowIds: [...current.selectedShowIds],
+    follow: current.followTimeline ? null : false,
+  });
+  if (hash === location.hash || (hash === '' && location.hash === '')) return;
+  const url = `${location.pathname}${location.search}${hash}`;
+  try {
+    history.replaceState(null, '', url === '' ? location.pathname : url);
+  } catch {
+    location.replace(hash === '' ? '#' : hash);
+  }
 }
 
 function refreshTheme() {

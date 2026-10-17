@@ -5,7 +5,7 @@ import { zoom, zoomIdentity, ZoomTransform, type D3ZoomEvent } from 'd3-zoom';
 import type { TimeWindow } from '../appState.ts';
 import type { BandEntry, ShowRef } from '../model.ts';
 import { context2d, h, prefersReducedMotion } from './dom.ts';
-import { formatDateSpan, STATUS_LABELS } from './format.ts';
+import { formatDateSpan, statusLabel } from './format.ts';
 import { DAY_MS, fitDateDomain, timeTicks } from './timeScale.ts';
 import { bandColor, type ThemeColors } from './theme.ts';
 
@@ -52,7 +52,9 @@ export interface TimelineCallbacks {
 export interface TimelineView {
   render(props: TimelineProps): void;
   fitToData(animate: boolean): void;
+  zoomToRange(start: number, end: number, animate: boolean): void;
   zoomBy(factor: number): void;
+  isAtFit(): boolean;
   readonly lanesOverflow: () => boolean;
 }
 
@@ -86,6 +88,7 @@ export function createTimeline(container: HTMLElement, callbacks: TimelineCallba
   let drawScheduled = false;
   let silent = false;
   let hasFitted = false;
+  let pendingRange: [number, number] | null = null;
 
   const zoomBehavior = zoom<HTMLDivElement, unknown>()
     .filter((event: Event) => {
@@ -185,6 +188,11 @@ export function createTimeline(container: HTMLElement, callbacks: TimelineCallba
     width = nextWidth;
     layout();
     fitToData(false);
+    if (pendingRange !== null) {
+      const [start, end] = pendingRange;
+      pendingRange = null;
+      zoomToRange(start, end, false);
+    }
   }).observe(container);
   window.addEventListener('resize', () => layout());
 
@@ -245,6 +253,22 @@ export function createTimeline(container: HTMLElement, callbacks: TimelineCallba
     const k = width / (baseScale(currentEnd) - baseScale(currentStart));
     setTransform(new ZoomTransform(k, -k * baseScale(currentStart), 0), true);
     scrollerSelection.transition().duration(TIMELINE_SETTINGS.fitDurationMs).call(zoomBehavior.transform, zoomIdentity);
+  }
+
+  function zoomToRange(start: number, end: number, animate: boolean) {
+    if (end <= start) throw new RangeError('zoomToRange needs end after start');
+    if (width === 0 || !hasFitted) {
+      pendingRange = [start, end];
+      return;
+    }
+    const k = width / (baseScale(end) - baseScale(start));
+    const target = new ZoomTransform(k, -k * baseScale(start), 0);
+    if (!animate || prefersReducedMotion()) {
+      setTransform(target, false);
+      emitWindow();
+      return;
+    }
+    scrollerSelection.transition().duration(TIMELINE_SETTINGS.fitDurationMs).call(zoomBehavior.transform, target);
   }
 
   function setTransform(next: ZoomTransform, quiet: boolean) {
@@ -484,7 +508,8 @@ export function createTimeline(container: HTMLElement, callbacks: TimelineCallba
     const [centerX] = dotCenter(currentScale(), ref);
     if (centerX < 0 || centerX > width) scrollerSelection.call(zoomBehavior.translateBy, (width / 2 - centerX) / transform.k, 0);
     positionCursor();
-    const status = ref.show.status === null ? '' : `, ${STATUS_LABELS[ref.show.status]}`;
+    const label = statusLabel(ref);
+    const status = label === null ? '' : `, ${label}`;
     const description = `${ref.band.file.band.name}: ${formatDateSpan(ref.show.date, ref.show.endDate)}, ${ref.show.city}${status}. Press Enter for details.`;
     cursor.setAttribute('aria-label', description);
     announcer.textContent = description;
@@ -503,7 +528,9 @@ export function createTimeline(container: HTMLElement, callbacks: TimelineCallba
   return {
     render,
     fitToData,
+    zoomToRange,
     zoomBy,
+    isAtFit: () => Math.abs(transform.k - 1) < 1e-6 && Math.abs(transform.x) < 0.5,
     lanesOverflow: () => container.classList.contains('has-overflow'),
   };
 }

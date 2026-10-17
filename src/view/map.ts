@@ -51,6 +51,7 @@ export interface MapCallbacks {
 export interface MapView {
   render(props: MapProps): void;
   fitToData(animate: boolean): void;
+  fitToShows(shows: readonly ShowRef[], animate: boolean): void;
   zoomBy(factor: number): void;
 }
 
@@ -247,12 +248,20 @@ export function createMapView(container: HTMLElement, world: WorldTopology, call
   }
 
   function fitToData(animate: boolean) {
+    if (props === null) {
+      pendingFit = true;
+      return;
+    }
+    fitToShows(props.fitShows, animate);
+  }
+
+  function fitToShows(shows: readonly ShowRef[], animate: boolean) {
     if (props === null || width <= 2 * MAP_SETTINGS.padding || height <= 2 * MAP_SETTINGS.padding) {
       pendingFit = true;
       return;
     }
     pendingFit = false;
-    const points: LonLat[] = props.fitShows.map((ref) => [ref.show.geo.lon, ref.show.geo.lat]);
+    const points: LonLat[] = shows.map((ref) => [ref.show.geo.lon, ref.show.geo.lat]);
     const target = computeMapFit(points, { width, height, padding: MAP_SETTINGS.padding, minSpanKm: MAP_SETTINGS.minSpanKm });
     cancelAnimation();
     const start = base === null ? null : flatten(base, transform);
@@ -527,6 +536,7 @@ export function createMapView(container: HTMLElement, world: WorldTopology, call
       if (pendingFit) fitToData(false);
     },
     fitToData,
+    fitToShows,
     zoomBy,
   };
 }

@@ -1,4 +1,5 @@
 import { parseIsoDate } from '../data/dates.ts';
+import type { ShowRef } from '../model.ts';
 
 const dayFormat = new Intl.DateTimeFormat('en-GB', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' });
 const weekdayFormat = new Intl.DateTimeFormat('en-GB', { weekday: 'short', timeZone: 'UTC' });
@@ -30,3 +31,10 @@ export const STATUS_LABELS = {
   postponed: 'Postponed',
   soldout: 'Sold out',
 } as const;
+
+/** "Played" for past shows that took place; otherwise the stated status, or null when unknown. */
+export function statusLabel(ref: ShowRef): string | null {
+  const { status } = ref.show;
+  if (ref.isPast && status !== 'cancelled' && status !== 'postponed') return 'Played';
+  return status === null ? null : STATUS_LABELS[status];
+}
