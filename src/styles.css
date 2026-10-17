@@ -1620,6 +1620,7 @@ input[type='search']::placeholder {
 
 @media (min-width: 821px) and (min-height: 560px) {
   .app {
+    position: relative;
     height: 100dvh;
     grid-template-rows: auto minmax(0, 1fr) auto;
     overflow: hidden;
@@ -1631,8 +1632,9 @@ input[type='search']::placeholder {
     min-height: 0;
   }
 
+  /* Positioned, so hidden live regions inside the list stay in it instead of stretching the page. */
   .sidebar-body {
-    position: static;
+    position: relative;
     flex: 1;
     min-height: 0;
     max-height: none;
