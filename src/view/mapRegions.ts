@@ -29,7 +29,7 @@ export interface UserLocation {
   readonly radiusKm: number;
 }
 
-export const NEAR_ME_RADII_KM = [25, 50, 100, 250] as const;
+export const NEAR_ME_RADII_KM = [25, 50, 100, 250, 500, 1000] as const;
 export type NearMeRadius = (typeof NEAR_ME_RADII_KM)[number];
 
 export type MapViewPreset =
