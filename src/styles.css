@@ -677,14 +677,18 @@ input[type='search']::placeholder {
 }
 
 .atlas-toolbar {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px 16px;
+  display: grid;
+  gap: 8px;
   padding: 8px 10px;
   border-top: var(--rule) solid var(--ink);
   border-bottom: var(--rule) solid var(--ink);
+}
+
+.toolbar-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 14px;
 }
 
 .toolbar-group {
@@ -1172,11 +1176,19 @@ input[type='search']::placeholder {
   overflow-y: auto;
   overscroll-behavior: contain;
   touch-action: pan-y;
-  cursor: grab;
+  cursor: crosshair;
+  user-select: none;
 }
 
-.timeline-scroll:active {
-  cursor: grabbing;
+.timeline-brush {
+  position: absolute;
+  top: 30px;
+  left: var(--from, 0);
+  width: calc(var(--to, 0px) - var(--from, 0px));
+  height: var(--height, 0);
+  border-inline: 1.5px solid var(--ink);
+  background: color-mix(in srgb, var(--ink) 14%, transparent);
+  pointer-events: none;
 }
 
 .timeline-scroll.is-over-show {

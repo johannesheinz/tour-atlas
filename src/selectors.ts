@@ -14,8 +14,8 @@ export function createSelectors(maxBandsWithRoutes: number) {
   let windowKey: AppState['timeWindow'] = null;
   let windowFilter: ShowFilter | null = null;
 
-  let fitKey: [readonly ShowRef[], ShowFilter | null] | null = null;
-  let fitShows: readonly ShowRef[] = [];
+  let mapKey: [readonly ShowRef[], ShowFilter | null] | null = null;
+  let mapShows: readonly ShowRef[] = [];
 
   let lanesKey: [Derived['visibleBands'], AppState['timeWindow'], boolean] | null = null;
   let lanes: { readonly shown: readonly TimelineLane[]; readonly hiddenCount: number } = { shown: [], hiddenCount: 0 };
@@ -55,14 +55,13 @@ export function createSelectors(maxBandsWithRoutes: number) {
       return windowFilter;
     },
 
-    /** Shows the map fits to: those in the followed window, or all visible ones when the window is empty. */
-    fitShows(derived: Derived, filter: ShowFilter | null): readonly ShowRef[] {
-      if (fitKey === null || fitKey[0] !== derived.visibleShows || fitKey[1] !== filter) {
-        fitKey = [derived.visibleShows, filter];
-        const inWindow = filter === null ? derived.visibleShows : derived.visibleShows.filter(filter);
-        fitShows = inWindow.length > 0 ? inWindow : derived.visibleShows;
+    /** Shows drawn on the map: with Follow timeline only those inside the timeline window. */
+    mapShows(derived: Derived, filter: ShowFilter | null): readonly ShowRef[] {
+      if (mapKey === null || mapKey[0] !== derived.visibleShows || mapKey[1] !== filter) {
+        mapKey = [derived.visibleShows, filter];
+        mapShows = filter === null ? derived.visibleShows : derived.visibleShows.filter(filter);
       }
-      return fitShows;
+      return mapShows;
     },
 
     /** Timeline lanes in band-list order; with hideEmptyLanes, bands without a show in the window collapse. */

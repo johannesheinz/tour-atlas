@@ -31,8 +31,6 @@ export const MAP_SETTINGS = {
   maxZoom: 40,
   fitDurationMs: 300,
   maxBandsWithRoutes: 8,
-  /** Upcoming shows outside the followed window recede; past shows are greyed instead of faded. */
-  outOfWindowOpacity: 0.55,
   labelFont: '600 12px Archivo, system-ui, sans-serif',
   badgeFont: '600 10px Archivo, system-ui, sans-serif',
 } as const;
@@ -40,10 +38,8 @@ export const MAP_SETTINGS = {
 export interface MapProps {
   /** All shows of visible bands. */
   readonly shows: readonly ShowRef[];
-  /** The shows the map fits to (the timeline window when following it). */
+  /** The shows the map fits to. */
   readonly fitShows: readonly ShowRef[];
-  /** Shows outside the followed timeline window are drawn faint. Null: no window. */
-  readonly isInWindow: ((ref: ShowRef) => boolean) | null;
   readonly routeBandIds: ReadonlySet<string>;
   readonly highlightedShowIds: ReadonlySet<string>;
   readonly selectedShowIds: ReadonlySet<string>;
@@ -259,7 +255,6 @@ export function createMapView(container: HTMLElement, world: WorldTopology, call
       previous.shows !== next.shows ||
       previous.theme !== next.theme ||
       previous.focusBandId !== next.focusBandId ||
-      previous.isInWindow !== next.isInWindow ||
       previous.routeBandIds !== next.routeBandIds;
     if (appearanceChanged) {
       renderRoutes();
@@ -374,7 +369,7 @@ export function createMapView(container: HTMLElement, world: WorldTopology, call
     if (props === null) return;
     const current = props;
     const routes = Map.groupBy(
-      current.shows.filter((ref) => current.routeBandIds.has(ref.band.file.band.id) && ref.show.status !== 'cancelled' && (current.isInWindow?.(ref) ?? true)),
+      current.shows.filter((ref) => current.routeBandIds.has(ref.band.file.band.id) && ref.show.status !== 'cancelled'),
       (ref) => ref.band,
     );
     routesLayer.replaceChildren(
@@ -394,10 +389,9 @@ export function createMapView(container: HTMLElement, world: WorldTopology, call
   function pinStyle(pin: DisplayPin, current: MapProps): PinStyle {
     const [onlyBand] = pin.bandIds.length === 1 ? pin.shows.map((ref) => ref.band) : [];
     const color = onlyBand === undefined ? current.theme.ink : bandColor(onlyBand, current.theme.mode);
-    const inWindow = current.isInWindow === null || pin.shows.some(current.isInWindow);
     const inFocus = current.focusBandId === null || pin.bandIds.includes(current.focusBandId);
     const radius = pinRadius(pin);
-    const opacity = (inWindow ? 1 : MAP_SETTINGS.outOfWindowOpacity) * (inFocus ? 1 : 0.2);
+    const opacity = inFocus ? 1 : 0.2;
     if (pin.allCancelled) return { radius, segments: [], fill: current.theme.stock, stroke: pin.allPast ? current.theme.past : color, strokeWidth: 2, opacity };
     if (pin.allPast) return { radius, segments: [], fill: current.theme.past, stroke: current.theme.stock, strokeWidth: 2, opacity: inFocus ? 1 : 0.2 };
     if (onlyBand === undefined) {
@@ -524,9 +518,7 @@ export function createMapView(container: HTMLElement, world: WorldTopology, call
   function placePinLabels() {
     if (props === null) return;
     measureContext.font = MAP_SETTINGS.labelFont;
-    const isInWindow = props.isInWindow;
     const visible = pins.flatMap((pin) => {
-      if (isInWindow !== null && !pin.shows.some(isInWindow)) return [];
       const x = transform.applyX(pin.x);
       const y = transform.applyY(pin.y);
       return x >= 0 && y >= 0 && x <= width && y <= height ? [{ pin, x, y }] : [];

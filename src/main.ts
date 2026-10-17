@@ -21,7 +21,7 @@ import { applyThemePreference, readThemeColors, watchSystemTheme, type ThemeColo
 import { DAY_MS } from './view/timeScale.ts';
 import { createTimeline } from './view/timeline.ts';
 import { createTimelineControls } from './view/timelineControls.ts';
-import { PRESET_IDS, defaultPreset, isPresetAvailable, presetRange, type TimePreset } from './view/timePresets.ts';
+import { PRESET_IDS, defaultPreset, isPresetAvailable, presetRange, usesPastMonth, type TimePreset } from './view/timePresets.ts';
 
 const WINDOW_DEBOUNCE_MS = 150;
 const URL_DEBOUNCE_MS = 300;
@@ -46,6 +46,7 @@ const state = createStore<AppState>({
   followTimeline: urlState.follow ?? true,
   timePreset: urlState.preset,
   hideEmptyLanes: !urlState.allLanes,
+  includePastMonth: urlState.includePastMonth,
   theme: 'auto',
   today: localToday(new Date()),
 });
@@ -114,8 +115,15 @@ const search = createSearch(requireElement(document, '#search', HTMLDivElement),
 
 const timelineControls = createTimelineControls(requireElement(document, '#timeline-controls', HTMLDivElement), {
   onPreset: (preset) => applyPreset(preset, true),
+  onIncludePastMonth(include) {
+    state.set({ includePastMonth: include });
+    const { timePreset } = state.get();
+    if (timePreset !== null && usesPastMonth(timePreset)) applyPreset(timePreset, true);
+  },
   onHideEmptyLanes: (hide) => state.set({ hideEmptyLanes: hide }),
   onFollowTimeline: (follow) => state.set({ followTimeline: follow }),
+  onZoomOut: () => timeline.zoomOut(),
+  onShift: (direction) => timeline.shift(direction),
 });
 const toolbarHint = requireElement(document, '#toolbar-hint', HTMLParagraphElement);
 
@@ -154,12 +162,12 @@ function renderAll() {
   const current = state.get();
   const derived = derive(current);
   const filter = select.windowFilter(current);
-  const fitShows = select.fitShows(derived, filter);
+  const mapShows = select.mapShows(derived, filter);
+  const fitShows = mapShows;
 
   map.render({
-    shows: derived.visibleShows,
-    fitShows,
-    isInWindow: filter,
+    shows: mapShows,
+    fitShows: mapShows.length > 0 ? mapShows : derived.visibleShows,
     routeBandIds: select.routeBandIds(current, derived),
     highlightedShowIds: current.hoverShowIds,
     selectedShowIds: current.selectedShowIds,
@@ -204,13 +212,14 @@ function renderAll() {
   const today = parseIsoDate(current.today).getTime();
   timelineControls.render({
     preset: state.get().timePreset,
-    availablePresets: new Set(PRESET_IDS.filter((preset) => isPresetAvailable(preset, derived.visibleShows, today))),
+    availablePresets: new Set(PRESET_IDS.filter((preset) => isPresetAvailable(preset, derived.visibleShows, today, current.includePastMonth))),
+    includePastMonth: current.includePastMonth,
     hideEmptyLanes: current.hideEmptyLanes,
     followTimeline: current.followTimeline,
   });
   toolbarHint.textContent = timeline.lanesOverflow()
-    ? 'Scroll to zoom the timeline, drag to pan, Shift + scroll for more bands'
-    : 'Scroll to zoom the timeline, drag to pan';
+    ? 'Drag across the timeline to zoom in, double-click to zoom out, scroll for more bands'
+    : 'Drag across the timeline to zoom in, double-click to zoom out';
 
   bandList.render({
     bands: derived.filteredBands,
@@ -340,13 +349,13 @@ function applyPreset(preset: TimePreset | null, animate: boolean) {
   const current = state.get();
   const shows = derive(current).visibleShows;
   const today = parseIsoDate(current.today).getTime();
-  if (preset === null || !isPresetAvailable(preset, shows, today)) {
+  if (preset === null || !isPresetAvailable(preset, shows, today, current.includePastMonth)) {
     if (preset !== null) state.set({ timePreset: 'all' });
     timeline.fitToData(animate, null);
     return;
   }
   state.set({ timePreset: preset });
-  timeline.fitToData(animate, presetRange(preset, shows, today));
+  timeline.fitToData(animate, presetRange(preset, shows, today, current.includePastMonth));
 }
 
 function resetViews() {
@@ -378,6 +387,7 @@ function writeUrlState() {
     follow: current.followTimeline ? null : false,
     preset: current.timePreset === null || current.timePreset === defaultPreset(derive(current).visibleShows, parseIsoDate(current.today).getTime()) ? null : current.timePreset,
     allLanes: !current.hideEmptyLanes,
+    includePastMonth: current.includePastMonth,
   });
   if (hash === location.hash || (hash === '' && location.hash === '')) return;
   const url = `${location.pathname}${location.search}${hash}`;

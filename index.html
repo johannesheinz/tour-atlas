@@ -28,14 +28,16 @@
       <main class="stage">
         <section class="atlas" id="atlas" aria-label="Map and timeline" tabindex="-1">
           <div class="map" id="map"></div>
-          <div class="atlas-toolbar" role="toolbar" aria-label="Map and timeline controls">
-            <div class="toolbar-group">
-              <button type="button" class="icon-button" id="zoom-in" aria-label="Zoom map in">+</button>
-              <button type="button" class="icon-button" id="zoom-out" aria-label="Zoom map out">&minus;</button>
-              <button type="button" class="button button-small" id="fit-map">Fit map</button>
+          <div class="atlas-toolbar">
+            <div class="toolbar-row" role="toolbar" aria-label="Map controls" id="map-controls">
+              <div class="toolbar-group">
+                <button type="button" class="icon-button" id="zoom-in" aria-label="Zoom map in">+</button>
+                <button type="button" class="icon-button" id="zoom-out" aria-label="Zoom map out">&minus;</button>
+                <button type="button" class="button button-small" id="fit-map">Fit map</button>
+              </div>
             </div>
+            <div class="toolbar-row" role="toolbar" aria-label="Timeline controls" id="timeline-controls"></div>
             <p class="toolbar-hint" id="toolbar-hint"></p>
-            <div class="toolbar-group" id="timeline-controls"></div>
           </div>
           <div class="timeline" id="timeline"></div>
         </section>

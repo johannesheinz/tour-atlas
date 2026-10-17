@@ -28,6 +28,8 @@ export interface AppState {
   /** The preset that produced the current window; null once the user zooms or pans. */
   readonly timePreset: TimePreset | null;
   readonly hideEmptyLanes: boolean;
+  /** Forward-looking presets start a month back, to follow a running tour. */
+  readonly includePastMonth: boolean;
   readonly theme: ThemePreference;
   readonly today: string;
 }

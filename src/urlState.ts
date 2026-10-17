@@ -14,6 +14,7 @@ export interface UrlState {
   readonly follow: boolean | null;
   readonly preset: TimePreset | null;
   readonly allLanes: boolean;
+  readonly includePastMonth: boolean;
 }
 
 const SORTS: readonly BandSort[] = ['name', 'next-show', 'show-count'];
@@ -41,6 +42,7 @@ export function parseUrlState(hash: string): UrlState {
     follow: followParam === '0' ? false : followParam === '1' ? true : null,
     preset: PRESET_IDS.find((preset) => preset === params.get('when')) ?? null,
     allLanes: params.get('lanes') === 'all',
+    includePastMonth: params.get('recent') === '1',
   };
 }
 
@@ -57,6 +59,7 @@ export function serializeUrlState(state: UrlState): string {
   if (state.follow !== null) params.set('follow', state.follow ? '1' : '0');
   if (state.preset !== null) params.set('when', state.preset);
   if (state.allLanes) params.set('lanes', 'all');
+  if (state.includePastMonth) params.set('recent', '1');
   const text = params.toString().replaceAll('%2C', ',');
   return text === '' ? '' : `#${text}`;
 }

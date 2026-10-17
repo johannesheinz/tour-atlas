@@ -51,9 +51,10 @@ describe('url state', () => {
       follow: false,
       preset: null,
       allLanes: true,
+      includePastMonth: true,
     };
     const hash = serializeUrlState(state);
-    expect(hash).toBe('#hide=glass-harbor,velvet-meridian&tags=nordic&sort=next-show&from=2026-10-01&to=2026-12-31&show=iron-lantern-2026-10-17-belo-horizonte&follow=0&lanes=all');
+    expect(hash).toBe('#hide=glass-harbor,velvet-meridian&tags=nordic&sort=next-show&from=2026-10-01&to=2026-12-31&show=iron-lantern-2026-10-17-belo-horizonte&follow=0&lanes=all&recent=1');
     expect(parseUrlState(hash)).toEqual({ ...state, hiddenBandIds: ['glass-harbor', 'velvet-meridian'] });
   });
 
@@ -68,6 +69,7 @@ describe('url state', () => {
       follow: null,
       preset: null,
       allLanes: false,
+      includePastMonth: false,
     });
   });
 
@@ -77,6 +79,6 @@ describe('url state', () => {
   });
 
   it('serializes the default view to an empty hash', () => {
-    expect(serializeUrlState({ hiddenBandIds: [], tags: [], sort: null, from: null, to: null, selectedShowIds: [], follow: null, preset: null, allLanes: false })).toBe('');
+    expect(serializeUrlState({ hiddenBandIds: [], tags: [], sort: null, from: null, to: null, selectedShowIds: [], follow: null, preset: null, allLanes: false, includePastMonth: false })).toBe('');
   });
 });

@@ -25,6 +25,8 @@ export const TIMELINE_SETTINGS = {
   minSpanDays: 14,
   minVisibleDays: 3,
   fitDurationMs: 300,
+  /** A drag shorter than this is a click. */
+  brushThresholdPx: 5,
   laneFont: '17px "League Gothic", "Arial Narrow", sans-serif',
   compactLaneFont: '15px "League Gothic", "Arial Narrow", sans-serif',
   tickFont: '600 11px Archivo, system-ui, sans-serif',
@@ -63,6 +65,10 @@ export interface TimelineView {
   fitToData(animate: boolean, range: readonly [number, number] | null): void;
   zoomToRange(start: number, end: number, animate: boolean): void;
   zoomBy(factor: number): void;
+  /** Halves the zoom around the centre (Grafana's "zoom out"). */
+  zoomOut(): void;
+  /** Moves the window by half its width; -1 earlier, 1 later. */
+  shift(direction: -1 | 1): void;
   isAtFit(): boolean;
   readonly lanesOverflow: () => boolean;
 }
@@ -77,6 +83,7 @@ export function createTimeline(container: HTMLElement, callbacks: TimelineCallba
   const lanesCanvas = h('canvas', { class: 'timeline-lanes', 'aria-hidden': 'true' });
   const spacer = h('div', { class: 'timeline-spacer' });
   const scroller = h('div', { class: 'timeline-scroll' }, lanesCanvas, spacer);
+  const brush = h('div', { class: 'timeline-brush', hidden: true, 'aria-hidden': 'true' });
   const cursor = h('button', { type: 'button', class: 'timeline-cursor', 'aria-label': 'Timeline. Use the arrow keys to move between shows.' });
   const announcer = h('div', { class: 'visually-hidden', 'aria-live': 'polite' });
   const empty = h('p', { class: 'timeline-empty', hidden: true });
@@ -84,7 +91,7 @@ export function createTimeline(container: HTMLElement, callbacks: TimelineCallba
   const showAllLanes = h('button', { type: 'button', class: 'text-button' }, 'Show all lanes');
   const note = h('p', { class: 'timeline-note', hidden: true }, noteText, showAllLanes);
   showAllLanes.addEventListener('click', () => callbacks.onShowAllLanes());
-  container.append(axisCanvas, scroller, cursor, announcer, empty, note);
+  container.append(axisCanvas, scroller, brush, cursor, announcer, empty, note);
   const tooltip = createTooltip(container);
 
   const axisContext = context2d(axisCanvas);
@@ -104,14 +111,13 @@ export function createTimeline(container: HTMLElement, callbacks: TimelineCallba
   let hasFitted = false;
   let pendingRange: [number, number] | null = null;
   let programmatic = false;
+  let brushStart: { readonly x: number; readonly pointerId: number } | null = null;
+  let brushing = false;
+  let suppressClick = false;
 
+  /** d3-zoom only animates programmatic moves; users zoom by dragging a range, the wheel scrolls lanes. */
   const zoomBehavior = zoom<HTMLDivElement, unknown>()
-    .filter((event: Event) => {
-      if (event instanceof WheelEvent) return !event.shiftKey && Math.abs(event.deltaY) >= Math.abs(event.deltaX);
-      if (event instanceof MouseEvent) return !event.ctrlKey && event.button === 0;
-      return true;
-    })
-    .clickDistance(4)
+    .filter(() => false)
     .on('start', (event: D3ZoomEvent<HTMLDivElement, unknown>) => {
       if (event.sourceEvent !== null) programmatic = false;
     })
@@ -132,22 +138,62 @@ export function createTimeline(container: HTMLElement, callbacks: TimelineCallba
   scroller.addEventListener(
     'wheel',
     (event) => {
-      if (event.shiftKey) {
-        event.preventDefault();
-        scroller.scrollTop += event.deltaY === 0 ? event.deltaX : event.deltaY;
-      } else if (Math.abs(event.deltaX) > Math.abs(event.deltaY)) {
-        event.preventDefault();
-        scrollerSelection.call(zoomBehavior.translateBy, -event.deltaX / transform.k, 0);
-      }
+      if (Math.abs(event.deltaX) <= Math.abs(event.deltaY)) return;
+      event.preventDefault();
+      programmatic = false;
+      scrollerSelection.call(zoomBehavior.translateBy, -event.deltaX / transform.k, 0);
     },
     { passive: false },
   );
+  scroller.addEventListener('pointerdown', (event) => {
+    if (event.button !== 0 || !event.isPrimary) return;
+    brushStart = { x: localX(event), pointerId: event.pointerId };
+    brushing = false;
+  });
+  scroller.addEventListener('pointerup', (event) => {
+    if (brushStart === null || event.pointerId !== brushStart.pointerId) return;
+    const startX = brushStart.x;
+    brushStart = null;
+    if (!brushing) return;
+    brushing = false;
+    suppressClick = true;
+    brush.hidden = true;
+    const x = currentScale();
+    const [from, to] = [startX, localX(event)].toSorted((a, b) => a - b);
+    if (from === undefined || to === undefined) return;
+    animateTo(transformFor(x.invert(Math.max(0, from)).getTime(), x.invert(Math.min(width, to)).getTime()));
+  });
+  scroller.addEventListener('pointercancel', () => {
+    brushStart = null;
+    brushing = false;
+    brush.hidden = true;
+  });
+  scroller.addEventListener('dblclick', (event) => {
+    event.preventDefault();
+    zoomOutAround(localX(event));
+  });
   scroller.addEventListener('scroll', () => {
     scrollTop = scroller.scrollTop;
     scheduleDraw();
     positionCursor();
   });
   scroller.addEventListener('pointermove', (event) => {
+    if (brushStart !== null && event.pointerId === brushStart.pointerId) {
+      const x = localX(event);
+      if (!brushing && Math.abs(x - brushStart.x) > TIMELINE_SETTINGS.brushThresholdPx) {
+        brushing = true;
+        scroller.setPointerCapture(event.pointerId);
+        tooltip.hide();
+      }
+      if (brushing) {
+        const [from, to] = [brushStart.x, x].toSorted((a, b) => a - b);
+        brush.style.setProperty('--from', `${Math.max(0, from ?? 0)}px`);
+        brush.style.setProperty('--to', `${Math.min(width, to ?? 0)}px`);
+        brush.style.setProperty('--height', `${viewportHeight}px`);
+        brush.hidden = false;
+        return;
+      }
+    }
     if (event.buttons !== 0) return;
     const ref = showAtPointer(event);
     scroller.classList.toggle('is-over-show', ref !== null);
@@ -165,6 +211,10 @@ export function createTimeline(container: HTMLElement, callbacks: TimelineCallba
     callbacks.onHover(null);
   });
   scroller.addEventListener('click', (event) => {
+    if (suppressClick) {
+      suppressClick = false;
+      return;
+    }
     const ref = showAtPointer(event);
     callbacks.onSelect(ref === null ? [] : [ref]);
   });
@@ -320,7 +370,39 @@ export function createTimeline(container: HTMLElement, callbacks: TimelineCallba
   }
 
   function zoomBy(factor: number) {
+    programmatic = false;
     scrollerSelection.call(zoomBehavior.scaleBy, factor, [width / 2, 0]);
+  }
+
+  /** A user-initiated animated move: its end clears the preset. */
+  function animateTo(target: ZoomTransform) {
+    programmatic = false;
+    if (prefersReducedMotion()) {
+      setTransform(target);
+      emitWindow(true);
+      return;
+    }
+    scrollerSelection.transition().duration(TIMELINE_SETTINGS.fitDurationMs).call(zoomBehavior.transform, target);
+  }
+
+  function zoomOutAround(x: number) {
+    const [start, end] = currentScale().domain().map((date) => date.getTime());
+    if (start === undefined || end === undefined || width === 0) return;
+    const center = currentScale().invert(x).getTime();
+    const span = (end - start) * 2;
+    const fraction = x / width;
+    animateTo(transformFor(center - span * fraction, center + span * (1 - fraction)));
+  }
+
+  function shift(direction: -1 | 1) {
+    const [start, end] = currentScale().domain().map((date) => date.getTime());
+    if (start === undefined || end === undefined) return;
+    const offset = ((end - start) / 2) * direction;
+    animateTo(transformFor(start + offset, end + offset));
+  }
+
+  function localX(event: MouseEvent): number {
+    return event.clientX - scroller.getBoundingClientRect().left;
   }
 
   function currentScale(): ScaleTime<number, number> {
@@ -582,6 +664,8 @@ export function createTimeline(container: HTMLElement, callbacks: TimelineCallba
     fitToData,
     zoomToRange,
     zoomBy,
+    zoomOut: () => zoomOutAround(width / 2),
+    shift,
     isAtFit: () => Math.abs(transform.k - 1) < 1e-6 && Math.abs(transform.x) < 0.5,
     lanesOverflow: () => container.classList.contains('has-overflow'),
   };
