@@ -14,7 +14,7 @@ npm test               # Vitest
 npm run typecheck      # app (DOM) and node (tools/tests) projects separately
 npm run validate       # tools/validate.ts data/bands  (errors fail, warnings inform)
 npm run normalize      # rewrite data/bands in canonical form; add --check to only verify
-npm run geocode        # fill missing geo via Nominatim (needs NOMINATIM_CONTACT)
+NOMINATIM_CONTACT=... npm run geocode   # fill missing geo via Nominatim; ask the user for the contact
 npm run review -- --base origin/main   # diff + plausibility warnings, as posted by CI
 npm run check          # everything CI runs, in order
 ```
@@ -33,7 +33,18 @@ npm run check          # everything CI runs, in order
   Change both together (see `.claude/skills/change-schema`).
 - `src/store/`: `DataStore` interface (`listBands`, `getBand`, `subscribe`); only `StaticStore` exists.
 - `src/view/`: render functions of state + callbacks. Pure math (fits, scales) lives in DOM-free modules so it is testable in Node.
-- `tools/`: Node CLIs (run directly by Node's type stripping); never shipped. `tools/vite/` holds the build plugins.
+- `src/preview.ts`: in-browser preview of dropped files (validate, normalize, lint, diff, export). Held in memory only.
+- `src/main.ts` wires views to `src/state.ts`; `src/appState.ts` and `src/selectors.ts` memoise derived data.
+- `tools/`: Node CLIs (TypeScript run directly by Node's type stripping, so use `.ts` import specifiers and
+  erasable syntax only); never shipped. `tools/vite/` holds the build plugins (data validation, CSP, slim topology).
+
+## Skills
+
+Only for work that needs judgement; everything checkable is a tool or a CI job.
+
+- `.claude/skills/band-data`: create or refresh a band file from a tour page
+- `.claude/skills/fix-data-errors`: fix what validate, geocode or the data review report
+- `.claude/skills/change-schema`: change the format consistently everywhere
 
 ## Hard rules
 
@@ -47,4 +58,6 @@ npm run check          # everything CI runs, in order
 - Unknown data is `null`, never guessed. Never invent tour dates; sample data uses fictional bands and
   `example.com`/`example.org` URLs.
 - Keep `dist/index.html` under 600 kB gzipped at 50 bands / 5,000 shows.
+- Never send requests to Nominatim from tests or CI; tests inject a fake fetch.
+- The repository is local-only for now; do not add a remote or push.
 - Comments only where the code cannot say it; prefer descriptive names.

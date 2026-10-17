@@ -1106,7 +1106,7 @@ input[type='search']::placeholder {
   }
 
   .map {
-    height: 58vh;
+    height: clamp(260px, 46vh, 420px);
   }
 
   .show-row {

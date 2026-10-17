@@ -3,7 +3,6 @@
   "version": "0.1.0",
   "private": true,
   "description": "Concert tour dates for multiple bands on a world map with an aligned, zoomable timeline.",
-  "license": "MIT",
   "type": "module",
   "engines": {
     "node": ">=22.18"

@@ -10,7 +10,7 @@ import { appendStepSummary, markdownCell, printIssue } from './lib/report.ts';
 
 const USAGE = `Usage: node tools/review.ts --base <git-ref> [--format text|github]
 
-Summarises changes to data/bands/ between <git-ref> and the working tree for pull request
+Summarises changes to data/bands/ since the merge base with <git-ref> (working tree included) for pull request
 review: shows added, removed and changed per band, plus plausibility warnings. Never fails
 on warnings; schema errors are the job of tools/validate.ts.`;
 
@@ -32,8 +32,9 @@ runCli(USAGE, () => {
   const format = args.options.get('format') === 'github' ? 'github' : 'text';
   const options = { today: localToday(new Date()), locateCountry: loadCountryLocator() };
 
-  const reviews = changedBandFiles(base).map((path): BandReview => {
-    const before = loadVersion(gitShow(base, path), path);
+  const mergeBase = execFileSync('git', ['merge-base', base, 'HEAD'], { encoding: 'utf8' }).trim();
+  const reviews = changedBandFiles(mergeBase).map((path): BandReview => {
+    const before = loadVersion(gitShow(mergeBase, path), path);
     const headText = existsSync(path) ? readText(path) : null;
     const after = loadVersion(headText, path);
     if (after === null) {
