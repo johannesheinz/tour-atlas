@@ -45,6 +45,12 @@ describe('logoSilhouette', () => {
     expect(await alphaAt(result, Math.floor((meta.width ?? 0) / 2), Math.floor((meta.height ?? 0) / 2))).toBeGreaterThan(200);
   });
 
+  it('renders huge SVGs without exceeding the pixel limit', async () => {
+    const svg = '<svg xmlns="http://www.w3.org/2000/svg" width="40000" height="10000"><rect x="5000" y="2000" width="30000" height="6000"/></svg>';
+    const meta = await sharp(await logoSilhouette(Buffer.from(svg))).metadata();
+    expect(meta.height).toBe(LOGO_HEIGHT);
+  });
+
   it('refuses an image without a visible shape', async () => {
     const blank = await sharp({ create: { width: 50, height: 50, channels: 3, background: '#ffffff' } }).png().toBuffer();
     await expect(logoSilhouette(blank)).rejects.toThrow(LogoError);

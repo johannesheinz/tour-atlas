@@ -129,7 +129,7 @@ export async function downloadImage(url: string, deps: Pick<LogoDependencies, 'f
 export async function logoSilhouette(input: Buffer): Promise<Buffer> {
   let decoded: { data: Buffer; info: OutputInfo };
   try {
-    decoded = await sharp(input, { density: 300 })
+    decoded = await sharp(input, { density: await renderDensity(input) })
       .resize({ width: WORKING_SIZE, height: WORKING_SIZE, fit: 'inside', withoutEnlargement: true })
       .ensureAlpha()
       .raw()
@@ -184,4 +184,12 @@ function edgeMedian(data: Buffer, width: number, height: number): { r: number; g
   }
   const median = (values: number[]) => values.toSorted((a, b) => a - b)[Math.floor(values.length / 2)] ?? 0;
   return { r: median(channels[0]), g: median(channels[1]), b: median(channels[2]) };
+}
+
+/** SVGs render at a density that gives about WORKING_SIZE pixels; huge declared sizes would exceed sharp's pixel limit. */
+async function renderDensity(input: Buffer): Promise<number> {
+  const meta = await sharp(input, { limitInputPixels: false }).metadata().catch(() => null);
+  if (meta?.format !== 'svg' || meta.width === undefined || meta.height === undefined) return 300;
+  const longest = Math.max(meta.width, meta.height, 1);
+  return Math.max(1, Math.min(300, (72 * WORKING_SIZE) / longest));
 }
