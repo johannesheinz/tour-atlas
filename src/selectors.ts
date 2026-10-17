@@ -23,6 +23,9 @@ export function createSelectors(maxBandsWithRoutes: number) {
   let selectionKey: [ReadonlySet<string>, ReadonlyMap<string, ShowRef>] | null = null;
   let selection: readonly ShowRef[] = [];
 
+  let tagCountKey: Derived['bands'] | null = null;
+  let tagCounts: ReadonlyMap<string, number> = new Map();
+
   let searchKey: Derived['bands'] | null = null;
   let searchIndex: readonly SearchEntry[] = [];
 
@@ -82,6 +85,18 @@ export function createSelectors(maxBandsWithRoutes: number) {
           .toSorted((a, b) => a.start - b.start || a.band.file.band.name.localeCompare(b.band.file.band.name));
       }
       return selection;
+    },
+
+    tagCounts(derived: Derived): ReadonlyMap<string, number> {
+      if (derived.bands !== tagCountKey) {
+        tagCountKey = derived.bands;
+        const counts = new Map<string, number>();
+        for (const band of derived.bands) {
+          for (const tag of band.file.band.tags) counts.set(tag, (counts.get(tag) ?? 0) + 1);
+        }
+        tagCounts = counts;
+      }
+      return tagCounts;
     },
 
     searchIndex(derived: Derived): readonly SearchEntry[] {

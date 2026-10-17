@@ -35,4 +35,5 @@ stay valid.
 8. Tests: a case per new error message in `tests/data/validate.test.ts`; `npm test` also re-checks
    schema/validator agreement and key order.
 9. Docs: `docs/DATA_FORMAT.md` field table and example.
+   If the change touches tags: `data/tags.json`, `src/data/tags.ts`, then `npm run tags` to refresh the schema enum.
 10. `npm run check`, then `npm run build:budget`: a new field costs bytes at 5,000 shows.

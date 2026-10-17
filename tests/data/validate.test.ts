@@ -82,7 +82,7 @@ describe('validateRepository', () => {
   });
 
   it('rejects file-level problems', () => {
-    const file = { ...makeFile([makeShow()]), schemaVersion: 2, band: { id: 'Test Band', name: 'Test', color: '#FFF' } };
+    const file = { ...makeFile([makeShow()]), schemaVersion: 2, band: { id: 'Test Band', name: 'Test', color: '#FFF', tags: [] } };
     const result = validateRepository(file, 'test-band.json');
     expect(result.value).toBeNull();
     expect(result.issues.map(formatIssue)).toEqual([
@@ -90,6 +90,17 @@ describe('validateRepository', () => {
       'test-band.json band.id: "Test Band" must be a lowercase slug like "glass-harbor"',
       'test-band.json band.color: "#FFF" is not a lowercase hex colour like "#3a7bd5"',
     ]);
+  });
+
+  it.each([
+    ['unknown tag', ['doom-metal', 'polka'], 'band.tags[1]: "polka" is not in data/tags.json; add it there in the same pull request or remove it'],
+    ['duplicate tag', ['nordic', 'nordic'], 'band.tags[1]: "nordic" is listed twice'],
+    ['not a list', 'nordic', 'band.tags: must be a list of tag ids (got "nordic"); use [] for none'],
+  ])('reports %s', (_name, tags, expected) => {
+    const file = { ...makeFile([makeShow()]), band: { id: 'test-band', name: 'Test Band', color: null, tags } };
+    const result = validateRepository(file, 'test-band.json');
+    expect(result.value).toBeNull();
+    expect(result.issues.map(formatIssue)).toEqual([`test-band.json ${expected}`]);
   });
 
   it('rejects input that is not an object', () => {

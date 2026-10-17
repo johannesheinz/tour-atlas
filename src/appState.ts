@@ -1,3 +1,4 @@
+import { matchesTagFilter } from './data/tags.ts';
 import type { BandFile } from './data/types.ts';
 import type { PreviewResult } from './preview.ts';
 import { buildBandEntries, showRefs, sortBands, type BandEntry, type BandSort, type ShowRef } from './model.ts';
@@ -15,6 +16,8 @@ export interface AppState {
   /** Drawable rows of the previews; derived from previewResults when they change. */
   readonly previews: readonly BandFile[];
   readonly hiddenBandIds: ReadonlySet<string>;
+  /** Selected tag ids: OR within a tag group, AND across groups. */
+  readonly tagFilter: ReadonlySet<string>;
   readonly bandSort: BandSort;
   readonly bandFilter: string;
   readonly focusBandId: string | null;
@@ -32,6 +35,8 @@ export interface AppState {
 export interface Derived {
   readonly bands: readonly BandEntry[];
   readonly orderedBands: readonly BandEntry[];
+  /** Ordered bands that pass the tag filter, visible or not. */
+  readonly filteredBands: readonly BandEntry[];
   readonly visibleBands: readonly BandEntry[];
   readonly visibleShows: readonly ShowRef[];
   readonly showsById: ReadonlyMap<string, ShowRef>;
@@ -50,6 +55,9 @@ export function createDeriver(): (state: AppState) => Derived {
   let orderKey: [readonly BandEntry[], BandSort, string] | null = null;
   let orderedBands: readonly BandEntry[] = [];
 
+  let filterKey: [readonly BandEntry[], ReadonlySet<string>] | null = null;
+  let filteredBands: readonly BandEntry[] = [];
+
   let visibleKey: [readonly BandEntry[], ReadonlySet<string>] | null = null;
   let visibleBands: readonly BandEntry[] = [];
   let visibleShows: readonly ShowRef[] = [];
@@ -67,12 +75,16 @@ export function createDeriver(): (state: AppState) => Derived {
       orderKey = [bands, state.bandSort, state.today];
       orderedBands = sortBands(bands, state.bandSort, state.today);
     }
-    if (visibleKey === null || visibleKey[0] !== orderedBands || visibleKey[1] !== state.hiddenBandIds) {
-      visibleKey = [orderedBands, state.hiddenBandIds];
-      visibleBands = orderedBands.filter((band) => !state.hiddenBandIds.has(band.file.band.id));
+    if (filterKey === null || filterKey[0] !== orderedBands || filterKey[1] !== state.tagFilter) {
+      filterKey = [orderedBands, state.tagFilter];
+      filteredBands = orderedBands.filter((band) => matchesTagFilter(band.file.band.tags, state.tagFilter));
+    }
+    if (visibleKey === null || visibleKey[0] !== filteredBands || visibleKey[1] !== state.hiddenBandIds) {
+      visibleKey = [filteredBands, state.hiddenBandIds];
+      visibleBands = filteredBands.filter((band) => !state.hiddenBandIds.has(band.file.band.id));
       visibleShows = visibleBands.flatMap((band) => refsByBand.get(band) ?? []);
     }
-    return { bands, orderedBands, visibleBands, visibleShows, showsById, refsByBand };
+    return { bands, orderedBands, filteredBands, visibleBands, visibleShows, showsById, refsByBand };
   };
 }
 

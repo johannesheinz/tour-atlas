@@ -3,7 +3,12 @@
   "band": {
     "id": "northbound-static",
     "name": "Northbound Static",
-    "color": null
+    "color": null,
+    "tags": [
+      "post-rock",
+      "nordic",
+      "cinder-press"
+    ]
   },
   "source": {
     "url": "https://example.com/northbound-static/tour",

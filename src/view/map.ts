@@ -31,6 +31,8 @@ export const MAP_SETTINGS = {
   maxZoom: 40,
   fitDurationMs: 300,
   maxBandsWithRoutes: 8,
+  /** Upcoming shows outside the followed window recede; past shows are greyed instead of faded. */
+  outOfWindowOpacity: 0.55,
   labelFont: '600 12px Archivo, system-ui, sans-serif',
   badgeFont: '600 10px Archivo, system-ui, sans-serif',
 } as const;
@@ -395,9 +397,9 @@ export function createMapView(container: HTMLElement, world: WorldTopology, call
     const inWindow = current.isInWindow === null || pin.shows.some(current.isInWindow);
     const inFocus = current.focusBandId === null || pin.bandIds.includes(current.focusBandId);
     const radius = pinRadius(pin);
-    const opacity = (inWindow ? 1 : 0.25) * (inFocus ? 1 : 0.2);
+    const opacity = (inWindow ? 1 : MAP_SETTINGS.outOfWindowOpacity) * (inFocus ? 1 : 0.2);
     if (pin.allCancelled) return { radius, segments: [], fill: current.theme.stock, stroke: pin.allPast ? current.theme.past : color, strokeWidth: 2, opacity };
-    if (pin.allPast) return { radius, segments: [], fill: current.theme.past, stroke: current.theme.inkMuted, strokeWidth: 1.25, opacity };
+    if (pin.allPast) return { radius, segments: [], fill: current.theme.past, stroke: current.theme.stock, strokeWidth: 2, opacity: inFocus ? 1 : 0.2 };
     if (onlyBand === undefined) {
       const segments = pinSegments(pin.shows, current.theme.mode, current.theme.inkMuted);
       return { radius, segments, fill: current.theme.stock, stroke: current.theme.ink, strokeWidth: 1.25, opacity };

@@ -20,6 +20,8 @@ export interface Band {
   readonly id: string;
   readonly name: string;
   readonly color: string | null;
+  /** Ids from data/tags.json, in vocabulary order. */
+  readonly tags: readonly string[];
 }
 
 export interface Source {
@@ -74,7 +76,7 @@ export type BandFile = BandFileOf<Show>;
 
 /** Canonical key order. Shared by the validator, normalize and the schema test. */
 export const BAND_FILE_KEYS = ['schemaVersion', 'band', 'source', 'shows'] as const satisfies readonly (keyof DraftBandFile)[];
-export const BAND_KEYS = ['id', 'name', 'color'] as const satisfies readonly (keyof Band)[];
+export const BAND_KEYS = ['id', 'name', 'color', 'tags'] as const satisfies readonly (keyof Band)[];
 export const SOURCE_KEYS = ['url', 'retrievedAt'] as const satisfies readonly (keyof Source)[];
 export const GEO_KEYS = ['lat', 'lon', 'precision', 'source'] as const satisfies readonly (keyof Geo)[];
 export const SHOW_KEYS = [
@@ -109,6 +111,7 @@ export type KeyListsAreComplete = [
 
 export const LIMITS = {
   showsPerFile: 2000,
+  tagsPerBand: 12,
   bandName: 120,
   city: 100,
   region: 100,

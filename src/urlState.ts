@@ -6,6 +6,7 @@ import { PRESET_IDS, type TimePreset } from './view/timePresets.ts';
 /** View state kept in the URL hash: shareable, never stored, never sent to a server. */
 export interface UrlState {
   readonly hiddenBandIds: readonly string[];
+  readonly tags: readonly string[];
   readonly sort: BandSort | null;
   readonly from: string | null;
   readonly to: string | null;
@@ -32,6 +33,7 @@ export function parseUrlState(hash: string): UrlState {
   const validRange = from !== null && to !== null && from <= to;
   return {
     hiddenBandIds: list('hide'),
+    tags: list('tags'),
     sort: SORTS.find((sort) => sort === sortParam) ?? null,
     from: validRange ? from : null,
     to: validRange ? to : null,
@@ -45,6 +47,7 @@ export function parseUrlState(hash: string): UrlState {
 export function serializeUrlState(state: UrlState): string {
   const params = new URLSearchParams();
   if (state.hiddenBandIds.length > 0) params.set('hide', state.hiddenBandIds.toSorted().join(','));
+  if (state.tags.length > 0) params.set('tags', state.tags.toSorted().join(','));
   if (state.sort !== null) params.set('sort', state.sort);
   if (state.from !== null && state.to !== null) {
     params.set('from', state.from);

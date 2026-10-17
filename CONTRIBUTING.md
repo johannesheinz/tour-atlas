@@ -9,6 +9,7 @@ reviewed by a person before it appears on the site.
    answers with JSON that matches [`schema/tour.schema.json`](schema/tour.schema.json). The fields and rules
    are in [`docs/DATA_FORMAT.md`](docs/DATA_FORMAT.md). By hand works too; copy a file from `samples/`.
    Leave `show.id` and `show.geo` as `null`, and use `null` for anything the source does not say.
+   Pick `band.tags` from [`data/tags.json`](data/tags.json) only, or leave it `[]`.
 
 2. **Save it as `data/bands/<band-id>.json`.** When updating a band, keep its past shows: they are
    history, not stale data. Future shows that disappeared from the source are not deleted silently;
@@ -47,12 +48,18 @@ reviewed by a person before it appears on the site.
 
 7. **Open a pull request.** The template has a short checklist.
 
+## Add a tag
+
+Add it to `data/tags.json` (id, label, group), run `npm run tags` to update the schema, and commit both
+in the pull request that first uses the tag.
+
 ## What CI checks
 
 | Check | Fails the pull request? |
 | --- | --- |
 | Schema and semantic validation of every file in `data/bands/` (annotated on the offending line) | yes |
 | Canonical formatting (`normalize --check`) | yes |
+| Schema tag list matches `data/tags.json` (`tags --check`) | yes |
 | Data review: shows added, removed and changed per band, plus plausibility warnings, in the job summary | no |
 | Typecheck, unit tests, build | yes |
 | Size budget: build with 50 bands and 5,000 synthetic shows must stay under 600 kB gzipped | yes |

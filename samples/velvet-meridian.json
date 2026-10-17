@@ -3,7 +3,11 @@
   "band": {
     "id": "velvet-meridian",
     "name": "Velvet Meridian",
-    "color": null
+    "color": null,
+    "tags": [
+      "shoegaze",
+      "oceania"
+    ]
   },
   "source": {
     "url": "https://example.com/velvet-meridian/tour",

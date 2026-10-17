@@ -1,4 +1,5 @@
 import { assignShowIds } from './ids.ts';
+import { sortTags } from './tags.ts';
 import type { BandFileOf, DraftBandFile, DraftShow, Geo, IdentifiedBandFile, IdentifiedShow } from './types.ts';
 
 /**
@@ -10,7 +11,7 @@ export function normalizeBandFile(file: DraftBandFile): IdentifiedBandFile {
   const shows = assignShowIds(file.band.id, trimmed).toSorted(compareShows).map(orderShowKeys);
   return {
     schemaVersion: file.schemaVersion,
-    band: { id: file.band.id, name: file.band.name.trim(), color: file.band.color },
+    band: { id: file.band.id, name: file.band.name.trim(), color: file.band.color, tags: sortTags(file.band.tags) },
     source: { url: file.source.url, retrievedAt: file.source.retrievedAt },
     shows,
   };

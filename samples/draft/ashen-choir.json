@@ -3,7 +3,11 @@
   "band": {
     "id": "ashen-choir",
     "name": "Ashen Choir",
-    "color": null
+    "color": null,
+    "tags": [
+      "black-metal",
+      "nordic"
+    ]
   },
   "source": {
     "url": "https://example.com/ashen-choir/tour",

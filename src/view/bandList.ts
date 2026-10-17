@@ -1,10 +1,16 @@
 import { dateRange, type BandEntry, type BandSort } from '../model.ts';
+import { TAG_VOCABULARY } from '../data/tags.ts';
 import { h } from './dom.ts';
 import { formatDate, plural } from './format.ts';
 import { bandColor, type ThemeMode } from '../model.ts';
 
 export interface BandListProps {
+  /** Bands that pass the tag filter, in list order. */
   readonly bands: readonly BandEntry[];
+  readonly totalBandCount: number;
+  readonly tagFilter: ReadonlySet<string>;
+  /** Bands per tag across all bands; tags without bands get no chip. */
+  readonly tagCounts: ReadonlyMap<string, number>;
   readonly hiddenBandIds: ReadonlySet<string>;
   readonly filter: string;
   readonly sort: BandSort;
@@ -19,6 +25,8 @@ export interface BandListCallbacks {
   onFilter(text: string): void;
   onSort(sort: BandSort): void;
   onFocusBand(bandId: string | null): void;
+  onToggleTag(tagId: string): void;
+  onClearTags(): void;
 }
 
 export interface BandListView {
@@ -46,12 +54,29 @@ export function createBandList(container: HTMLElement, callbacks: BandListCallba
   const showAll = h('button', { type: 'button', class: 'text-button' }, 'Show all');
   const hideAll = h('button', { type: 'button', class: 'text-button' }, 'Hide all');
   const count = h('p', { class: 'band-count', 'aria-live': 'polite' });
+  const tagChips = new Map(
+    TAG_VOCABULARY.tags.map((tag) => {
+      const chip = h('button', { type: 'button', class: 'tag-chip', 'aria-pressed': 'false' }, h('span', {}, tag.label), h('span', { class: 'tag-count' }));
+      chip.addEventListener('click', () => callbacks.onToggleTag(tag.id));
+      return [tag.id, chip] as const;
+    }),
+  );
+  const tagGroups = TAG_VOCABULARY.groups.map((group) => {
+    const chips = TAG_VOCABULARY.tags.filter((tag) => tag.group === group.id).flatMap((tag) => tagChips.get(tag.id) ?? []);
+    const element = h('div', { class: 'tag-group', role: 'group', 'aria-label': group.label }, h('span', { class: 'tag-group-label' }, group.label), ...chips);
+    return { element, tagIds: TAG_VOCABULARY.tags.filter((tag) => tag.group === group.id).map((tag) => tag.id) };
+  });
+  const clearTags = h('button', { type: 'button', class: 'text-button' }, 'Clear tags');
+  clearTags.addEventListener('click', () => callbacks.onClearTags());
+  const tagNote = h('p', { class: 'tag-note', hidden: true });
+  const tagFilter = h('div', { class: 'tag-filter' }, ...tagGroups.map((group) => group.element), h('div', { class: 'tag-actions' }, tagNote, clearTags));
   const list = h('ul', { class: 'band-rows' });
   const empty = h('p', { class: 'band-empty', hidden: true });
   const body = h(
     'div',
     { id: 'band-list-body', class: 'band-list-body' },
     h('div', { class: 'band-tools' }, filter, sort),
+    tagFilter,
     h('div', { class: 'band-bulk' }, count, h('span', { class: 'band-bulk-actions' }, showAll, hideAll)),
     list,
     empty,
@@ -106,12 +131,30 @@ export function createBandList(container: HTMLElement, callbacks: BandListCallba
       const matching = props.bands.filter((band) => query === '' || band.file.band.name.toLocaleLowerCase().includes(query));
       const visibleCount = props.bands.filter((band) => !props.hiddenBandIds.has(band.file.band.id)).length;
 
-      toggle.textContent = `Bands (${visibleCount} of ${props.bands.length} shown)`;
-      count.textContent = `${visibleCount} of ${props.bands.length} shown`;
+      toggle.textContent = `Bands (${visibleCount} of ${props.totalBandCount} shown)`;
+      count.textContent = `${visibleCount} of ${props.totalBandCount} shown`;
+      for (const [tagId, chip] of tagChips) {
+        const bands = props.tagCounts.get(tagId) ?? 0;
+        chip.hidden = bands === 0;
+        chip.setAttribute('aria-pressed', String(props.tagFilter.has(tagId)));
+        const countLabel = chip.lastElementChild;
+        if (countLabel !== null) countLabel.textContent = String(bands);
+      }
+      for (const group of tagGroups) group.element.hidden = group.tagIds.every((tagId) => (props.tagCounts.get(tagId) ?? 0) === 0);
+      tagFilter.hidden = props.tagCounts.size === 0;
+      const filteredOut = props.totalBandCount - props.bands.length;
+      clearTags.hidden = props.tagFilter.size === 0;
+      tagNote.hidden = filteredOut === 0;
+      tagNote.textContent = `${filteredOut} ${filteredOut === 1 ? 'band does' : 'bands do'} not match the tags.`;
       if (filter.value !== props.filter) filter.value = props.filter;
       sort.value = props.sort;
       empty.hidden = matching.length > 0;
-      empty.textContent = props.bands.length === 0 ? 'No bands yet. Drop band files here to preview them.' : `No band matches “${props.filter}”.`;
+      empty.textContent =
+        props.totalBandCount === 0
+          ? 'No bands yet. Drop band files here to preview them.'
+          : props.bands.length === 0
+            ? 'No band has all the selected tags. Clear a tag to see more.'
+            : `No band matches “${props.filter}”.`;
 
       const seen = new Set<string>();
       const ordered = matching.map((band) => {

@@ -30,6 +30,8 @@ jobs:
         run: node tools/validate.ts data/bands --format github
       - name: Check canonical formatting
         run: node tools/normalize.ts data/bands --check --format github
+      - name: Check schema tag list
+        run: node tools/tags.ts --check
       - name: Review data changes
         if: github.event_name == 'pull_request'
         env:

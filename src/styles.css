@@ -28,7 +28,7 @@
   --ink: #000000;
   --ink-soft: #383935;
   --ink-muted: #5d5e59;
-  --past: #a4a59f;
+  --past: #8b8c86;
   --border-line: #e3e4df;
 
   --font-display: 'League Gothic', 'Arial Narrow', Impact, sans-serif;
@@ -350,6 +350,64 @@ input[type='search']::placeholder {
 
 .band-sort {
   width: auto;
+}
+
+.tag-filter {
+  display: grid;
+  gap: 6px;
+  margin-top: 12px;
+}
+
+.tag-group {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+}
+
+.tag-group-label {
+  width: 100%;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--ink-muted);
+}
+
+.tag-chip {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 5px;
+  padding: 2px 9px;
+  border: 1.5px solid var(--ink);
+  border-radius: 999px;
+  background: transparent;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.4;
+  cursor: pointer;
+}
+
+.tag-chip:hover,
+.tag-chip[aria-pressed='true'] {
+  background: var(--ink);
+  color: var(--stock);
+}
+
+.tag-count {
+  font-weight: 400;
+  opacity: 0.7;
+}
+
+.tag-actions {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.tag-note {
+  margin: 0;
+  font-size: 12px;
+  color: var(--ink-muted);
 }
 
 .band-bulk {

@@ -4,26 +4,44 @@
   "description": "One band and its shows. Every field must be present; use null when a value is unknown and never guess.",
   "type": "object",
   "additionalProperties": false,
-  "required": ["schemaVersion", "band", "source", "shows"],
+  "required": [
+    "schemaVersion",
+    "band",
+    "source",
+    "shows"
+  ],
   "properties": {
     "schemaVersion": {
       "description": "Format version. Always 1.",
       "type": "integer",
-      "enum": [1]
+      "enum": [
+        1
+      ]
     },
-    "band": { "$ref": "#/$defs/band" },
-    "source": { "$ref": "#/$defs/source" },
+    "band": {
+      "$ref": "#/$defs/band"
+    },
+    "source": {
+      "$ref": "#/$defs/source"
+    },
     "shows": {
       "description": "All shows of the band, past and future. Past shows stay in the file.",
       "type": "array",
-      "items": { "$ref": "#/$defs/show" }
+      "items": {
+        "$ref": "#/$defs/show"
+      }
     }
   },
   "$defs": {
     "band": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["id", "name", "color"],
+      "required": [
+        "id",
+        "name",
+        "color",
+        "tags"
+      ],
       "properties": {
         "id": {
           "description": "Lowercase ASCII slug of the band name, words joined by hyphens, e.g. \"glass-harbor\". Must equal the file name without .json.",
@@ -36,15 +54,47 @@
         },
         "color": {
           "description": "Lowercase hex colour like \"#3a7bd5\", or null to let the app assign one.",
-          "type": ["string", "null"],
+          "type": [
+            "string",
+            "null"
+          ],
           "pattern": "^#[0-9a-f]{6}$"
+        },
+        "tags": {
+          "description": "Tags for this band, chosen only from the enum (maintained in data/tags.json): genre, region, label. Use [] when none clearly applies; never invent tags.",
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "black-metal",
+              "doom-metal",
+              "hardcore",
+              "melodic-death-metal",
+              "post-rock",
+              "progressive-metal",
+              "shoegaze",
+              "stoner-rock",
+              "east-asia",
+              "eastern-europe",
+              "latin-america",
+              "nordic",
+              "north-america",
+              "oceania",
+              "western-europe",
+              "cinder-press",
+              "harbor-lights-records"
+            ]
+          }
         }
       }
     },
     "source": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["url", "retrievedAt"],
+      "required": [
+        "url",
+        "retrievedAt"
+      ],
       "properties": {
         "url": {
           "description": "Page the tour dates were taken from.",
@@ -81,7 +131,10 @@
       "properties": {
         "id": {
           "description": "\"<band.id>-<date>-<city slug>\". Leave null; tools/normalize.ts generates it.",
-          "type": ["string", "null"],
+          "type": [
+            "string",
+            "null"
+          ],
           "pattern": "^[a-z0-9-]+$"
         },
         "date": {
@@ -91,25 +144,40 @@
         },
         "endDate": {
           "description": "Last day of a multi-day event, only when the band's exact day is not announced; otherwise null. YYYY-MM-DD.",
-          "type": ["string", "null"],
+          "type": [
+            "string",
+            "null"
+          ],
           "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
         },
         "startTime": {
           "description": "Local start time of the band's set or the show, 24-hour HH:MM. Null when not announced.",
-          "type": ["string", "null"],
+          "type": [
+            "string",
+            "null"
+          ],
           "pattern": "^([01][0-9]|2[0-3]):[0-5][0-9]$"
         },
         "tourName": {
           "description": "Name of the tour this show belongs to, e.g. \"Hollow Tides Tour 2026\". Null for one-off shows or when not stated.",
-          "type": ["string", "null"]
+          "type": [
+            "string",
+            "null"
+          ]
         },
         "eventName": {
           "description": "Festival or event name when the show is part of one, e.g. \"Fjordstorm Festival\". Null otherwise.",
-          "type": ["string", "null"]
+          "type": [
+            "string",
+            "null"
+          ]
         },
         "venue": {
           "description": "Venue name. Null when not announced.",
-          "type": ["string", "null"]
+          "type": [
+            "string",
+            "null"
+          ]
         },
         "city": {
           "description": "City name in Latin script, e.g. \"São Paulo\", \"Tokyo\".",
@@ -117,7 +185,10 @@
         },
         "region": {
           "description": "State, province or region when it disambiguates the city, e.g. \"OR\" for Portland. Null otherwise.",
-          "type": ["string", "null"]
+          "type": [
+            "string",
+            "null"
+          ]
         },
         "countryCode": {
           "description": "ISO 3166-1 alpha-2 country code, uppercase, e.g. \"BR\".",
@@ -126,45 +197,87 @@
         },
         "status": {
           "description": "Show status as stated by the source. Null when the source does not say.",
-          "type": ["string", "null"],
-          "enum": ["scheduled", "cancelled", "postponed", "soldout", null]
+          "type": [
+            "string",
+            "null"
+          ],
+          "enum": [
+            "scheduled",
+            "cancelled",
+            "postponed",
+            "soldout",
+            null
+          ]
         },
         "ticketUrl": {
           "description": "Ticket page for this show, or null.",
-          "type": ["string", "null"],
+          "type": [
+            "string",
+            "null"
+          ],
           "pattern": "^https?://\\S+$"
         },
         "sourceUrl": {
           "description": "Page that lists this show, or null when it is the same as source.url.",
-          "type": ["string", "null"],
+          "type": [
+            "string",
+            "null"
+          ],
           "pattern": "^https?://\\S+$"
         },
         "notes": {
           "description": "Short factual note from the source, e.g. \"Moved from Kulturhaus\". Null otherwise.",
-          "type": ["string", "null"]
+          "type": [
+            "string",
+            "null"
+          ]
         },
         "geo": {
           "description": "Coordinates. Leave null; tools/geocode.ts fills them in.",
-          "anyOf": [{ "$ref": "#/$defs/geo" }, { "type": "null" }]
+          "anyOf": [
+            {
+              "$ref": "#/$defs/geo"
+            },
+            {
+              "type": "null"
+            }
+          ]
         }
       }
     },
     "geo": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["lat", "lon", "precision", "source"],
+      "required": [
+        "lat",
+        "lon",
+        "precision",
+        "source"
+      ],
       "properties": {
-        "lat": { "description": "Latitude in degrees, -90 to 90.", "type": "number" },
-        "lon": { "description": "Longitude in degrees, -180 to 180.", "type": "number" },
+        "lat": {
+          "description": "Latitude in degrees, -90 to 90.",
+          "type": "number"
+        },
+        "lon": {
+          "description": "Longitude in degrees, -180 to 180.",
+          "type": "number"
+        },
         "precision": {
           "description": "Whether the point is the venue itself or the city centre.",
           "type": "string",
-          "enum": ["venue", "city"]
+          "enum": [
+            "venue",
+            "city"
+          ]
         },
         "source": {
           "description": "How the point was found.",
           "type": "string",
-          "enum": ["nominatim", "manual"]
+          "enum": [
+            "nominatim",
+            "manual"
+          ]
         }
       }
     }

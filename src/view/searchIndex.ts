@@ -1,11 +1,14 @@
 import { slugify } from '../data/ids.ts';
+import { TAG_VOCABULARY } from '../data/tags.ts';
 import type { BandEntry } from '../model.ts';
 
-export type SearchKind = 'band' | 'place' | 'venue' | 'tour' | 'event';
+export type SearchKind = 'band' | 'tag' | 'place' | 'venue' | 'tour' | 'event';
 
 export interface SearchEntry {
   readonly kind: SearchKind;
   readonly key: string;
+  /** What the entry points at: a band id, a tag id, or a place/venue/tour/event key. */
+  readonly ref: string;
   readonly label: string;
   readonly detail: string;
   readonly bandIds: readonly string[];
@@ -15,13 +18,14 @@ export interface SearchEntry {
 
 export const SEARCH_KIND_LABELS: Record<SearchKind, string> = {
   band: 'Bands',
+  tag: 'Tags',
   place: 'Cities',
   venue: 'Venues',
   tour: 'Tours',
   event: 'Festivals and events',
 };
 
-const KIND_ORDER: readonly SearchKind[] = ['band', 'place', 'tour', 'event', 'venue'];
+const KIND_ORDER: readonly SearchKind[] = ['band', 'tag', 'place', 'tour', 'event', 'venue'];
 
 /** Lowercase, accents removed, so "sao" finds "São Paulo". */
 export function foldForSearch(text: string): string {
@@ -36,12 +40,12 @@ interface Accumulator {
 }
 
 export function buildSearchIndex(bands: readonly BandEntry[], countryName: (code: string) => string): SearchEntry[] {
-  const groups = new Map<string, Accumulator & { kind: SearchKind }>();
+  const groups = new Map<string, Accumulator & { kind: SearchKind; ref: string }>();
   const add = (kind: SearchKind, key: string, label: string, detail: Accumulator['detail'], bandId: string, showId: string | null) => {
     const groupKey = `${kind}:${key}`;
     let group = groups.get(groupKey);
     if (group === undefined) {
-      group = { kind, label, detail, bandIds: new Set(), showIds: [] };
+      group = { kind, ref: key, label, detail, bandIds: new Set(), showIds: [] };
       groups.set(groupKey, group);
     }
     group.bandIds.add(bandId);
@@ -53,6 +57,12 @@ export function buildSearchIndex(bands: readonly BandEntry[], countryName: (code
   for (const band of bands) {
     const bandId = band.file.band.id;
     add('band', bandId, band.file.band.name, (_bands, count) => shows(1, count), bandId, null);
+    for (const tagId of band.file.band.tags) {
+      const tag = TAG_VOCABULARY.byId.get(tagId);
+      const group = TAG_VOCABULARY.groups.find((candidate) => candidate.id === tag?.group);
+      if (tag === undefined || group === undefined) throw new Error(`band ${bandId} has unknown tag ${tagId}`);
+      add('tag', tag.id, tag.label, (bandCount) => `${group.label}, ${bandCount} ${bandCount === 1 ? 'band' : 'bands'}`, bandId, null);
+    }
     for (const show of band.file.shows) {
       add('band', bandId, band.file.band.name, (_bands, count) => shows(1, count), bandId, show.id);
       const place = `${show.city}, ${countryName(show.countryCode)}`;
@@ -73,6 +83,7 @@ export function buildSearchIndex(bands: readonly BandEntry[], countryName: (code
   return [...groups.entries()].map(([key, group]) => ({
     kind: group.kind,
     key,
+    ref: group.ref,
     label: group.label,
     detail: group.detail(group.bandIds.size, group.showIds.length),
     bandIds: [...group.bandIds],

@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { CATEGORICAL_PALETTE, assignBandColors, extendBandColors, hashedColor, oklchToHex } from '../../src/data/palette.ts';
 
-const band = (id: string, color: string | null = null) => ({ id, name: id, color });
+const band = (id: string, color: string | null = null) => ({ id, name: id, color, tags: [] });
 
 describe('assignBandColors', () => {
   it('assigns palette slots in band-id order, regardless of input order', () => {

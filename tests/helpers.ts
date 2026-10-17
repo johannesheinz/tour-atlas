@@ -46,7 +46,7 @@ export function makeDraftShow(overrides: Partial<DraftShow> = {}): DraftShow {
 export function makeFile<S>(shows: readonly S[], bandId = 'test-band') {
   return {
     schemaVersion: 1 as const,
-    band: { id: bandId, name: 'Test Band', color: null },
+    band: { id: bandId, name: 'Test Band', color: null, tags: [] as string[] },
     source: { url: 'https://example.com/test-band/tour', retrievedAt: '2026-10-16' },
     shows,
   };

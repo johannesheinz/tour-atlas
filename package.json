@@ -19,8 +19,9 @@
     "validate": "node tools/validate.ts data/bands",
     "normalize": "node tools/normalize.ts data/bands",
     "geocode": "node tools/geocode.ts data/bands",
+    "tags": "node tools/tags.ts",
     "review": "node tools/review.ts",
-    "check": "npm run typecheck && npm run validate && node tools/normalize.ts data/bands --check && npm test && npm run build"
+    "check": "npm run typecheck && npm run validate && node tools/normalize.ts data/bands --check && node tools/tags.ts --check && npm test && npm run build"
   },
   "dependencies": {
     "@fontsource/archivo": "5.3.0",

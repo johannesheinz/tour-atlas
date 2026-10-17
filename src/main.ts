@@ -8,6 +8,7 @@ import { createStore } from './state.ts';
 import { createBundledStore } from './store/bundled.ts';
 import { parseUrlState, serializeUrlState } from './urlState.ts';
 import { createCountryLocator, type CountryLocator } from './data/countryLocator.ts';
+import { isKnownTag } from './data/tags.ts';
 import { exportAll, mergePreviews, normalizedFileText, processPreviewFile, type PreviewResult } from './preview.ts';
 import { createBandList } from './view/bandList.ts';
 import { createPreviewPanel } from './view/previewPanel.ts';
@@ -35,6 +36,7 @@ const state = createStore<AppState>({
   previewResults: [],
   previews: [],
   hiddenBandIds: new Set(urlState.hiddenBandIds.filter((id) => knownBandIds.has(id))),
+  tagFilter: new Set(urlState.tags.filter(isKnownTag)),
   bandSort: urlState.sort ?? 'name',
   bandFilter: '',
   focusBandId: null,
@@ -85,6 +87,13 @@ const bandList = createBandList(requireElement(document, '#band-list', HTMLEleme
   onFilter: (text) => state.set({ bandFilter: text }),
   onSort: (sort) => state.set({ bandSort: sort }),
   onFocusBand: (bandId) => state.set({ focusBandId: bandId }),
+  onToggleTag(tagId) {
+    const tags = new Set(state.get().tagFilter);
+    if (tags.has(tagId)) tags.delete(tagId);
+    else tags.add(tagId);
+    state.set({ tagFilter: tags });
+  },
+  onClearTags: () => state.set({ tagFilter: new Set() }),
 });
 
 const detail = createDetail(requireElement(document, '#detail', HTMLElement), {
@@ -204,7 +213,10 @@ function renderAll() {
     : 'Scroll to zoom the timeline, drag to pan';
 
   bandList.render({
-    bands: derived.orderedBands,
+    bands: derived.filteredBands,
+    totalBandCount: derived.bands.length,
+    tagFilter: current.tagFilter,
+    tagCounts: select.tagCounts(derived),
     hiddenBandIds: current.hiddenBandIds,
     filter: current.bandFilter,
     sort: current.bandSort,
@@ -299,6 +311,10 @@ function focusSearchResult(entry: SearchEntry) {
     if (bandId !== undefined) soloBand(bandId);
     return;
   }
+  if (entry.kind === 'tag') {
+    state.set({ tagFilter: new Set([entry.ref]), hiddenBandIds: new Set() });
+    return;
+  }
   const shows = entry.showIds.flatMap((id) => derived.showsById.get(id) ?? []);
   if (shows.length === 0) return;
   if (entry.kind === 'tour') {
@@ -354,6 +370,7 @@ function writeUrlState() {
   const showWindow = window !== null && current.timePreset === null && !timeline.isAtFit();
   const hash = serializeUrlState({
     hiddenBandIds: [...current.hiddenBandIds],
+    tags: [...current.tagFilter],
     sort: current.bandSort === 'name' ? null : current.bandSort,
     from: showWindow ? formatIsoDate(new Date(window.start)) : null,
     to: showWindow ? addDays(formatIsoDate(new Date(window.end)), -1) : null,

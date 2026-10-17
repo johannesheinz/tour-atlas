@@ -16,6 +16,7 @@ npm run validate       # tools/validate.ts data/bands  (errors fail, warnings in
 npm run normalize      # rewrite data/bands in canonical form; add --check to only verify
 NOMINATIM_CONTACT=... npm run geocode   # fill missing geo via Nominatim; ask the user for the contact
 npm run review -- --base origin/main   # diff + plausibility warnings, as posted by CI
+npm run tags           # copy data/tags.json ids into the schema's band.tags enum
 npm run check          # everything CI runs, in order
 ```
 
@@ -27,6 +28,7 @@ npm run check          # everything CI runs, in order
     `validateRepository` for `data/bands/`. Returns per-row issues and keeps valid rows. Reuse it for any
     future upload path; do not write a second validator.
   - `lint.ts`: non-blocking plausibility warnings (coordinates in another country, same-day shows far apart, stale source).
+  - `tags.ts`: loads and checks the fixed tag list `data/tags.json`; the validator rejects unknown tags.
   - `ids.ts`, `normalize.ts`, `diff.ts`, `palette.ts`, `countries.ts`, `countryLocator.ts`, `dates.ts`.
 - `schema/tour.schema.json` mirrors the validator. `tests/data/schema.test.ts` enforces key order, the
   structured-output keyword subset, and that the validator rejects everything the schema rejects.

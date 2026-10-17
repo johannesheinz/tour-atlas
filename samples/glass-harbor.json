@@ -3,7 +3,12 @@
   "band": {
     "id": "glass-harbor",
     "name": "Glass Harbor",
-    "color": null
+    "color": null,
+    "tags": [
+      "post-rock",
+      "western-europe",
+      "harbor-lights-records"
+    ]
   },
   "source": {
     "url": "https://example.com/glass-harbor/tour",

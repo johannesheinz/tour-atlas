@@ -28,6 +28,8 @@ annotation on the offending line.
 | `duplicate id` | Two rows claim the same show. Check whether it is a real second show (then clear its `id` to `null` and normalize, which assigns `-2`) or a duplicate (then remove one). |
 | `missing; run "npm run normalize"` (id) | Run `npm run normalize`. |
 | `missing coordinates; run "npm run geocode"` | Run the geocoder (needs `NOMINATIM_CONTACT`). |
+| `is not in data/tags.json` | Use an existing tag id, or add the tag to `data/tags.json` and run `npm run tags`. |
+| `is listed twice` (tag) | Remove the duplicate. |
 | `file name must be ...` | Rename the file to `<band.id>.json`; never change `band.id` to match a file name. |
 | `is not normalized` | Run `npm run normalize` and commit the result. |
 

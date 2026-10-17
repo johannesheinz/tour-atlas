@@ -29,6 +29,8 @@ Write each show as a draft row: `id: null`, `geo: null`, every other field prese
 - `city` in Latin script; `region` only when it disambiguates (`Portland, OR`); `countryCode` ISO alpha-2.
 - `tourName` only when the page names the tour.
 - `notes`: one short factual line from the page, e.g. "Moved from Kulturhaus", otherwise `null`.
+- `band.tags`: only ids from `data/tags.json`, and only when the band's own page or the user supports them;
+  otherwise `[]`. If a fitting tag is missing, propose it to the user instead of using an unknown id.
 - Unknown = `null`. Never invent venues, times or ticket links.
 
 ## 3. Refreshing an existing band
@@ -39,7 +41,7 @@ Load `data/bands/<band-id>.json` first.
 - Keep show ids: match rows by date + city and copy the existing `id` and `geo`.
 - A future show that is no longer on the page is not deleted silently. Keep it and list it for the user
   (it may be cancelled, moved or simply missing from the page); let them decide.
-- Changes to `band.name` or `band.color` need the user's confirmation.
+- Changes to `band.name`, `band.color` or `band.tags` need the user's confirmation; keep curated tags.
 
 ## 4. Hand over to the tools
 

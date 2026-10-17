@@ -3,7 +3,12 @@
   "band": {
     "id": "iron-lantern",
     "name": "Iron Lantern",
-    "color": "#c0392b"
+    "color": "#c0392b",
+    "tags": [
+      "stoner-rock",
+      "latin-america",
+      "harbor-lights-records"
+    ]
   },
   "source": {
     "url": "https://example.com/iron-lantern/tour",

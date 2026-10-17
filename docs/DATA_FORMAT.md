@@ -41,6 +41,7 @@ Files in `data/bands/` must be in the repository stage. The build fails otherwis
 | `id` | string | lowercase ASCII slug, words joined by `-`, e.g. `glass-harbor`. Must equal the file name. Never changes. |
 | `name` | string | as the band writes it, up to 120 characters |
 | `color` | string or null | lowercase hex like `#3a7bd5`; `null` lets the app pick from its palette |
+| `tags` | list of strings | tag ids from [`data/tags.json`](../data/tags.json), at most 12, no duplicates; `[]` when none applies. Never invent a tag. |
 
 ### `source`
 
@@ -78,6 +79,17 @@ Files in `data/bands/` must be in the repository stage. The build fails otherwis
 | `precision` | string | `venue` (the building) or `city` (city centre) |
 | `source` | string | `nominatim` (geocoded) or `manual` (set by hand; explain in the pull request) |
 
+## Tags
+
+`data/tags.json` is the fixed tag list. Each tag has an `id` (slug), a `label` and a `group`
+(`genre`, `region`, `label` or `other`). The app shows them as filter chips: any selected tag within a group
+matches, and every group with a selection must match.
+
+- `npm run tags` copies the tag ids into the `band.tags` enum of the schema, so the upstream LLM can only
+  answer with known tags. CI fails when the two differ.
+- A new tag goes into `data/tags.json` in the same pull request as the first band that uses it.
+- `region` describes where the band comes from, not where it tours.
+
 ## Rules beyond the schema
 
 - Dates are real calendar dates between 1950 and 2100; `endDate` is not before `date`.
@@ -107,7 +119,7 @@ keys in schema order, shows sorted by `date` then `id`, text trimmed, 2-space in
 ```json
 {
   "schemaVersion": 1,
-  "band": { "id": "iron-lantern", "name": "Iron Lantern", "color": "#c0392b" },
+  "band": { "id": "iron-lantern", "name": "Iron Lantern", "color": "#c0392b", "tags": ["stoner-rock", "latin-america"] },
   "source": { "url": "https://example.com/iron-lantern/tour", "retrievedAt": "2026-10-15" },
   "shows": [
     {

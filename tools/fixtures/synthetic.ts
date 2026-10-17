@@ -1,6 +1,7 @@
 import { normalizeBandFile } from '../../src/data/normalize.ts';
 import { SHOW_STATUSES, type DraftShow, type IdentifiedBandFile } from '../../src/data/types.ts';
 import { addDays } from '../../src/data/dates.ts';
+import { TAG_VOCABULARY } from '../../src/data/tags.ts';
 
 const CITIES: readonly [city: string, countryCode: string, lat: number, lon: number][] = [
   ['Amsterdam', 'NL', 52.3676, 4.9041], ['Berlin', 'DE', 52.52, 13.405], ['Hamburg', 'DE', 53.5511, 9.9937],
@@ -23,6 +24,9 @@ const CITIES: readonly [city: string, countryCode: string, lat: number, lon: num
 
 const WORDS = ['Iron', 'Glass', 'Static', 'Ember', 'Hollow', 'Velvet', 'Ashen', 'Northern', 'Salt', 'Black', 'Pale', 'Storm'];
 const NOUNS = ['Harbor', 'Lantern', 'Choir', 'Meridian', 'Tide', 'Signal', 'Forge', 'Crown', 'Wolves', 'Engine', 'Archive'];
+const GENRES = TAG_VOCABULARY.tags.filter((tag) => tag.group === 'genre').map((tag) => tag.id);
+const REGIONS = TAG_VOCABULARY.tags.filter((tag) => tag.group === 'region').map((tag) => tag.id);
+const LABELS = TAG_VOCABULARY.tags.filter((tag) => tag.group === 'label').map((tag) => tag.id);
 const VENUE_WORDS = ['Hall', 'Club', 'Arena', 'Kantine', 'Loft', 'Werk', 'Garage', 'Theatre', 'Basement', 'Room'];
 
 const round5 = (value: number) => Math.round(value * 1e5) / 1e5;
@@ -73,6 +77,7 @@ export function syntheticBands(bandCount: number, showsPerBand: number): Identif
         geo: { lat: round5(lat + (random() - 0.5) * 0.05), lon: round5(lon + (random() - 0.5) * 0.05), precision: random() < 0.5 ? 'venue' : 'city', source: 'nominatim' },
       };
     });
-    return normalizeBandFile({ schemaVersion: 1, band: { id, name, color: null }, source: { url: sourceUrl, retrievedAt: '2026-10-01' }, shows });
+    const tags = [pick(GENRES), pick(REGIONS), ...(random() < 0.3 ? [pick(LABELS)] : [])];
+    return normalizeBandFile({ schemaVersion: 1, band: { id, name, color: null, tags }, source: { url: sourceUrl, retrievedAt: '2026-10-01' }, shows });
   });
 }

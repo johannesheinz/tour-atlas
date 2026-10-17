@@ -3,7 +3,10 @@
   "band": {
     "id": "broken-lanterns",
     "name": "Broken Lanterns",
-    "color": null
+    "color": null,
+    "tags": [
+      "doom-metal"
+    ]
   },
   "source": {
     "url": "https://example.com/broken-lanterns/tour",

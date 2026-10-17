@@ -1,6 +1,7 @@
 import { isCountryCode } from './countries.ts';
 import { daysBetween, isCalendarDate } from './dates.ts';
 import { DATE_PATTERN, IdError, SLUG_PATTERN, baseShowId, isShowIdFormat } from './ids.ts';
+import { isKnownTag } from './tags.ts';
 import {
   BAND_FILE_KEYS,
   BAND_KEYS,
@@ -256,8 +257,28 @@ function validateBand(c: Collector, path: string, value: unknown): Checked<Band>
   const id = c.required(record, path, 'id', c.matching(SLUG_PATTERN, 'must be a lowercase slug like "glass-harbor"'));
   const name = c.required(record, path, 'name', c.text(LIMITS.bandName));
   const color = c.nullable(record, path, 'color', c.matching(COLOR_PATTERN, 'is not a lowercase hex colour like "#3a7bd5"'));
-  if (id === INVALID || name === INVALID || color === INVALID) return INVALID;
-  return { id, name, color };
+  const tags = c.required(record, path, 'tags', (fieldPath, value) => validateTags(c, fieldPath, value));
+  if (id === INVALID || name === INVALID || color === INVALID || tags === INVALID) return INVALID;
+  return { id, name, color, tags };
+}
+
+function validateTags(c: Collector, path: string, value: unknown): Checked<readonly string[]> {
+  if (!Array.isArray(value)) return c.add(path, `must be a list of tag ids (got ${describe(value)}); use [] for none`);
+  if (value.length > LIMITS.tagsPerBand) return c.add(path, `has ${value.length} tags; the limit is ${LIMITS.tagsPerBand}`);
+  const issuesBefore = c.issues.length;
+  const seen = new Set<string>();
+  const tags: string[] = [];
+  value.forEach((tag: unknown, index) => {
+    const tagPath = `${path}[${index}]`;
+    if (typeof tag !== 'string') c.add(tagPath, `must be a tag id (got ${describe(tag)})`);
+    else if (!isKnownTag(tag)) c.add(tagPath, `${describe(tag)} is not in data/tags.json; add it there in the same pull request or remove it`);
+    else if (seen.has(tag)) c.add(tagPath, `${describe(tag)} is listed twice`);
+    else {
+      seen.add(tag);
+      tags.push(tag);
+    }
+  });
+  return c.issues.length > issuesBefore ? INVALID : tags;
 }
 
 function validateSource(c: Collector, path: string, value: unknown): Checked<Source> {
