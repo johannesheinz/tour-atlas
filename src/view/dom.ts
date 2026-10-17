@@ -49,3 +49,9 @@ export function safeExternalLink(url: string, text: string): HTMLAnchorElement |
 }
 
 export const prefersReducedMotion = (): boolean => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+export function context2d(canvas: HTMLCanvasElement): CanvasRenderingContext2D {
+  const context = canvas.getContext('2d');
+  if (context === null) throw new Error('2D canvas is not available');
+  return context;
+}

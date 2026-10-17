@@ -1,0 +1,509 @@
+import { scaleUtc, type ScaleTime } from 'd3-scale';
+import { select } from 'd3-selection';
+import 'd3-transition';
+import { zoom, zoomIdentity, ZoomTransform, type D3ZoomEvent } from 'd3-zoom';
+import type { TimeWindow } from '../appState.ts';
+import type { BandEntry, ShowRef } from '../model.ts';
+import { context2d, h, prefersReducedMotion } from './dom.ts';
+import { formatDateSpan, STATUS_LABELS } from './format.ts';
+import { DAY_MS, fitDateDomain, timeTicks } from './timeScale.ts';
+import { bandColor, type ThemeColors } from './theme.ts';
+
+export const TIMELINE_SETTINGS = {
+  laneHeight: 38,
+  compactLaneHeight: 24,
+  compactAbove: 15,
+  axisHeight: 30,
+  maxViewportFraction: 0.42,
+  minViewportHeight: 140,
+  dotRadius: 4.5,
+  hitRadiusPx: 9,
+  paddingFraction: 0.03,
+  minSpanDays: 14,
+  minVisibleDays: 3,
+  fitDurationMs: 300,
+  laneFont: '17px "League Gothic", "Arial Narrow", sans-serif',
+  compactLaneFont: '15px "League Gothic", "Arial Narrow", sans-serif',
+  tickFont: '600 11px Archivo, system-ui, sans-serif',
+} as const;
+
+export interface TimelineLane {
+  readonly band: BandEntry;
+  /** Sorted by start. */
+  readonly shows: readonly ShowRef[];
+}
+
+export interface TimelineProps {
+  readonly lanes: readonly TimelineLane[];
+  readonly highlightedShowIds: ReadonlySet<string>;
+  readonly selectedShowIds: ReadonlySet<string>;
+  readonly focusBandId: string | null;
+  readonly theme: ThemeColors;
+  readonly today: number;
+}
+
+export interface TimelineCallbacks {
+  onHover(shows: readonly ShowRef[] | null): void;
+  onSelect(shows: readonly ShowRef[]): void;
+  /** Called when a zoom or pan gesture ends, after fits and on resize. */
+  onWindowChange(window: TimeWindow): void;
+}
+
+export interface TimelineView {
+  render(props: TimelineProps): void;
+  fitToData(animate: boolean): void;
+  zoomBy(factor: number): void;
+  readonly lanesOverflow: () => boolean;
+}
+
+interface CursorPosition {
+  readonly lane: number;
+  readonly show: number;
+}
+
+export function createTimeline(container: HTMLElement, callbacks: TimelineCallbacks): TimelineView {
+  const axisCanvas = h('canvas', { class: 'timeline-axis', 'aria-hidden': 'true' });
+  const lanesCanvas = h('canvas', { class: 'timeline-lanes', 'aria-hidden': 'true' });
+  const spacer = h('div', { class: 'timeline-spacer' });
+  const scroller = h('div', { class: 'timeline-scroll' }, lanesCanvas, spacer);
+  const cursor = h('button', { type: 'button', class: 'timeline-cursor', 'aria-label': 'Timeline. Use the arrow keys to move between shows.' });
+  const announcer = h('div', { class: 'visually-hidden', 'aria-live': 'polite' });
+  const empty = h('p', { class: 'timeline-empty', hidden: true }, 'No bands are shown. Turn bands on in the list to see their dates.');
+  container.append(axisCanvas, scroller, cursor, announcer, empty);
+
+  const axisContext = context2d(axisCanvas);
+  const lanesContext = context2d(lanesCanvas);
+
+  let width = 0;
+  let viewportHeight = 0;
+  let laneHeight: number = TIMELINE_SETTINGS.laneHeight;
+  let scrollTop = 0;
+  let props: TimelineProps | null = null;
+  let baseScale: ScaleTime<number, number> = scaleUtc();
+  let transform: ZoomTransform = zoomIdentity;
+  let cursorPosition: CursorPosition | null = null;
+  let hoveredShowId: string | null = null;
+  let drawScheduled = false;
+  let silent = false;
+  let hasFitted = false;
+
+  const zoomBehavior = zoom<HTMLDivElement, unknown>()
+    .filter((event: Event) => {
+      if (event instanceof WheelEvent) return !event.shiftKey && Math.abs(event.deltaY) >= Math.abs(event.deltaX);
+      if (event instanceof MouseEvent) return !event.ctrlKey && event.button === 0;
+      return true;
+    })
+    .clickDistance(4)
+    .on('zoom', (event: D3ZoomEvent<HTMLDivElement, unknown>) => {
+      transform = event.transform;
+      scheduleDraw();
+      positionCursor();
+    })
+    .on('end', () => {
+      if (!silent) emitWindow();
+    });
+  const scrollerSelection = select(scroller);
+  scrollerSelection.call(zoomBehavior);
+
+  scroller.addEventListener(
+    'wheel',
+    (event) => {
+      if (event.shiftKey) {
+        event.preventDefault();
+        scroller.scrollTop += event.deltaY === 0 ? event.deltaX : event.deltaY;
+      } else if (Math.abs(event.deltaX) > Math.abs(event.deltaY)) {
+        event.preventDefault();
+        scrollerSelection.call(zoomBehavior.translateBy, -event.deltaX / transform.k, 0);
+      }
+    },
+    { passive: false },
+  );
+  scroller.addEventListener('scroll', () => {
+    scrollTop = scroller.scrollTop;
+    scheduleDraw();
+    positionCursor();
+  });
+  scroller.addEventListener('pointermove', (event) => {
+    if (event.buttons !== 0) return;
+    const ref = showAtPointer(event);
+    scroller.classList.toggle('is-over-show', ref !== null);
+    const id = ref?.show.id ?? null;
+    if (id === hoveredShowId) return;
+    hoveredShowId = id;
+    callbacks.onHover(ref === null ? null : [ref]);
+  });
+  scroller.addEventListener('pointerleave', () => {
+    if (hoveredShowId === null) return;
+    hoveredShowId = null;
+    callbacks.onHover(null);
+  });
+  scroller.addEventListener('click', (event) => {
+    const ref = showAtPointer(event);
+    callbacks.onSelect(ref === null ? [] : [ref]);
+  });
+
+  cursor.addEventListener('focus', () => {
+    if (props === null) return;
+    const start = cursorPosition ?? firstVisibleShow();
+    if (start !== null) moveCursor(start);
+  });
+  cursor.addEventListener('blur', () => callbacks.onHover(null));
+  cursor.addEventListener('keydown', (event) => {
+    if (props === null || cursorPosition === null) return;
+    const { lanes } = props;
+    const { lane, show } = cursorPosition;
+    const currentLane = lanes[lane];
+    if (currentLane === undefined) return;
+    const moves: Record<string, () => CursorPosition | null> = {
+      ArrowRight: () => ({ lane, show: Math.min(currentLane.shows.length - 1, show + 1) }),
+      ArrowLeft: () => ({ lane, show: Math.max(0, show - 1) }),
+      ArrowDown: () => nearestInLane(lane + 1, currentLane.shows[show]),
+      ArrowUp: () => nearestInLane(lane - 1, currentLane.shows[show]),
+      Home: () => ({ lane, show: 0 }),
+      End: () => ({ lane, show: currentLane.shows.length - 1 }),
+    };
+    const move = moves[event.key];
+    if (move !== undefined) {
+      event.preventDefault();
+      const target = move();
+      if (target !== null) moveCursor(target);
+    } else if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      const ref = currentLane.shows[show];
+      if (ref !== undefined) callbacks.onSelect([ref]);
+    } else if (event.key === '+' || event.key === '=') {
+      zoomBy(1.6);
+    } else if (event.key === '-') {
+      zoomBy(1 / 1.6);
+    }
+  });
+
+  new ResizeObserver(([entry]) => {
+    if (entry === undefined) return;
+    const nextWidth = Math.round(entry.contentRect.width);
+    if (nextWidth === width) return;
+    width = nextWidth;
+    layout();
+    fitToData(false);
+  }).observe(container);
+  window.addEventListener('resize', () => layout());
+
+  function layout() {
+    if (props === null || width === 0) return;
+    const lanes = props.lanes.length;
+    laneHeight = lanes > TIMELINE_SETTINGS.compactAbove ? TIMELINE_SETTINGS.compactLaneHeight : TIMELINE_SETTINGS.laneHeight;
+    const total = Math.max(1, lanes) * laneHeight;
+    const maxHeight = Math.max(TIMELINE_SETTINGS.minViewportHeight, window.innerHeight * TIMELINE_SETTINGS.maxViewportFraction);
+    viewportHeight = Math.min(total, Math.round(maxHeight));
+    scroller.style.height = `${viewportHeight}px`;
+    lanesCanvas.style.height = `${viewportHeight}px`;
+    spacer.style.height = `${total - viewportHeight}px`;
+    container.classList.toggle('has-overflow', total > viewportHeight);
+    const ratio = window.devicePixelRatio;
+    lanesCanvas.width = Math.round(width * ratio);
+    lanesCanvas.height = Math.round(viewportHeight * ratio);
+    axisCanvas.width = Math.round(width * ratio);
+    axisCanvas.height = Math.round(TIMELINE_SETTINGS.axisHeight * ratio);
+    baseScale.range([0, width]);
+    zoomBehavior.translateExtent([
+      [-width, Number.NEGATIVE_INFINITY],
+      [2 * width, Number.POSITIVE_INFINITY],
+    ]);
+    scheduleDraw();
+  }
+
+  function render(next: TimelineProps) {
+    const previous = props;
+    props = next;
+    empty.hidden = next.lanes.length > 0;
+    if (previous === null || previous.lanes.length !== next.lanes.length) layout();
+    if (cursorPosition !== null && next.lanes[cursorPosition.lane]?.shows[cursorPosition.show] === undefined) cursorPosition = null;
+    scheduleDraw();
+  }
+
+  function fitToData(animate: boolean) {
+    if (props === null || width === 0) return;
+    const ranges = props.lanes.flatMap((lane) => lane.shows);
+    const domain: [number, number] =
+      ranges.length === 0
+        ? [props.today - 30 * DAY_MS, props.today + 30 * DAY_MS]
+        : fitDateDomain(ranges, TIMELINE_SETTINGS.paddingFraction, TIMELINE_SETTINGS.minSpanDays);
+    const currentDomain = transform.rescaleX(baseScale).domain().map((date) => date.getTime());
+    const hadDomain = hasFitted;
+    hasFitted = true;
+
+    baseScale = scaleUtc().domain(domain).range([0, width]);
+    const maxZoom = Math.max(1, (domain[1] - domain[0]) / (TIMELINE_SETTINGS.minVisibleDays * DAY_MS));
+    zoomBehavior.scaleExtent([0.5, maxZoom]);
+
+    const [currentStart, currentEnd] = currentDomain;
+    if (!animate || !hadDomain || prefersReducedMotion() || currentStart === undefined || currentEnd === undefined) {
+      setTransform(zoomIdentity, false);
+      emitWindow();
+      return;
+    }
+    const k = width / (baseScale(currentEnd) - baseScale(currentStart));
+    setTransform(new ZoomTransform(k, -k * baseScale(currentStart), 0), true);
+    scrollerSelection.transition().duration(TIMELINE_SETTINGS.fitDurationMs).call(zoomBehavior.transform, zoomIdentity);
+  }
+
+  function setTransform(next: ZoomTransform, quiet: boolean) {
+    silent = quiet;
+    scrollerSelection.interrupt().call(zoomBehavior.transform, next);
+    silent = false;
+    transform = next;
+    scheduleDraw();
+  }
+
+  function zoomBy(factor: number) {
+    scrollerSelection.call(zoomBehavior.scaleBy, factor, [width / 2, 0]);
+  }
+
+  function currentScale(): ScaleTime<number, number> {
+    return transform.rescaleX(baseScale);
+  }
+
+  function emitWindow() {
+    const [start, end] = currentScale().domain();
+    if (start === undefined || end === undefined) return;
+    callbacks.onWindowChange({ start: start.getTime(), end: end.getTime() });
+  }
+
+  function scheduleDraw() {
+    if (drawScheduled) return;
+    drawScheduled = true;
+    requestAnimationFrame(() => {
+      drawScheduled = false;
+      draw();
+    });
+  }
+
+  function dotCenter(x: ScaleTime<number, number>, ref: ShowRef): [number, number] {
+    return [x(ref.start + DAY_MS / 2), x(ref.end + DAY_MS / 2)];
+  }
+
+  function laneTop(index: number): number {
+    return index * laneHeight - scrollTop;
+  }
+
+  function dotY(index: number): number {
+    return laneTop(index) + (laneHeight === TIMELINE_SETTINGS.laneHeight ? 27 : laneHeight / 2);
+  }
+
+  function draw() {
+    if (props === null || width === 0) return;
+    const x = currentScale();
+    drawAxis(x, props);
+    drawLanes(x, props);
+  }
+
+  function drawAxis(x: ScaleTime<number, number>, current: TimelineProps) {
+    const ratio = axisCanvas.width / width;
+    const height = TIMELINE_SETTINGS.axisHeight;
+    axisContext.setTransform(ratio, 0, 0, ratio, 0, 0);
+    axisContext.clearRect(0, 0, width, height);
+    axisContext.font = TIMELINE_SETTINGS.tickFont;
+    axisContext.textBaseline = 'middle';
+    const [start, end] = x.domain();
+    if (start === undefined || end === undefined) return;
+    const todayX = x(current.today + DAY_MS / 2);
+    const todayLabel = 'Today';
+    const todayWidth = axisContext.measureText(todayLabel).width + 10;
+    const todayVisible = todayX >= 0 && todayX <= width;
+    for (const tick of timeTicks([start.getTime(), end.getTime()], width).ticks) {
+      const px = Math.round(x(tick.time)) + 0.5;
+      axisContext.strokeStyle = current.theme.ink;
+      axisContext.lineWidth = 1;
+      axisContext.beginPath();
+      axisContext.moveTo(px, tick.major ? 4 : height - 9);
+      axisContext.lineTo(px, height);
+      axisContext.stroke();
+      const labelLeft = px + 4;
+      const labelRight = labelLeft + axisContext.measureText(tick.label).width;
+      const coveredByToday = todayVisible && labelRight > todayX - todayWidth / 2 - 4 && labelLeft < todayX + todayWidth / 2 + 4;
+      if (coveredByToday) continue;
+      axisContext.fillStyle = tick.major ? current.theme.ink : current.theme.inkSoft;
+      axisContext.fillText(tick.label, labelLeft, height / 2 - 1);
+    }
+    if (todayVisible) {
+      axisContext.fillStyle = current.theme.ink;
+      axisContext.fillRect(todayX - todayWidth / 2, 6, todayWidth, 18);
+      axisContext.fillStyle = current.theme.stock;
+      axisContext.textAlign = 'center';
+      axisContext.fillText(todayLabel, todayX, height / 2 - 1);
+      axisContext.textAlign = 'start';
+    }
+  }
+
+  function drawLanes(x: ScaleTime<number, number>, current: TimelineProps) {
+    const ratio = lanesCanvas.width / width;
+    lanesContext.setTransform(ratio, 0, 0, ratio, 0, 0);
+    lanesContext.clearRect(0, 0, width, viewportHeight);
+    const compact = laneHeight !== TIMELINE_SETTINGS.laneHeight;
+    const first = Math.max(0, Math.floor(scrollTop / laneHeight));
+    const last = Math.min(current.lanes.length - 1, Math.ceil((scrollTop + viewportHeight) / laneHeight));
+    const { theme } = current;
+    const radius = compact ? TIMELINE_SETTINGS.dotRadius - 1 : TIMELINE_SETTINGS.dotRadius;
+
+    for (let index = first; index <= last; index++) {
+      const lane = current.lanes[index];
+      if (lane === undefined) continue;
+      const top = laneTop(index);
+      const y = dotY(index);
+      const color = bandColor(lane.band, theme.mode);
+      const dimmed = current.focusBandId !== null && current.focusBandId !== lane.band.file.band.id;
+      lanesContext.globalAlpha = dimmed ? 0.2 : 1;
+
+      for (const ref of lane.shows) {
+        const [startX, endX] = dotCenter(x, ref);
+        if (endX < -radius) continue;
+        if (startX > width + radius) break;
+        lanesContext.globalAlpha = (dimmed ? 0.2 : 1) * (ref.isPast ? 0.5 : 1);
+        lanesContext.beginPath();
+        if (endX - startX > 1) lanesContext.roundRect(startX - radius, y - radius, endX - startX + 2 * radius, 2 * radius, radius);
+        else lanesContext.arc(startX, y, radius, 0, Math.PI * 2);
+        if (ref.show.status === 'cancelled') {
+          lanesContext.fillStyle = theme.stock;
+          lanesContext.fill();
+          lanesContext.lineWidth = 2;
+          lanesContext.strokeStyle = color;
+          lanesContext.stroke();
+        } else {
+          lanesContext.fillStyle = color;
+          lanesContext.fill();
+          lanesContext.lineWidth = 1;
+          lanesContext.strokeStyle = theme.ink;
+          lanesContext.stroke();
+        }
+      }
+      lanesContext.globalAlpha = dimmed ? 0.35 : 1;
+      lanesContext.font = compact ? TIMELINE_SETTINGS.compactLaneFont : TIMELINE_SETTINGS.laneFont;
+      lanesContext.textBaseline = 'alphabetic';
+      const name = lane.band.file.band.name;
+      if (compact) {
+        const labelWidth = lanesContext.measureText(name).width + 10;
+        lanesContext.fillStyle = theme.stock;
+        lanesContext.globalAlpha *= 0.85;
+        lanesContext.fillRect(0, top + 3, labelWidth, laneHeight - 6);
+        lanesContext.globalAlpha = dimmed ? 0.35 : 1;
+        lanesContext.fillStyle = theme.ink;
+        lanesContext.fillText(name, 6, top + laneHeight / 2 + 5);
+      } else {
+        lanesContext.fillStyle = theme.ink;
+        lanesContext.fillText(name, 8, top + 16);
+      }
+      lanesContext.globalAlpha = 1;
+      lanesContext.fillStyle = theme.inkMuted;
+      lanesContext.globalAlpha = 0.35;
+      lanesContext.fillRect(0, top + laneHeight - 1, width, 1);
+      lanesContext.globalAlpha = 1;
+    }
+
+    const todayX = Math.round(x(current.today + DAY_MS / 2)) + 0.5;
+    if (todayX >= 0 && todayX <= width) {
+      lanesContext.strokeStyle = theme.ink;
+      lanesContext.lineWidth = 1.5;
+      lanesContext.setLineDash([4, 3]);
+      lanesContext.beginPath();
+      lanesContext.moveTo(todayX, 0);
+      lanesContext.lineTo(todayX, viewportHeight);
+      lanesContext.stroke();
+      lanesContext.setLineDash([]);
+    }
+
+    for (let index = first; index <= last; index++) {
+      const lane = current.lanes[index];
+      if (lane === undefined) continue;
+      for (const ref of lane.shows) {
+        const selected = current.selectedShowIds.has(ref.show.id);
+        if (!selected && !current.highlightedShowIds.has(ref.show.id)) continue;
+        const [startX, endX] = dotCenter(x, ref);
+        lanesContext.strokeStyle = theme.ink;
+        lanesContext.lineWidth = selected ? 2.5 : 1.5;
+        lanesContext.beginPath();
+        const ring = radius + (selected ? 4 : 3.5);
+        if (endX - startX > 1) lanesContext.roundRect(startX - ring, dotY(index) - ring, endX - startX + 2 * ring, 2 * ring, ring);
+        else lanesContext.arc(startX, dotY(index), ring, 0, Math.PI * 2);
+        lanesContext.stroke();
+      }
+    }
+  }
+
+  function showAtPointer(event: MouseEvent): ShowRef | null {
+    if (props === null) return null;
+    const rect = scroller.getBoundingClientRect();
+    const px = event.clientX - rect.left;
+    const py = event.clientY - rect.top;
+    const laneIndex = Math.floor((py + scrollTop) / laneHeight);
+    const lane = props.lanes[laneIndex];
+    if (lane === undefined || Math.abs(py - dotY(laneIndex)) > laneHeight / 2) return null;
+    const x = currentScale();
+    let best: ShowRef | null = null;
+    let bestDistance: number = TIMELINE_SETTINGS.hitRadiusPx;
+    for (const ref of lane.shows) {
+      const [startX, endX] = dotCenter(x, ref);
+      const distance = px < startX ? startX - px : px > endX ? px - endX : 0;
+      if (distance <= bestDistance) {
+        best = ref;
+        bestDistance = distance;
+      }
+    }
+    return best;
+  }
+
+  function firstVisibleShow(): CursorPosition | null {
+    if (props === null) return null;
+    const [start] = currentScale().domain();
+    const startTime = start?.getTime() ?? Number.NEGATIVE_INFINITY;
+    for (const [laneIndex, lane] of props.lanes.entries()) {
+      const showIndex = lane.shows.findIndex((ref) => ref.end >= startTime);
+      if (showIndex !== -1) return { lane: laneIndex, show: showIndex };
+    }
+    return null;
+  }
+
+  function nearestInLane(laneIndex: number, reference: ShowRef | undefined): CursorPosition | null {
+    const lane = props?.lanes[laneIndex];
+    if (lane === undefined || reference === undefined || lane.shows.length === 0) return null;
+    let bestIndex = 0;
+    lane.shows.forEach((ref, index) => {
+      const best = lane.shows[bestIndex];
+      if (best !== undefined && Math.abs(ref.start - reference.start) < Math.abs(best.start - reference.start)) bestIndex = index;
+    });
+    return { lane: laneIndex, show: bestIndex };
+  }
+
+  function moveCursor(position: CursorPosition) {
+    const ref = props?.lanes[position.lane]?.shows[position.show];
+    if (ref === undefined) return;
+    cursorPosition = position;
+    const top = position.lane * laneHeight;
+    if (top < scroller.scrollTop) scroller.scrollTop = top;
+    else if (top + laneHeight > scroller.scrollTop + viewportHeight) scroller.scrollTop = top + laneHeight - viewportHeight;
+    scrollTop = scroller.scrollTop;
+    const [centerX] = dotCenter(currentScale(), ref);
+    if (centerX < 0 || centerX > width) scrollerSelection.call(zoomBehavior.translateBy, (width / 2 - centerX) / transform.k, 0);
+    positionCursor();
+    const status = ref.show.status === null ? '' : `, ${STATUS_LABELS[ref.show.status]}`;
+    const description = `${ref.band.file.band.name}: ${formatDateSpan(ref.show.date, ref.show.endDate)}, ${ref.show.city}${status}. Press Enter for details.`;
+    cursor.setAttribute('aria-label', description);
+    announcer.textContent = description;
+    callbacks.onHover([ref]);
+  }
+
+  function positionCursor() {
+    if (props === null || cursorPosition === null) return;
+    const ref = props.lanes[cursorPosition.lane]?.shows[cursorPosition.show];
+    if (ref === undefined) return;
+    const [centerX] = dotCenter(currentScale(), ref);
+    cursor.style.setProperty('--x', `${centerX}px`);
+    cursor.style.setProperty('--y', `${TIMELINE_SETTINGS.axisHeight + dotY(cursorPosition.lane)}px`);
+  }
+
+  return {
+    render,
+    fitToData,
+    zoomBy,
+    lanesOverflow: () => container.classList.contains('has-overflow'),
+  };
+}

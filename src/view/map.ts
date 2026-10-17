@@ -6,7 +6,7 @@ import type { Feature, LineString, MultiLineString } from 'geojson';
 import { feature, mesh } from 'topojson-client';
 import type { WorldTopology } from '../data/countryLocator.ts';
 import type { ShowRef } from '../model.ts';
-import { h, prefersReducedMotion, s } from './dom.ts';
+import { context2d, h, prefersReducedMotion, s } from './dom.ts';
 import { formatDate, plural } from './format.ts';
 import { computeMapFit, interpolateFit, type LonLat, type MapFit } from './geoFit.ts';
 import { placeLabels } from './labels.ts';
@@ -467,7 +467,9 @@ export function createMapView(container: HTMLElement, world: WorldTopology, call
   function placePinLabels() {
     if (props === null) return;
     measureContext.font = MAP_SETTINGS.labelFont;
+    const isInWindow = props.isInWindow;
     const visible = pins.flatMap((pin) => {
+      if (isInWindow !== null && !pin.shows.some(isInWindow)) return [];
       const x = transform.applyX(pin.x);
       const y = transform.applyY(pin.y);
       return x >= 0 && y >= 0 && x <= width && y <= height ? [{ pin, x, y }] : [];
@@ -527,12 +529,6 @@ export function createMapView(container: HTMLElement, world: WorldTopology, call
     fitToData,
     zoomBy,
   };
-}
-
-export function context2d(canvas: HTMLCanvasElement): CanvasRenderingContext2D {
-  const context = canvas.getContext('2d');
-  if (context === null) throw new Error('2D canvas is not available');
-  return context;
 }
 
 export function easeInOutCubic(t: number): number {

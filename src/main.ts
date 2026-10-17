@@ -8,6 +8,8 @@ import { createBundledStore } from './store/bundled.ts';
 import { createBandList } from './view/bandList.ts';
 import { h, requireElement } from './view/dom.ts';
 import { MAP_SETTINGS, createMapView, type MapProps } from './view/map.ts';
+import { createTimeline, type TimelineLane } from './view/timeline.ts';
+import { parseIsoDate } from './data/dates.ts';
 import { applyThemePreference, readThemeColors, watchSystemTheme, type ThemeColors, type ThemePreference } from './view/theme.ts';
 
 const dataStore = createBundledStore();
@@ -54,6 +56,25 @@ const bandList = createBandList(requireElement(document, '#band-list', HTMLEleme
   onSort: (sort) => state.set({ bandSort: sort }),
   onFocusBand: (bandId) => state.set({ focusBandId: bandId }),
 });
+
+const WINDOW_DEBOUNCE_MS = 150;
+let windowTimer: number | undefined;
+
+const timeline = createTimeline(requireElement(document, '#timeline', HTMLDivElement), {
+  onHover: (shows) => state.set({ hoverShowIds: idsOf(shows) }),
+  onSelect: (shows) => state.set({ selectedShowIds: idsOf(shows) }),
+  onWindowChange(window) {
+    clearTimeout(windowTimer);
+    windowTimer = setTimeout(() => state.set({ timeWindow: window }), WINDOW_DEBOUNCE_MS);
+  },
+});
+
+const followButton = h('button', { type: 'button', class: 'button button-small', 'aria-pressed': 'true' }, 'Follow timeline');
+const fitTimelineButton = h('button', { type: 'button', class: 'button button-small' }, 'Fit timeline');
+followButton.addEventListener('click', () => state.set({ followTimeline: !state.get().followTimeline }));
+fitTimelineButton.addEventListener('click', () => timeline.fitToData(true));
+requireElement(document, '#timeline-controls', HTMLDivElement).append(followButton, fitTimelineButton);
+const toolbarHint = requireElement(document, '#toolbar-hint', HTMLParagraphElement);
 
 requireElement(document, '#zoom-in', HTMLButtonElement).addEventListener('click', () => map.zoomBy(1.6));
 requireElement(document, '#zoom-out', HTMLButtonElement).addEventListener('click', () => map.zoomBy(1 / 1.6));
@@ -107,6 +128,17 @@ function fitShowsFor(derived: Derived, filter: ((ref: ShowRef) => boolean) | nul
 }
 
 let previousFitShows: readonly ShowRef[] | null = null;
+let previousVisibleBands: readonly unknown[] | null = null;
+let lanesKey: Derived['visibleBands'] | null = null;
+let lanes: readonly TimelineLane[] = [];
+
+function lanesFor(derived: Derived): readonly TimelineLane[] {
+  if (derived.visibleBands !== lanesKey) {
+    lanesKey = derived.visibleBands;
+    lanes = derived.visibleBands.map((band) => ({ band, shows: derived.refsByBand.get(band) ?? [] }));
+  }
+  return lanes;
+}
 
 function renderAll() {
   const current = state.get();
@@ -129,6 +161,24 @@ function renderAll() {
     map.fitToData(previousFitShows !== null);
     previousFitShows = fitShows;
   }
+
+  timeline.render({
+    lanes: lanesFor(derived),
+    highlightedShowIds: current.hoverShowIds,
+    selectedShowIds: current.selectedShowIds,
+    focusBandId: current.focusBandId,
+    theme,
+    today: parseIsoDate(current.today).getTime(),
+  });
+  if (derived.visibleBands !== previousVisibleBands) {
+    timeline.fitToData(previousVisibleBands !== null);
+    previousVisibleBands = derived.visibleBands;
+  }
+
+  followButton.setAttribute('aria-pressed', String(current.followTimeline));
+  toolbarHint.textContent = timeline.lanesOverflow()
+    ? 'Scroll to zoom the timeline, drag to pan, Shift + scroll for more bands'
+    : 'Scroll to zoom the timeline, drag to pan';
 
   bandList.render({
     bands: derived.orderedBands,

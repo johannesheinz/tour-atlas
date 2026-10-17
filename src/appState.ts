@@ -28,6 +28,7 @@ export interface Derived {
   readonly visibleBands: readonly BandEntry[];
   readonly visibleShows: readonly ShowRef[];
   readonly showsById: ReadonlyMap<string, ShowRef>;
+  readonly refsByBand: ReadonlyMap<BandEntry, readonly ShowRef[]>;
 }
 
 /** Recomputes derived data only when its inputs change identity, so views can compare by reference. */
@@ -64,7 +65,7 @@ export function createDeriver(): (state: AppState) => Derived {
       visibleBands = orderedBands.filter((band) => !state.hiddenBandIds.has(band.file.band.id));
       visibleShows = visibleBands.flatMap((band) => refsByBand.get(band) ?? []);
     }
-    return { bands, orderedBands, visibleBands, visibleShows, showsById };
+    return { bands, orderedBands, visibleBands, visibleShows, showsById, refsByBand };
   };
 }
 
