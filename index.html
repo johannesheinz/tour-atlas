@@ -12,14 +12,11 @@
     <a class="skip-link" href="#atlas">Skip to map and timeline</a>
     <div class="app">
       <header class="masthead">
-        <h1 class="wordmark"><!-- brand-mark -->Tour Atlas</h1>
+        <h1 class="wordmark"><a class="wordmark-link" id="home-link" href="./" title="Back to the default view"><!-- brand-mark -->Tour Atlas</a></h1>
         <div class="search-slot" id="search"></div>
         <div class="masthead-actions">
-          <button type="button" class="button" id="preview-button">Preview files</button>
-          <button type="button" class="button" id="export-button">Export all</button>
-          <fieldset class="theme-switch" id="theme-switch">
-            <legend class="visually-hidden">Colour theme</legend>
-          </fieldset>
+          <button type="button" class="icon-button" id="settings-button" aria-label="Settings" title="Settings"></button>
+          <div class="popover settings-panel" id="settings-panel" role="dialog" aria-label="Settings" hidden></div>
         </div>
       </header>
 
@@ -39,18 +36,12 @@
 
       <main class="stage">
         <section class="atlas" id="atlas" aria-label="Map and timeline" tabindex="-1">
-          <div class="map" id="map"></div>
-          <div class="atlas-toolbar">
-            <div class="toolbar-row" role="toolbar" aria-label="Map controls" id="map-controls">
-              <div class="toolbar-group">
-                <button type="button" class="icon-button" id="zoom-in" aria-label="Zoom map in">+</button>
-                <button type="button" class="icon-button" id="zoom-out" aria-label="Zoom map out">&minus;</button>
-                <button type="button" class="button button-small" id="fit-map">Fit map</button>
-              </div>
-            </div>
-            <div class="toolbar-row" role="toolbar" aria-label="Timeline controls" id="timeline-controls"></div>
-            <p class="toolbar-hint" id="toolbar-hint"></p>
+          <div class="map-frame">
+            <div class="map" id="map"></div>
+            <div class="map-controls" id="map-controls" role="toolbar" aria-label="Map controls" aria-orientation="vertical"></div>
+            <div class="map-status-bar" id="map-status" hidden></div>
           </div>
+          <div class="timeline-bar" id="timeline-controls" role="toolbar" aria-label="Timeline controls"></div>
           <div class="timeline" id="timeline"></div>
         </section>
       </main>

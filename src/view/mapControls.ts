@@ -1,15 +1,18 @@
 import { h } from './dom.ts';
-import { MAP_REGIONS, NEAR_ME_RADII_KM, findRegion, type MapMode, type MapViewPreset, type NearMeRadius } from './mapRegions.ts';
+import { icon, iconButton } from './icons.ts';
+import { MAP_REGIONS, NEAR_ME_RADII_KM, type MapMode, type MapViewPreset } from './mapRegions.ts';
+import { attachPopover } from './popover.ts';
 
 export interface MapControlsProps {
   readonly view: MapViewPreset;
   readonly mode: MapMode;
-  /** Shown next to the menu: the nearby count or why the location is unavailable. */
+  /** Shown in the map's corner: the nearby count or why the location is unavailable. */
   readonly status: string | null;
   readonly canListNearby: boolean;
 }
 
 export interface MapControlsCallbacks {
+  onZoom(factor: number): void;
   onView(view: MapViewPreset): void;
   onMode(mode: MapMode): void;
   onListNearby(): void;
@@ -18,6 +21,8 @@ export interface MapControlsCallbacks {
 export interface MapControlsView {
   render(props: MapControlsProps): void;
 }
+
+const ZOOM_STEP = 1.6;
 
 export function viewKey(view: MapViewPreset): string {
   switch (view.kind) {
@@ -30,50 +35,62 @@ export function viewKey(view: MapViewPreset): string {
   }
 }
 
-function parseViewKey(key: string): MapViewPreset {
-  if (key === 'shows') return { kind: 'shows' };
-  const [kind, value] = key.split(':');
-  if (kind === 'region' && value !== undefined) {
-    const region = findRegion(value);
-    if (region !== undefined) return { kind: 'region', region };
-  }
-  if (kind === 'near') {
-    const radiusKm = NEAR_ME_RADII_KM.find((radius) => String(radius) === value);
-    if (radiusKm !== undefined) return { kind: 'near', radiusKm: radiusKm satisfies NearMeRadius };
-  }
-  throw new Error(`unknown map view ${key}`);
-}
+/** Icon buttons in the map's top-right corner, and the "near me" status in its bottom-left corner. */
+export function createMapControls(controls: HTMLElement, statusBar: HTMLElement, callbacks: MapControlsCallbacks): MapControlsView {
+  const zoomIn = iconButton('plus', 'Zoom in');
+  const zoomOut = iconButton('minus', 'Zoom out');
+  const fit = iconButton('fit', 'Fit to shows');
+  const mode = h('button', { type: 'button', class: 'icon-button' });
+  const viewButton = iconButton('locate', 'Map area: near me or a region');
+  zoomIn.addEventListener('click', () => callbacks.onZoom(ZOOM_STEP));
+  zoomOut.addEventListener('click', () => callbacks.onZoom(1 / ZOOM_STEP));
+  fit.addEventListener('click', () => callbacks.onView({ kind: 'shows' }));
 
-export function createMapControls(container: HTMLElement, callbacks: MapControlsCallbacks): MapControlsView {
-  const select = h(
-    'select',
-    { class: 'map-view-select', 'aria-label': 'Map view' },
-    h('option', { value: 'shows' }, 'Fit to shows'),
-    h('optgroup', { label: 'Near me' }, ...NEAR_ME_RADII_KM.map((radius) => h('option', { value: `near:${radius}` }, `Within ${radius} km`))),
-    h('optgroup', { label: 'Regions' }, ...MAP_REGIONS.map((region) => h('option', { value: `region:${region.id}` }, region.label))),
+  const viewMenu = h('div', { class: 'popover map-view-menu', id: 'map-view-menu', role: 'group', 'aria-label': 'Map area' });
+  const popover = attachPopover(viewButton, viewMenu);
+  const choices: [string, HTMLButtonElement][] = [];
+  const choice = (view: MapViewPreset, label: string) => {
+    const button = h('button', { type: 'button', class: 'menu-item', 'aria-pressed': 'false' }, label);
+    button.addEventListener('click', () => {
+      popover.close(true);
+      callbacks.onView(view);
+    });
+    choices.push([viewKey(view), button]);
+    return button;
+  };
+  viewMenu.append(
+    choice({ kind: 'shows' }, 'Fit to shows'),
+    h('p', { class: 'menu-heading' }, 'Near me'),
+    h('div', { class: 'menu-chips' }, ...NEAR_ME_RADII_KM.map((radiusKm) => choice({ kind: 'near', radiusKm }, `${radiusKm} km`))),
+    h('p', { class: 'menu-heading' }, 'Regions'),
+    ...MAP_REGIONS.map((region) => choice({ kind: 'region', region }, region.label)),
   );
-  select.addEventListener('change', () => callbacks.onView(parseViewKey(select.value)));
 
-  const modeButtons = (['flat', 'globe'] as const).map((mode) => {
-    const button = h('button', { type: 'button', class: 'segment', 'aria-pressed': 'false' }, mode === 'flat' ? 'Flat' : 'Globe');
-    button.addEventListener('click', () => callbacks.onMode(mode));
-    return [mode, button] as const;
-  });
-  const modes = h('div', { class: 'segmented', role: 'group', 'aria-label': 'Map projection' }, ...modeButtons.map(([, button]) => button));
+  let shownMode: MapMode | null = null;
+  mode.addEventListener('click', () => callbacks.onMode(shownMode === 'globe' ? 'flat' : 'globe'));
 
   const status = h('span', { class: 'map-status', 'aria-live': 'polite' });
   const list = h('button', { type: 'button', class: 'text-button', hidden: true }, 'List these shows');
   list.addEventListener('click', () => callbacks.onListNearby());
+  statusBar.append(status, list);
 
-  container.append(h('div', { class: 'toolbar-group' }, select, modes), h('span', { class: 'toolbar-group' }, status, list));
+  controls.append(h('div', { class: 'map-control-stack' }, zoomIn, zoomOut, fit), h('div', { class: 'map-control-stack' }, mode, viewButton), viewMenu);
 
   return {
     render(props) {
       const key = viewKey(props.view);
-      if (select.value !== key) select.value = key;
-      for (const [mode, button] of modeButtons) button.setAttribute('aria-pressed', String(props.mode === mode));
+      for (const [choiceKey, button] of choices) button.setAttribute('aria-pressed', String(choiceKey === key));
+      viewButton.setAttribute('aria-pressed', String(props.view.kind !== 'shows'));
+      if (shownMode !== props.mode) {
+        shownMode = props.mode;
+        const label = props.mode === 'globe' ? 'Show as a flat map' : 'Show as a globe';
+        mode.setAttribute('aria-label', label);
+        mode.title = label;
+        mode.replaceChildren(icon(props.mode === 'globe' ? 'flat' : 'globe'));
+      }
       status.textContent = props.status ?? '';
       list.hidden = !props.canListNearby;
+      statusBar.hidden = props.status === null && !props.canListNearby;
     },
   };
 }

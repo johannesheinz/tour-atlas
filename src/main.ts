@@ -5,10 +5,10 @@ import { addDays, formatIsoDate, localToday, parseIsoDate } from './data/dates.t
 import type { ShowRef } from './model.ts';
 import { createSelectors } from './selectors.ts';
 import { selectionFromUrl, selectionShows, sidebarPanel } from './selection.ts';
-import { asDrillDownEntry, drillDownEntry, historyStep } from './drillDownHistory.ts';
+import { HOME_ENTRY, asDrillDownEntry, drillDownEntry, historyStep, isHomeEntry } from './drillDownHistory.ts';
 import { createStore } from './state.ts';
 import { createBundledStore } from './store/bundled.ts';
-import { parseUrlState, serializeUrlState } from './urlState.ts';
+import { parseUrlState, serializeUrlState, type UrlState } from './urlState.ts';
 import { createCountryLocator, type CountryLocator } from './data/countryLocator.ts';
 import { isKnownTag } from './data/tags.ts';
 import { exportAll, mergePreviews, normalizedFileText, processPreviewFile, type PreviewResult } from './preview.ts';
@@ -18,12 +18,14 @@ import { h, requireElement } from './view/dom.ts';
 import { MAP_SETTINGS, createMapView } from './view/map.ts';
 import { createSearch } from './view/search.ts';
 import type { SearchEntry } from './view/searchIndex.ts';
-import { applyThemePreference, readThemeColors, watchSystemTheme, type ThemeColors, type ThemePreference } from './view/theme.ts';
+import { applyThemePreference, readThemeColors, watchSystemTheme, type ThemeColors } from './view/theme.ts';
 import { DAY_MS } from './view/timeScale.ts';
 import { TIMELINE_SETTINGS, createTimeline } from './view/timeline.ts';
 import { FRAME_LAYOUT_QUERY, MAP_SHARE } from './view/layout.ts';
 import { createTimelineControls } from './view/timelineControls.ts';
 import { createMapControls } from './view/mapControls.ts';
+import { createSettings } from './view/settings.ts';
+import { icon } from './view/icons.ts';
 import { createPlaceList } from './view/placeList.ts';
 import { createSelectionPanel, type SelectionHeading } from './view/selectionPanel.ts';
 import { createSidebar } from './view/sidebar.ts';
@@ -58,7 +60,7 @@ const state = createStore<AppState>({
   timePreset: urlState.preset,
   hideEmptyLanes: !urlState.allLanes,
   includePastMonth: urlState.includePastMonth,
-  mapView: initialMapView(),
+  mapView: mapViewForRegion(urlState.region),
   mapMode: urlState.globe ? 'globe' : 'flat',
   userPosition: null,
   locationStatus: null,
@@ -83,7 +85,7 @@ const map = createMapView(requireElement(document, '#map', HTMLDivElement), worl
 
 const frameLayout = window.matchMedia(FRAME_LAYOUT_QUERY);
 const atlas = requireElement(document, '#atlas', HTMLElement);
-const atlasToolbar = requireElement(document, '.atlas-toolbar', HTMLElement);
+const atlasToolbar = requireElement(document, '#timeline-controls', HTMLElement);
 
 /** In the frame the lanes get what the map leaves; on a scrolling page a share of the window. */
 function maxLanesHeight(): number {
@@ -168,23 +170,12 @@ const search = createSearch(requireElement(document, '#search', HTMLDivElement),
 
 const timelineControls = createTimelineControls(requireElement(document, '#timeline-controls', HTMLDivElement), {
   onPreset: (preset) => applyPreset(preset, true),
-  onIncludePastMonth(include) {
-    state.set({ includePastMonth: include });
-    const { timePreset } = state.get();
-    if (timePreset !== null && usesPastMonth(timePreset)) applyPreset(timePreset, true);
-  },
-  onHideEmptyLanes: (hide) => state.set({ hideEmptyLanes: hide }),
-  onFollowTimeline: (follow) => state.set({ followTimeline: follow }),
   onZoomOut: () => timeline.zoomOut(),
   onShift: (direction) => timeline.shift(direction),
 });
-const toolbarHint = requireElement(document, '#toolbar-hint', HTMLParagraphElement);
 
-requireElement(document, '#zoom-in', HTMLButtonElement).addEventListener('click', () => map.zoomBy(1.6));
-requireElement(document, '#zoom-out', HTMLButtonElement).addEventListener('click', () => map.zoomBy(1 / 1.6));
-requireElement(document, '#fit-map', HTMLButtonElement).addEventListener('click', () => setMapView({ kind: 'shows' }));
-
-const mapControls = createMapControls(requireElement(document, '#map-controls', HTMLDivElement), {
+const mapControls = createMapControls(requireElement(document, '#map-controls', HTMLDivElement), requireElement(document, '#map-status', HTMLDivElement), {
+  onZoom: (factor) => map.zoomBy(factor),
   onView: (view) => setMapView(view),
   onMode(mode) {
     state.set({ mapMode: mode });
@@ -202,23 +193,39 @@ map.setMode(state.get().mapMode);
 
 const fileInput = h('input', { type: 'file', accept: '.json,application/json', multiple: true, class: 'visually-hidden', tabindex: '-1', 'aria-hidden': 'true' });
 document.body.append(fileInput);
-requireElement(document, '#preview-button', HTMLButtonElement).addEventListener('click', () => fileInput.click());
 fileInput.addEventListener('change', () => {
   if (fileInput.files !== null) void previewFiles([...fileInput.files]);
   fileInput.value = '';
 });
-requireElement(document, '#export-button', HTMLButtonElement).addEventListener('click', () => {
-  const current = state.get();
-  downloadText(`tour-atlas-export-${current.today}.json`, exportAll(current.bundled, current.previewResults));
-});
 mountDropZone();
+
+const settingsButton = requireElement(document, '#settings-button', HTMLButtonElement);
+settingsButton.append(icon('settings'));
+const settings = createSettings(settingsButton, requireElement(document, '#settings-panel', HTMLDivElement), {
+  onTheme(preference) {
+    applyThemePreference(preference);
+    state.set({ theme: preference });
+    refreshTheme();
+  },
+  onFollowTimeline: (follow) => state.set({ followTimeline: follow }),
+  onHideEmptyLanes: (hide) => state.set({ hideEmptyLanes: hide }),
+  onIncludePastMonth(include) {
+    state.set({ includePastMonth: include });
+    const { timePreset } = state.get();
+    if (timePreset !== null && usesPastMonth(timePreset)) applyPreset(timePreset, true);
+  },
+  onPreviewFiles: () => fileInput.click(),
+  onExportAll() {
+    const current = state.get();
+    downloadText(`tour-atlas-export-${current.today}.json`, exportAll(current.bundled, current.previewResults));
+  },
+});
 
 document.addEventListener('keydown', (event) => {
   if (event.key !== 'Escape' || event.defaultPrevented) return;
   resetViews();
 });
 
-mountThemeSwitch(requireElement(document, '#theme-switch', HTMLFieldSetElement));
 watchSystemTheme(() => refreshTheme());
 
 /** After a search, the next follow-timeline refit goes to the chosen shows instead of the whole window. */
@@ -293,13 +300,8 @@ function renderAll() {
   timelineControls.render({
     preset: state.get().timePreset,
     availablePresets: new Set(PRESET_IDS.filter((preset) => isPresetAvailable(preset, derived.visibleShows, today, current.includePastMonth))),
-    includePastMonth: current.includePastMonth,
-    hideEmptyLanes: current.hideEmptyLanes,
-    followTimeline: current.followTimeline,
   });
-  toolbarHint.textContent = timeline.lanesOverflow()
-    ? 'Drag across the timeline to zoom in, double-click to zoom out, scroll for more bands'
-    : 'Drag across the timeline to zoom in, double-click to zoom out';
+  settings.render({ theme: current.theme, followTimeline: current.followTimeline, hideEmptyLanes: current.hideEmptyLanes, includePastMonth: current.includePastMonth });
 
   bandList.render({
     bands: derived.filteredBands,
@@ -542,9 +544,45 @@ function pickedShowsTitle(shows: readonly ShowRef[]): string {
   return `${bands.size === 1 && onlyBand !== undefined ? `${onlyBand}: ` : ''}${plural(shows.length, 'show')} ${where}`;
 }
 
-function initialMapView(): MapViewPreset {
-  const region = urlState.region === null ? undefined : findRegion(urlState.region);
+function mapViewForRegion(regionId: string | null): MapViewPreset {
+  const region = regionId === null ? undefined : findRegion(regionId);
   return region === undefined ? { kind: 'shows' } : { kind: 'region', region };
+}
+
+/** Puts the app into the view a URL describes: the home link uses the empty URL, history the one it returns to. */
+function applyUrlView(url: UrlState) {
+  searchFocus = null;
+  const mapView = mapViewForRegion(url.region);
+  const mapMode = url.globe ? 'globe' : 'flat';
+  const hiddenBandIds = new Set(url.hiddenBandIds.filter((id) => knownBandIds.has(id)));
+  const tagFilter = new Set(url.tags.filter(isKnownTag));
+  const range = url.from !== null && url.to !== null ? ([parseIsoDate(url.from).getTime(), parseIsoDate(url.to).getTime() + DAY_MS] as const) : null;
+  const current = state.get();
+  const shows = derive({ ...current, hiddenBandIds, tagFilter }).visibleShows;
+  const preset = range === null ? (url.preset ?? defaultPreset(shows, parseIsoDate(current.today).getTime())) : null;
+  state.set({
+    hiddenBandIds,
+    tagFilter,
+    bandSort: url.sort ?? 'name',
+    bandFilter: '',
+    selection: selectionFromUrl(url, knownBandIds),
+    followTimeline: url.follow ?? true,
+    hideEmptyLanes: !url.allLanes,
+    includePastMonth: url.includePastMonth,
+    timePreset: preset,
+    mapView,
+    mapMode,
+    hoverShowIds: new Set(),
+    focusBandId: null,
+    locationStatus: null,
+  });
+  map.setMode(mapMode);
+  applyMapView(mapView, true);
+  // After the refit that a change of visible bands queues, so the URL's range wins.
+  queueMicrotask(() => {
+    if (range === null) applyPreset(preset, true);
+    else timeline.fitToData(true, range);
+  });
 }
 
 function setMapView(view: MapViewPreset) {
@@ -642,15 +680,29 @@ function currentHash(): string {
   });
 }
 
-/** Drill-downs get their own history entry, so browser Back (and the mouse's back button) returns to the lists. */
-function mountDrillDownHistory() {
-  let applyingHistory = false;
+/**
+ * Browser history for the sidebar and the home link. Opening a drill-down adds one entry, so Back (and the
+ * mouse's back button) returns to the lists. The home link adds an entry for the default view, so Back
+ * restores the whole view from before it.
+ */
+function createNavigation() {
+  let quiet = false;
   let previousPanel = sidebarPanel(state.get());
+  let onHomeEntry = isHomeEntry(history.state);
   const writeEntry = (method: 'pushState' | 'replaceState', entry: unknown, hash: string) => {
     try {
       history[method](entry, '', `${location.pathname}${location.search}${hash}`);
     } catch {
       return;
+    }
+  };
+  const quietly = (change: () => void) => {
+    quiet = true;
+    try {
+      change();
+    } finally {
+      quiet = false;
+      previousPanel = sidebarPanel(state.get());
     }
   };
 
@@ -661,23 +713,49 @@ function mountDrillDownHistory() {
   }
 
   state.subscribe((current) => {
+    if (quiet) return;
     const panel = sidebarPanel(current);
-    const step = applyingHistory ? 'none' : historyStep(previousPanel, panel, asDrillDownEntry(history.state) !== null);
+    const step = historyStep(previousPanel, panel, asDrillDownEntry(history.state) !== null);
     previousPanel = panel;
-    if (step === 'push') writeEntry('pushState', drillDownEntry(panel), currentHash());
-    else if (step === 'replace') writeEntry('replaceState', drillDownEntry(panel), currentHash());
-    else if (step === 'back') history.back();
+    if (step === 'push') {
+      writeEntry('pushState', drillDownEntry(panel), currentHash());
+      onHomeEntry = false;
+    } else if (step === 'replace') {
+      writeEntry('replaceState', drillDownEntry(panel), currentHash());
+    } else if (step === 'back') {
+      history.back();
+    }
   });
 
   window.addEventListener('popstate', () => {
-    applyingHistory = true;
-    try {
-      const entry = asDrillDownEntry(history.state);
-      state.set({ selection: selectionFromUrl(parseUrlState(location.hash), knownBandIds), previewsOpen: entry?.previews === true });
-    } finally {
-      applyingHistory = false;
-    }
+    const wholeView = onHomeEntry || isHomeEntry(history.state);
+    onHomeEntry = isHomeEntry(history.state);
+    const url = parseUrlState(location.hash);
+    quietly(() => {
+      if (wholeView) applyUrlView(url);
+      else state.set({ selection: selectionFromUrl(url, knownBandIds) });
+      state.set({ previewsOpen: asDrillDownEntry(history.state)?.previews === true });
+    });
   });
+
+  return {
+    /** Resets to the default view in a new history entry. */
+    goHome() {
+      clearTimeout(urlTimer);
+      writeUrlState();
+      const leaving = location.hash;
+      search.clear();
+      placeList.clearFilter();
+      sidebar.showTab('bands');
+      quietly(() => {
+        state.set({ previewsOpen: false });
+        applyUrlView(parseUrlState(''));
+      });
+      if (leaving === '') return;
+      writeEntry('pushState', HOME_ENTRY, '');
+      onHomeEntry = true;
+    },
+  };
 }
 
 function refreshTheme() {
@@ -685,24 +763,11 @@ function refreshTheme() {
   renderAll();
 }
 
-function mountThemeSwitch(fieldset: HTMLFieldSetElement) {
-  const options: [ThemePreference, string][] = [
-    ['auto', 'Auto'],
-    ['light', 'Light'],
-    ['dark', 'Dark'],
-  ];
-  for (const [value, label] of options) {
-    const input = h('input', { type: 'radio', name: 'theme', value, checked: value === state.get().theme });
-    input.addEventListener('change', () => {
-      if (!input.checked) return;
-      applyThemePreference(value);
-      state.set({ theme: value });
-      refreshTheme();
-    });
-    fieldset.append(h('label', {}, input, label));
-  }
-}
-
 state.subscribe(renderAll);
-mountDrillDownHistory();
+const navigation = createNavigation();
+requireElement(document, '#home-link', HTMLAnchorElement).addEventListener('click', (event) => {
+  if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+  event.preventDefault();
+  navigation.goHome();
+});
 renderAll();

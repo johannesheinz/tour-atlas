@@ -8,6 +8,17 @@ export interface DrillDownEntry {
 
 export type HistoryStep = 'push' | 'replace' | 'back' | 'none';
 
+/** history.state of the entry the home link added; Back from it restores the whole view before it. */
+export interface HomeEntry {
+  readonly home: true;
+}
+
+export const HOME_ENTRY: HomeEntry = { home: true };
+
+export function isHomeEntry(value: unknown): boolean {
+  return typeof value === 'object' && value !== null && 'home' in value && value.home === true;
+}
+
 export function drillDownEntry(panel: SidebarPanel): DrillDownEntry {
   if (panel === 'lists') throw new Error('the lists are not a drill-down');
   return { drillDown: true, previews: panel === 'previews' };

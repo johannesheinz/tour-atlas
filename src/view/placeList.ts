@@ -16,6 +16,7 @@ export interface PlaceListCallbacks {
 
 export interface PlaceListView {
   render(props: PlaceListProps): void;
+  clearFilter(): void;
 }
 
 export function createPlaceList(container: HTMLElement, callbacks: PlaceListCallbacks): PlaceListView {
@@ -81,6 +82,11 @@ export function createPlaceList(container: HTMLElement, callbacks: PlaceListCall
   }
 
   return {
+    clearFilter() {
+      filter.value = '';
+      open.clear();
+      if (props !== null) draw(props);
+    },
     render(next) {
       if (props !== null && props.places === next.places && props.selected === next.selected) return;
       props = next;

@@ -1,19 +1,16 @@
 import { h } from './dom.ts';
+import { iconButton } from './icons.ts';
+import { attachPopover } from './popover.ts';
 import { TIME_PRESETS, type TimePreset } from './timePresets.ts';
 
 export interface TimelineControlsProps {
+  /** Null after the user zoomed or panned to a range of their own. */
   readonly preset: TimePreset | null;
   readonly availablePresets: ReadonlySet<TimePreset>;
-  readonly includePastMonth: boolean;
-  readonly hideEmptyLanes: boolean;
-  readonly followTimeline: boolean;
 }
 
 export interface TimelineControlsCallbacks {
   onPreset(preset: TimePreset): void;
-  onIncludePastMonth(include: boolean): void;
-  onHideEmptyLanes(hide: boolean): void;
-  onFollowTimeline(follow: boolean): void;
   onZoomOut(): void;
   onShift(direction: -1 | 1): void;
 }
@@ -22,47 +19,48 @@ export interface TimelineControlsView {
   render(props: TimelineControlsProps): void;
 }
 
+const CUSTOM_RANGE = 'custom';
+
+/** The bar between map and timeline: the time range, moving it, and how to use the timeline. */
 export function createTimelineControls(container: HTMLElement, callbacks: TimelineControlsCallbacks): TimelineControlsView {
-  const presetButtons = TIME_PRESETS.map(({ id, label, title }) => {
-    const button = h('button', { type: 'button', class: 'segment', title, 'aria-pressed': 'false' }, label);
-    button.addEventListener('click', () => callbacks.onPreset(id));
-    return [id, button] as const;
+  const custom = h('option', { value: CUSTOM_RANGE, disabled: true, hidden: true }, 'Custom range');
+  const options = TIME_PRESETS.map(({ id, label }) => [id, h('option', { value: id }, label)] as const);
+  const select = h('select', { class: 'preset-select', 'aria-label': 'Time range' }, custom, ...options.map(([, option]) => option));
+  select.addEventListener('change', () => {
+    const preset = TIME_PRESETS.find(({ id }) => id === select.value);
+    if (preset === undefined) throw new Error(`unknown time range ${select.value}`);
+    callbacks.onPreset(preset.id);
   });
-  const presets = h('div', { class: 'segmented', role: 'group', 'aria-label': 'Time window' }, ...presetButtons.map(([, button]) => button));
 
-  const toggle = (label: string, title: string, onChange: (pressed: boolean) => void) => {
-    const button = h('button', { type: 'button', class: 'button button-small', title, 'aria-pressed': 'false' }, label);
-    button.addEventListener('click', () => onChange(button.getAttribute('aria-pressed') !== 'true'));
-    return button;
-  };
-  const pastMonth = toggle('Include last month', 'Start the upcoming windows a month back, to follow a running tour', callbacks.onIncludePastMonth);
-  const hideEmpty = toggle('Hide empty lanes', 'Collapse bands without a show in the window', callbacks.onHideEmptyLanes);
-  const follow = toggle('Follow timeline', 'Show only the shows in the time window on the map', callbacks.onFollowTimeline);
-
-  const earlier = h('button', { type: 'button', class: 'icon-button', 'aria-label': 'Move the time window earlier' }, '\u25C0');
-  const zoomOut = h('button', { type: 'button', class: 'button button-small' }, 'Zoom out');
-  const later = h('button', { type: 'button', class: 'icon-button', 'aria-label': 'Move the time window later' }, '\u25B6');
+  const earlier = iconButton('chevron-left', 'Earlier');
+  const zoomOut = iconButton('zoom-out', 'Zoom out');
+  const later = iconButton('chevron-right', 'Later');
   earlier.addEventListener('click', () => callbacks.onShift(-1));
   later.addEventListener('click', () => callbacks.onShift(1));
   zoomOut.addEventListener('click', () => callbacks.onZoomOut());
 
+  const info = iconButton('info', 'How to use the timeline');
+  const help = h(
+    'div',
+    { class: 'popover timeline-help', id: 'timeline-help' },
+    h('p', {}, 'Drag across the timeline to zoom into that range.'),
+    h('p', {}, 'Double-click to zoom out. Scroll to see more bands.'),
+    h('p', {}, 'Click a dot to list its show; hover to see it on the map.'),
+  );
+  attachPopover(info, help);
+
   container.append(
-    presets,
-    pastMonth,
-    h('div', { class: 'toolbar-group', role: 'group', 'aria-label': 'Move the time window' }, earlier, zoomOut, later),
-    hideEmpty,
-    follow,
+    select,
+    h('div', { class: 'toolbar-group', role: 'group', 'aria-label': 'Move the time range' }, earlier, zoomOut, later),
+    h('div', { class: 'timeline-help-anchor' }, info, help),
   );
 
   return {
     render(props) {
-      for (const [id, button] of presetButtons) {
-        button.setAttribute('aria-pressed', String(props.preset === id));
-        button.disabled = !props.availablePresets.has(id);
-      }
-      pastMonth.setAttribute('aria-pressed', String(props.includePastMonth));
-      hideEmpty.setAttribute('aria-pressed', String(props.hideEmptyLanes));
-      follow.setAttribute('aria-pressed', String(props.followTimeline));
+      custom.hidden = props.preset !== null;
+      for (const [id, option] of options) option.disabled = !props.availablePresets.has(id);
+      const value = props.preset ?? CUSTOM_RANGE;
+      if (select.value !== value) select.value = value;
     },
   };
 }

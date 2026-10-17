@@ -47,7 +47,7 @@ describe('injectBrand', () => {
 
   it('works with the real index.html and brand files', () => {
     const result = injectBrand(readFileSync('index.html', 'utf8'), readFileSync('src/brand/mark.svg', 'utf8'), readFileSync('src/brand/favicon.svg', 'utf8'));
-    expect(result).toMatch(/<h1 class="wordmark"><svg class="brand-mark" aria-hidden="true"[^]*<\/svg>Tour Atlas<\/h1>/);
+    expect(result).toMatch(/<a class="wordmark-link"[^>]*><svg class="brand-mark" aria-hidden="true"[^]*<\/svg>Tour Atlas<\/a><\/h1>/);
     expect(result).toContain('<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,');
   });
 });

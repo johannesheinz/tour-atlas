@@ -8,6 +8,7 @@ export interface SearchCallbacks {
 
 export interface SearchView {
   setIndex(index: readonly SearchEntry[]): void;
+  clear(): void;
 }
 
 const RESULTS_PER_KIND = 5;
@@ -115,6 +116,10 @@ export function createSearch(container: HTMLElement, callbacks: SearchCallbacks)
   });
 
   return {
+    clear() {
+      input.value = '';
+      open(false);
+    },
     setIndex(next) {
       index = next;
       if (!listbox.hidden) update();
