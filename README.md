@@ -1,8 +1,8 @@
 # Tour Atlas
 
 Concert tour dates of many bands on one world map, with a zoomable timeline aligned underneath.
-A static site: a single `index.html` with every script, style, font, coastline and tour date inlined.
-No backend, no network requests, no cookies.
+A static site: one `index.html` with every script, style, coastline and tour date inlined, plus three
+self-hosted font files next to it. No backend, no network requests to third parties, no cookies.
 
 - Equal Earth map with automatic fitting (antimeridian-aware), zoom and pan, great-circle routes, merged and
   clustered pins, greyed past shows, hollow cancelled shows; canvas rendering above 2,000 shows
@@ -33,12 +33,16 @@ npm run check        # everything CI runs
 npm run build
 ```
 
-Writes `dist/index.html` and checks it: one self-contained file, a Content-Security-Policy that blocks all
-network requests, no storage APIs, and the size budget. Open `dist/index.html` directly from disk
-(`file://`); it needs no server.
+Writes `dist/index.html` and the `.woff2` fonts next to it, then checks the output: everything else inlined,
+a Content-Security-Policy that blocks all network requests except the page's own fonts, no storage APIs,
+and the size budget. The fonts are separate so browsers cache them across data updates.
+
+To look at the build, serve it locally: `npm run preview` (http://localhost:4173). Opening
+`dist/index.html` from disk (`file://`) also works as long as the font files stay next to it; a browser
+that blocks local fonts falls back to system fonts and nothing else changes.
 
 `npm run build:budget` builds the same app with a synthetic 50 bands / 5,000 shows dataset and fails above
-600 kB gzipped. The budget build is currently about 505 kB.
+600 kB transferred (gzipped HTML plus fonts). It is currently about 510 kB.
 
 ## Deploy
 
@@ -52,7 +56,8 @@ Dependabot keeps npm packages and the SHA-pinned GitHub Actions up to date.
 
 ## Privacy
 
-- No cookies, no localStorage, sessionStorage or IndexedDB, no analytics, no external fonts or scripts.
+- No cookies, no localStorage, sessionStorage or IndexedDB, no analytics, no third-party fonts or scripts;
+  the fonts are served from the same place as the page.
 - View state (hidden bands, time window, selection) lives in the URL hash only, so a view can be shared
   as a link. The hash is never sent to a server.
 - Previewed files are read in the browser and kept in memory until the tab closes.

@@ -3,6 +3,7 @@ import { defineConfig } from 'vite';
 import { viteSingleFile } from 'vite-plugin-singlefile';
 import { bandDataPlugin } from './tools/vite/bandData.ts';
 import { cspPlugin } from './tools/vite/csp.ts';
+import { hostedFontsPlugin } from './tools/vite/hostedFonts.ts';
 import { worldTopologyPlugin } from './tools/vite/worldTopology.ts';
 
 const bandsDir = resolve(process.env['TOUR_ATLAS_BANDS_DIR'] ?? 'data/bands');
@@ -17,6 +18,7 @@ export default defineConfig({
     bandDataPlugin(bandsDir),
     worldTopologyPlugin(),
     viteSingleFile({ removeViteModuleLoader: true }),
+    hostedFontsPlugin(),
     cspPlugin(),
   ],
   build: {

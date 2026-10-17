@@ -7,14 +7,14 @@ import { formatIssue, parseBandJson, validateDraft } from '../src/data/validate.
 import { UsageError, displayPath, expandInputs, parseArguments, readText, runCli } from './lib/files.ts';
 import { createGeocoder, emptyCache, parseCache, serializeCache } from './lib/geocoder.ts';
 
-const USAGE = `Usage: NOMINATIM_CONTACT=<email or URL> node tools/geocode.ts <file|dir>... [--retry-misses] [--cache <path>]
+const USAGE = `Usage: node --env-file-if-exists=.env.local tools/geocode.ts <file|dir>... [--retry-misses] [--cache <path>]
 
 Fills geo for shows that have none, using OpenStreetMap Nominatim: venue and city first,
 then the city alone. Sends at most one request per second with an identifying User-Agent,
 as the Nominatim usage policy requires, and caches every answer (including misses) in
 tools/geocache.json so repeated runs do not query again. Existing coordinates are never changed.
 
-  NOMINATIM_CONTACT   required; your email address or project URL for the User-Agent
+  NOMINATIM_CONTACT   required; email address or project URL for the User-Agent (env or .env.local)
   --retry-misses      query again for places that were not found last time
   --cache <path>      cache file (default tools/geocache.json)
 

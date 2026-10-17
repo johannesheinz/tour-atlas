@@ -22,11 +22,11 @@ reviewed by a person before it appears on the site.
    ```
 
 4. **Add coordinates.** Nominatim (OpenStreetMap) asks every client to identify itself, so set a
-   contact address first. Requests go out at most once per second and every answer is cached in
-   `tools/geocache.json`; commit that file too.
+   contact address first (see [Geocoding contact](#geocoding-contact)). Requests go out at most once
+   per second and every answer is cached in `tools/geocache.json`; commit that file too.
 
    ```sh
-   NOMINATIM_CONTACT="you@example.org" npm run geocode
+   npm run geocode
    ```
 
    Shows it cannot resolve are listed. Look up their coordinates yourself, set
@@ -47,6 +47,26 @@ reviewed by a person before it appears on the site.
    The preview shows what changed against the published data. Nothing leaves your browser.
 
 7. **Open a pull request.** The template has a short checklist.
+
+## Geocoding contact
+
+`tools/geocode.ts` refuses to run without `NOMINATIM_CONTACT`: the Nominatim usage policy requires that the
+operator can reach whoever sends the requests. It goes into the User-Agent header and nowhere else.
+
+- **Locally:** `cp .env.example .env.local` and put your address in it. `.env.local` is git-ignored and
+  `npm run geocode` loads it (`node --env-file-if-exists`). A one-off `NOMINATIM_CONTACT=… npm run geocode`
+  works too.
+- **GitHub Actions:** CI never geocodes. If a workflow ever should (say, a manual "geocode this pull
+  request" job), store the address under Settings → Secrets and variables → Actions, as a variable if it may
+  appear in logs or as a secret if not, and pass it with `env: NOMINATIM_CONTACT: ${{ vars.NOMINATIM_CONTACT }}`
+  (or `secrets.`). Use a project address, not a personal one.
+- **Production, if uploads arrive one day:** geocoding has to run on the server, never in the browser. The
+  CSP blocks it anyway, and the contact would leak. Set the variable with the platform's secret store
+  (`firebase functions:secrets:set NOMINATIM_CONTACT`, `supabase secrets set NOMINATIM_CONTACT=…`), send
+  requests through one queue at no more than 1 per second for the whole service, and keep the cache. The
+  public Nominatim server is meant for low, occasional use; with real upload traffic, run your own Nominatim
+  or switch to a provider whose terms allow storing results. The simpler option is to keep geocoding in the
+  review step: uploads arrive as drafts and a maintainer or a scheduled job geocodes them.
 
 ## Add a tag
 

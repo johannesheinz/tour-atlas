@@ -34,7 +34,7 @@ export function injectContentSecurityPolicy(html: string): string {
     `script-src ${scriptHashes.join(' ')}`,
     `style-src ${styleHashes.length > 0 ? styleHashes.join(' ') : "'none'"}`,
     'img-src data: blob:',
-    'font-src data:',
+    "font-src 'self'",
     "connect-src 'none'",
     "base-uri 'none'",
     "form-action 'none'",

@@ -2,19 +2,21 @@
 
 Static web app: concert tour dates of many bands on a world map with an aligned, zoomable timeline.
 No backend, no runtime network requests. Band data lives in `data/bands/*.json`, is produced upstream
-(LLM pipeline), reviewed via pull requests, and inlined into a single `dist/index.html`.
+(LLM pipeline), reviewed via pull requests, and inlined into `dist/index.html`; only the self-hosted
+`.woff2` fonts ship as separate files next to it (`tools/vite/hostedFonts.ts`).
 
 ## Commands
 
 ```sh
 npm run dev            # Vite dev server
-npm run build          # single-file build + dist checks (CSP, no external resources, size)
+npm run build          # inlined build + fonts, then dist checks (CSP, no remote resources, size)
+npm run preview        # serve dist/ on http://localhost:4173
 npm run build:budget   # build with a synthetic 50 bands / 5,000 shows dataset, must stay < 600 kB gzipped
 npm test               # Vitest
 npm run typecheck      # app (DOM) and node (tools/tests) projects separately
 npm run validate       # tools/validate.ts data/bands  (errors fail, warnings inform)
 npm run normalize      # rewrite data/bands in canonical form; add --check to only verify
-NOMINATIM_CONTACT=... npm run geocode   # fill missing geo via Nominatim; ask the user for the contact
+npm run geocode        # fill missing geo via Nominatim; reads NOMINATIM_CONTACT from .env.local (ask the user)
 npm run review -- --base origin/main   # diff + plausibility warnings, as posted by CI
 npm run tags           # copy data/tags.json ids into the schema's band.tags enum
 npm run check          # everything CI runs, in order
@@ -54,12 +56,13 @@ Only for work that needs judgement; everything checkable is a tool or a CI job.
   d3-transition, d3-quadtree, topojson-client, world-atlas, @fontsource/league-gothic, @fontsource/archivo.
   Justify any addition in the PR.
 - No network at runtime, no CDNs, no cookies, no localStorage/sessionStorage/IndexedDB. View state lives in
-  the URL hash only. `tools/check-dist.ts` fails the build otherwise; the CSP sets `connect-src 'none'`.
+  the URL hash only. `tools/check-dist.ts` fails the build otherwise; the CSP sets `connect-src 'none'` and
+  `font-src 'self'`.
 - Never use `innerHTML` with data. Render text with `textContent`; links only for http(s) URLs with
   `rel="noopener noreferrer"`.
 - Unknown data is `null`, never guessed. Never invent tour dates; sample data uses fictional bands and
   `example.com`/`example.org` URLs.
-- Keep `dist/index.html` under 600 kB gzipped at 50 bands / 5,000 shows.
+- Keep the transfer size (gzipped `dist/index.html` plus fonts) under 600 kB at 50 bands / 5,000 shows.
 - Never send requests to Nominatim from tests or CI; tests inject a fake fetch.
 - The repository is local-only for now; do not add a remote or push.
 - Comments only where the code cannot say it; prefer descriptive names.
