@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
-import { normalizeBandFile, serializeBandFile } from '../../src/data/normalize';
-import { validateDraft } from '../../src/data/validate';
-import { bandFilesIn, makeDraftShow, makeFile, readJson, readText } from '../helpers';
+import { normalizeBandFile, serializeBandFile } from '../../src/data/normalize.ts';
+import { validateDraft } from '../../src/data/validate.ts';
+import { bandFilesIn, makeDraftShow, makeFile, readJson, readText } from '../helpers.ts';
 
 function normalizeText(input: unknown): string {
   const result = validateDraft(input, 'test-band.json');

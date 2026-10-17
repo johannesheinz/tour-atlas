@@ -1,9 +1,9 @@
-import { localToday } from '../src/data/dates';
-import { checkBandFiles } from './lib/bandFiles';
-import { expandInputs, loadCountryLocator, parseArguments, runCli } from './lib/files';
-import { appendStepSummary, markdownCell, parseFormat, printIssue } from './lib/report';
+import { localToday } from '../src/data/dates.ts';
+import { checkBandFiles } from './lib/bandFiles.ts';
+import { expandInputs, loadCountryLocator, parseArguments, runCli } from './lib/files.ts';
+import { appendStepSummary, markdownCell, parseFormat, printIssue } from './lib/report.ts';
 
-const USAGE = `Usage: tsx tools/validate.ts <file|dir>... [--draft] [--format text|github]
+const USAGE = `Usage: node tools/validate.ts <file|dir>... [--draft] [--format text|github]
 
 Checks band files against the schema and the semantic rules (dates, ranges, ids,
 country codes, file names, duplicate band ids). Exits 1 when any file has errors.

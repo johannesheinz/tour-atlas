@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { IdError, assignShowIds, baseShowId, isShowIdFormat, slugify } from '../../src/data/ids';
-import { makeDraftShow } from '../helpers';
+import { IdError, assignShowIds, baseShowId, isShowIdFormat, slugify } from '../../src/data/ids.ts';
+import { makeDraftShow } from '../helpers.ts';
 
 describe('slugify', () => {
   it.each([

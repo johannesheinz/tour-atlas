@@ -1,9 +1,9 @@
-import { GEOMETRY_PARENTS } from './countries';
-import type { CountryLocator } from './countryLocator';
-import { daysBetween } from './dates';
-import { slugify } from './ids';
-import type { BandFileOf, IdentifiedShow } from './types';
-import type { ValidationIssue } from './validate';
+import { GEOMETRY_PARENTS } from './countries.ts';
+import type { CountryLocator } from './countryLocator.ts';
+import { daysBetween } from './dates.ts';
+import { slugify } from './ids.ts';
+import type { BandFileOf, IdentifiedShow } from './types.ts';
+import type { ValidationIssue } from './validate.ts';
 
 export interface LintOptions {
   readonly today: string;

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { diffBand, hasChanges } from '../../src/data/diff';
-import { makeFile, makeShow } from '../helpers';
+import { diffBand, hasChanges } from '../../src/data/diff.ts';
+import { makeFile, makeShow } from '../helpers.ts';
 
 describe('diffBand', () => {
   const berlin = makeShow();

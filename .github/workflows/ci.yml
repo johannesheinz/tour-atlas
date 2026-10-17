@@ -27,14 +27,14 @@ jobs:
           cache: npm
       - run: npm ci
       - name: Validate band files
-        run: npx tsx tools/validate.ts data/bands --format github
+        run: node tools/validate.ts data/bands --format github
       - name: Check canonical formatting
-        run: npx tsx tools/normalize.ts data/bands --check --format github
+        run: node tools/normalize.ts data/bands --check --format github
       - name: Review data changes
         if: github.event_name == 'pull_request'
         env:
           BASE_REF: ${{ github.base_ref }}
-        run: npx tsx tools/review.ts --base "origin/${BASE_REF}" --format github
+        run: node tools/review.ts --base "origin/${BASE_REF}" --format github
 
   app:
     name: App
@@ -55,3 +55,5 @@ jobs:
         run: npm test
       - name: Build
         run: npm run build
+      - name: Size budget at 50 bands / 5,000 shows
+        run: npm run build:budget

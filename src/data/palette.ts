@@ -1,4 +1,4 @@
-import type { Band } from './types';
+import type { Band } from './types.ts';
 
 export interface BandColor {
   readonly light: string;

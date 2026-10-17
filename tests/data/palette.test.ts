@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { CATEGORICAL_PALETTE, assignBandColors, hashedColor, oklchToHex } from '../../src/data/palette';
+import { CATEGORICAL_PALETTE, assignBandColors, hashedColor, oklchToHex } from '../../src/data/palette.ts';
 
 const band = (id: string, color: string | null = null) => ({ id, name: id, color });
 

@@ -1,14 +1,14 @@
 import { execFileSync } from 'node:child_process';
 import { existsSync } from 'node:fs';
-import { localToday } from '../src/data/dates';
-import { diffBand, hasChanges, type BandDiff } from '../src/data/diff';
-import { lintBandFile } from '../src/data/lint';
-import type { BandFileOf, IdentifiedShow } from '../src/data/types';
-import { parseBandJson, validateRepository, type ValidationIssue } from '../src/data/validate';
-import { UsageError, loadCountryLocator, parseArguments, readText, runCli } from './lib/files';
-import { appendStepSummary, markdownCell, printIssue } from './lib/report';
+import { localToday } from '../src/data/dates.ts';
+import { diffBand, hasChanges, type BandDiff } from '../src/data/diff.ts';
+import { lintBandFile } from '../src/data/lint.ts';
+import type { BandFileOf, IdentifiedShow } from '../src/data/types.ts';
+import { parseBandJson, validateRepository, type ValidationIssue } from '../src/data/validate.ts';
+import { UsageError, loadCountryLocator, parseArguments, readText, runCli } from './lib/files.ts';
+import { appendStepSummary, markdownCell, printIssue } from './lib/report.ts';
 
-const USAGE = `Usage: tsx tools/review.ts --base <git-ref> [--format text|github]
+const USAGE = `Usage: node tools/review.ts --base <git-ref> [--format text|github]
 
 Summarises changes to data/bands/ between <git-ref> and the working tree for pull request
 review: shows added, removed and changed per band, plus plausibility warnings. Never fails

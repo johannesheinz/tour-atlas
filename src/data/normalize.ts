@@ -1,5 +1,5 @@
-import { assignShowIds } from './ids';
-import type { BandFileOf, DraftBandFile, DraftShow, Geo, IdentifiedBandFile, IdentifiedShow } from './types';
+import { assignShowIds } from './ids.ts';
+import type { BandFileOf, DraftBandFile, DraftShow, Geo, IdentifiedBandFile, IdentifiedShow } from './types.ts';
 
 /**
  * Canonical form of a validated file: trimmed text, generated ids for shows without one,

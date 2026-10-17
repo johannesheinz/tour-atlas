@@ -1,6 +1,6 @@
 import { readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
-import type { DraftShow, Show } from '../src/data/types';
+import type { DraftShow, Show } from '../src/data/types.ts';
 
 export const ROOT = join(import.meta.dirname, '..');
 

@@ -33,7 +33,7 @@ npm run check          # everything CI runs, in order
   Change both together (see `.claude/skills/change-schema`).
 - `src/store/`: `DataStore` interface (`listBands`, `getBand`, `subscribe`); only `StaticStore` exists.
 - `src/view/`: render functions of state + callbacks. Pure math (fits, scales) lives in DOM-free modules so it is testable in Node.
-- `tools/`: Node CLIs run with tsx; never shipped. `tools/vite/` holds the build plugins.
+- `tools/`: Node CLIs (run directly by Node's type stripping); never shipped. `tools/vite/` holds the build plugins.
 
 ## Hard rules
 

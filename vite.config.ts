@@ -1,11 +1,28 @@
+import { resolve } from 'node:path';
 import { defineConfig } from 'vite';
 import { viteSingleFile } from 'vite-plugin-singlefile';
+import { bandDataPlugin } from './tools/vite/bandData.ts';
+import { cspPlugin } from './tools/vite/csp.ts';
+import { worldTopologyPlugin } from './tools/vite/worldTopology.ts';
+
+const bandsDir = resolve(process.env['TOUR_ATLAS_BANDS_DIR'] ?? 'data/bands');
+const outDir = resolve(process.env['TOUR_ATLAS_OUT_DIR'] ?? 'dist');
 
 export default defineConfig({
   base: './',
-  plugins: [viteSingleFile({ removeViteModuleLoader: true })],
+  resolve: {
+    alias: { '@bands': bandsDir },
+  },
+  plugins: [
+    bandDataPlugin(bandsDir),
+    worldTopologyPlugin(),
+    viteSingleFile({ removeViteModuleLoader: true }),
+    cspPlugin(),
+  ],
   build: {
     target: 'es2023',
+    outDir,
+    emptyOutDir: true,
     modulePreload: { polyfill: false },
     reportCompressedSize: false,
   },

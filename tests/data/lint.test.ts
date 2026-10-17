@@ -1,8 +1,8 @@
 import { describe, expect, it } from 'vitest';
-import { lintBandFile } from '../../src/data/lint';
-import { formatIssue } from '../../src/data/validate';
-import { loadCountryLocator } from '../../tools/lib/files';
-import { makeFile, makeShow } from '../helpers';
+import { lintBandFile } from '../../src/data/lint.ts';
+import { formatIssue } from '../../src/data/validate.ts';
+import { loadCountryLocator } from '../../tools/lib/files.ts';
+import { makeFile, makeShow } from '../helpers.ts';
 
 const locateCountry = loadCountryLocator();
 const lint = (shows: Parameters<typeof makeFile>[0], today = '2026-10-16') =>

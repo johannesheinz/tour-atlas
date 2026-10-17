@@ -1,9 +1,9 @@
 import { readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { gzipSync } from 'node:zlib';
-import { parseArguments, runCli, UsageError } from './lib/files';
+import { parseArguments, runCli, UsageError } from './lib/files.ts';
 
-const USAGE = `Usage: tsx tools/check-dist.ts <dist-dir> [--budget-kb <n>]
+const USAGE = `Usage: node tools/check-dist.ts <dist-dir> [--budget-kb <n>]
 
 Checks the build output: a single self-contained index.html, no external resources,
 no storage or network APIs, and a gzipped size within the budget (default 600 kB).`;

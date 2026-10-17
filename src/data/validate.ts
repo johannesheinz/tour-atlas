@@ -1,6 +1,6 @@
-import { isCountryCode } from './countries';
-import { daysBetween, isCalendarDate } from './dates';
-import { DATE_PATTERN, IdError, SLUG_PATTERN, baseShowId, isShowIdFormat } from './ids';
+import { isCountryCode } from './countries.ts';
+import { daysBetween, isCalendarDate } from './dates.ts';
+import { DATE_PATTERN, IdError, SLUG_PATTERN, baseShowId, isShowIdFormat } from './ids.ts';
 import {
   BAND_FILE_KEYS,
   BAND_KEYS,
@@ -19,7 +19,7 @@ import {
   type Geo,
   type Show,
   type Source,
-} from './types';
+} from './types.ts';
 
 export type ValidationMode = 'draft' | 'repository';
 
@@ -110,10 +110,14 @@ const URL_PATTERN = /^https?:\/\/\S+$/;
 class Collector {
   readonly issues: ValidationIssue[] = [];
 
-  constructor(private readonly file: string) {}
+  readonly #file: string;
+
+  constructor(file: string) {
+    this.#file = file;
+  }
 
   add(path: string, message: string): typeof INVALID {
-    this.issues.push({ file: this.file, path, message });
+    this.issues.push({ file: this.#file, path, message });
     return INVALID;
   }
 

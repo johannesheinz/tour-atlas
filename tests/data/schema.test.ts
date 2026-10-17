@@ -1,8 +1,8 @@
 import Ajv2020 from 'ajv/dist/2020';
 import { describe, expect, it } from 'vitest';
-import { BAND_FILE_KEYS, BAND_KEYS, GEO_KEYS, SHOW_KEYS, SOURCE_KEYS } from '../../src/data/types';
-import { validateDraft } from '../../src/data/validate';
-import { bandFilesIn, makeFile, readJson } from '../helpers';
+import { BAND_FILE_KEYS, BAND_KEYS, GEO_KEYS, SHOW_KEYS, SOURCE_KEYS } from '../../src/data/types.ts';
+import { validateDraft } from '../../src/data/validate.ts';
+import { bandFilesIn, makeFile, readJson } from '../helpers.ts';
 
 const schema = readJson('schema/tour.schema.json') as Record<string, unknown> & { $defs: Record<string, { properties: object; required: string[] }> };
 const ajv = new Ajv2020({ allErrors: true, strict: true });

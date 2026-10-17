@@ -1,4 +1,4 @@
-import { SHOW_KEYS, type Band, type BandFileOf, type IdentifiedShow, type ShowKey } from './types';
+import { SHOW_KEYS, type Band, type BandFileOf, type IdentifiedShow, type ShowKey } from './types.ts';
 
 export interface ShowChange {
   readonly id: string;

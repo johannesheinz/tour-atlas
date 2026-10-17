@@ -1,4 +1,4 @@
-import type { DraftShow, IdentifiedShow } from './types';
+import type { DraftShow, IdentifiedShow } from './types.ts';
 
 const LETTERS_WITHOUT_DECOMPOSITION: Readonly<Record<string, string>> = {
   ß: 'ss', ẞ: 'ss', æ: 'ae', Æ: 'ae', œ: 'oe', Œ: 'oe', ø: 'o', Ø: 'o', đ: 'd', Đ: 'd', ð: 'd', Ð: 'd',

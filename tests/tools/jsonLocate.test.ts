@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { lineForPath, locateJsonPaths } from '../../tools/lib/jsonLocate';
+import { lineForPath, locateJsonPaths } from '../../tools/lib/jsonLocate.ts';
 
 const text = `{
   "band": { "id": "x" },

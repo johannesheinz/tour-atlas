@@ -1,11 +1,11 @@
 import { writeFileSync } from 'node:fs';
-import { IdError } from '../src/data/ids';
-import { normalizeBandFile, serializeBandFile } from '../src/data/normalize';
-import { parseBandJson, validateDraft } from '../src/data/validate';
-import { displayPath, expandInputs, parseArguments, readText, runCli } from './lib/files';
-import { parseFormat, printIssue } from './lib/report';
+import { IdError } from '../src/data/ids.ts';
+import { normalizeBandFile, serializeBandFile } from '../src/data/normalize.ts';
+import { parseBandJson, validateDraft } from '../src/data/validate.ts';
+import { displayPath, expandInputs, parseArguments, readText, runCli } from './lib/files.ts';
+import { parseFormat, printIssue } from './lib/report.ts';
 
-const USAGE = `Usage: tsx tools/normalize.ts <file|dir>... [--check] [--format text|github]
+const USAGE = `Usage: node tools/normalize.ts <file|dir>... [--check] [--format text|github]
 
 Rewrites band files in canonical form: schema key order, shows sorted by date then id,
 generated ids for shows without one, trimmed text, 2-space indent, trailing newline.

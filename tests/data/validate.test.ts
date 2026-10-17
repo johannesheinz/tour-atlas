@@ -6,8 +6,8 @@ import {
   validateDraft,
   validateFileName,
   validateRepository,
-} from '../../src/data/validate';
-import { bandFilesIn, makeDraftShow, makeFile, makeShow, readJson } from '../helpers';
+} from '../../src/data/validate.ts';
+import { bandFilesIn, makeDraftShow, makeFile, makeShow, readJson } from '../helpers.ts';
 
 function rowMessages(show: unknown, mode: 'draft' | 'repository' = 'repository'): string[] {
   const file = makeFile([show]);

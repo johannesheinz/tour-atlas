@@ -1,7 +1,7 @@
 import { geoBounds, geoContains } from 'd3-geo';
 import { feature } from 'topojson-client';
 import type { GeometryCollection, Topology } from 'topojson-specification';
-import { alpha2FromNumeric } from './countries';
+import { alpha2FromNumeric } from './countries.ts';
 
 export type CountryLocator = (lon: number, lat: number) => string | null;
 export type WorldTopology = Topology<{ countries: GeometryCollection; land: GeometryCollection }>;
