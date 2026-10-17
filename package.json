@@ -1,0 +1,58 @@
+{
+  "name": "tour-atlas",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Concert tour dates for multiple bands on a world map with an aligned, zoomable timeline.",
+  "license": "MIT",
+  "type": "module",
+  "engines": {
+    "node": ">=22.12"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "typecheck": "tsc -p tsconfig.app.json && tsc -p tsconfig.node.json",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "validate": "tsx tools/validate.ts data/bands",
+    "normalize": "tsx tools/normalize.ts data/bands",
+    "geocode": "tsx tools/geocode.ts data/bands",
+    "review": "tsx tools/review.ts",
+    "check": "npm run typecheck && npm run validate && tsx tools/normalize.ts data/bands --check && npm test && npm run build"
+  },
+  "dependencies": {
+    "@fontsource/archivo": "5.3.0",
+    "@fontsource/league-gothic": "5.3.0",
+    "d3-geo": "3.1.1",
+    "d3-quadtree": "3.0.1",
+    "d3-scale": "4.0.2",
+    "d3-selection": "3.0.0",
+    "d3-time": "3.1.0",
+    "d3-time-format": "4.1.0",
+    "d3-transition": "3.0.1",
+    "d3-zoom": "3.0.0",
+    "topojson-client": "3.1.0",
+    "world-atlas": "2.0.2"
+  },
+  "devDependencies": {
+    "@types/d3-geo": "3.1.1",
+    "@types/d3-quadtree": "3.0.6",
+    "@types/d3-scale": "4.0.9",
+    "@types/d3-selection": "3.0.12",
+    "@types/d3-time": "3.0.4",
+    "@types/d3-time-format": "4.0.3",
+    "@types/d3-transition": "3.0.9",
+    "@types/d3-zoom": "3.0.9",
+    "@types/geojson": "7946.0.16",
+    "@types/node": "24.19.2",
+    "@types/topojson-client": "3.1.5",
+    "@types/topojson-specification": "1.0.5",
+    "ajv": "8.20.0",
+    "tsx": "4.23.15",
+    "typescript": "7.0.2",
+    "vite": "8.3.4",
+    "vite-plugin-singlefile": "2.3.3",
+    "vitest": "5.0.5"
+  }
+}

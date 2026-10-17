@@ -1,0 +1,146 @@
+{
+  "schemaVersion": 1,
+  "band": {
+    "id": "northbound-static",
+    "name": "Northbound Static",
+    "color": null
+  },
+  "source": {
+    "url": "https://example.com/northbound-static/tour",
+    "retrievedAt": "2026-10-16"
+  },
+  "shows": [
+    {
+      "id": "northbound-static-2026-12-02-reykjavik",
+      "date": "2026-12-02",
+      "endDate": null,
+      "startTime": "20:00",
+      "tourName": "Long Night Residency",
+      "eventName": null,
+      "venue": "Gaukurinn Kjallari",
+      "city": "Reykjavík",
+      "region": null,
+      "countryCode": "IS",
+      "status": "scheduled",
+      "ticketUrl": "https://tickets.example.org/northbound-static/2026-12-02",
+      "sourceUrl": "https://example.com/northbound-static/tour",
+      "notes": null,
+      "geo": {
+        "lat": 64.1466,
+        "lon": -21.9426,
+        "precision": "city",
+        "source": "manual"
+      }
+    },
+    {
+      "id": "northbound-static-2026-12-03-reykjavik",
+      "date": "2026-12-03",
+      "endDate": null,
+      "startTime": "20:00",
+      "tourName": "Long Night Residency",
+      "eventName": null,
+      "venue": "Gaukurinn Kjallari",
+      "city": "Reykjavík",
+      "region": null,
+      "countryCode": "IS",
+      "status": "scheduled",
+      "ticketUrl": "https://tickets.example.org/northbound-static/2026-12-03",
+      "sourceUrl": "https://example.com/northbound-static/tour",
+      "notes": null,
+      "geo": {
+        "lat": 64.1466,
+        "lon": -21.9426,
+        "precision": "city",
+        "source": "manual"
+      }
+    },
+    {
+      "id": "northbound-static-2026-12-04-reykjavik",
+      "date": "2026-12-04",
+      "endDate": null,
+      "startTime": "20:00",
+      "tourName": "Long Night Residency",
+      "eventName": null,
+      "venue": "Gaukurinn Kjallari",
+      "city": "Reykjavík",
+      "region": null,
+      "countryCode": "IS",
+      "status": "soldout",
+      "ticketUrl": "https://tickets.example.org/northbound-static/2026-12-04",
+      "sourceUrl": "https://example.com/northbound-static/tour",
+      "notes": null,
+      "geo": {
+        "lat": 64.1466,
+        "lon": -21.9426,
+        "precision": "city",
+        "source": "manual"
+      }
+    },
+    {
+      "id": "northbound-static-2026-12-05-reykjavik",
+      "date": "2026-12-05",
+      "endDate": null,
+      "startTime": "15:00",
+      "tourName": "Long Night Residency",
+      "eventName": null,
+      "venue": "Gaukurinn Kjallari",
+      "city": "Reykjavík",
+      "region": null,
+      "countryCode": "IS",
+      "status": "scheduled",
+      "ticketUrl": "https://tickets.example.org/northbound-static/2026-12-05",
+      "sourceUrl": "https://example.com/northbound-static/tour",
+      "notes": "All-ages matinee",
+      "geo": {
+        "lat": 64.1466,
+        "lon": -21.9426,
+        "precision": "city",
+        "source": "manual"
+      }
+    },
+    {
+      "id": "northbound-static-2026-12-05-reykjavik-2",
+      "date": "2026-12-05",
+      "endDate": null,
+      "startTime": "20:00",
+      "tourName": "Long Night Residency",
+      "eventName": null,
+      "venue": "Gaukurinn Kjallari",
+      "city": "Reykjavík",
+      "region": null,
+      "countryCode": "IS",
+      "status": "soldout",
+      "ticketUrl": "https://tickets.example.org/northbound-static/2026-12-05",
+      "sourceUrl": "https://example.com/northbound-static/tour",
+      "notes": null,
+      "geo": {
+        "lat": 64.1466,
+        "lon": -21.9426,
+        "precision": "city",
+        "source": "manual"
+      }
+    },
+    {
+      "id": "northbound-static-2026-12-06-reykjavik",
+      "date": "2026-12-06",
+      "endDate": null,
+      "startTime": "20:00",
+      "tourName": "Long Night Residency",
+      "eventName": null,
+      "venue": "Gaukurinn Kjallari",
+      "city": "Reykjavík",
+      "region": null,
+      "countryCode": "IS",
+      "status": "scheduled",
+      "ticketUrl": "https://tickets.example.org/northbound-static/2026-12-06",
+      "sourceUrl": "https://example.com/northbound-static/tour",
+      "notes": null,
+      "geo": {
+        "lat": 64.1466,
+        "lon": -21.9426,
+        "precision": "city",
+        "source": "manual"
+      }
+    }
+  ]
+}
