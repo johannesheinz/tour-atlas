@@ -11,6 +11,7 @@ import { formatDate, plural } from './format.ts';
 import { computeMapFit, interpolateFit, type LonLat, type MapFit } from './geoFit.ts';
 import { placeLabels } from './labels.ts';
 import { clusterGroups, groupByCoordinates, pinLabel, type DisplayPin, type PinGroup } from './pins.ts';
+import { annularSectorPath, pinSegments, type PinSegment } from './pinSegments.ts';
 import { bandColor } from '../model.ts';
 import type { ThemeColors } from './theme.ts';
 import { createTooltip } from './tooltip.ts';
@@ -23,6 +24,8 @@ export const MAP_SETTINGS = {
   clusterRadiusPx: 12,
   pinRadius: 5,
   multiPinRadius: 7,
+  mixedPinRadius: 8.5,
+  mixedPinHole: 3.5,
   hitRadiusPx: 12,
   minZoom: 0.5,
   maxZoom: 40,
@@ -60,6 +63,8 @@ export interface MapView {
 
 interface PinStyle {
   readonly radius: number;
+  /** Band-colour ring for pins with several bands; empty otherwise. */
+  readonly segments: readonly PinSegment[];
   readonly fill: string;
   readonly stroke: string;
   readonly strokeWidth: number;
@@ -389,11 +394,15 @@ export function createMapView(container: HTMLElement, world: WorldTopology, call
     const color = onlyBand === undefined ? current.theme.ink : bandColor(onlyBand, current.theme.mode);
     const inWindow = current.isInWindow === null || pin.shows.some(current.isInWindow);
     const inFocus = current.focusBandId === null || pin.bandIds.includes(current.focusBandId);
-    const radius = pin.shows.length > 1 ? MAP_SETTINGS.multiPinRadius : MAP_SETTINGS.pinRadius;
+    const radius = pinRadius(pin);
     const opacity = (inWindow ? 1 : 0.25) * (inFocus ? 1 : 0.2);
-    if (pin.allCancelled) return { radius, fill: current.theme.stock, stroke: pin.allPast ? current.theme.past : color, strokeWidth: 2, opacity };
-    if (pin.allPast) return { radius, fill: current.theme.past, stroke: current.theme.inkMuted, strokeWidth: 1.25, opacity };
-    return { radius, fill: color, stroke: current.theme.ink, strokeWidth: 1.25, opacity };
+    if (pin.allCancelled) return { radius, segments: [], fill: current.theme.stock, stroke: pin.allPast ? current.theme.past : color, strokeWidth: 2, opacity };
+    if (pin.allPast) return { radius, segments: [], fill: current.theme.past, stroke: current.theme.inkMuted, strokeWidth: 1.25, opacity };
+    if (onlyBand === undefined) {
+      const segments = pinSegments(pin.shows, current.theme.mode, current.theme.inkMuted);
+      return { radius, segments, fill: current.theme.stock, stroke: current.theme.ink, strokeWidth: 1.25, opacity };
+    }
+    return { radius, segments: [], fill: color, stroke: current.theme.ink, strokeWidth: 1.25, opacity };
   }
 
   function drawPins() {
@@ -414,11 +423,20 @@ export function createMapView(container: HTMLElement, world: WorldTopology, call
       const style = pinStyle(pin, current);
       let element = svgPins.get(pin.id);
       if (element === undefined) {
-        element = s('g', { class: 'map-pin' }, s('circle'), s('rect', { class: 'map-badge' }), s('text', { class: 'map-badge-text' }));
+        element = s('g', { class: 'map-pin' }, s('circle'), s('g', { class: 'map-pin-ring' }), s('rect', { class: 'map-badge' }), s('text', { class: 'map-badge-text' }));
         svgPins.set(pin.id, element);
         pinsLayer.append(element);
       }
-      const [circle, badge, badgeText] = element.children;
+      const [circle, ring, badge, badgeText] = element.children;
+      ring?.replaceChildren(
+        ...style.segments.map((segment) =>
+          s('path', {
+            class: 'map-pin-segment',
+            d: annularSectorPath(MAP_SETTINGS.mixedPinHole, style.radius - style.strokeWidth / 2, segment.startAngle, segment.endAngle),
+            fill: segment.color,
+          }),
+        ),
+      );
       circle?.setAttribute('r', String(style.radius));
       circle?.setAttribute('fill', style.fill);
       circle?.setAttribute('stroke', style.stroke);
@@ -470,6 +488,19 @@ export function createMapView(container: HTMLElement, world: WorldTopology, call
       context.arc(x, y, style.radius, 0, Math.PI * 2);
       context.fillStyle = style.fill;
       context.fill();
+      for (const segment of style.segments) {
+        context.beginPath();
+        context.arc(x, y, style.radius, segment.startAngle, segment.endAngle);
+        context.arc(x, y, MAP_SETTINGS.mixedPinHole, segment.endAngle, segment.startAngle, true);
+        context.closePath();
+        context.fillStyle = segment.color;
+        context.fill();
+        context.lineWidth = 1;
+        context.strokeStyle = current.theme.stock;
+        context.stroke();
+      }
+      context.beginPath();
+      context.arc(x, y, style.radius, 0, Math.PI * 2);
       context.lineWidth = style.strokeWidth;
       context.strokeStyle = style.stroke;
       context.stroke();
@@ -507,8 +538,7 @@ export function createMapView(container: HTMLElement, world: WorldTopology, call
           textWidth = measureContext.measureText(text).width;
           labelWidths.set(text, textWidth);
         }
-        const radius = pin.shows.length > 1 ? MAP_SETTINGS.multiPinRadius : MAP_SETTINGS.pinRadius;
-        return { id: pin.id, text, x, y, width: textWidth, height: 14, pinRadius: radius + 2 };
+        return { id: pin.id, text, x, y, width: textWidth, height: 14, pinRadius: pinRadius(pin) + 2 };
       });
     const obstacles = visible.map(({ pin, x, y }) => ({ id: pin.id, x, y, radius: MAP_SETTINGS.pinRadius + 2 }));
     const placed = placeLabels(candidates, obstacles, { width, height });
@@ -526,7 +556,7 @@ export function createMapView(container: HTMLElement, world: WorldTopology, call
       const selected = pin.shows.some((ref) => current.selectedShowIds.has(ref.show.id));
       const highlighted = pin.shows.some((ref) => current.highlightedShowIds.has(ref.show.id));
       if (!selected && !highlighted) return [];
-      const radius = (pin.shows.length > 1 ? MAP_SETTINGS.multiPinRadius : MAP_SETTINGS.pinRadius) + (selected ? 5 : 4);
+      const radius = pinRadius(pin) + (selected ? 5 : 4);
       return [
         s('circle', {
           class: selected ? 'map-ring is-selected' : 'map-ring',
@@ -554,6 +584,11 @@ export function createMapView(container: HTMLElement, world: WorldTopology, call
     fitToShows,
     zoomBy,
   };
+}
+
+function pinRadius(pin: DisplayPin): number {
+  if (pin.bandIds.length > 1 && !pin.allPast && !pin.allCancelled) return MAP_SETTINGS.mixedPinRadius;
+  return pin.shows.length > 1 ? MAP_SETTINGS.multiPinRadius : MAP_SETTINGS.pinRadius;
 }
 
 export function easeInOutCubic(t: number): number {

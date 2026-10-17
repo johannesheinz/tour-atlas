@@ -551,6 +551,11 @@ input[type='search']::placeholder {
   opacity: 0.12;
 }
 
+.map-pin-segment {
+  stroke: var(--stock);
+  stroke-width: 1;
+}
+
 .map-badge {
   fill: var(--ink);
   rx: 6px;
