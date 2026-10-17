@@ -49,6 +49,7 @@ describe('url state', () => {
       to: '2026-12-31',
       selectedShowIds: ['iron-lantern-2026-10-17-belo-horizonte'],
       selectedPlaces: ['br.belo-horizonte'],
+      selectedBandId: 'iron-lantern',
       follow: false,
       preset: null,
       allLanes: true,
@@ -57,12 +58,12 @@ describe('url state', () => {
       globe: true,
     };
     const hash = serializeUrlState(state);
-    expect(hash).toBe('#hide=glass-harbor,velvet-meridian&tags=doom-metal&sort=next-show&from=2026-10-01&to=2026-12-31&show=iron-lantern-2026-10-17-belo-horizonte&at=br.belo-horizonte&follow=0&lanes=all&recent=1&view=europe&globe=1');
+    expect(hash).toBe('#hide=glass-harbor,velvet-meridian&tags=doom-metal&sort=next-show&from=2026-10-01&to=2026-12-31&show=iron-lantern-2026-10-17-belo-horizonte&at=br.belo-horizonte&band=iron-lantern&follow=0&lanes=all&recent=1&view=europe&globe=1');
     expect(parseUrlState(hash)).toEqual({ ...state, hiddenBandIds: ['glass-harbor', 'velvet-meridian'] });
   });
 
   it('ignores malformed values', () => {
-    expect(parseUrlState('#hide=ok,Not%20Ok&sort=random&from=2026-02-30&to=2026-03-01&follow=maybe')).toEqual({
+    expect(parseUrlState('#hide=ok,Not%20Ok&sort=random&from=2026-02-30&to=2026-03-01&follow=maybe&band=Not%20Ok')).toEqual({
       hiddenBandIds: ['ok'],
       tags: [],
       sort: null,
@@ -70,6 +71,7 @@ describe('url state', () => {
       to: null,
       selectedShowIds: [],
       selectedPlaces: [],
+      selectedBandId: null,
       follow: null,
       preset: null,
       allLanes: false,
@@ -85,6 +87,6 @@ describe('url state', () => {
   });
 
   it('serializes the default view to an empty hash', () => {
-    expect(serializeUrlState({ hiddenBandIds: [], tags: [], sort: null, from: null, to: null, selectedShowIds: [], selectedPlaces: [], follow: null, preset: null, allLanes: false, includePastMonth: false, region: null, globe: false })).toBe('');
+    expect(serializeUrlState({ hiddenBandIds: [], tags: [], sort: null, from: null, to: null, selectedShowIds: [], selectedPlaces: [], selectedBandId: null, follow: null, preset: null, allLanes: false, includePastMonth: false, region: null, globe: false })).toBe('');
   });
 });

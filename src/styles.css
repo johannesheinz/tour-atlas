@@ -36,7 +36,7 @@
   --rule: 2px;
   --rule-heavy: 4px;
   --gutter: 24px;
-  --sidebar: 300px;
+  --sidebar: 360px;
   --radius-control: 3px;
   /* Logos are stored as black silhouettes: printed in ink, inverted where the ink is light. */
   --logo-filter: none;
@@ -148,7 +148,7 @@ a {
   grid-template-areas:
     'mast mast'
     'side stage'
-    'foot foot';
+    'side foot';
   grid-template-rows: auto 1fr auto;
   min-height: 100dvh;
 }
@@ -207,15 +207,18 @@ a {
 
 .sidebar {
   grid-area: side;
+  border-right: var(--rule) solid var(--ink);
+  min-width: 0;
+}
+
+/* Only the contents stick, so the sidebar's rule runs to the bottom and nothing covers the footer. */
+.sidebar-body {
   position: sticky;
   top: 0;
-  align-self: start;
   max-height: 100dvh;
   overflow-y: auto;
   overscroll-behavior: contain;
-  border-right: var(--rule) solid var(--ink);
   padding: 16px 16px 24px var(--gutter);
-  min-width: 0;
 }
 
 .stage {
@@ -415,15 +418,32 @@ input[type='search']::placeholder {
 }
 
 .place-expand {
+  display: grid;
+  place-items: center;
   width: 24px;
   height: 24px;
   padding: 0;
-  border: 1.5px solid var(--ink);
-  border-radius: 50%;
+  border: 0;
   background: none;
-  font-weight: 600;
-  line-height: 1;
+  color: inherit;
   cursor: pointer;
+}
+
+.place-expand::before,
+.selection-back::before {
+  content: '';
+  width: 7px;
+  height: 7px;
+  border-bottom: var(--rule) solid currentColor;
+}
+
+.place-expand::before {
+  border-right: var(--rule) solid currentColor;
+  transform: translateY(-2px) rotate(45deg);
+}
+
+.place-expand[aria-expanded='true']::before {
+  transform: translateY(2px) rotate(-135deg);
 }
 
 .place-button {
@@ -602,32 +622,96 @@ input[type='search']::placeholder {
   background: var(--swatch);
 }
 
-.band-label {
+.band-select {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 3px;
   min-width: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
   cursor: pointer;
 }
 
-.band-text {
+.band-select:hover .band-identity-name,
+.band-select:focus-visible .band-identity-name {
+  text-decoration: underline;
+  text-decoration-thickness: 1.5px;
+  text-underline-offset: 3px;
+}
+
+/* A band: logo first, the name after it; with a logo the name steps back to small text. */
+
+.band-identity {
   display: flex;
-  flex-direction: column;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 2px 8px;
   min-width: 0;
 }
 
-.band-name {
-  font-family: var(--font-display);
-  font-size: 23px;
-  line-height: 1;
-  overflow-wrap: anywhere;
-}
-
-.band-logo {
+.band-identity-logo {
   display: block;
-  height: 22px;
-  max-width: 160px;
-  margin: 3px 0 1px;
   object-fit: contain;
   object-position: left center;
   filter: var(--logo-filter);
+}
+
+.band-identity-name {
+  overflow-wrap: anywhere;
+}
+
+.band-identity.has-logo .band-identity-name {
+  font-family: var(--font-text);
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: 0;
+}
+
+.band-identity.is-band-row .band-identity-logo {
+  height: 24px;
+  max-width: 170px;
+}
+
+.band-identity.is-band-row:not(.has-logo) .band-identity-name {
+  font-family: var(--font-display);
+  font-size: 23px;
+  line-height: 1;
+}
+
+.band-identity.is-heading .band-identity-logo {
+  height: 40px;
+  max-width: 230px;
+}
+
+.band-identity.is-heading.has-logo .band-identity-name {
+  font-size: 13px;
+}
+
+.band-identity.is-gig .band-identity-logo {
+  height: 18px;
+  max-width: 130px;
+}
+
+.band-identity.is-gig:not(.has-logo) .band-identity-name {
+  font-weight: 600;
+}
+
+.band-identity.is-tooltip .band-identity-logo {
+  height: 24px;
+  max-width: 180px;
+  filter: var(--logo-filter-on-ink);
+}
+
+.band-identity.is-tooltip:not(.has-logo) .band-identity-name {
+  font-family: var(--font-display);
+  font-size: 19px;
+  line-height: 1;
 }
 
 .band-meta {
@@ -638,8 +722,8 @@ input[type='search']::placeholder {
   color: var(--ink-muted);
 }
 
-.band-row.is-hidden .band-name {
-  color: var(--ink-muted);
+.band-row.is-hidden .band-identity {
+  opacity: 0.55;
 }
 
 .preview-badge {
@@ -975,23 +1059,36 @@ input[type='search']::placeholder {
   color: var(--ink-muted);
 }
 
-/* Detail: the back print of a tour shirt */
+/* Selection: the dates list on the back of a tour shirt */
 
-.detail-empty {
-  margin: 0;
-  color: var(--ink-muted);
+.selection-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 12px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
 }
 
-.detail-head {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 16px;
-  padding-bottom: 8px;
+.selection-back::before {
+  border-left: var(--rule) solid currentColor;
+  transform: translateX(2px) rotate(45deg);
+}
+
+.selection-head {
+  padding-bottom: 10px;
   border-bottom: var(--rule-heavy) solid var(--ink);
 }
 
-.detail-title {
+.selection-title {
   margin: 0;
   font-family: var(--font-display);
   font-size: 34px;
@@ -999,110 +1096,147 @@ input[type='search']::placeholder {
   line-height: 1;
 }
 
-.detail-range {
+.selection-title:focus {
+  outline: none;
+}
+
+.selection-title:focus-visible {
+  outline: 3px solid var(--ink);
+  outline-offset: 3px;
+}
+
+.selection-note {
   margin: 6px 0 0;
-  font-size: 13px;
+  font-size: 12px;
   color: var(--ink-muted);
 }
 
-.show-list {
+.selection-month-title {
+  margin: 18px 0 2px;
+  font-family: var(--font-display);
+  font-size: 20px;
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: 0.02em;
+}
+
+.gig-list {
   margin: 0;
   padding: 0;
   list-style: none;
 }
 
-.show-row {
+.gig {
   display: grid;
-  grid-template-columns: minmax(150px, 1fr) minmax(180px, 1.3fr) minmax(240px, 2fr);
-  gap: 4px 24px;
-  padding: 14px 0;
-  border-bottom: 1px solid var(--ink-muted);
+  grid-template-columns: 36px minmax(0, 1fr);
+  gap: 0 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--stock-deep);
 }
 
-.show-when,
-.show-where {
+.gig-day {
   display: flex;
   flex-direction: column;
+  margin: 0;
 }
 
-.show-weekday,
-.show-country {
+.gig-date {
+  font-family: var(--font-display);
+  font-size: 30px;
+  line-height: 0.9;
+}
+
+.gig-weekday {
+  font-size: 11px;
+  color: var(--ink-muted);
+}
+
+.gig-info p {
+  margin: 0 0 3px;
+}
+
+.gig-place {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0 6px;
+}
+
+.gig-city {
+  font-family: var(--font-display);
+  font-size: 21px;
+  line-height: 1;
+  overflow-wrap: anywhere;
+}
+
+.gig-country {
   font-size: 12px;
   color: var(--ink-muted);
 }
 
-.show-date,
-.show-city {
-  font-family: var(--font-display);
-  font-size: 30px;
-  line-height: 1;
-  text-transform: uppercase;
-  letter-spacing: 0.01em;
-}
-
-.show-row.is-cancelled .show-date,
-.show-row.is-cancelled .show-city {
-  text-decoration: line-through;
-  text-decoration-thickness: 3px;
-}
-
-.show-row.is-past .show-date,
-.show-row.is-past .show-city {
-  color: var(--ink-muted);
-}
-
-.show-info p {
-  margin: 0 0 4px;
-}
-
-.show-band {
+.gig-band {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 4px 8px;
+  gap: 2px 8px;
 }
 
-.detail-swatch {
-  width: 12px;
-  height: 12px;
+.gig-swatch {
+  flex: none;
+  width: 10px;
+  height: 10px;
   border: 1.5px solid var(--ink);
   border-radius: 50%;
   background: var(--swatch);
 }
 
-.detail-logo {
-  height: 18px;
-  max-width: 120px;
-  object-fit: contain;
-  filter: var(--logo-filter);
-}
-
-.show-tour {
+.gig-tour {
+  font-size: 13px;
   color: var(--ink-soft);
 }
 
-.show-facts,
-.show-meta {
+.gig-facts {
   display: flex;
   flex-wrap: wrap;
-  gap: 2px 14px;
-  font-size: 14px;
-}
-
-.show-meta {
-  align-items: center;
-  margin-top: 6px !important;
+  gap: 0 10px;
   font-size: 13px;
 }
 
-.show-notes {
-  font-size: 13px;
+.gig-notes {
+  font-size: 12px;
   font-style: italic;
   color: var(--ink-soft);
 }
 
+.gig-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 2px 10px;
+  margin-top: 5px !important;
+  font-size: 12px;
+}
+
+.gig.is-cancelled .gig-date,
+.gig.is-cancelled .gig-city {
+  text-decoration: line-through;
+  text-decoration-thickness: 2px;
+}
+
+.gig.is-past .gig-date,
+.gig.is-past .gig-city {
+  color: var(--ink-muted);
+}
+
+.selection-empty,
+.selection-more {
+  margin: 14px 0 0;
+  font-size: 13px;
+  color: var(--ink-muted);
+}
+
 .is-unknown,
-.show-precision {
+.gig-precision {
   color: var(--ink-muted);
 }
 
@@ -1122,11 +1256,6 @@ input[type='search']::placeholder {
 
 .status-postponed {
   border-style: dashed;
-}
-
-.detail-more {
-  color: var(--ink-muted);
-  font-size: 13px;
 }
 
 /* Preview */
@@ -1305,14 +1434,8 @@ input[type='search']::placeholder {
   pointer-events: none;
 }
 
-.tooltip-logo {
-  display: block;
-  height: 26px;
-  max-width: 220px;
-  margin-bottom: 6px;
-  object-fit: contain;
-  object-position: left center;
-  filter: var(--logo-filter-on-ink);
+.tooltip-band {
+  margin: 0 0 6px;
 }
 
 .tooltip-title {
@@ -1453,6 +1576,12 @@ input[type='search']::placeholder {
   .app {
     grid-template-columns: minmax(0, 1fr);
     grid-template-areas: 'mast' 'side' 'stage' 'foot';
+    grid-template-rows: auto;
+  }
+
+  /* With a selection, its dates follow the map and timeline, like the back of the shirt. */
+  .app:has(.sidebar.is-selecting) {
+    grid-template-areas: 'mast' 'stage' 'side' 'foot';
   }
 
   .wordmark {
@@ -1466,11 +1595,26 @@ input[type='search']::placeholder {
   }
 
   .sidebar {
-    position: static;
-    max-height: none;
     border-right: 0;
     border-bottom: var(--rule) solid var(--ink);
     padding: 8px var(--gutter);
+  }
+
+  .sidebar-body {
+    position: static;
+    max-height: none;
+    overflow: visible;
+    padding: 0;
+  }
+
+  .sidebar.is-selecting {
+    border-top: var(--rule) solid var(--ink);
+    border-bottom: 0;
+    padding-top: 16px;
+  }
+
+  .sidebar.is-selecting .sidebar-toggle {
+    display: none;
   }
 
   .sidebar-toggle {
@@ -1494,20 +1638,12 @@ input[type='search']::placeholder {
     content: '\2212';
   }
 
-  .sidebar:not(.is-expanded) .sidebar-body {
+  .sidebar:not(.is-expanded, .is-selecting) .sidebar-body {
     display: none;
   }
 
   .map {
     height: clamp(260px, 46vh, 420px);
-  }
-
-  .show-row {
-    grid-template-columns: 1fr 1fr;
-  }
-
-  .show-info {
-    grid-column: 1 / -1;
   }
 }
 

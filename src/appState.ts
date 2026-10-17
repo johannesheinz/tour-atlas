@@ -7,6 +7,15 @@ import type { TimePreset } from './view/timePresets.ts';
 import type { MapMode, MapViewPreset } from './view/mapRegions.ts';
 import type { PlaceKey } from './places.ts';
 
+/** What the sidebar lists instead of the band and place lists. Places and bands resolve live to their shows in the time window. */
+export type Selection =
+  | { readonly kind: 'none' }
+  | { readonly kind: 'shows'; readonly showIds: ReadonlySet<string> }
+  | { readonly kind: 'places'; readonly places: ReadonlySet<PlaceKey> }
+  | { readonly kind: 'band'; readonly bandId: string };
+
+export const NO_SELECTION: Selection = { kind: 'none' };
+
 export interface TimeWindow {
   readonly start: number;
   readonly end: number;
@@ -24,9 +33,7 @@ export interface AppState {
   readonly bandFilter: string;
   readonly focusBandId: string | null;
   readonly hoverShowIds: ReadonlySet<string>;
-  readonly selectedShowIds: ReadonlySet<string>;
-  /** Selected cities or countries; resolved live to their shows inside the time window. Takes precedence over selectedShowIds. */
-  readonly selectedPlaces: ReadonlySet<PlaceKey>;
+  readonly selection: Selection;
   readonly timeWindow: TimeWindow | null;
   readonly followTimeline: boolean;
   /** The preset that produced the current window; null once the user zooms or pans. */

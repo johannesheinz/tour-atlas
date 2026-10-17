@@ -21,8 +21,8 @@ describe('tooltips', () => {
     const [ref] = betaShows;
     if (ref === undefined) throw new Error('no show');
     expect(showTooltip(ref, 'light')).toEqual({
-      bandId: 'beta',
-      title: 'Test Band',
+      band: { id: 'beta', name: 'Test Band' },
+      title: null,
       lines: [{ color: beta.color.light, text: '9 Nov 2026', detail: 'Berlin, Germany' }],
       more: null,
     });
@@ -30,13 +30,15 @@ describe('tooltips', () => {
 
   it('lists the shows of one band at a pin with their status', () => {
     const content = pinTooltip(alphaShows, 'Berlin', 'dark');
-    expect(content.title).toBe('Test Band: 2 shows in Berlin');
+    expect(content.band).toEqual({ id: 'alpha', name: 'Test Band' });
+    expect(content.title).toBe('2 shows in Berlin');
     expect(content.lines.map((line) => line.text)).toEqual(['2 Nov 2026, 20:00 (played)', '5 Nov 2026, 20:00 (sold out)']);
     expect(content.lines[0]?.color).toBe(alpha.color.dark);
   });
 
   it('summarises a mixed pin by band, biggest first', () => {
     const content = pinTooltip([...alphaShows, ...betaShows], 'Berlin +1', 'light');
+    expect(content.band).toBeNull();
     expect(content.title).toBe('3 shows in Berlin +1');
     expect(content.lines.map((line) => line.detail)).toEqual(['2 shows, next 5 Nov 2026', '1 show, next 9 Nov 2026']);
     expect(content.more).toBeNull();

@@ -7,14 +7,14 @@ self-hosted font files next to it. No backend, no network requests to third part
 - Equal Earth map with automatic fitting (antimeridian-aware), zoom and pan, great-circle routes, merged and
   clustered pins, greyed past shows, hollow cancelled shows; canvas rendering above 2,000 shows
 - Timeline with one lane per band, x-axis zoom, adaptive ticks, a today marker and virtualised lanes
-- Hover links map and timeline; click lists the shows in a detail panel; the map can follow the timeline window
+- Hover links map and timeline; clicking a band, place, pin or date lists its shows in the sidebar; the map can follow the timeline window
 - Search across bands, cities, venues, tours and festivals; band list with filter, sort, solo, show/hide all
 - Local preview: drop band files to validate them, see the diff against the published data and download the
   normalized file. Nothing leaves the browser.
 - Light and dark themes that follow the system, with a toggle; keyboard navigation with visible focus
 - Hover tooltips, time presets (upcoming, next 3 months, past, all), collapsed empty lanes, band-colour rings on
   shared pins, and genre filters from the fixed tag list in `data/tags.json`
-- Band logos as one-colour silhouettes in the band list, tooltips and detail panel, stored in `data/logos/`
+- Band logos as one-colour silhouettes in the band list, tooltips and show lists, stored in `data/logos/`
 
 Tour data lives in [`data/bands/`](data/bands/), one JSON file per band, and is changed through pull requests.
 See [CONTRIBUTING.md](CONTRIBUTING.md) and [docs/DATA_FORMAT.md](docs/DATA_FORMAT.md).

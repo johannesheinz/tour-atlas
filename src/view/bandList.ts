@@ -1,6 +1,6 @@
 import { dateRange, type BandEntry, type BandSort } from '../model.ts';
 import { TAG_VOCABULARY } from '../data/tags.ts';
-import { logoFor } from '../logos.ts';
+import { createBandIdentity, type BandIdentity } from './bandIdentity.ts';
 import { h } from './dom.ts';
 import { formatDate, plural } from './format.ts';
 import { bandColor, type ThemeMode } from '../model.ts';
@@ -19,6 +19,8 @@ export interface BandListProps {
 }
 
 export interface BandListCallbacks {
+  /** Opens the band's dates in the sidebar. */
+  onSelect(bandId: string): void;
   onToggle(bandId: string, visible: boolean): void;
   onSolo(bandId: string): void;
   onShowAll(): void;
@@ -37,8 +39,8 @@ export interface BandListView {
 interface Row {
   readonly element: HTMLLIElement;
   readonly checkbox: HTMLInputElement;
-  readonly name: HTMLSpanElement;
-  readonly logo: HTMLImageElement;
+  readonly select: HTMLButtonElement;
+  readonly identity: BandIdentity;
   readonly meta: HTMLSpanElement;
   readonly badge: HTMLSpanElement;
 }
@@ -107,15 +109,15 @@ export function createBandList(container: HTMLElement, callbacks: BandListCallba
 
   function createRow(band: BandEntry): Row {
     const bandId = band.file.band.id;
-    const checkbox = h('input', { type: 'checkbox', class: 'band-checkbox', id: `band-${bandId}` });
-    const name = h('span', { class: 'band-name' });
+    const checkbox = h('input', { type: 'checkbox', class: 'band-checkbox', 'aria-label': `Show ${band.file.band.name} on the map and timeline` });
     const badge = h('span', { class: 'preview-badge' }, 'Preview');
     const meta = h('span', { class: 'band-meta' });
-    const logo = h('img', { class: 'band-logo', alt: '', loading: 'lazy', decoding: 'async', hidden: true });
+    const identity = createBandIdentity('is-band-row');
     const solo = h('button', { type: 'button', class: 'band-solo', 'aria-label': `Show only ${band.file.band.name}` }, 'Only');
-    const label = h('label', { class: 'band-label', for: checkbox.id }, h('span', { class: 'band-text' }, name, logo, meta));
-    const element = h('li', { class: 'band-row' }, checkbox, label, badge, solo);
+    const select = h('button', { type: 'button', class: 'band-select', 'aria-label': `List the dates of ${band.file.band.name}` }, identity.element, meta);
+    const element = h('li', { class: 'band-row' }, checkbox, select, badge, solo);
 
+    select.addEventListener('click', () => callbacks.onSelect(bandId));
     checkbox.addEventListener('change', () => callbacks.onToggle(bandId, checkbox.checked));
     checkbox.addEventListener('click', (event) => {
       if (!event.altKey) return;
@@ -125,7 +127,7 @@ export function createBandList(container: HTMLElement, callbacks: BandListCallba
     solo.addEventListener('click', () => callbacks.onSolo(bandId));
     element.addEventListener('mouseenter', () => callbacks.onFocusBand(bandId));
     element.addEventListener('focusin', () => callbacks.onFocusBand(bandId));
-    return { element, checkbox, name, logo, meta, badge };
+    return { element, checkbox, select, identity, meta, badge };
   }
 
   return {
@@ -168,10 +170,7 @@ export function createBandList(container: HTMLElement, callbacks: BandListCallba
         const range = dateRange(band);
         row.checkbox.checked = !props.hiddenBandIds.has(bandId);
         row.checkbox.style.setProperty('--swatch', bandColor(band, props.mode));
-        row.name.textContent = band.file.band.name;
-        const logoUrl = logoFor(bandId);
-        row.logo.hidden = logoUrl === null;
-        if (logoUrl !== null && row.logo.getAttribute('src') !== logoUrl) row.logo.setAttribute('src', logoUrl);
+        row.identity.update(bandId, band.file.band.name);
         row.meta.replaceChildren(h('span', {}, plural(band.file.shows.length, 'show')), range === null ? '' : h('span', {}, `${formatDate(range.first)} – ${formatDate(range.last)}`));
         row.badge.hidden = !band.isPreview;
         row.element.classList.toggle('is-hidden', props.hiddenBandIds.has(bandId));

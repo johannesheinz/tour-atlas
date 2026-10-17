@@ -1,4 +1,4 @@
-import { logoFor } from '../logos.ts';
+import { bandIdentity } from './bandIdentity.ts';
 import { h } from './dom.ts';
 import type { TooltipContent } from './tooltipContent.ts';
 
@@ -17,10 +17,9 @@ export function createTooltip(container: HTMLElement): Tooltip {
 
   return {
     show(content, x, y) {
-      const logoUrl = content.bandId === null ? null : logoFor(content.bandId);
       const parts: HTMLElement[] = [
-        ...(logoUrl === null ? [] : [h('img', { class: 'tooltip-logo', src: logoUrl, alt: '' })]),
-        h('p', { class: 'tooltip-title' }, content.title),
+        ...(content.band === null ? [] : [h('p', { class: 'tooltip-band' }, bandIdentity(content.band.id, content.band.name, 'is-tooltip'))]),
+        ...(content.title === null ? [] : [h('p', { class: 'tooltip-title' }, content.title)]),
         h(
           'ul',
           { class: 'tooltip-lines' },

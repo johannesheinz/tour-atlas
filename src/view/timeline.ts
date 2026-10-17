@@ -541,6 +541,23 @@ export function createTimeline(container: HTMLElement, callbacks: TimelineCallba
       lanesContext.setLineDash([]);
     }
 
+    for (let index = first; index <= last; index++) {
+      const lane = current.lanes[index];
+      if (lane === undefined) continue;
+      for (const ref of lane.shows) {
+        const selected = current.selectedShowIds.has(ref.show.id);
+        if (!selected && !current.highlightedShowIds.has(ref.show.id)) continue;
+        const [startX, endX] = dotCenter(x, ref);
+        lanesContext.strokeStyle = theme.ink;
+        lanesContext.lineWidth = selected ? 2.5 : 1.5;
+        lanesContext.beginPath();
+        const ring = radius + (selected ? 4 : 3.5);
+        if (endX - startX > 1) lanesContext.roundRect(startX - ring, dotY(index) - ring, endX - startX + 2 * ring, 2 * ring, ring);
+        else lanesContext.arc(startX, dotY(index), ring, 0, Math.PI * 2);
+        lanesContext.stroke();
+      }
+    }
+
     lanesContext.font = compact ? TIMELINE_SETTINGS.compactLaneFont : TIMELINE_SETTINGS.laneFont;
     lanesContext.textBaseline = 'alphabetic';
     for (let index = first; index <= last; index++) {
@@ -558,23 +575,6 @@ export function createTimeline(container: HTMLElement, callbacks: TimelineCallba
       lanesContext.fillText(name, label.x, label.baseline);
     }
     lanesContext.globalAlpha = 1;
-
-    for (let index = first; index <= last; index++) {
-      const lane = current.lanes[index];
-      if (lane === undefined) continue;
-      for (const ref of lane.shows) {
-        const selected = current.selectedShowIds.has(ref.show.id);
-        if (!selected && !current.highlightedShowIds.has(ref.show.id)) continue;
-        const [startX, endX] = dotCenter(x, ref);
-        lanesContext.strokeStyle = theme.ink;
-        lanesContext.lineWidth = selected ? 2.5 : 1.5;
-        lanesContext.beginPath();
-        const ring = radius + (selected ? 4 : 3.5);
-        if (endX - startX > 1) lanesContext.roundRect(startX - ring, dotY(index) - ring, endX - startX + 2 * ring, 2 * ring, ring);
-        else lanesContext.arc(startX, dotY(index), ring, 0, Math.PI * 2);
-        lanesContext.stroke();
-      }
-    }
   }
 
   function laneIndexAt(event: MouseEvent): number {

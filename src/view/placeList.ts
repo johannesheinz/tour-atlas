@@ -45,7 +45,7 @@ export function createPlaceList(container: HTMLElement, callbacks: PlaceListCall
     list.replaceChildren(
       ...matching.map(({ country, cities, forceOpen }) => {
         const isOpen = forceOpen || open.has(country.key);
-        const expand = h('button', { type: 'button', class: 'place-expand', 'aria-expanded': String(isOpen), 'aria-label': `${isOpen ? 'Hide' : 'Show'} cities in ${country.name}` }, isOpen ? '−' : '+');
+        const expand = h('button', { type: 'button', class: 'place-expand', 'aria-expanded': String(isOpen), 'aria-label': `${isOpen ? 'Hide' : 'Show'} cities in ${country.name}` });
         expand.addEventListener('click', () => {
           if (open.has(country.key)) open.delete(country.key);
           else open.add(country.key);

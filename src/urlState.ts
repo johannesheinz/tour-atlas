@@ -13,6 +13,7 @@ export interface UrlState {
   readonly to: string | null;
   readonly selectedShowIds: readonly string[];
   readonly selectedPlaces: readonly string[];
+  readonly selectedBandId: string | null;
   readonly follow: boolean | null;
   readonly preset: TimePreset | null;
   readonly allLanes: boolean;
@@ -45,6 +46,7 @@ export function parseUrlState(hash: string): UrlState {
     to: validRange ? to : null,
     selectedShowIds: list('show'),
     selectedPlaces: (params.get('at') ?? '').split(',').filter((key) => PLACE_KEY_PATTERN.test(key)),
+    selectedBandId: ID_PATTERN.test(params.get('band') ?? '') ? params.get('band') : null,
     follow: followParam === '0' ? false : followParam === '1' ? true : null,
     preset: PRESET_IDS.find((preset) => preset === params.get('when')) ?? null,
     allLanes: params.get('lanes') === 'all',
@@ -65,6 +67,7 @@ export function serializeUrlState(state: UrlState): string {
   }
   if (state.selectedShowIds.length > 0) params.set('show', state.selectedShowIds.toSorted().join(','));
   if (state.selectedPlaces.length > 0) params.set('at', state.selectedPlaces.toSorted().join(','));
+  if (state.selectedBandId !== null) params.set('band', state.selectedBandId);
   if (state.follow !== null) params.set('follow', state.follow ? '1' : '0');
   if (state.preset !== null) params.set('when', state.preset);
   if (state.allLanes) params.set('lanes', 'all');

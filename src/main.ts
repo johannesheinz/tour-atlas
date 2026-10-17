@@ -1,9 +1,10 @@
 import './styles.css';
 import world from 'virtual:world-topology';
-import { createDeriver, type AppState } from './appState.ts';
+import { NO_SELECTION, createDeriver, type AppState, type Derived, type Selection } from './appState.ts';
 import { addDays, formatIsoDate, localToday, parseIsoDate } from './data/dates.ts';
 import type { ShowRef } from './model.ts';
 import { createSelectors } from './selectors.ts';
+import { selectionShows } from './selection.ts';
 import { createStore } from './state.ts';
 import { createBundledStore } from './store/bundled.ts';
 import { parseUrlState, serializeUrlState } from './urlState.ts';
@@ -12,7 +13,6 @@ import { isKnownTag } from './data/tags.ts';
 import { exportAll, mergePreviews, normalizedFileText, processPreviewFile, type PreviewResult } from './preview.ts';
 import { createBandList } from './view/bandList.ts';
 import { createPreviewPanel } from './view/previewPanel.ts';
-import { createDetail } from './view/detail.ts';
 import { h, requireElement } from './view/dom.ts';
 import { MAP_SETTINGS, createMapView } from './view/map.ts';
 import { createSearch } from './view/search.ts';
@@ -23,9 +23,10 @@ import { createTimeline } from './view/timeline.ts';
 import { createTimelineControls } from './view/timelineControls.ts';
 import { createMapControls } from './view/mapControls.ts';
 import { createPlaceList } from './view/placeList.ts';
+import { createSelectionPanel, type SelectionHeading } from './view/selectionPanel.ts';
 import { createSidebar } from './view/sidebar.ts';
 import { cityKey, describePlaces, showsAtPlaces, type PlaceKey } from './places.ts';
-import { countryName, formatDate } from './view/format.ts';
+import { countryName, formatDate, plural } from './view/format.ts';
 import { slugify } from './data/ids.ts';
 import { findRegion, regionPoints, showsWithin, type MapViewPreset } from './view/mapRegions.ts';
 import { PRESET_IDS, defaultPreset, isPresetAvailable, presetRange, usesPastMonth, type TimePreset } from './view/timePresets.ts';
@@ -48,8 +49,7 @@ const state = createStore<AppState>({
   bandFilter: '',
   focusBandId: null,
   hoverShowIds: new Set(),
-  selectedShowIds: new Set(urlState.selectedShowIds),
-  selectedPlaces: new Set(urlState.selectedPlaces),
+  selection: initialSelection(),
   timeWindow: null,
   followTimeline: urlState.follow ?? true,
   timePreset: urlState.preset,
@@ -69,6 +69,7 @@ const select = createSelectors(MAP_SETTINGS.maxBandsWithRoutes);
 let theme: ThemeColors = readThemeColors('auto');
 
 const idsOf = (shows: readonly ShowRef[] | null): ReadonlySet<string> => new Set((shows ?? []).map((ref) => ref.show.id));
+const NO_PLACES: ReadonlySet<PlaceKey> = new Set();
 
 const map = createMapView(requireElement(document, '#map', HTMLDivElement), world, {
   onHover: (shows) => state.set({ hoverShowIds: idsOf(shows) }),
@@ -78,7 +79,7 @@ const map = createMapView(requireElement(document, '#map', HTMLDivElement), worl
 let windowTimer: ReturnType<typeof setTimeout> | undefined;
 const timeline = createTimeline(requireElement(document, '#timeline', HTMLDivElement), {
   onHover: (shows) => state.set({ hoverShowIds: idsOf(shows) }),
-  onSelect: (shows) => state.set({ selectedShowIds: idsOf(shows), selectedPlaces: new Set() }),
+  onSelect: (shows) => state.set({ selection: shows === null || shows.length === 0 ? NO_SELECTION : { kind: 'shows', showIds: idsOf(shows) } }),
   onWindowChange(window, byUser) {
     if (byUser) state.set({ timePreset: null });
     clearTimeout(windowTimer);
@@ -88,6 +89,10 @@ const timeline = createTimeline(requireElement(document, '#timeline', HTMLDivEle
 });
 
 const bandList = createBandList(requireElement(document, '#band-list', HTMLElement), {
+  onSelect(bandId) {
+    selectBand(bandId);
+    selectionPanel.focusTitle();
+  },
   onToggle(bandId, visible) {
     const hidden = new Set(state.get().hiddenBandIds);
     if (visible) hidden.delete(bandId);
@@ -109,8 +114,11 @@ const bandList = createBandList(requireElement(document, '#band-list', HTMLEleme
   onClearTags: () => state.set({ tagFilter: new Set() }),
 });
 
-const detail = createDetail(requireElement(document, '#detail', HTMLElement), {
-  onClear: () => state.set({ selectedShowIds: new Set(), selectedPlaces: new Set() }),
+const selectionPanel = createSelectionPanel(requireElement(document, '#selection-panel', HTMLElement), {
+  onBack() {
+    state.set({ selection: NO_SELECTION });
+    sidebar.focusActiveTab();
+  },
 });
 
 const previewPanel = createPreviewPanel(requireElement(document, '#preview-panel', HTMLElement), {
@@ -126,15 +134,9 @@ const previewPanel = createPreviewPanel(requireElement(document, '#preview-panel
 const sidebar = createSidebar(requireElement(document, '#sidebar', HTMLElement));
 const placeList = createPlaceList(requireElement(document, '#place-list', HTMLElement), {
   onSelect(key) {
-    const current = state.get();
-    const already = current.selectedPlaces.size === 1 && current.selectedPlaces.has(key);
-    selectPlaces(already ? new Set() : new Set([key]));
-    if (already) return;
-    const shows = showsAtPlaces(derive(state.get()).visibleShows, new Set([key]), state.get().timeWindow);
-    if (shows.length === 0) return;
-    state.set({ mapView: { kind: 'shows' } });
-    map.setUserLocation(null);
-    map.fitToShows(shows, true);
+    selectPlaces(new Set([key]));
+    selectionPanel.focusTitle();
+    fitMapTo(showsAtPlaces(derive(state.get()).visibleShows, new Set([key]), state.get().timeWindow));
   },
 });
 
@@ -169,7 +171,7 @@ const mapControls = createMapControls(requireElement(document, '#map-controls', 
     const current = state.get();
     if (current.mapView.kind !== 'near' || current.userPosition === null) return;
     const nearby = showsWithin(select.mapShows(derive(current), select.windowFilter(current)), current.userPosition, current.mapView.radiusKm);
-    state.set({ selectedShowIds: new Set(nearby.map((ref) => ref.show.id)), selectedPlaces: new Set() });
+    state.set({ selection: { kind: 'shows', showIds: idsOf(nearby) } });
   },
 });
 map.setMode(state.get().mapMode);
@@ -285,8 +287,18 @@ function renderAll() {
     sort: current.bandSort,
     mode: theme.mode,
   });
-  detail.render({ shows: select.selection(current, derived), mode: theme.mode, place: placeHeading(current, derived) });
-  placeList.render({ places: select.places(current, derived), selected: current.selectedPlaces });
+  const selected = select.selection(current, derived);
+  sidebar.showSelection(selectionKey(current.selection));
+  if (current.selection.kind !== 'none') {
+    selectionPanel.render({
+      heading: selectionHeading(current, derived, selected),
+      shows: selected,
+      showBand: current.selection.kind !== 'band',
+      backLabel: sidebar.activeTab() === 'bands' ? 'Back to bands' : 'Back to places',
+      mode: theme.mode,
+    });
+  }
+  placeList.render({ places: select.places(current, derived), selected: current.selection.kind === 'places' ? current.selection.places : NO_PLACES });
   sidebar.setToggleLabel(`Bands and places (${derived.visibleBands.length} of ${derived.bands.length} bands shown)`);
   search.setIndex(select.searchIndex(derived));
   previewPanel.render(current.previewResults);
@@ -369,11 +381,26 @@ function soloBand(bandId: string) {
   state.set({ hiddenBandIds: new Set(bands.map((band) => band.file.band.id).filter((id) => id !== bandId)) });
 }
 
+function selectBand(bandId: string) {
+  const { hiddenBandIds, timeWindow } = state.get();
+  if (hiddenBandIds.has(bandId)) state.set({ hiddenBandIds: new Set([...hiddenBandIds].filter((id) => id !== bandId)) });
+  sidebar.showTab('bands');
+  state.set({ selection: { kind: 'band', bandId } });
+  fitMapTo(selectionShows({ kind: 'band', bandId }, timeWindow, derive(state.get())));
+}
+
+function fitMapTo(shows: readonly ShowRef[]) {
+  if (shows.length === 0) return;
+  state.set({ mapView: { kind: 'shows' } });
+  map.setUserLocation(null);
+  map.fitToShows(shows, true);
+}
+
 function focusSearchResult(entry: SearchEntry) {
   const derived = derive(state.get());
   if (entry.kind === 'band') {
     const [bandId] = entry.bandIds;
-    if (bandId !== undefined) soloBand(bandId);
+    if (bandId !== undefined) selectBand(bandId);
     return;
   }
   if (entry.kind === 'tag') {
@@ -396,11 +423,7 @@ function focusSearchResult(entry: SearchEntry) {
     map.setUserLocation(null);
     map.fitToShows(shows, true);
   }
-  state.set(
-    placeKey === null
-      ? { selectedShowIds: new Set(entry.showIds), selectedPlaces: new Set(), timePreset: null }
-      : { selectedShowIds: new Set(), selectedPlaces: new Set([placeKey]), timePreset: null },
-  );
+  state.set({ selection: placeKey === null ? { kind: 'shows', showIds: new Set(entry.showIds) } : { kind: 'places', places: new Set([placeKey]) }, timePreset: null });
   const start = Math.min(...shows.map((ref) => ref.start));
   const end = Math.max(...shows.map((ref) => ref.end)) + DAY_MS;
   const padding = Math.max(7 * DAY_MS, (end - start) * 0.1);
@@ -422,7 +445,28 @@ function applyPreset(preset: TimePreset | null, animate: boolean) {
 }
 
 function selectPlaces(places: ReadonlySet<PlaceKey>) {
-  state.set({ selectedPlaces: places, selectedShowIds: new Set() });
+  state.set({ selection: places.size === 0 ? NO_SELECTION : { kind: 'places', places } });
+}
+
+function initialSelection(): Selection {
+  if (urlState.selectedPlaces.length > 0) return { kind: 'places', places: new Set(urlState.selectedPlaces) };
+  if (urlState.selectedBandId !== null && knownBandIds.has(urlState.selectedBandId)) return { kind: 'band', bandId: urlState.selectedBandId };
+  if (urlState.selectedShowIds.length > 0) return { kind: 'shows', showIds: new Set(urlState.selectedShowIds) };
+  return NO_SELECTION;
+}
+
+/** Changes when a different selection opens, so the sidebar starts it at the top. */
+function selectionKey(selection: Selection): string | null {
+  switch (selection.kind) {
+    case 'none':
+      return null;
+    case 'shows':
+      return `shows:${[...selection.showIds].toSorted().join(',')}`;
+    case 'places':
+      return `places:${[...selection.places].toSorted().join(',')}`;
+    case 'band':
+      return `band:${selection.bandId}`;
+  }
 }
 
 /** Search keys places as "<city slug>|<COUNTRY>". */
@@ -432,12 +476,36 @@ function searchPlaceKey(ref: string): PlaceKey {
   return `${country.toLowerCase()}.${slugify(city)}`;
 }
 
-function placeHeading(current: AppState, derived: ReturnType<typeof derive>): { name: string; range: string } | null {
-  if (current.selectedPlaces.size === 0) return null;
+function selectionHeading(current: AppState, derived: Derived, shows: readonly ShowRef[]): SelectionHeading {
   const window = current.timeWindow;
-  const range =
-    window === null ? 'on all dates' : `between ${formatDate(formatIsoDate(new Date(window.start)))} and ${formatDate(formatIsoDate(new Date(window.end)))}`;
-  return { name: describePlaces(current.selectedPlaces, derived.visibleShows, countryName), range };
+  const range = window === null ? 'on all dates' : `between ${formatDate(formatIsoDate(new Date(window.start)))} and ${formatDate(formatIsoDate(new Date(window.end)))}`;
+  const live = `${plural(shows.length, 'show')} ${range}. The list follows the timeline.`;
+  const { selection } = current;
+  switch (selection.kind) {
+    case 'none':
+      throw new Error('no selection to describe');
+    case 'band': {
+      const band = derived.bands.find((entry) => entry.file.band.id === selection.bandId);
+      if (band === undefined) throw new Error(`unknown band ${selection.bandId}`);
+      return { title: band.file.band.name, bandId: selection.bandId, note: live, emptyMessage: `No ${band.file.band.name} shows ${range}. Zoom the timeline out or pick a wider time range.` };
+    }
+    case 'places': {
+      const name = describePlaces(selection.places, derived.visibleShows, countryName);
+      return { title: name, bandId: null, note: live, emptyMessage: `No shows in ${name} ${range}. Zoom the timeline out or pick a wider time range.` };
+    }
+    case 'shows':
+      return { title: pickedShowsTitle(shows), bandId: null, note: null, emptyMessage: 'These shows are hidden. Turn their bands on in the band list.' };
+  }
+}
+
+function pickedShowsTitle(shows: readonly ShowRef[]): string {
+  const cities = new Set(shows.map((ref) => ref.show.city));
+  const bands = new Set(shows.map((ref) => ref.band.file.band.name));
+  const [onlyCity] = cities;
+  const [onlyBand] = bands;
+  if (shows.length === 1 && onlyBand !== undefined && onlyCity !== undefined) return `${onlyBand} in ${onlyCity}`;
+  const where = cities.size === 1 && onlyCity !== undefined ? `in ${onlyCity}` : `in ${plural(cities.size, 'city', 'cities')}`;
+  return `${bands.size === 1 && onlyBand !== undefined ? `${onlyBand}: ` : ''}${plural(shows.length, 'show')} ${where}`;
 }
 
 function initialMapView(): MapViewPreset {
@@ -494,7 +562,7 @@ function applyMapView(view: MapViewPreset, animate: boolean) {
 function resetViews() {
   searchFocus = null;
   const current = state.get();
-  state.set({ selectedShowIds: new Set(), selectedPlaces: new Set(), hoverShowIds: new Set(), focusBandId: null, mapView: { kind: 'shows' }, locationStatus: null });
+  state.set({ selection: NO_SELECTION, hoverShowIds: new Set(), focusBandId: null, mapView: { kind: 'shows' }, locationStatus: null });
   map.setUserLocation(null);
   map.fitToData(true);
   applyPreset(defaultPreset(derive(current).visibleShows, parseIsoDate(current.today).getTime()), true);
@@ -517,8 +585,9 @@ function writeUrlState() {
     sort: current.bandSort === 'name' ? null : current.bandSort,
     from: showWindow ? formatIsoDate(new Date(window.start)) : null,
     to: showWindow ? addDays(formatIsoDate(new Date(window.end)), -1) : null,
-    selectedShowIds: [...current.selectedShowIds],
-    selectedPlaces: [...current.selectedPlaces],
+    selectedShowIds: current.selection.kind === 'shows' ? [...current.selection.showIds] : [],
+    selectedPlaces: current.selection.kind === 'places' ? [...current.selection.places] : [],
+    selectedBandId: current.selection.kind === 'band' ? current.selection.bandId : null,
     follow: current.followTimeline ? null : false,
     preset: current.timePreset === null || current.timePreset === defaultPreset(derive(current).visibleShows, parseIsoDate(current.today).getTime()) ? null : current.timePreset,
     allLanes: !current.hideEmptyLanes,

@@ -1,7 +1,8 @@
-import { isInWindow, type AppState, type Derived } from './appState.ts';
+import { isInWindow, type AppState, type Derived, type Selection } from './appState.ts';
+import { selectionShows } from './selection.ts';
 import type { ShowRef } from './model.ts';
 import { countryName } from './view/format.ts';
-import { buildPlaces, showsAtPlaces, type CountryPlace } from './places.ts';
+import { buildPlaces, type CountryPlace } from './places.ts';
 import type { TimelineLane } from './view/timeline.ts';
 import { buildSearchIndex, type SearchEntry } from './view/searchIndex.ts';
 
@@ -21,7 +22,7 @@ export function createSelectors(maxBandsWithRoutes: number) {
   let lanesKey: [Derived['visibleBands'], AppState['timeWindow'], boolean] | null = null;
   let lanes: { readonly shown: readonly TimelineLane[]; readonly hiddenCount: number } = { shown: [], hiddenCount: 0 };
 
-  let selectionKey: [ReadonlySet<string>, ReadonlySet<string>, AppState['timeWindow'], readonly ShowRef[], ReadonlyMap<string, ShowRef>] | null = null;
+  let selectionKey: [Selection, AppState['timeWindow'], Derived] | null = null;
   let selection: readonly ShowRef[] = [];
   let selectedIdsKey: readonly ShowRef[] | null = null;
   let selectedIds: ReadonlySet<string> = new Set();
@@ -82,23 +83,11 @@ export function createSelectors(maxBandsWithRoutes: number) {
       return lanes;
     },
 
-    /** Selected places resolve to their visible shows inside the time window; otherwise the selected show ids. */
     selection(current: AppState, derived: Derived): readonly ShowRef[] {
       const key = selectionKey;
-      if (
-        key === null ||
-        key[0] !== current.selectedShowIds ||
-        key[1] !== current.selectedPlaces ||
-        key[2] !== current.timeWindow ||
-        key[3] !== derived.visibleShows ||
-        key[4] !== derived.showsById
-      ) {
-        selectionKey = [current.selectedShowIds, current.selectedPlaces, current.timeWindow, derived.visibleShows, derived.showsById];
-        const refs =
-          current.selectedPlaces.size > 0
-            ? showsAtPlaces(derived.visibleShows, current.selectedPlaces, current.timeWindow)
-            : [...current.selectedShowIds].flatMap((id) => derived.showsById.get(id) ?? []);
-        selection = refs.toSorted((a, b) => a.start - b.start || a.band.file.band.name.localeCompare(b.band.file.band.name));
+      if (key === null || key[0] !== current.selection || key[1] !== current.timeWindow || key[2].visibleShows !== derived.visibleShows || key[2].refsByBand !== derived.refsByBand) {
+        selectionKey = [current.selection, current.timeWindow, derived];
+        selection = selectionShows(current.selection, current.timeWindow, derived);
       }
       return selection;
     },
