@@ -7,7 +7,10 @@ import type { BandEntry, ShowRef } from '../model.ts';
 import { context2d, h, prefersReducedMotion } from './dom.ts';
 import { formatDateSpan, statusLabel } from './format.ts';
 import { DAY_MS, fitDateDomain, timeTicks } from './timeScale.ts';
-import { bandColor, type ThemeColors } from './theme.ts';
+import { bandColor } from '../model.ts';
+import type { ThemeColors } from './theme.ts';
+import { createTooltip } from './tooltip.ts';
+import { showTooltip } from './tooltipContent.ts';
 
 export const TIMELINE_SETTINGS = {
   laneHeight: 38,
@@ -72,6 +75,7 @@ export function createTimeline(container: HTMLElement, callbacks: TimelineCallba
   const announcer = h('div', { class: 'visually-hidden', 'aria-live': 'polite' });
   const empty = h('p', { class: 'timeline-empty', hidden: true }, 'No bands are shown. Turn bands on in the list to see their dates.');
   container.append(axisCanvas, scroller, cursor, announcer, empty);
+  const tooltip = createTooltip(container);
 
   const axisContext = context2d(axisCanvas);
   const lanesContext = context2d(lanesCanvas);
@@ -98,6 +102,7 @@ export function createTimeline(container: HTMLElement, callbacks: TimelineCallba
     })
     .clickDistance(4)
     .on('zoom', (event: D3ZoomEvent<HTMLDivElement, unknown>) => {
+      if (event.sourceEvent !== null) tooltip.hide();
       transform = event.transform;
       scheduleDraw();
       positionCursor();
@@ -133,9 +138,12 @@ export function createTimeline(container: HTMLElement, callbacks: TimelineCallba
     const id = ref?.show.id ?? null;
     if (id === hoveredShowId) return;
     hoveredShowId = id;
+    if (ref === null) tooltip.hide();
+    else showDotTooltip(ref, laneIndexAt(event));
     callbacks.onHover(ref === null ? null : [ref]);
   });
   scroller.addEventListener('pointerleave', () => {
+    tooltip.hide();
     if (hoveredShowId === null) return;
     hoveredShowId = null;
     callbacks.onHover(null);
@@ -150,7 +158,10 @@ export function createTimeline(container: HTMLElement, callbacks: TimelineCallba
     const start = cursorPosition ?? firstVisibleShow();
     if (start !== null) moveCursor(start);
   });
-  cursor.addEventListener('blur', () => callbacks.onHover(null));
+  cursor.addEventListener('blur', () => {
+    tooltip.hide();
+    callbacks.onHover(null);
+  });
   cursor.addEventListener('keydown', (event) => {
     if (props === null || cursorPosition === null) return;
     const { lanes } = props;
@@ -453,12 +464,22 @@ export function createTimeline(container: HTMLElement, callbacks: TimelineCallba
     }
   }
 
+  function laneIndexAt(event: MouseEvent): number {
+    return Math.floor((event.clientY - scroller.getBoundingClientRect().top + scrollTop) / laneHeight);
+  }
+
+  function showDotTooltip(ref: ShowRef, laneIndex: number) {
+    if (props === null) return;
+    const [centerX] = dotCenter(currentScale(), ref);
+    tooltip.show(showTooltip(ref, props.theme.mode), centerX, TIMELINE_SETTINGS.axisHeight + dotY(laneIndex));
+  }
+
   function showAtPointer(event: MouseEvent): ShowRef | null {
     if (props === null) return null;
     const rect = scroller.getBoundingClientRect();
     const px = event.clientX - rect.left;
     const py = event.clientY - rect.top;
-    const laneIndex = Math.floor((py + scrollTop) / laneHeight);
+    const laneIndex = laneIndexAt(event);
     const lane = props.lanes[laneIndex];
     if (lane === undefined || Math.abs(py - dotY(laneIndex)) > laneHeight / 2) return null;
     const x = currentScale();
@@ -513,6 +534,7 @@ export function createTimeline(container: HTMLElement, callbacks: TimelineCallba
     const description = `${ref.band.file.band.name}: ${formatDateSpan(ref.show.date, ref.show.endDate)}, ${ref.show.city}${status}. Press Enter for details.`;
     cursor.setAttribute('aria-label', description);
     announcer.textContent = description;
+    showDotTooltip(ref, position.lane);
     callbacks.onHover([ref]);
   }
 

@@ -18,6 +18,11 @@ export interface ShowRef {
 }
 
 export type BandSort = 'name' | 'next-show' | 'show-count';
+export type ThemeMode = 'light' | 'dark';
+
+export function bandColor(band: BandEntry, mode: ThemeMode): string {
+  return band.color[mode];
+}
 
 /** Bundled bands overlaid with previews (same id replaces). Published bands keep their colours when previews arrive. */
 export function buildBandEntries(bundled: readonly BandFile[], previews: readonly BandFile[]): BandEntry[] {

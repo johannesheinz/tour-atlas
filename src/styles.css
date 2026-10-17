@@ -985,6 +985,70 @@ input[type='search']::placeholder {
   line-height: 1;
 }
 
+/* Tooltip: an ink stamp */
+
+.tooltip {
+  position: absolute;
+  left: var(--left, 0);
+  top: var(--top, 0);
+  z-index: 6;
+  max-width: 300px;
+  padding: 8px 10px 9px;
+  border-radius: var(--radius-control);
+  background: var(--ink);
+  color: var(--stock);
+  font-size: 13px;
+  line-height: 1.35;
+  pointer-events: none;
+}
+
+.tooltip-title {
+  margin: 0 0 5px;
+  font-family: var(--font-display);
+  font-size: 19px;
+  line-height: 1;
+}
+
+.tooltip-lines {
+  display: grid;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.tooltip-lines li {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: baseline;
+  column-gap: 7px;
+}
+
+.tooltip-swatch {
+  width: 9px;
+  height: 9px;
+  border: 1.5px solid var(--stock);
+  border-radius: 50%;
+  background: var(--swatch);
+}
+
+.tooltip-text {
+  grid-column: 2;
+  font-weight: 600;
+}
+
+.tooltip-detail {
+  grid-column: 2;
+  font-size: 12px;
+  opacity: 0.8;
+}
+
+.tooltip-more {
+  margin: 5px 0 0;
+  font-size: 12px;
+  opacity: 0.8;
+}
+
 /* Timeline */
 
 .timeline {

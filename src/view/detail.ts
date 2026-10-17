@@ -1,7 +1,7 @@
 import type { ShowRef } from '../model.ts';
 import { h, safeExternalLink } from './dom.ts';
 import { countryName, formatDate, formatWeekday, plural, statusLabel } from './format.ts';
-import { bandColor, type ThemeMode } from './theme.ts';
+import { bandColor, type ThemeMode } from '../model.ts';
 
 export interface DetailProps {
   /** Sorted by date. */

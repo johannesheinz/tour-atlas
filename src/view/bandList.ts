@@ -1,7 +1,7 @@
 import { dateRange, type BandEntry, type BandSort } from '../model.ts';
 import { h } from './dom.ts';
 import { formatDate, plural } from './format.ts';
-import { bandColor, type ThemeMode } from './theme.ts';
+import { bandColor, type ThemeMode } from '../model.ts';
 
 export interface BandListProps {
   readonly bands: readonly BandEntry[];

@@ -1,7 +1,7 @@
-import type { BandEntry } from '../model.ts';
+import type { ThemeMode } from '../model.ts';
 
 export type ThemePreference = 'auto' | 'light' | 'dark';
-export type ThemeMode = 'light' | 'dark';
+export type { ThemeMode } from '../model.ts';
 
 export interface ThemeColors {
   readonly mode: ThemeMode;
@@ -49,8 +49,4 @@ export function watchSystemTheme(onChange: () => void): () => void {
   const query = window.matchMedia(DARK_QUERY);
   query.addEventListener('change', onChange);
   return () => query.removeEventListener('change', onChange);
-}
-
-export function bandColor(band: BandEntry, mode: ThemeMode): string {
-  return band.color[mode];
 }

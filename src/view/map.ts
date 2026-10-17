@@ -11,7 +11,10 @@ import { formatDate, plural } from './format.ts';
 import { computeMapFit, interpolateFit, type LonLat, type MapFit } from './geoFit.ts';
 import { placeLabels } from './labels.ts';
 import { clusterGroups, groupByCoordinates, pinLabel, type DisplayPin, type PinGroup } from './pins.ts';
-import { bandColor, type ThemeColors } from './theme.ts';
+import { bandColor } from '../model.ts';
+import type { ThemeColors } from './theme.ts';
+import { createTooltip } from './tooltip.ts';
+import { pinTooltip } from './tooltipContent.ts';
 
 export const MAP_SETTINGS = {
   padding: 32,
@@ -85,6 +88,7 @@ export function createMapView(container: HTMLElement, world: WorldTopology, call
   const cursor = h('button', { type: 'button', class: 'map-cursor', 'aria-label': 'Map pins. Use the arrow keys to move between shows.' });
   const announcer = h('div', { class: 'visually-hidden', 'aria-live': 'polite' });
   container.append(surface, canvas, overlay, cursor, announcer);
+  const tooltip = createTooltip(container);
 
   const context = context2d(canvas);
   const measureContext = context2d(h('canvas'));
@@ -112,6 +116,7 @@ export function createMapView(container: HTMLElement, world: WorldTopology, call
     .on('start', () => {
       if (programmaticZoom) return;
       cancelAnimation();
+      tooltip.hide();
       labelsLayer.replaceChildren();
     })
     .on('zoom', (event: D3ZoomEvent<SVGSVGElement, unknown>) => {
@@ -149,9 +154,12 @@ export function createMapView(container: HTMLElement, world: WorldTopology, call
     surface.classList.toggle('is-over-pin', pin !== null);
     if ((pin?.id ?? null) === hoveredPinId) return;
     hoveredPinId = pin?.id ?? null;
+    if (pin === null) tooltip.hide();
+    else showPinTooltip(pin);
     callbacks.onHover(pin === null ? null : pin.shows);
   });
   surface.addEventListener('pointerleave', () => {
+    tooltip.hide();
     if (hoveredPinId === null) return;
     hoveredPinId = null;
     callbacks.onHover(null);
@@ -167,6 +175,7 @@ export function createMapView(container: HTMLElement, world: WorldTopology, call
   });
   cursor.addEventListener('blur', () => {
     cursor.classList.remove('is-active');
+    tooltip.hide();
     callbacks.onHover(null);
   });
   cursor.addEventListener('keydown', (event) => {
@@ -210,7 +219,13 @@ export function createMapView(container: HTMLElement, world: WorldTopology, call
     const description = describePin(pin);
     cursor.setAttribute('aria-label', description);
     announcer.textContent = description;
+    showPinTooltip(pin);
     callbacks.onHover(pin.shows);
+  }
+
+  function showPinTooltip(pin: DisplayPin) {
+    if (props === null) return;
+    tooltip.show(pinTooltip(pin.shows, pinLabel(pin), props.theme.mode), transform.applyX(pin.x), transform.applyY(pin.y));
   }
 
   function positionCursor() {
