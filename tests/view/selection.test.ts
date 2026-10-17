@@ -24,7 +24,7 @@ const ids = (refs: readonly { show: { id: string } }[]) => refs.map((ref) => ref
 
 describe('selectionShows', () => {
   it('lists a band by date, limited to the time window and following it', () => {
-    const band = { kind: 'band', bandId: 'test-band' } as const;
+    const band = { kind: 'bands', bandIds: new Set(['test-band']) } as const;
     expect(ids(selectionShows(band, autumn, derived))).toEqual(['test-band-2026-11-02-berlin', 'test-band-2026-12-01-sao-paulo']);
     expect(ids(selectionShows(band, { start: day('2027-01-01'), end: day('2027-12-31') }, derived))).toEqual(['test-band-2027-03-02-berlin']);
     expect(selectionShows(band, null, derived)).toHaveLength(3);
@@ -32,8 +32,13 @@ describe('selectionShows', () => {
 
   it('keeps listing a band after it is hidden from the map, and nothing for an unknown band', () => {
     const hidden = { ...derived, visibleShows: allShows.filter((ref) => ref.band.file.band.id !== 'test-band') };
-    expect(selectionShows({ kind: 'band', bandId: 'test-band' }, autumn, hidden)).toHaveLength(2);
-    expect(selectionShows({ kind: 'band', bandId: 'missing' }, autumn, derived)).toEqual([]);
+    expect(selectionShows({ kind: 'bands', bandIds: new Set(['test-band']) }, autumn, hidden)).toHaveLength(2);
+    expect(selectionShows({ kind: 'bands', bandIds: new Set(['missing']) }, autumn, derived)).toEqual([]);
+  });
+
+  it('merges several bands into one list by date', () => {
+    const both = { kind: 'bands', bandIds: new Set(['test-band', 'other-band']) } as const;
+    expect(ids(selectionShows(both, autumn, derived))).toEqual(['test-band-2026-11-02-berlin', 'other-band-2026-11-10-berlin', 'test-band-2026-12-01-sao-paulo']);
   });
 
   it('resolves places to the visible shows in the window, across bands', () => {

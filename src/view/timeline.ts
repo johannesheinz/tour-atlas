@@ -59,6 +59,11 @@ export interface TimelineCallbacks {
   onShowAllLanes(): void;
 }
 
+export interface TimelineLayout {
+  /** The most height the lanes may take before they scroll. */
+  maxLanesHeight(): number;
+}
+
 export interface TimelineView {
   render(props: TimelineProps): void;
   /** Recomputes the full date range from domainShows, then shows `range` (or everything when null). */
@@ -78,7 +83,7 @@ interface CursorPosition {
   readonly show: number;
 }
 
-export function createTimeline(container: HTMLElement, callbacks: TimelineCallbacks): TimelineView {
+export function createTimeline(container: HTMLElement, callbacks: TimelineCallbacks, sizing: TimelineLayout): TimelineView {
   const axisCanvas = h('canvas', { class: 'timeline-axis', 'aria-hidden': 'true' });
   const lanesCanvas = h('canvas', { class: 'timeline-lanes', 'aria-hidden': 'true' });
   const spacer = h('div', { class: 'timeline-spacer' });
@@ -278,7 +283,7 @@ export function createTimeline(container: HTMLElement, callbacks: TimelineCallba
     const lanes = props.lanes.length;
     laneHeight = lanes > TIMELINE_SETTINGS.compactAbove ? TIMELINE_SETTINGS.compactLaneHeight : TIMELINE_SETTINGS.laneHeight;
     const total = Math.max(1, lanes) * laneHeight;
-    const maxHeight = Math.max(TIMELINE_SETTINGS.minViewportHeight, window.innerHeight * TIMELINE_SETTINGS.maxViewportFraction);
+    const maxHeight = Math.max(TIMELINE_SETTINGS.minViewportHeight, sizing.maxLanesHeight());
     viewportHeight = Math.min(total, Math.round(maxHeight));
     scroller.style.height = `${viewportHeight}px`;
     lanesCanvas.style.height = `${viewportHeight}px`;

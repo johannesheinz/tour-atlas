@@ -12,7 +12,7 @@ export type Selection =
   | { readonly kind: 'none' }
   | { readonly kind: 'shows'; readonly showIds: ReadonlySet<string> }
   | { readonly kind: 'places'; readonly places: ReadonlySet<PlaceKey> }
-  | { readonly kind: 'band'; readonly bandId: string };
+  | { readonly kind: 'bands'; readonly bandIds: ReadonlySet<string> };
 
 export const NO_SELECTION: Selection = { kind: 'none' };
 
@@ -26,6 +26,8 @@ export interface AppState {
   readonly previewResults: readonly PreviewResult[];
   /** Drawable rows of the previews; derived from previewResults when they change. */
   readonly previews: readonly BandFile[];
+  /** The previewed files are listed in the sidebar; closing the panel keeps the previews. */
+  readonly previewsOpen: boolean;
   readonly hiddenBandIds: ReadonlySet<string>;
   /** Selected tag ids: OR within a tag group, AND across groups. */
   readonly tagFilter: ReadonlySet<string>;

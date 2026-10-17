@@ -1,5 +1,6 @@
 import type { CountryPlace, PlaceKey } from '../places.ts';
 import { h } from './dom.ts';
+import { withClearButton } from './searchField.ts';
 import { plural } from './format.ts';
 import { foldForSearch } from './searchIndex.ts';
 
@@ -22,7 +23,7 @@ export function createPlaceList(container: HTMLElement, callbacks: PlaceListCall
   const count = h('p', { class: 'band-count', 'aria-live': 'polite' });
   const list = h('ul', { class: 'place-rows' });
   const empty = h('p', { class: 'band-empty', hidden: true });
-  container.append(filter, count, list, empty);
+  container.append(withClearButton(filter, 'Clear the place filter'), count, list, empty);
 
   const open = new Set<PlaceKey>();
   let props: PlaceListProps | null = null;

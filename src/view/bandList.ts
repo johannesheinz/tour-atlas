@@ -2,6 +2,7 @@ import { dateRange, type BandEntry, type BandSort } from '../model.ts';
 import { TAG_VOCABULARY } from '../data/tags.ts';
 import { createBandIdentity, type BandIdentity } from './bandIdentity.ts';
 import { h } from './dom.ts';
+import { withClearButton } from './searchField.ts';
 import { formatDate, plural } from './format.ts';
 import { bandColor, type ThemeMode } from '../model.ts';
 
@@ -16,6 +17,8 @@ export interface BandListProps {
   readonly filter: string;
   readonly sort: BandSort;
   readonly mode: ThemeMode;
+  /** Files being previewed; their panel can be reopened from the list. */
+  readonly previewCount: number;
 }
 
 export interface BandListCallbacks {
@@ -23,6 +26,9 @@ export interface BandListCallbacks {
   onSelect(bandId: string): void;
   onToggle(bandId: string, visible: boolean): void;
   onSolo(bandId: string): void;
+  /** Lists the dates of every shown band; offered for a handful of bands. */
+  onListShown(): void;
+  onOpenPreviews(): void;
   onShowAll(): void;
   onHideAll(): void;
   onFilter(text: string): void;
@@ -45,6 +51,8 @@ interface Row {
   readonly badge: HTMLSpanElement;
 }
 
+const MAX_LISTABLE_BANDS = 10;
+
 const SORT_LABELS: Record<BandSort, string> = { name: 'Name', 'next-show': 'Next show', 'show-count': 'Most shows' };
 
 export function createBandList(container: HTMLElement, callbacks: BandListCallbacks): BandListView {
@@ -57,6 +65,8 @@ export function createBandList(container: HTMLElement, callbacks: BandListCallba
   const showAll = h('button', { type: 'button', class: 'text-button' }, 'Show all');
   const hideAll = h('button', { type: 'button', class: 'text-button' }, 'Hide all');
   const count = h('p', { class: 'band-count', 'aria-live': 'polite' });
+  const openPreviews = h('button', { type: 'button', class: 'text-button band-previews', hidden: true });
+  const listShown = h('button', { type: 'button', class: 'button button-small band-list-shown', hidden: true }, 'List their dates');
   const tagChips = new Map(
     TAG_VOCABULARY.tags.map((tag) => {
       const chip = h('button', { type: 'button', class: 'tag-chip', 'aria-pressed': 'false' }, h('span', {}, tag.label), h('span', { class: 'tag-count' }));
@@ -84,9 +94,10 @@ export function createBandList(container: HTMLElement, callbacks: BandListCallba
   const body = h(
     'div',
     { id: 'band-list-body', class: 'band-list-body' },
-    h('div', { class: 'band-tools' }, filter, sort),
+    openPreviews,
+    h('div', { class: 'band-tools' }, withClearButton(filter, 'Clear the band filter'), sort),
     tagFilter,
-    h('div', { class: 'band-bulk' }, count, h('span', { class: 'band-bulk-actions' }, showAll, hideAll)),
+    h('div', { class: 'band-bulk' }, count, listShown, h('span', { class: 'band-bulk-actions' }, showAll, hideAll)),
     list,
     empty,
   );
@@ -101,6 +112,8 @@ export function createBandList(container: HTMLElement, callbacks: BandListCallba
     callbacks.onSort(value);
   });
   showAll.addEventListener('click', () => callbacks.onShowAll());
+  listShown.addEventListener('click', () => callbacks.onListShown());
+  openPreviews.addEventListener('click', () => callbacks.onOpenPreviews());
   hideAll.addEventListener('click', () => callbacks.onHideAll());
   list.addEventListener('mouseleave', () => callbacks.onFocusBand(null));
   list.addEventListener('focusout', (event) => {
@@ -137,6 +150,10 @@ export function createBandList(container: HTMLElement, callbacks: BandListCallba
       const visibleCount = props.bands.filter((band) => !props.hiddenBandIds.has(band.file.band.id)).length;
 
       count.textContent = `${visibleCount} of ${props.totalBandCount} shown`;
+      listShown.hidden = visibleCount < 2 || visibleCount > MAX_LISTABLE_BANDS;
+      openPreviews.hidden = props.previewCount === 0;
+      openPreviews.textContent = `Open ${plural(props.previewCount, 'previewed file')}`;
+      listShown.setAttribute('aria-label', `List the dates of the ${visibleCount} shown bands`);
       for (const [tagId, chip] of tagChips) {
         const bands = props.tagCounts.get(tagId) ?? 0;
         chip.hidden = bands === 0;

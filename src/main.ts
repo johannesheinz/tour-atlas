@@ -19,7 +19,8 @@ import { createSearch } from './view/search.ts';
 import type { SearchEntry } from './view/searchIndex.ts';
 import { applyThemePreference, readThemeColors, watchSystemTheme, type ThemeColors, type ThemePreference } from './view/theme.ts';
 import { DAY_MS } from './view/timeScale.ts';
-import { createTimeline } from './view/timeline.ts';
+import { TIMELINE_SETTINGS, createTimeline } from './view/timeline.ts';
+import { FRAME_LAYOUT_QUERY, MAP_SHARE } from './view/layout.ts';
 import { createTimelineControls } from './view/timelineControls.ts';
 import { createMapControls } from './view/mapControls.ts';
 import { createPlaceList } from './view/placeList.ts';
@@ -43,6 +44,7 @@ const state = createStore<AppState>({
   bundled: dataStore.listBands(),
   previewResults: [],
   previews: [],
+  previewsOpen: false,
   hiddenBandIds: new Set(urlState.hiddenBandIds.filter((id) => knownBandIds.has(id))),
   tagFilter: new Set(urlState.tags.filter(isKnownTag)),
   bandSort: urlState.sort ?? 'name',
@@ -70,11 +72,23 @@ let theme: ThemeColors = readThemeColors('auto');
 
 const idsOf = (shows: readonly ShowRef[] | null): ReadonlySet<string> => new Set((shows ?? []).map((ref) => ref.show.id));
 const NO_PLACES: ReadonlySet<PlaceKey> = new Set();
+const listFormat = new Intl.ListFormat('en-GB', { style: 'long', type: 'conjunction' });
+const MAX_NAMED_BANDS = 3;
 
 const map = createMapView(requireElement(document, '#map', HTMLDivElement), world, {
   onHover: (shows) => state.set({ hoverShowIds: idsOf(shows) }),
   onSelect: (shows) => selectPlaces(new Set(shows.map(cityKey))),
 });
+
+const frameLayout = window.matchMedia(FRAME_LAYOUT_QUERY);
+const atlas = requireElement(document, '#atlas', HTMLElement);
+const atlasToolbar = requireElement(document, '.atlas-toolbar', HTMLElement);
+
+/** In the frame the lanes get what the map leaves; on a scrolling page a share of the window. */
+function maxLanesHeight(): number {
+  if (!frameLayout.matches) return window.innerHeight * TIMELINE_SETTINGS.maxViewportFraction;
+  return atlas.clientHeight * (1 - MAP_SHARE) - atlasToolbar.offsetHeight - TIMELINE_SETTINGS.axisHeight;
+}
 
 let windowTimer: ReturnType<typeof setTimeout> | undefined;
 const timeline = createTimeline(requireElement(document, '#timeline', HTMLDivElement), {
@@ -86,11 +100,11 @@ const timeline = createTimeline(requireElement(document, '#timeline', HTMLDivEle
     windowTimer = setTimeout(() => state.set({ timeWindow: window }), WINDOW_DEBOUNCE_MS);
   },
   onShowAllLanes: () => state.set({ hideEmptyLanes: false }),
-});
+}, { maxLanesHeight });
 
 const bandList = createBandList(requireElement(document, '#band-list', HTMLElement), {
   onSelect(bandId) {
-    selectBand(bandId);
+    selectBands(new Set([bandId]));
     selectionPanel.focusTitle();
   },
   onToggle(bandId, visible) {
@@ -100,6 +114,11 @@ const bandList = createBandList(requireElement(document, '#band-list', HTMLEleme
     state.set({ hiddenBandIds: hidden });
   },
   onSolo: (bandId) => soloBand(bandId),
+  onOpenPreviews: () => state.set({ previewsOpen: true, selection: NO_SELECTION }),
+  onListShown() {
+    selectBands(new Set(derive(state.get()).visibleBands.map((band) => band.file.band.id)));
+    selectionPanel.focusTitle();
+  },
   onShowAll: () => state.set({ hiddenBandIds: new Set() }),
   onHideAll: () => state.set({ hiddenBandIds: new Set(derive(state.get()).bands.map((band) => band.file.band.id)) }),
   onFilter: (text) => state.set({ bandFilter: text }),
@@ -117,11 +136,15 @@ const bandList = createBandList(requireElement(document, '#band-list', HTMLEleme
 const selectionPanel = createSelectionPanel(requireElement(document, '#selection-panel', HTMLElement), {
   onBack() {
     state.set({ selection: NO_SELECTION });
-    sidebar.focusActiveTab();
+    if (!state.get().previewsOpen) sidebar.focusActiveTab();
   },
 });
 
 const previewPanel = createPreviewPanel(requireElement(document, '#preview-panel', HTMLElement), {
+  onBack() {
+    state.set({ previewsOpen: false });
+    sidebar.focusActiveTab();
+  },
   onDownload: (preview) => {
     const bandId = preview.normalized?.band.id;
     if (bandId === undefined) throw new Error(`${preview.fileName} has nothing to download`);
@@ -286,22 +309,26 @@ function renderAll() {
     filter: current.bandFilter,
     sort: current.bandSort,
     mode: theme.mode,
+    previewCount: current.previewResults.length,
   });
   const selected = select.selection(current, derived);
-  sidebar.showSelection(selectionKey(current.selection));
+  const previewsShown = current.previewsOpen && current.previewResults.length > 0;
+  const panel = current.selection.kind !== 'none' ? 'selection' : previewsShown ? 'previews' : 'lists';
+  sidebar.show(panel, panel === 'selection' ? selectionKey(current.selection) : panel);
+  const listsLabel = sidebar.activeTab() === 'bands' ? 'Back to bands' : 'Back to places';
   if (current.selection.kind !== 'none') {
     selectionPanel.render({
       heading: selectionHeading(current, derived, selected),
       shows: selected,
-      showBand: current.selection.kind !== 'band',
-      backLabel: sidebar.activeTab() === 'bands' ? 'Back to bands' : 'Back to places',
+      showBand: current.selection.kind !== 'bands' || current.selection.bandIds.size > 1,
+      backLabel: previewsShown ? 'Back to previewed files' : listsLabel,
       mode: theme.mode,
     });
   }
   placeList.render({ places: select.places(current, derived), selected: current.selection.kind === 'places' ? current.selection.places : NO_PLACES });
   sidebar.setToggleLabel(`Bands and places (${derived.visibleBands.length} of ${derived.bands.length} bands shown)`);
   search.setIndex(select.searchIndex(derived));
-  previewPanel.render(current.previewResults);
+  previewPanel.render(current.previewResults, listsLabel);
   scheduleUrlUpdate();
 }
 
@@ -320,7 +347,7 @@ async function previewFiles(files: readonly File[]) {
     }),
   );
   setPreviews(mergePreviews(state.get().previewResults, results));
-  requireElement(document, '#preview-panel', HTMLElement).scrollIntoView({ behavior: 'smooth', block: 'start' });
+  state.set({ previewsOpen: true, selection: NO_SELECTION });
 }
 
 /** The published version to diff against is looked up by band.id before validation. */
@@ -336,7 +363,11 @@ function bandIdHint(text: string): string | null {
 }
 
 function setPreviews(previewResults: readonly PreviewResult[]) {
-  state.set({ previewResults, previews: previewResults.flatMap((preview) => (preview.displayable === null ? [] : [preview.displayable])) });
+  state.set({
+    previewResults,
+    previews: previewResults.flatMap((preview) => (preview.displayable === null ? [] : [preview.displayable])),
+    ...(previewResults.length === 0 ? { previewsOpen: false } : {}),
+  });
 }
 
 function downloadText(fileName: string, text: string) {
@@ -381,12 +412,13 @@ function soloBand(bandId: string) {
   state.set({ hiddenBandIds: new Set(bands.map((band) => band.file.band.id).filter((id) => id !== bandId)) });
 }
 
-function selectBand(bandId: string) {
+function selectBands(bandIds: ReadonlySet<string>) {
   const { hiddenBandIds, timeWindow } = state.get();
-  if (hiddenBandIds.has(bandId)) state.set({ hiddenBandIds: new Set([...hiddenBandIds].filter((id) => id !== bandId)) });
+  if ([...bandIds].some((id) => hiddenBandIds.has(id))) state.set({ hiddenBandIds: new Set([...hiddenBandIds].filter((id) => !bandIds.has(id))) });
   sidebar.showTab('bands');
-  state.set({ selection: { kind: 'band', bandId } });
-  fitMapTo(selectionShows({ kind: 'band', bandId }, timeWindow, derive(state.get())));
+  const selection: Selection = { kind: 'bands', bandIds };
+  state.set({ selection });
+  fitMapTo(selectionShows(selection, timeWindow, derive(state.get())));
 }
 
 function fitMapTo(shows: readonly ShowRef[]) {
@@ -400,7 +432,7 @@ function focusSearchResult(entry: SearchEntry) {
   const derived = derive(state.get());
   if (entry.kind === 'band') {
     const [bandId] = entry.bandIds;
-    if (bandId !== undefined) selectBand(bandId);
+    if (bandId !== undefined) selectBands(new Set([bandId]));
     return;
   }
   if (entry.kind === 'tag') {
@@ -450,22 +482,23 @@ function selectPlaces(places: ReadonlySet<PlaceKey>) {
 
 function initialSelection(): Selection {
   if (urlState.selectedPlaces.length > 0) return { kind: 'places', places: new Set(urlState.selectedPlaces) };
-  if (urlState.selectedBandId !== null && knownBandIds.has(urlState.selectedBandId)) return { kind: 'band', bandId: urlState.selectedBandId };
+  const bandIds = urlState.selectedBandIds.filter((id) => knownBandIds.has(id));
+  if (bandIds.length > 0) return { kind: 'bands', bandIds: new Set(bandIds) };
   if (urlState.selectedShowIds.length > 0) return { kind: 'shows', showIds: new Set(urlState.selectedShowIds) };
   return NO_SELECTION;
 }
 
 /** Changes when a different selection opens, so the sidebar starts it at the top. */
-function selectionKey(selection: Selection): string | null {
+function selectionKey(selection: Selection): string {
   switch (selection.kind) {
     case 'none':
-      return null;
+      return 'none';
     case 'shows':
       return `shows:${[...selection.showIds].toSorted().join(',')}`;
     case 'places':
       return `places:${[...selection.places].toSorted().join(',')}`;
-    case 'band':
-      return `band:${selection.bandId}`;
+    case 'bands':
+      return `bands:${[...selection.bandIds].toSorted().join(',')}`;
   }
 }
 
@@ -484,10 +517,18 @@ function selectionHeading(current: AppState, derived: Derived, shows: readonly S
   switch (selection.kind) {
     case 'none':
       throw new Error('no selection to describe');
-    case 'band': {
-      const band = derived.bands.find((entry) => entry.file.band.id === selection.bandId);
-      if (band === undefined) throw new Error(`unknown band ${selection.bandId}`);
-      return { title: band.file.band.name, bandId: selection.bandId, note: live, emptyMessage: `No ${band.file.band.name} shows ${range}. Zoom the timeline out or pick a wider time range.` };
+    case 'bands': {
+      const names = derived.bands.filter((entry) => selection.bandIds.has(entry.file.band.id)).map((entry) => entry.file.band.name);
+      if (names.length !== selection.bandIds.size) throw new Error(`unknown band in ${[...selection.bandIds].join(', ')}`);
+      const [onlyBandId] = selection.bandIds;
+      const title = names.length <= MAX_NAMED_BANDS ? listFormat.format(names) : plural(names.length, 'band');
+      const subject = names.length === 1 ? `${title} shows` : 'shows of these bands';
+      return {
+        title,
+        bandId: names.length === 1 && onlyBandId !== undefined ? onlyBandId : null,
+        note: live,
+        emptyMessage: `No ${subject} ${range}. Zoom the timeline out or pick a wider time range.`,
+      };
     }
     case 'places': {
       const name = describePlaces(selection.places, derived.visibleShows, countryName);
@@ -587,7 +628,7 @@ function writeUrlState() {
     to: showWindow ? addDays(formatIsoDate(new Date(window.end)), -1) : null,
     selectedShowIds: current.selection.kind === 'shows' ? [...current.selection.showIds] : [],
     selectedPlaces: current.selection.kind === 'places' ? [...current.selection.places] : [],
-    selectedBandId: current.selection.kind === 'band' ? current.selection.bandId : null,
+    selectedBandIds: current.selection.kind === 'bands' ? [...current.selection.bandIds] : [],
     follow: current.followTimeline ? null : false,
     preset: current.timePreset === null || current.timePreset === defaultPreset(derive(current).visibleShows, parseIsoDate(current.today).getTime()) ? null : current.timePreset,
     allLanes: !current.hideEmptyLanes,

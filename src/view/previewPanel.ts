@@ -6,33 +6,36 @@ import { h } from './dom.ts';
 import { formatDate, plural } from './format.ts';
 
 export interface PreviewPanelCallbacks {
+  onBack(): void;
   onDownload(preview: PreviewResult): void;
   onRemove(preview: PreviewResult): void;
   onClearAll(): void;
 }
 
 export interface PreviewPanelView {
-  render(previews: readonly PreviewResult[]): void;
+  render(previews: readonly PreviewResult[], backLabel: string): void;
 }
 
 const MAX_LISTED = 40;
 const STATUS_TEXT = { valid: 'Valid', partial: 'Valid rows kept', invalid: 'Not usable' } as const;
 
 export function createPreviewPanel(container: HTMLElement, callbacks: PreviewPanelCallbacks): PreviewPanelView {
-  let previous: readonly PreviewResult[] | null = null;
+  let previous: { previews: readonly PreviewResult[]; backLabel: string } | null = null;
 
   return {
-    render(previews) {
-      if (previews === previous) return;
-      previous = previews;
-      container.hidden = previews.length === 0;
+    render(previews, backLabel) {
+      if (previous !== null && previous.previews === previews && previous.backLabel === backLabel) return;
+      previous = { previews, backLabel };
       if (previews.length === 0) {
         container.replaceChildren();
         return;
       }
       const clear = h('button', { type: 'button', class: 'text-button' }, 'Remove all previews');
       clear.addEventListener('click', () => callbacks.onClearAll());
+      const back = h('button', { type: 'button', class: 'selection-back' }, backLabel);
+      back.addEventListener('click', () => callbacks.onBack());
       container.replaceChildren(
+        back,
         h(
           'div',
           { class: 'preview-head' },

@@ -1,4 +1,5 @@
 import { h } from './dom.ts';
+import { withClearButton } from './searchField.ts';
 import { SEARCH_KIND_LABELS, searchEntries, type SearchEntry } from './searchIndex.ts';
 
 export interface SearchCallbacks {
@@ -28,7 +29,7 @@ export function createSearch(container: HTMLElement, callbacks: SearchCallbacks)
   const label = h('label', { class: 'visually-hidden', for: 'search-input' }, 'Search bands, cities, venues and tours');
   const listbox = h('ul', { class: 'search-results', id: 'search-results', role: 'listbox', 'aria-label': 'Search results', hidden: true });
   const status = h('div', { class: 'visually-hidden', 'aria-live': 'polite' });
-  container.append(label, input, listbox, status);
+  container.append(label, withClearButton(input, 'Clear search'), listbox, status);
 
   let index: readonly SearchEntry[] = [];
   let results: SearchEntry[] = [];

@@ -1,26 +1,27 @@
 import { requireElement } from './dom.ts';
 
 export type SidebarTab = 'bands' | 'places';
+export type SidebarPanel = 'lists' | 'selection' | 'previews';
 
 export interface SidebarView {
   setToggleLabel(text: string): void;
   showTab(tab: SidebarTab): void;
   activeTab(): SidebarTab;
   focusActiveTab(): void;
-  /** Swaps the tabs for the selection panel; a new selection (by key) starts at the top. */
-  showSelection(selectionKey: string | null): void;
+  /** Shows the band and place lists or drills down into a panel; new content (by key) starts at the top. */
+  show(panel: SidebarPanel, contentKey: string): void;
 }
 
-/** Tabs between the band and place lists (ARIA tabs with arrow keys), the selection drill-down, and the collapsible panel on phones. */
+/** Tabs between the band and place lists (ARIA tabs with arrow keys), the drill-down panels, and the collapsible panel on phones. */
 export function createSidebar(root: HTMLElement): SidebarView {
   const toggle = requireElement(root, '#sidebar-toggle', HTMLButtonElement);
   const scroller = requireElement(root, '#sidebar-body', HTMLElement);
   const tabList = requireElement(root, '.sidebar-tabs', HTMLElement);
   const tabs = [requireElement(root, '#tab-bands', HTMLButtonElement), requireElement(root, '#tab-places', HTMLButtonElement)] as const;
-  const panels = [requireElement(root, '#band-list', HTMLElement), requireElement(root, '#place-list', HTMLElement)] as const;
-  const selectionPanel = requireElement(root, '#selection-panel', HTMLElement);
+  const lists = [requireElement(root, '#band-list', HTMLElement), requireElement(root, '#place-list', HTMLElement)] as const;
+  const drillDowns = { selection: requireElement(root, '#selection-panel', HTMLElement), previews: requireElement(root, '#preview-panel', HTMLElement) } as const;
   let active: 0 | 1 = 0;
-  let shownSelection: string | null = null;
+  let shown: { panel: SidebarPanel; key: string } = { panel: 'lists', key: 'lists' };
   let listScrollTop = 0;
 
   toggle.addEventListener('click', () => {
@@ -36,8 +37,8 @@ export function createSidebar(root: HTMLElement): SidebarView {
       tab.setAttribute('aria-selected', String(selected));
       tab.tabIndex = selected ? 0 : -1;
     });
-    panels.forEach((panel, position) => {
-      panel.hidden = shownSelection !== null || position !== index;
+    lists.forEach((list, position) => {
+      list.hidden = shown.panel !== 'lists' || position !== index;
     });
     if (focus) tabs[index].focus();
   };
@@ -57,17 +58,16 @@ export function createSidebar(root: HTMLElement): SidebarView {
     showTab: (tab) => select(tab === 'bands' ? 0 : 1, false),
     activeTab: () => (active === 0 ? 'bands' : 'places'),
     focusActiveTab: () => tabs[active].focus(),
-    showSelection(selectionKey) {
-      if (selectionKey === shownSelection) return;
-      const opening = shownSelection === null;
-      const closing = selectionKey === null;
-      if (opening) listScrollTop = scroller.scrollTop;
-      shownSelection = selectionKey;
-      root.classList.toggle('is-selecting', !closing);
-      tabList.hidden = !closing;
-      selectionPanel.hidden = closing;
+    show(panel, contentKey) {
+      if (panel === shown.panel && contentKey === shown.key) return;
+      if (shown.panel === 'lists') listScrollTop = scroller.scrollTop;
+      shown = { panel, key: contentKey };
+      root.classList.toggle('is-drilled-down', panel !== 'lists');
+      tabList.hidden = panel !== 'lists';
+      drillDowns.selection.hidden = panel !== 'selection';
+      drillDowns.previews.hidden = panel !== 'previews';
       select(active, false);
-      scroller.scrollTop = closing ? listScrollTop : 0;
+      scroller.scrollTop = panel === 'lists' ? listScrollTop : 0;
     },
   };
 }
