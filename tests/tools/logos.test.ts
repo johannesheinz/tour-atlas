@@ -81,6 +81,7 @@ describe('syncLogos', () => {
     writeFileSync(join(dir, 'kept.webp'), 'existing');
     writeFileSync(join(dir, 'gone.webp'), 'orphan');
     const png = await blackBoxOnWhite();
+    const pause = vi.fn(async () => {});
     const fetchMock = vi.fn(async (url: string | URL) => (String(url).includes('broken') ? new Response('nope', { status: 404, statusText: 'Not Found' }) : image(png)));
     const report = await syncLogos(
       [
@@ -89,7 +90,7 @@ describe('syncLogos', () => {
         { bandId: 'broken', logoUrl: 'https://example.org/broken.png' },
       ],
       dir,
-      { fetch: fetchMock as unknown as typeof fetch, userAgent: 'test', force: false },
+      { fetch: fetchMock as unknown as typeof fetch, userAgent: 'test', force: false, sleep: pause },
     );
     expect(report.written).toEqual(['new']);
     expect(report.skipped).toEqual(['kept']);
@@ -97,5 +98,6 @@ describe('syncLogos', () => {
     expect(report.orphans).toEqual(['gone.webp']);
     expect(existsSync(join(dir, 'new.webp'))).toBe(true);
     expect(fetchMock).toHaveBeenCalledTimes(2);
+    expect(pause).toHaveBeenCalledTimes(1);
   });
 });

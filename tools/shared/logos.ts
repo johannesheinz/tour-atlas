@@ -32,7 +32,11 @@ export interface LogoDependencies {
   readonly fetch: typeof fetch;
   readonly userAgent: string;
   readonly force: boolean;
+  /** Pause between downloads; image hosts such as Wikimedia rate-limit bursts. */
+  readonly sleep: (ms: number) => Promise<void>;
 }
+
+export const DOWNLOAD_PAUSE_MS = 1000;
 
 export interface ImageFacts {
   readonly format: string;
@@ -77,12 +81,14 @@ export async function syncLogos(requests: readonly LogoRequest[], logosDir: stri
   const written: string[] = [];
   const skipped: string[] = [];
   const failed: { bandId: string; reason: string }[] = [];
+  let downloads = 0;
   for (const { bandId, logoUrl } of requests) {
     const target = logoPath(logosDir, bandId);
     if (existsSync(target) && !deps.force) {
       skipped.push(bandId);
       continue;
     }
+    if (downloads++ > 0) await deps.sleep(DOWNLOAD_PAUSE_MS);
     try {
       const image = await downloadImage(logoUrl, deps);
       writeFileSync(target, await logoSilhouette(image));

@@ -1,4 +1,5 @@
 import { existsSync, mkdirSync } from 'node:fs';
+import { setTimeout as sleep } from 'node:timers/promises';
 import { formatIssue, parseBandJson, validateDraft } from '../src/data/validate.ts';
 import { UsageError, displayPath, expandInputs, parseArguments, readText, runCli } from './shared/files.ts';
 import { LogoError, describeImage, downloadImage, logoPath, syncLogos, writePreviews, type LogoRequest } from './shared/logos.ts';
@@ -42,7 +43,12 @@ runCli(USAGE, async () => {
   }
 
   mkdirSync(logosDir, { recursive: true });
-  const report = await syncLogos(requests, logosDir, { fetch, userAgent: 'tour-atlas-logos/0.1 (+https://github.com)', force: args.flags.has('force') });
+  const report = await syncLogos(requests, logosDir, {
+    fetch,
+    userAgent: 'tour-atlas-logos/0.1 (+https://github.com)',
+    force: args.flags.has('force'),
+    sleep: (ms) => sleep(ms),
+  });
   for (const bandId of report.written) console.log(`WROTE ${logoPath(logosDir, bandId)}`);
   for (const { bandId, reason } of report.failed) console.error(`FAILED ${bandId}: ${reason}`);
   for (const orphan of report.orphans) console.warn(`WARN  ${logosDir}/${orphan} belongs to no band with a logoUrl`);
