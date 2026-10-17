@@ -3,7 +3,7 @@ import { mkdirSync, rmSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { serializeBandFile } from '../src/data/normalize.ts';
 import { syntheticBands } from './fixtures/synthetic.ts';
-import { parseArguments, runCli } from './lib/files.ts';
+import { parseArguments, runCli } from './shared/files.ts';
 
 const USAGE = `Usage: node tools/budget.ts [--bands <n>] [--shows-per-band <n>]
 

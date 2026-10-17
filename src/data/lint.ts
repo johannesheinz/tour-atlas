@@ -15,6 +15,8 @@ export const LINT_THRESHOLDS = {
   sameDayDistanceKm: 100,
   staleSourceDays: 90,
   farFutureDays: 3 * 365,
+  /** About 5 km: the 1:50m country outlines are this coarse, so border towns get the benefit of the doubt. */
+  borderToleranceDegrees: 0.05,
 } as const;
 
 const EARTH_RADIUS_KM = 6371;
@@ -37,9 +39,14 @@ export function lintBandFile(file: string, data: BandFileOf<IdentifiedShow>, opt
       warn(`${path}.date`, 'is more than three years ahead; check the year');
     }
     if (show.geo !== null && options.locateCountry !== null) {
-      const found = options.locateCountry(show.geo.lon, show.geo.lat);
+      const locate = options.locateCountry;
+      const { lat, lon } = show.geo;
+      const found = locate(lon, lat);
       const acceptable = [show.countryCode, ...(GEOMETRY_PARENTS[show.countryCode] ?? [])];
-      if (found !== null && !acceptable.includes(found)) {
+      const d = LINT_THRESHOLDS.borderToleranceDegrees;
+      const nearby = [locate(lon + d, lat), locate(lon - d, lat), locate(lon, lat + d), locate(lon, lat - d)];
+      const nearAcceptableBorder = nearby.some((country) => country !== null && acceptable.includes(country));
+      if (found !== null && !acceptable.includes(found) && !nearAcceptableBorder) {
         warn(`${path}.geo`, `coordinates fall inside ${found}, but countryCode is ${show.countryCode}`);
       }
     }
@@ -55,7 +62,8 @@ export function lintBandFile(file: string, data: BandFileOf<IdentifiedShow>, opt
         }
         const distance = distanceKm(earlier.show, current.show);
         const bothHappen = earlier.show.status !== 'cancelled' && current.show.status !== 'cancelled';
-        if (bothHappen && distance !== null && distance > LINT_THRESHOLDS.sameDayDistanceKm) {
+        const dayKnown = earlier.show.endDate === null && current.show.endDate === null;
+        if (bothHappen && dayKnown && distance !== null && distance > LINT_THRESHOLDS.sameDayDistanceKm) {
           warn(
             `${current.path}.date`,
             `same day as ${earlier.path} (${earlier.show.city}) but ${Math.round(distance)} km away; check the date`,

@@ -2,8 +2,8 @@ import { writeFileSync } from 'node:fs';
 import { IdError } from '../src/data/ids.ts';
 import { normalizeBandFile, serializeBandFile } from '../src/data/normalize.ts';
 import { parseBandJson, validateDraft } from '../src/data/validate.ts';
-import { displayPath, expandInputs, parseArguments, readText, runCli } from './lib/files.ts';
-import { parseFormat, printIssue } from './lib/report.ts';
+import { displayPath, expandInputs, parseArguments, readText, runCli } from './shared/files.ts';
+import { parseFormat, printIssue } from './shared/report.ts';
 
 const USAGE = `Usage: node tools/normalize.ts <file|dir>... [--check] [--format text|github]
 

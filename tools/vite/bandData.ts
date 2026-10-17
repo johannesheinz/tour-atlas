@@ -3,8 +3,8 @@ import { resolve } from 'node:path';
 import type { Plugin } from 'vite';
 import { localToday } from '../../src/data/dates.ts';
 import { formatIssue } from '../../src/data/validate.ts';
-import { checkBandFiles } from '../lib/bandFiles.ts';
-import { expandInputs } from '../lib/files.ts';
+import { checkBandFiles } from '../shared/bandFiles.ts';
+import { expandInputs } from '../shared/files.ts';
 
 /** Validates every band file before the bundle is built; invalid data fails the build. */
 export function bandDataPlugin(bandsDir: string): Plugin {

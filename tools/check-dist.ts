@@ -1,7 +1,7 @@
 import { readdirSync, readFileSync, statSync } from 'node:fs';
 import { join, relative } from 'node:path';
 import { gzipSync } from 'node:zlib';
-import { parseArguments, runCli, UsageError } from './lib/files.ts';
+import { parseArguments, runCli, UsageError } from './shared/files.ts';
 
 const USAGE = `Usage: node tools/check-dist.ts <dist-dir> [--budget-kb <n>]
 

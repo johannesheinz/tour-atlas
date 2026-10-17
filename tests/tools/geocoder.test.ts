@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
-import { MIN_REQUEST_INTERVAL_MS, createGeocoder, emptyCache, parseCache, serializeCache, type GeoCache } from '../../tools/lib/geocoder.ts';
+import { MIN_REQUEST_INTERVAL_MS, createGeocoder, emptyCache, parseCache, serializeCache, type GeoCache } from '../../tools/shared/geocoder.ts';
 import { makeDraftShow } from '../helpers.ts';
 
 type Answer = { lat: string; lon: string; category: string; address: { country_code: string } } | null;

@@ -5,8 +5,8 @@ import { diffBand, hasChanges, type BandDiff } from '../src/data/diff.ts';
 import { lintBandFile } from '../src/data/lint.ts';
 import type { BandFileOf, IdentifiedShow } from '../src/data/types.ts';
 import { parseBandJson, validateRepository, type ValidationIssue } from '../src/data/validate.ts';
-import { UsageError, loadCountryLocator, parseArguments, readText, runCli } from './lib/files.ts';
-import { appendStepSummary, markdownCell, printIssue } from './lib/report.ts';
+import { UsageError, loadCountryLocator, parseArguments, readText, runCli } from './shared/files.ts';
+import { appendStepSummary, markdownCell, printIssue } from './shared/report.ts';
 
 const USAGE = `Usage: node tools/review.ts --base <git-ref> [--format text|github]
 

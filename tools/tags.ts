@@ -1,6 +1,6 @@
 import { readFileSync, writeFileSync } from 'node:fs';
 import { TAG_VOCABULARY } from '../src/data/tags.ts';
-import { parseArguments, runCli } from './lib/files.ts';
+import { parseArguments, runCli } from './shared/files.ts';
 
 const USAGE = `Usage: node tools/tags.ts [--check]
 

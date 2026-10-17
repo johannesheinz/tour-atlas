@@ -1,7 +1,7 @@
 import { localToday } from '../src/data/dates.ts';
-import { checkBandFiles } from './lib/bandFiles.ts';
-import { expandInputs, loadCountryLocator, parseArguments, runCli } from './lib/files.ts';
-import { appendStepSummary, markdownCell, parseFormat, printIssue } from './lib/report.ts';
+import { checkBandFiles } from './shared/bandFiles.ts';
+import { expandInputs, loadCountryLocator, parseArguments, runCli } from './shared/files.ts';
+import { appendStepSummary, markdownCell, parseFormat, printIssue } from './shared/report.ts';
 
 const USAGE = `Usage: node tools/validate.ts <file|dir>... [--draft] [--format text|github]
 

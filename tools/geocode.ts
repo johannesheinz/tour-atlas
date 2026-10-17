@@ -4,8 +4,8 @@ import { localToday } from '../src/data/dates.ts';
 import { normalizeBandFile, serializeBandFile } from '../src/data/normalize.ts';
 import type { DraftShow } from '../src/data/types.ts';
 import { formatIssue, parseBandJson, validateDraft } from '../src/data/validate.ts';
-import { UsageError, displayPath, expandInputs, parseArguments, readText, runCli } from './lib/files.ts';
-import { createGeocoder, emptyCache, parseCache, serializeCache } from './lib/geocoder.ts';
+import { UsageError, displayPath, expandInputs, parseArguments, readText, runCli } from './shared/files.ts';
+import { createGeocoder, emptyCache, parseCache, serializeCache } from './shared/geocoder.ts';
 
 const USAGE = `Usage: node --env-file-if-exists=.env.local tools/geocode.ts <file|dir>... [--retry-misses] [--cache <path>]
 
