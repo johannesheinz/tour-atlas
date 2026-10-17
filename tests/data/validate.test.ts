@@ -7,7 +7,7 @@ import {
   validateFileName,
   validateRepository,
 } from '../../src/data/validate.ts';
-import { bandFilesIn, makeDraftShow, makeFile, makeShow, readJson } from '../helpers.ts';
+import { VALID_SAMPLES, bandFilesIn, makeDraftShow, makeFile, makeShow, readJson } from '../helpers.ts';
 
 function rowMessages(show: unknown, mode: 'draft' | 'repository' = 'repository'): string[] {
   const file = makeFile([show]);
@@ -16,7 +16,7 @@ function rowMessages(show: unknown, mode: 'draft' | 'repository' = 'repository')
 }
 
 describe('validateRepository', () => {
-  it.each(bandFilesIn('data/bands'))('accepts %s', (path) => {
+  it.each([...VALID_SAMPLES, ...bandFilesIn('data/bands')])('accepts %s', (path) => {
     const result = validateRepository(readJson(path), path);
     expect(result.issues).toEqual([]);
     expect(result.value?.shows.length).toBe(result.totalShows);

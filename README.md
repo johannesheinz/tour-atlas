@@ -12,13 +12,16 @@ self-hosted font files next to it. No backend, no network requests to third part
 - Local preview: drop band files to validate them, see the diff against the published data and download the
   normalized file. Nothing leaves the browser.
 - Light and dark themes that follow the system, with a toggle; keyboard navigation with visible focus
+- Hover tooltips, time presets (upcoming, next 3 months, past, all), collapsed empty lanes, band-colour rings on
+  shared pins, and tag filters (genre, region) from the fixed list in `data/tags.json`
 
 Tour data lives in [`data/bands/`](data/bands/), one JSON file per band, and is changed through pull requests.
 See [CONTRIBUTING.md](CONTRIBUTING.md) and [docs/DATA_FORMAT.md](docs/DATA_FORMAT.md).
 
 ## Develop
 
-Requires Node 22.18 or newer (CI uses the version in `.nvmrc`). The CLI tools are TypeScript run directly by Node.
+Requires Node 22.18 or newer; `.nvmrc` pins the major version CI uses (`nvm use`). The CLI tools are TypeScript
+run directly by Node.
 
 ```sh
 npm ci
@@ -26,6 +29,28 @@ npm run dev          # http://localhost:5173
 npm test
 npm run check        # everything CI runs
 ```
+
+## Environment variables
+
+Nothing is needed to develop, test or build. The variables below are optional, except `NOMINATIM_CONTACT`
+for geocoding.
+
+| Variable | Used by | Purpose |
+| --- | --- | --- |
+| `NOMINATIM_CONTACT` | `npm run geocode` | **Required for geocoding.** Email address or project URL sent in the User-Agent, as the Nominatim usage policy demands. |
+| `TOUR_ATLAS_BANDS_DIR` | `vite build` | Build from another directory of band files (the size-budget build uses this). Default `data/bands`. |
+| `TOUR_ATLAS_OUT_DIR` | `vite build` | Write the build somewhere else. Default `dist`. |
+| `GITHUB_STEP_SUMMARY` | `validate`, `review` with `--format github` | Set by GitHub Actions; the tools append their Markdown summary to it. |
+
+For local runs, keep them in `.env.local`, which is git-ignored; `npm run geocode` loads it:
+
+```sh
+cp .env.example .env.local   # then put your contact address in it
+npm run geocode
+```
+
+Where to set `NOMINATIM_CONTACT` in GitHub Actions or on a future upload backend is described in
+[CONTRIBUTING.md](CONTRIBUTING.md#geocoding-contact).
 
 ## Build
 
@@ -76,7 +101,8 @@ Dependabot keeps npm packages and the SHA-pinned GitHub Actions up to date.
 | `src/store/` | `DataStore` interface and `StaticStore` for the bundled data |
 | `src/view/` | map, timeline, band list, detail, preview panel, search |
 | `tools/` | `validate`, `normalize`, `geocode`, `review`, build checks and Vite plugins |
-| `samples/` | fictional sample bands, one file with invalid rows, one LLM-style draft |
+| `data/tags.json` | the fixed tag list (genre, region, label, other) |
+| `samples/` | fictional sample bands used by the tests, one file with invalid rows, one LLM-style draft |
 | `.claude/skills/` | Claude Code skills for the tasks that need judgement |
 
 ## Credits
@@ -84,4 +110,4 @@ Dependabot keeps npm packages and the SHA-pinned GitHub Actions up to date.
 Projection: Equal Earth (Šavrič, Patterson, Jenny). Coastlines and borders: Natural Earth via
 [world-atlas](https://github.com/topojson/world-atlas). Geocoding: Nominatim, © OpenStreetMap contributors
 (ODbL). Fonts: League Gothic and Archivo (SIL Open Font License), self-hosted via Fontsource.
-All bands in `samples/` and `data/bands/` are fictional.
+All bands in `samples/` are fictional. Tour dates in `data/bands/` come from each band's `source.url`.

@@ -5,7 +5,7 @@ import { parseUrlState, serializeUrlState } from '../../src/urlState.ts';
 import { buildSearchIndex, foldForSearch, searchEntries } from '../../src/view/searchIndex.ts';
 import { readJson } from '../helpers.ts';
 
-const files = ['data/bands/iron-lantern.json', 'data/bands/glass-harbor.json'].map((path) => readJson(path) as BandFile);
+const files = ['samples/iron-lantern.json', 'samples/glass-harbor.json'].map((path) => readJson(path) as BandFile);
 const index = buildSearchIndex(buildBandEntries(files, []), (code) => ({ BR: 'Brazil', NO: 'Norway' })[code] ?? code);
 
 describe('search', () => {

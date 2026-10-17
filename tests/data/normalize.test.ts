@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { normalizeBandFile, serializeBandFile } from '../../src/data/normalize.ts';
 import { validateDraft } from '../../src/data/validate.ts';
-import { bandFilesIn, makeDraftShow, makeFile, readJson, readText } from '../helpers.ts';
+import { VALID_SAMPLES, bandFilesIn, makeDraftShow, makeFile, readJson, readText } from '../helpers.ts';
 
 function normalizeText(input: unknown): string {
   const result = validateDraft(input, 'test-band.json');
@@ -10,12 +10,12 @@ function normalizeText(input: unknown): string {
 }
 
 describe('normalize', () => {
-  it.each([...bandFilesIn('data/bands'), 'samples/draft/ashen-choir.json'])('is idempotent for %s', (path) => {
+  it.each([...VALID_SAMPLES, ...bandFilesIn('data/bands'), 'samples/draft/ashen-choir.json'])('is idempotent for %s', (path) => {
     const once = normalizeText(readJson(path));
     expect(normalizeText(JSON.parse(once))).toBe(once);
   });
 
-  it.each(bandFilesIn('data/bands'))('leaves the committed %s unchanged', (path) => {
+  it.each([...VALID_SAMPLES, ...bandFilesIn('data/bands')])('leaves the committed %s unchanged', (path) => {
     expect(normalizeText(readJson(path))).toBe(readText(path));
   });
 

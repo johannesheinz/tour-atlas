@@ -11,4 +11,4 @@ All bands, venues and dates here are fictional; URLs use the reserved `example.c
 | `broken-lanterns.json` | One valid row and one row for each error class; invalid in every mode |
 | `draft/ashen-choir.json` | Upstream-style draft: `id` and `geo` are `null`. Valid with `--draft` only; run the geocoder to complete it |
 
-The valid files are copied to `data/bands/` as seed data.
+Tests use these files; the published data in `data/bands/` is real and separate.

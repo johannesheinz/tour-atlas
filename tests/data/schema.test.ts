@@ -2,7 +2,7 @@ import Ajv2020 from 'ajv/dist/2020';
 import { describe, expect, it } from 'vitest';
 import { BAND_FILE_KEYS, BAND_KEYS, GEO_KEYS, SHOW_KEYS, SOURCE_KEYS } from '../../src/data/types.ts';
 import { validateDraft } from '../../src/data/validate.ts';
-import { bandFilesIn, makeFile, readJson } from '../helpers.ts';
+import { VALID_SAMPLES, bandFilesIn, makeFile, readJson } from '../helpers.ts';
 
 const schema = readJson('schema/tour.schema.json') as Record<string, unknown> & { $defs: Record<string, { properties: object; required: string[] }> };
 const ajv = new Ajv2020({ allErrors: true, strict: true });
@@ -51,7 +51,7 @@ describe('tour.schema.json', () => {
     expect(Object.keys(schema.$defs['geo']?.properties ?? {})).toEqual([...GEO_KEYS]);
   });
 
-  it.each([...bandFilesIn('data/bands'), 'samples/draft/ashen-choir.json'])('accepts %s', (path) => {
+  it.each([...VALID_SAMPLES, ...bandFilesIn('data/bands'), 'samples/draft/ashen-choir.json'])('accepts %s', (path) => {
     expect(schemaAccepts(readJson(path)), JSON.stringify(schemaAccepts.errors)).toBe(true);
   });
 

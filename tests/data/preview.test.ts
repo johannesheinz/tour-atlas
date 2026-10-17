@@ -4,16 +4,16 @@ import { exportAll, mergePreviews, normalizedFileText, processPreviewFile } from
 import { readJson, readText } from '../helpers.ts';
 
 const options = { today: '2026-10-16', locateCountry: null };
-const glassHarbor = readJson('data/bands/glass-harbor.json') as BandFile;
+const glassHarbor = readJson('samples/glass-harbor.json') as BandFile;
 
 describe('processPreviewFile', () => {
   it('accepts a valid file with no changes against the published version', () => {
-    const preview = processPreviewFile('glass-harbor.json', readText('data/bands/glass-harbor.json'), glassHarbor, options);
+    const preview = processPreviewFile('glass-harbor.json', readText('samples/glass-harbor.json'), glassHarbor, options);
     expect(preview.status).toBe('valid');
     expect(preview.errors).toEqual([]);
     expect(preview.diff?.added).toEqual([]);
     expect(preview.diff?.unchangedCount).toBe(24);
-    expect(normalizedFileText(preview)).toBe(readText('data/bands/glass-harbor.json'));
+    expect(normalizedFileText(preview)).toBe(readText('samples/glass-harbor.json'));
   });
 
   it('keeps valid rows of a partly broken file and reports each bad row', () => {
@@ -54,14 +54,14 @@ describe('mergePreviews and exportAll', () => {
   const preview = (text: string, name = 'glass-harbor.json') => processPreviewFile(name, text, glassHarbor, options);
 
   it('replaces an earlier preview of the same band', () => {
-    const first = preview(readText('data/bands/glass-harbor.json'));
-    const second = preview(readText('data/bands/glass-harbor.json'), 'glass-harbor (2).json');
+    const first = preview(readText('samples/glass-harbor.json'));
+    const second = preview(readText('samples/glass-harbor.json'), 'glass-harbor (2).json');
     expect(mergePreviews([first], [second]).map((item) => item.fileName)).toEqual(['glass-harbor (2).json']);
   });
 
   it('exports published bands with previews in their place, sorted by id', () => {
-    const iron = readJson('data/bands/iron-lantern.json') as BandFile;
-    const exported = JSON.parse(exportAll([iron, glassHarbor], [preview(readText('data/bands/glass-harbor.json'))])) as BandFile[];
+    const iron = readJson('samples/iron-lantern.json') as BandFile;
+    const exported = JSON.parse(exportAll([iron, glassHarbor], [preview(readText('samples/glass-harbor.json'))])) as BandFile[];
     expect(exported.map((file) => file.band.id)).toEqual(['glass-harbor', 'iron-lantern']);
   });
 });

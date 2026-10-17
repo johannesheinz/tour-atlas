@@ -28,7 +28,7 @@ describe('tag vocabulary', () => {
   });
 
   it('sorts tags by group, then as listed', () => {
-    expect(sortTags(['harbor-lights-records', 'nordic', 'post-rock', 'black-metal'])).toEqual(['black-metal', 'post-rock', 'nordic', 'harbor-lights-records']);
+    expect(sortTags(['oceania', 'post-rock', 'nordic', 'black-metal'])).toEqual(['black-metal', 'post-rock', 'nordic', 'oceania']);
   });
 
   it('filters with OR inside a group and AND across groups', () => {

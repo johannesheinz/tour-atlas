@@ -12,6 +12,9 @@ export function readText(relativePath: string): string {
   return readFileSync(join(ROOT, relativePath), 'utf8');
 }
 
+/** The valid fictional samples; the published data in data/bands/ is real and changes over time. */
+export const VALID_SAMPLES = ['samples/glass-harbor.json', 'samples/iron-lantern.json', 'samples/northbound-static.json', 'samples/velvet-meridian.json'];
+
 export function bandFilesIn(relativeDir: string): string[] {
   return readdirSync(join(ROOT, relativeDir))
     .filter((name) => name.endsWith('.json'))
