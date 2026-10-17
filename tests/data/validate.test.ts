@@ -94,8 +94,8 @@ describe('validateRepository', () => {
 
   it.each([
     ['unknown tag', ['doom-metal', 'polka'], 'band.tags[1]: "polka" is not in data/tags.json; add it there in the same pull request or remove it'],
-    ['duplicate tag', ['nordic', 'nordic'], 'band.tags[1]: "nordic" is listed twice'],
-    ['not a list', 'nordic', 'band.tags: must be a list of tag ids (got "nordic"); use [] for none'],
+    ['duplicate tag', ['shoegaze', 'shoegaze'], 'band.tags[1]: "shoegaze" is listed twice'],
+    ['not a list', 'shoegaze', 'band.tags: must be a list of tag ids (got "shoegaze"); use [] for none'],
   ])('reports %s', (_name, tags, expected) => {
     const file = { ...makeFile([makeShow()]), band: { id: 'test-band', name: 'Test Band', color: null, tags } };
     const result = validateRepository(file, 'test-band.json');

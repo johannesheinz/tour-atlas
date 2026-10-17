@@ -43,7 +43,7 @@ describe('url state', () => {
   it('round-trips', () => {
     const state = {
       hiddenBandIds: ['velvet-meridian', 'glass-harbor'],
-      tags: ['nordic'],
+      tags: ['doom-metal'],
       sort: 'next-show' as const,
       from: '2026-10-01',
       to: '2026-12-31',
@@ -56,7 +56,7 @@ describe('url state', () => {
       globe: true,
     };
     const hash = serializeUrlState(state);
-    expect(hash).toBe('#hide=glass-harbor,velvet-meridian&tags=nordic&sort=next-show&from=2026-10-01&to=2026-12-31&show=iron-lantern-2026-10-17-belo-horizonte&follow=0&lanes=all&recent=1&view=europe&globe=1');
+    expect(hash).toBe('#hide=glass-harbor,velvet-meridian&tags=doom-metal&sort=next-show&from=2026-10-01&to=2026-12-31&show=iron-lantern-2026-10-17-belo-horizonte&follow=0&lanes=all&recent=1&view=europe&globe=1');
     expect(parseUrlState(hash)).toEqual({ ...state, hiddenBandIds: ['glass-harbor', 'velvet-meridian'] });
   });
 

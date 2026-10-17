@@ -82,13 +82,13 @@ Files in `data/bands/` must be in the repository stage. The build fails otherwis
 ## Tags
 
 `data/tags.json` is the fixed tag list. Each tag has an `id` (slug), a `label` and a `group`
-(`genre`, `region`, `label` or `other`). The app shows them as filter chips: any selected tag within a group
+(`genre`, `label` or `other`). The app shows them as filter chips: any selected tag within a group
 matches, and every group with a selection must match.
 
 - `npm run tags` copies the tag ids into the `band.tags` enum of the schema, so the upstream LLM can only
   answer with known tags. CI fails when the two differ.
 - A new tag goes into `data/tags.json` in the same pull request as the first band that uses it.
-- `region` describes where the band comes from, not where it tours.
+- There are no location tags: where a band plays comes from its shows (map regions, the Places list).
 
 ## Rules beyond the schema
 
@@ -119,7 +119,7 @@ keys in schema order, shows sorted by `date` then `id`, text trimmed, 2-space in
 ```json
 {
   "schemaVersion": 1,
-  "band": { "id": "iron-lantern", "name": "Iron Lantern", "color": "#c0392b", "tags": ["stoner-rock", "latin-america"] },
+  "band": { "id": "iron-lantern", "name": "Iron Lantern", "color": "#c0392b", "tags": ["stoner-rock"] },
   "source": { "url": "https://example.com/iron-lantern/tour", "retrievedAt": "2026-10-15" },
   "shows": [
     {

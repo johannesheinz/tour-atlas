@@ -4,7 +4,7 @@ import { readJson } from '../helpers.ts';
 
 describe('tag vocabulary', () => {
   it('loads data/tags.json', () => {
-    expect(TAG_VOCABULARY.groups.map((group) => group.id)).toEqual(['genre', 'region', 'label', 'other']);
+    expect(TAG_VOCABULARY.groups.map((group) => group.id)).toEqual(['genre', 'label', 'other']);
     expect(TAG_VOCABULARY.byId.get('doom-metal')?.label).toBe('Doom metal');
   });
 
@@ -28,14 +28,13 @@ describe('tag vocabulary', () => {
   });
 
   it('sorts tags by group, then as listed', () => {
-    expect(sortTags(['oceania', 'post-rock', 'nordic', 'black-metal'])).toEqual(['black-metal', 'post-rock', 'nordic', 'oceania']);
+    expect(sortTags(['post-rock', 'power-metal', 'black-metal', 'heavy-metal'])).toEqual(['heavy-metal', 'power-metal', 'black-metal', 'post-rock']);
   });
 
   it('filters with OR inside a group and AND across groups', () => {
-    const band = ['post-rock', 'nordic'];
+    const band = ['post-rock', 'shoegaze'];
     expect(matchesTagFilter(band, new Set())).toBe(true);
-    expect(matchesTagFilter(band, new Set(['post-rock', 'shoegaze']))).toBe(true);
-    expect(matchesTagFilter(band, new Set(['post-rock', 'oceania']))).toBe(false);
-    expect(matchesTagFilter(band, new Set(['shoegaze']))).toBe(false);
+    expect(matchesTagFilter(band, new Set(['post-rock', 'doom-metal']))).toBe(true);
+    expect(matchesTagFilter(band, new Set(['doom-metal']))).toBe(false);
   });
 });

@@ -29,8 +29,9 @@ Write each show as a draft row: `id: null`, `geo: null`, every other field prese
 - `city` in Latin script; `region` only when it disambiguates (`Portland, OR`); `countryCode` ISO alpha-2.
 - `tourName` only when the page names the tour.
 - `notes`: one short factual line from the page, e.g. "Moved from Kulturhaus", otherwise `null`.
-- `band.tags`: only ids from `data/tags.json`. Genre and region (where the band comes from) are fine when the
-  band's own site or a well-established reference (its Wikipedia article) says so; otherwise `[]`.
+- `band.tags`: only ids from `data/tags.json`. Genre tags are fine when the band's own site or a
+  well-established reference (its Wikipedia article) says so; otherwise `[]`. There are no location tags:
+  where a band plays comes from its shows.
   If a fitting tag is missing, propose it to the user instead of using an unknown id.
 - Unknown = `null`. Never invent venues, times or ticket links.
 

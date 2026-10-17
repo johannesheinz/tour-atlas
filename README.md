@@ -13,7 +13,7 @@ self-hosted font files next to it. No backend, no network requests to third part
   normalized file. Nothing leaves the browser.
 - Light and dark themes that follow the system, with a toggle; keyboard navigation with visible focus
 - Hover tooltips, time presets (upcoming, next 3 months, past, all), collapsed empty lanes, band-colour rings on
-  shared pins, and tag filters (genre, region) from the fixed list in `data/tags.json`
+  shared pins, and genre filters from the fixed tag list in `data/tags.json`
 
 Tour data lives in [`data/bands/`](data/bands/), one JSON file per band, and is changed through pull requests.
 See [CONTRIBUTING.md](CONTRIBUTING.md) and [docs/DATA_FORMAT.md](docs/DATA_FORMAT.md).
@@ -101,7 +101,7 @@ Dependabot keeps npm packages and the SHA-pinned GitHub Actions up to date.
 | `src/store/` | `DataStore` interface and `StaticStore` for the bundled data |
 | `src/view/` | map, timeline, band list, detail, preview panel, search |
 | `tools/` | `validate`, `normalize`, `geocode`, `review`, build checks and Vite plugins |
-| `data/tags.json` | the fixed tag list (genre, region, label, other) |
+| `data/tags.json` | the fixed tag list (genre, label, other) |
 | `samples/` | fictional sample bands used by the tests, one file with invalid rows, one LLM-style draft |
 | `.claude/skills/` | Claude Code skills for the tasks that need judgement |
 

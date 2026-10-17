@@ -25,7 +25,6 @@ const CITIES: readonly [city: string, countryCode: string, lat: number, lon: num
 const WORDS = ['Iron', 'Glass', 'Static', 'Ember', 'Hollow', 'Velvet', 'Ashen', 'Northern', 'Salt', 'Black', 'Pale', 'Storm'];
 const NOUNS = ['Harbor', 'Lantern', 'Choir', 'Meridian', 'Tide', 'Signal', 'Forge', 'Crown', 'Wolves', 'Engine', 'Archive'];
 const GENRES = TAG_VOCABULARY.tags.filter((tag) => tag.group === 'genre').map((tag) => tag.id);
-const REGIONS = TAG_VOCABULARY.tags.filter((tag) => tag.group === 'region').map((tag) => tag.id);
 const LABELS = TAG_VOCABULARY.tags.filter((tag) => tag.group === 'label').map((tag) => tag.id);
 const VENUE_WORDS = ['Hall', 'Club', 'Arena', 'Kantine', 'Loft', 'Werk', 'Garage', 'Theatre', 'Basement', 'Room'];
 
@@ -77,7 +76,7 @@ export function syntheticBands(bandCount: number, showsPerBand: number): Identif
         geo: { lat: round5(lat + (random() - 0.5) * 0.05), lon: round5(lon + (random() - 0.5) * 0.05), precision: random() < 0.5 ? 'venue' : 'city', source: 'nominatim' },
       };
     });
-    const tags = [pick(GENRES), pick(REGIONS), ...(LABELS.length > 0 && random() < 0.3 ? [pick(LABELS)] : [])];
+    const tags = [pick(GENRES), ...(LABELS.length > 0 && random() < 0.3 ? [pick(LABELS)] : [])];
     return normalizeBandFile({ schemaVersion: 1, band: { id, name, color: null, tags }, source: { url: sourceUrl, retrievedAt: '2026-10-01' }, shows });
   });
 }

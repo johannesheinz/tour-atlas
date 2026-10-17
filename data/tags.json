@@ -2,7 +2,6 @@
   "schemaVersion": 1,
   "groups": [
     { "id": "genre", "label": "Genre" },
-    { "id": "region", "label": "Region" },
     { "id": "label", "label": "Label" },
     { "id": "other", "label": "Other" }
   ],
@@ -43,15 +42,6 @@
     { "id": "hardcore", "label": "Hardcore", "group": "genre" },
     { "id": "post-rock", "label": "Post-rock", "group": "genre" },
     { "id": "shoegaze", "label": "Shoegaze", "group": "genre" },
-    { "id": "stoner-rock", "label": "Stoner rock", "group": "genre" },
-    { "id": "nordic", "label": "Nordic", "group": "region" },
-    { "id": "western-europe", "label": "Western Europe", "group": "region" },
-    { "id": "southern-europe", "label": "Southern Europe", "group": "region" },
-    { "id": "eastern-europe", "label": "Eastern Europe", "group": "region" },
-    { "id": "north-america", "label": "North America", "group": "region" },
-    { "id": "latin-america", "label": "Latin America", "group": "region" },
-    { "id": "middle-east-north-africa", "label": "Middle East and North Africa", "group": "region" },
-    { "id": "east-asia", "label": "East Asia", "group": "region" },
-    { "id": "oceania", "label": "Oceania", "group": "region" }
+    { "id": "stoner-rock", "label": "Stoner rock", "group": "genre" }
   ]
 }

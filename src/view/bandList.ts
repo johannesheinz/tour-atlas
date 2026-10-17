@@ -148,7 +148,7 @@ export function createBandList(container: HTMLElement, callbacks: BandListCallba
       }
       for (const group of tagGroups) group.element.hidden = group.tagIds.every((tagId) => (props.tagCounts.get(tagId) ?? 0) === 0);
       tagFilter.hidden = props.tagCounts.size === 0;
-      tagSummary.textContent = props.tagFilter.size === 0 ? 'Filter by genre or region' : `Filter by genre or region (${props.tagFilter.size} selected)`;
+      tagSummary.textContent = props.tagFilter.size === 0 ? 'Filter by genre' : `Filter by genre (${props.tagFilter.size} selected)`;
       const filteredOut = props.totalBandCount - props.bands.length;
       clearTags.hidden = props.tagFilter.size === 0;
       tagNote.hidden = filteredOut === 0;
