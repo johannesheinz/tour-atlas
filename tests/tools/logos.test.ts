@@ -38,6 +38,13 @@ describe('logoSilhouette', () => {
     expect(await alphaAt(result, 0, 0)).toBeLessThan(40);
   });
 
+  it('handles transparent logos whose shape touches the corners', async () => {
+    const svg = '<svg xmlns="http://www.w3.org/2000/svg" width="200" height="80"><rect x="0" y="0" width="30" height="30"/><rect x="170" y="50" width="30" height="30"/><rect x="60" y="20" width="80" height="40"/></svg>';
+    const result = await logoSilhouette(Buffer.from(svg));
+    const meta = await sharp(result).metadata();
+    expect(await alphaAt(result, Math.floor((meta.width ?? 0) / 2), Math.floor((meta.height ?? 0) / 2))).toBeGreaterThan(200);
+  });
+
   it('refuses an image without a visible shape', async () => {
     const blank = await sharp({ create: { width: 50, height: 50, channels: 3, background: '#ffffff' } }).png().toBuffer();
     await expect(logoSilhouette(blank)).rejects.toThrow(LogoError);

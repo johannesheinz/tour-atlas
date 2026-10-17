@@ -9,6 +9,8 @@ export const MAX_DOWNLOAD_BYTES = 5_000_000;
 const DOWNLOAD_TIMEOUT_MS = 20_000;
 const WORKING_SIZE = 1200;
 const ALPHA_BACKGROUND_THRESHOLD = 32;
+/** An image with at least this share of transparent pixels uses its alpha channel as the shape. */
+const TRANSPARENT_SHARE = 0.05;
 const COLOUR_DISTANCE_FLOOR = 24;
 const COLOUR_DISTANCE_GAIN = 2.2;
 
@@ -131,11 +133,10 @@ export async function logoSilhouette(input: Buffer): Promise<Buffer> {
   }
   const { data, info } = decoded;
   const { width, height } = info;
-  const at = (x: number, y: number) => (y * width + x) * 4;
-  const corners = [at(0, 0), at(width - 1, 0), at(0, height - 1), at(width - 1, height - 1)];
-  const mean = (channel: number) => corners.reduce((sum, offset) => sum + (data[offset + channel] ?? 0), 0) / corners.length;
-  const background = { r: mean(0), g: mean(1), b: mean(2), a: mean(3) };
-  const transparentBackground = background.a < ALPHA_BACKGROUND_THRESHOLD;
+  let transparentPixels = 0;
+  for (let offset = 3; offset < data.length; offset += 4) if ((data[offset] ?? 255) < ALPHA_BACKGROUND_THRESHOLD) transparentPixels++;
+  const transparentBackground = transparentPixels / (width * height) >= TRANSPARENT_SHARE;
+  const background = edgeMedian(data, width, height);
 
   const mask = Buffer.alloc(width * height * 4);
   let visible = 0;
@@ -158,4 +159,23 @@ export async function logoSilhouette(input: Buffer): Promise<Buffer> {
     .resize({ height: LOGO_HEIGHT, width: LOGO_MAX_WIDTH, fit: 'inside' })
     .webp({ quality: 90, alphaQuality: 100, effort: 6 })
     .toBuffer();
+}
+
+/** Median colour of the outermost pixel ring: robust against lettering that touches a corner. */
+function edgeMedian(data: Buffer, width: number, height: number): { r: number; g: number; b: number } {
+  const channels: [number[], number[], number[]] = [[], [], []];
+  const take = (x: number, y: number) => {
+    const offset = (y * width + x) * 4;
+    channels.forEach((values, channel) => values.push(data[offset + channel] ?? 0));
+  };
+  for (let x = 0; x < width; x++) {
+    take(x, 0);
+    take(x, height - 1);
+  }
+  for (let y = 1; y < height - 1; y++) {
+    take(0, y);
+    take(width - 1, y);
+  }
+  const median = (values: number[]) => values.toSorted((a, b) => a - b)[Math.floor(values.length / 2)] ?? 0;
+  return { r: median(channels[0]), g: median(channels[1]), b: median(channels[2]) };
 }
