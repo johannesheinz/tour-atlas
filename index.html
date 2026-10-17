@@ -4,10 +4,50 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="referrer" content="no-referrer" />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="description" content="Tour dates of many bands on one map and timeline." />
     <title>Tour Atlas</title>
   </head>
   <body>
-    <div id="app"></div>
+    <a class="skip-link" href="#atlas">Skip to map and timeline</a>
+    <div class="app">
+      <header class="masthead">
+        <h1 class="wordmark">Tour Atlas</h1>
+        <div class="search-slot" id="search"></div>
+        <div class="masthead-actions">
+          <button type="button" class="button" id="preview-button">Preview files</button>
+          <button type="button" class="button" id="export-button">Export all</button>
+          <fieldset class="theme-switch" id="theme-switch">
+            <legend class="visually-hidden">Colour theme</legend>
+          </fieldset>
+        </div>
+      </header>
+
+      <aside class="sidebar" id="band-list" aria-label="Bands"></aside>
+
+      <main class="stage">
+        <section class="atlas" id="atlas" aria-label="Map and timeline" tabindex="-1">
+          <div class="map" id="map"></div>
+          <div class="atlas-toolbar" role="toolbar" aria-label="Map and timeline controls">
+            <div class="toolbar-group">
+              <button type="button" class="icon-button" id="zoom-in" aria-label="Zoom map in">+</button>
+              <button type="button" class="icon-button" id="zoom-out" aria-label="Zoom map out">&minus;</button>
+              <button type="button" class="button button-small" id="fit-map">Fit map</button>
+            </div>
+            <p class="toolbar-hint" id="toolbar-hint"></p>
+            <div class="toolbar-group" id="timeline-controls"></div>
+          </div>
+          <div class="timeline" id="timeline"></div>
+        </section>
+        <section class="detail" id="detail" aria-label="Selected shows"></section>
+        <section class="preview-panel" id="preview-panel" aria-label="Previewed files" hidden></section>
+      </main>
+
+      <footer class="colophon">
+        <p>Projection: Equal Earth. Coastlines: Natural Earth via world-atlas.</p>
+        <p>No cookies, no tracking, no network requests. Everything you preview stays in this tab.</p>
+      </footer>
+    </div>
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>
