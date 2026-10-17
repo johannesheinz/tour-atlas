@@ -20,6 +20,7 @@ npm run geocode        # fill missing geo via Nominatim; reads NOMINATIM_CONTACT
 npm run review -- --base origin/main   # diff + plausibility warnings, as posted by CI
 npm run tags           # copy data/tags.json ids into the schema's band.tags enum
 npm run logos          # download band.logoUrl images once into data/logos/<id>.webp (silhouettes)
+npm run logo:preview -- <band-id> <url>   # check a candidate logo; previews in .cache/logo-previews
 npm run check          # everything CI runs, in order
 ```
 
@@ -48,6 +49,7 @@ npm run check          # everything CI runs, in order
 Only for work that needs judgement; everything checkable is a tool or a CI job.
 
 - `.claude/skills/band-data`: create or refresh a band file from a tour page
+- `.claude/skills/band-logo`: find a band's logo and check it as the silhouette the app shows
 - `.claude/skills/fix-data-errors`: fix what validate, geocode or the data review report
 - `.claude/skills/change-schema`: change the format consistently everywhere
 

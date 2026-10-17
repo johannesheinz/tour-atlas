@@ -70,8 +70,9 @@ operator can reach whoever sends the requests. It goes into the User-Agent heade
 
 ## Add a logo
 
-Put the address of the logo image in `band.logoUrl` (a PNG with a transparent background is best; SVG
-works too). On a pull request the "Logos" workflow downloads it, converts it and commits
+Put the address of the logo image in `band.logoUrl` (SVG is best, then a PNG with a transparent
+background). Check a candidate first with `npm run logo:preview -- <band-id> '<url>'`, which shows the
+silhouette the app will print. On a pull request the "Logos" workflow downloads it, converts it and commits
 `data/logos/<band-id>.webp` to your branch. Locally: `npm run logos`. If the download fails, the job
 says why; give another address. The app never loads logos from the original address.
 

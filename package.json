@@ -20,6 +20,7 @@
     "normalize": "node tools/normalize.ts data/bands",
     "geocode": "node --env-file-if-exists=.env.local tools/geocode.ts data/bands",
     "logos": "node tools/logos.ts data/bands",
+    "logo:preview": "node tools/logos.ts --preview",
     "tags": "node tools/tags.ts",
     "review": "node tools/review.ts",
     "check": "npm run typecheck && npm run validate && node tools/normalize.ts data/bands --check && node tools/tags.ts --check && npm test && npm run build"

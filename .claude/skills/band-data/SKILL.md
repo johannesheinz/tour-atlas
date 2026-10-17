@@ -33,8 +33,8 @@ Write each show as a draft row: `id: null`, `geo: null`, every other field prese
   well-established reference (its Wikipedia article) says so; otherwise `[]`. There are no location tags:
   where a band plays comes from its shows.
   If a fitting tag is missing, propose it to the user instead of using an unknown id.
-- `band.logoUrl`: the address of the logo image file itself (prefer a PNG with a transparent background,
-  then SVG), from the band's site, press kit or Wikimedia; `null` if none is found. Then run `npm run logos`.
+- `band.logoUrl`: follow the `band-logo` skill (SVG first, then a PNG with a transparent background;
+  check the silhouette with `npm run logo:preview`); `null` if none is found.
 - Unknown = `null`. Never invent venues, times or ticket links.
 
 ## 3. Refreshing an existing band

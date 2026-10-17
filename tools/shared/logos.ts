@@ -32,6 +32,40 @@ export interface LogoDependencies {
   readonly force: boolean;
 }
 
+export interface ImageFacts {
+  readonly format: string;
+  readonly width: number;
+  readonly height: number;
+  readonly bytes: number;
+  /** "svg" for vector files, otherwise whether all four corners are transparent. */
+  readonly transparentBackground: boolean | 'svg';
+}
+
+export async function describeImage(body: Buffer): Promise<ImageFacts> {
+  const meta = await sharp(body, { density: 150 }).metadata().catch((error: unknown) => {
+    throw new LogoError(`not a readable image (${error instanceof Error ? error.message : String(error)})`);
+  });
+  const format = meta.format ?? 'unknown';
+  let transparentBackground: boolean | 'svg' = 'svg';
+  if (format !== 'svg') {
+    const { data, info } = await sharp(body).ensureAlpha().raw().toBuffer({ resolveWithObject: true });
+    const alpha = (x: number, y: number) => data[(y * info.width + x) * 4 + 3] ?? 255;
+    const last = { x: info.width - 1, y: info.height - 1 };
+    transparentBackground = [alpha(0, 0), alpha(last.x, 0), alpha(0, last.y), alpha(last.x, last.y)].every((value) => value < ALPHA_BACKGROUND_THRESHOLD);
+  }
+  return { format, width: meta.width ?? 0, height: meta.height ?? 0, bytes: body.byteLength, transparentBackground };
+}
+
+/** Writes <band-id>.orig.png (as downloaded) and <band-id>.png (the silhouette the app shows) on the app's paper colour. */
+export async function writePreviews(body: Buffer, outDir: string, bandId: string): Promise<{ original: string; silhouette: string }> {
+  const paper = '#e3e4df';
+  const original = join(outDir, `${bandId}.orig.png`);
+  const silhouette = join(outDir, `${bandId}.png`);
+  await sharp(body, { density: 150 }).resize({ width: 600, height: 300, fit: 'inside' }).flatten({ background: paper }).png().toFile(original);
+  await sharp(await logoSilhouette(body)).flatten({ background: paper }).png().toFile(silhouette);
+  return { original, silhouette };
+}
+
 export function logoPath(logosDir: string, bandId: string): string {
   return join(logosDir, `${bandId}.webp`);
 }

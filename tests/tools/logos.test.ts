@@ -3,7 +3,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import sharp from 'sharp';
 import { describe, expect, it, vi } from 'vitest';
-import { LOGO_HEIGHT, LogoError, downloadImage, logoSilhouette, syncLogos } from '../../tools/shared/logos.ts';
+import { LOGO_HEIGHT, LogoError, describeImage, downloadImage, logoSilhouette, syncLogos, writePreviews } from '../../tools/shared/logos.ts';
 
 async function blackBoxOnWhite(): Promise<Buffer> {
   const box = await sharp({ create: { width: 120, height: 40, channels: 3, background: '#000000' } }).png().toBuffer();
@@ -41,6 +41,20 @@ describe('logoSilhouette', () => {
   it('refuses an image without a visible shape', async () => {
     const blank = await sharp({ create: { width: 50, height: 50, channels: 3, background: '#ffffff' } }).png().toBuffer();
     await expect(logoSilhouette(blank)).rejects.toThrow(LogoError);
+  });
+});
+
+describe('describeImage and writePreviews', () => {
+  it('reports format, size and whether the background is transparent', async () => {
+    expect(await describeImage(await blackBoxOnWhite())).toMatchObject({ format: 'png', width: 200, height: 80, transparentBackground: false });
+    expect((await describeImage(await redDiscOnTransparency())).transparentBackground).toBe('svg');
+  });
+
+  it('writes the original and the silhouette preview', async () => {
+    const dir = mkdtempSync(join(tmpdir(), 'tour-atlas-preview-'));
+    const files = await writePreviews(await blackBoxOnWhite(), dir, 'test');
+    expect(existsSync(files.original)).toBe(true);
+    expect(existsSync(files.silhouette)).toBe(true);
   });
 });
 
