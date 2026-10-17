@@ -523,23 +523,6 @@ export function createTimeline(container: HTMLElement, callbacks: TimelineCallba
           lanesContext.stroke();
         }
       }
-      lanesContext.globalAlpha = dimmed ? 0.35 : 1;
-      lanesContext.font = compact ? TIMELINE_SETTINGS.compactLaneFont : TIMELINE_SETTINGS.laneFont;
-      lanesContext.textBaseline = 'alphabetic';
-      const name = lane.band.file.band.name;
-      if (compact) {
-        const labelWidth = lanesContext.measureText(name).width + 10;
-        lanesContext.fillStyle = theme.stock;
-        lanesContext.globalAlpha *= 0.85;
-        lanesContext.fillRect(0, top + 3, labelWidth, laneHeight - 6);
-        lanesContext.globalAlpha = dimmed ? 0.35 : 1;
-        lanesContext.fillStyle = theme.ink;
-        lanesContext.fillText(name, 6, top + laneHeight / 2 + 5);
-      } else {
-        lanesContext.fillStyle = theme.ink;
-        lanesContext.fillText(name, 8, top + 16);
-      }
-      lanesContext.globalAlpha = 1;
       lanesContext.fillStyle = theme.inkMuted;
       lanesContext.globalAlpha = 0.35;
       lanesContext.fillRect(0, top + laneHeight - 1, width, 1);
@@ -557,6 +540,24 @@ export function createTimeline(container: HTMLElement, callbacks: TimelineCallba
       lanesContext.stroke();
       lanesContext.setLineDash([]);
     }
+
+    lanesContext.font = compact ? TIMELINE_SETTINGS.compactLaneFont : TIMELINE_SETTINGS.laneFont;
+    lanesContext.textBaseline = 'alphabetic';
+    for (let index = first; index <= last; index++) {
+      const lane = current.lanes[index];
+      if (lane === undefined) continue;
+      const top = laneTop(index);
+      const name = lane.band.file.band.name;
+      const dimmed = current.focusBandId !== null && current.focusBandId !== lane.band.file.band.id;
+      const label = compact ? { x: 6, baseline: top + laneHeight / 2 + 5, backingTop: top + 3, backingHeight: laneHeight - 6 } : { x: 8, baseline: top + 16, backingTop: top + 2, backingHeight: 19 };
+      lanesContext.fillStyle = theme.stock;
+      lanesContext.globalAlpha = (dimmed ? 0.35 : 1) * 0.85;
+      lanesContext.fillRect(0, label.backingTop, lanesContext.measureText(name).width + label.x + 4, label.backingHeight);
+      lanesContext.globalAlpha = dimmed ? 0.35 : 1;
+      lanesContext.fillStyle = theme.ink;
+      lanesContext.fillText(name, label.x, label.baseline);
+    }
+    lanesContext.globalAlpha = 1;
 
     for (let index = first; index <= last; index++) {
       const lane = current.lanes[index];

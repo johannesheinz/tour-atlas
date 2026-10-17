@@ -47,6 +47,9 @@ will show, black on the app's paper colour). Open both. Accept the image only if
 - the silhouette is legible: letters separated, no solid block where a coloured shape was,
 - nothing else (text, frame, background art) dominates.
 
+Grey shading in the silhouette (from gradients, outlines or glows in the logo) is kept on purpose.
+Don't reject a candidate for it, and don't make the converter flatten it; only legibility counts.
+
 If the silhouette is a blob, look for another file: a transparent PNG or SVG of the same logo usually fixes it.
 
 ## Store it
