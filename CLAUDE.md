@@ -3,7 +3,7 @@
 Static web app: concert tour dates of many bands on a world map with an aligned, zoomable timeline.
 No backend, no runtime network requests. Band data lives in `data/bands/*.json`, is produced upstream
 (LLM pipeline), reviewed via pull requests, and inlined into `dist/index.html`; only the self-hosted
-`.woff2` fonts ship as separate files next to it (`tools/vite/hostedFonts.ts`).
+`.woff2` fonts and the band logo `.webp` files ship as separate files next to it (`tools/vite/hostedAssets.ts`).
 
 ## Commands
 
@@ -42,7 +42,8 @@ npm run check          # everything CI runs, in order
 - `src/preview.ts`: in-browser preview of dropped files (validate, normalize, lint, diff, export). Held in memory only.
 - `src/main.ts` wires views to `src/state.ts`; `src/appState.ts` and `src/selectors.ts` memoise derived data.
 - `tools/`: Node CLIs (TypeScript run directly by Node's type stripping, so use `.ts` import specifiers and
-  erasable syntax only); never shipped. `tools/vite/` holds the build plugins (data validation, CSP, slim topology).
+  erasable syntax only); never shipped. `tools/vite/` holds the build plugins (data validation, CSP, slim topology,
+  brand mark and inline favicon from `src/brand/`).
 
 ## Skills
 

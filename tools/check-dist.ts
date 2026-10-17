@@ -54,6 +54,7 @@ runCli(USAGE, () => {
     if (pattern.test(html)) problems.push(`contains ${description}`);
   }
   if (!html.includes('http-equiv="Content-Security-Policy"')) problems.push('has no Content-Security-Policy meta tag');
+  if (!/<link rel="icon" type="image\/svg\+xml" href="data:image\/svg\+xml,/.test(html)) problems.push('has no inline SVG favicon; browsers would request /favicon.ico');
   for (const font of fonts) {
     if (!html.includes(font)) problems.push(`${font} is not referenced by index.html`);
   }

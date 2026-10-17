@@ -171,6 +171,24 @@ a {
   line-height: 0.85;
   letter-spacing: 0.005em;
   padding-top: 4px;
+  display: flex;
+  align-items: center;
+  gap: 0.22em;
+}
+
+.brand-mark {
+  flex: none;
+  width: 1em;
+  height: 1em;
+  margin-top: -4px;
+}
+
+.brand-mark .mark-paper {
+  fill: var(--stock);
+}
+
+.brand-mark .mark-casing {
+  stroke: var(--stock);
 }
 
 .search-slot {
