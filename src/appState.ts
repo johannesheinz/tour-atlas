@@ -2,10 +2,10 @@ import { matchesTagFilter } from './data/tags.ts';
 import type { BandFile } from './data/types.ts';
 import type { PreviewResult } from './preview.ts';
 import { buildBandEntries, showRefs, sortBands, type BandEntry, type BandSort, type ShowRef } from './model.ts';
-import type { ThemePreference } from './view/theme.ts';
+import type { ThemePreference } from './model.ts';
 import type { TimePreset } from './view/timePresets.ts';
-import type { MapMode } from './view/map.ts';
-import type { MapViewPreset } from './view/mapRegions.ts';
+import type { MapMode, MapViewPreset } from './view/mapRegions.ts';
+import type { PlaceKey } from './places.ts';
 
 export interface TimeWindow {
   readonly start: number;
@@ -25,6 +25,8 @@ export interface AppState {
   readonly focusBandId: string | null;
   readonly hoverShowIds: ReadonlySet<string>;
   readonly selectedShowIds: ReadonlySet<string>;
+  /** Selected cities or countries; resolved live to their shows inside the time window. Takes precedence over selectedShowIds. */
+  readonly selectedPlaces: ReadonlySet<PlaceKey>;
   readonly timeWindow: TimeWindow | null;
   readonly followTimeline: boolean;
   /** The preset that produced the current window; null once the user zooms or pans. */

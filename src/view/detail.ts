@@ -7,6 +7,8 @@ export interface DetailProps {
   /** Sorted by date. */
   readonly shows: readonly ShowRef[];
   readonly mode: ThemeMode;
+  /** Set for place selections: the place name and the time range the list covers. */
+  readonly place: { readonly name: string; readonly range: string } | null;
 }
 
 export interface DetailCallbacks {
@@ -27,8 +29,18 @@ export function createDetail(container: HTMLElement, callbacks: DetailCallbacks)
 
   return {
     render(props) {
-      if (previous !== null && previous.shows === props.shows && previous.mode === props.mode) return;
+      if (previous !== null && previous.shows === props.shows && previous.mode === props.mode && previous.place?.name === props.place?.name && previous.place?.range === props.place?.range) return;
       previous = props;
+      if (props.shows.length === 0 && props.place !== null) {
+        const clear = h('button', { type: 'button', class: 'text-button' }, 'Clear selection');
+        clear.addEventListener('click', () => callbacks.onClear());
+        container.replaceChildren(
+          h('div', { class: 'detail-head' }, h('h2', { class: 'detail-title' }, props.place.name), clear),
+          h('p', { class: 'detail-empty' }, `No shows here ${props.place.range}. Zoom the timeline out or pick a wider time window.`),
+        );
+        announcer.textContent = `${props.place.name}: no shows ${props.place.range}`;
+        return;
+      }
       if (props.shows.length === 0) {
         container.replaceChildren(
           h('p', { class: 'detail-empty' }, 'Select a pin on the map or a date on the timeline to see the shows here.'),
@@ -37,7 +49,7 @@ export function createDetail(container: HTMLElement, callbacks: DetailCallbacks)
         return;
       }
 
-      const title = headline(props.shows);
+      const title = props.place === null ? headline(props.shows) : `${props.place.name}: ${plural(props.shows.length, 'show')}`;
       const clear = h('button', { type: 'button', class: 'text-button' }, 'Clear selection');
       clear.addEventListener('click', () => callbacks.onClear());
       const rows = props.shows.slice(0, MAX_ROWS).map((ref) => showRow(ref, props.mode));
@@ -45,6 +57,7 @@ export function createDetail(container: HTMLElement, callbacks: DetailCallbacks)
 
       const parts: HTMLElement[] = [
         h('div', { class: 'detail-head' }, h('h2', { class: 'detail-title' }, title), clear),
+        ...(props.place === null ? [] : [h('p', { class: 'detail-range' }, `Shows ${props.place.range}, updated as you move the timeline.`)]),
         h('ol', { class: 'show-list' }, ...rows),
       ];
       if (overflow > 0) {

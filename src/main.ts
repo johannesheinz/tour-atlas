@@ -22,6 +22,11 @@ import { DAY_MS } from './view/timeScale.ts';
 import { createTimeline } from './view/timeline.ts';
 import { createTimelineControls } from './view/timelineControls.ts';
 import { createMapControls } from './view/mapControls.ts';
+import { createPlaceList } from './view/placeList.ts';
+import { createSidebar } from './view/sidebar.ts';
+import { cityKey, describePlaces, showsAtPlaces, type PlaceKey } from './places.ts';
+import { countryName, formatDate } from './view/format.ts';
+import { slugify } from './data/ids.ts';
 import { findRegion, regionPoints, showsWithin, type MapViewPreset } from './view/mapRegions.ts';
 import { PRESET_IDS, defaultPreset, isPresetAvailable, presetRange, usesPastMonth, type TimePreset } from './view/timePresets.ts';
 
@@ -44,6 +49,7 @@ const state = createStore<AppState>({
   focusBandId: null,
   hoverShowIds: new Set(),
   selectedShowIds: new Set(urlState.selectedShowIds),
+  selectedPlaces: new Set(urlState.selectedPlaces),
   timeWindow: null,
   followTimeline: urlState.follow ?? true,
   timePreset: urlState.preset,
@@ -66,13 +72,13 @@ const idsOf = (shows: readonly ShowRef[] | null): ReadonlySet<string> => new Set
 
 const map = createMapView(requireElement(document, '#map', HTMLDivElement), world, {
   onHover: (shows) => state.set({ hoverShowIds: idsOf(shows) }),
-  onSelect: (shows) => state.set({ selectedShowIds: idsOf(shows) }),
+  onSelect: (shows) => selectPlaces(new Set(shows.map(cityKey))),
 });
 
 let windowTimer: ReturnType<typeof setTimeout> | undefined;
 const timeline = createTimeline(requireElement(document, '#timeline', HTMLDivElement), {
   onHover: (shows) => state.set({ hoverShowIds: idsOf(shows) }),
-  onSelect: (shows) => state.set({ selectedShowIds: idsOf(shows) }),
+  onSelect: (shows) => state.set({ selectedShowIds: idsOf(shows), selectedPlaces: new Set() }),
   onWindowChange(window, byUser) {
     if (byUser) state.set({ timePreset: null });
     clearTimeout(windowTimer);
@@ -104,7 +110,7 @@ const bandList = createBandList(requireElement(document, '#band-list', HTMLEleme
 });
 
 const detail = createDetail(requireElement(document, '#detail', HTMLElement), {
-  onClear: () => state.set({ selectedShowIds: new Set() }),
+  onClear: () => state.set({ selectedShowIds: new Set(), selectedPlaces: new Set() }),
 });
 
 const previewPanel = createPreviewPanel(requireElement(document, '#preview-panel', HTMLElement), {
@@ -115,6 +121,21 @@ const previewPanel = createPreviewPanel(requireElement(document, '#preview-panel
   },
   onRemove: (preview) => setPreviews(state.get().previewResults.filter((item) => item !== preview)),
   onClearAll: () => setPreviews([]),
+});
+
+const sidebar = createSidebar(requireElement(document, '#sidebar', HTMLElement));
+const placeList = createPlaceList(requireElement(document, '#place-list', HTMLElement), {
+  onSelect(key) {
+    const current = state.get();
+    const already = current.selectedPlaces.size === 1 && current.selectedPlaces.has(key);
+    selectPlaces(already ? new Set() : new Set([key]));
+    if (already) return;
+    const shows = showsAtPlaces(derive(state.get()).visibleShows, new Set([key]), state.get().timeWindow);
+    if (shows.length === 0) return;
+    state.set({ mapView: { kind: 'shows' } });
+    map.setUserLocation(null);
+    map.fitToShows(shows, true);
+  },
 });
 
 const search = createSearch(requireElement(document, '#search', HTMLDivElement), { onChoose: focusSearchResult });
@@ -148,7 +169,7 @@ const mapControls = createMapControls(requireElement(document, '#map-controls', 
     const current = state.get();
     if (current.mapView.kind !== 'near' || current.userPosition === null) return;
     const nearby = showsWithin(select.mapShows(derive(current), select.windowFilter(current)), current.userPosition, current.mapView.radiusKm);
-    state.set({ selectedShowIds: new Set(nearby.map((ref) => ref.show.id)) });
+    state.set({ selectedShowIds: new Set(nearby.map((ref) => ref.show.id)), selectedPlaces: new Set() });
   },
 });
 map.setMode(state.get().mapMode);
@@ -192,7 +213,7 @@ function renderAll() {
     fitShows: mapShows.length > 0 ? mapShows : derived.visibleShows,
     routeBandIds: select.routeBandIds(current, derived),
     highlightedShowIds: current.hoverShowIds,
-    selectedShowIds: current.selectedShowIds,
+    selectedShowIds: select.selectedIds(current, derived),
     focusBandId: current.focusBandId,
     theme,
   });
@@ -215,7 +236,7 @@ function renderAll() {
         ? 'No bands are shown. Turn bands on in the list to see their dates.'
         : 'No shows in this window. Pick another time window or zoom out.',
     highlightedShowIds: current.hoverShowIds,
-    selectedShowIds: current.selectedShowIds,
+    selectedShowIds: select.selectedIds(current, derived),
     focusBandId: current.focusBandId,
     theme,
     today: parseIsoDate(current.today).getTime(),
@@ -264,7 +285,9 @@ function renderAll() {
     sort: current.bandSort,
     mode: theme.mode,
   });
-  detail.render({ shows: select.selection(current, derived), mode: theme.mode });
+  detail.render({ shows: select.selection(current, derived), mode: theme.mode, place: placeHeading(current, derived) });
+  placeList.render({ places: select.places(current, derived), selected: current.selectedPlaces });
+  sidebar.setToggleLabel(`Bands and places (${derived.visibleBands.length} of ${derived.bands.length} bands shown)`);
   search.setIndex(select.searchIndex(derived));
   previewPanel.render(current.previewResults);
   scheduleUrlUpdate();
@@ -359,6 +382,7 @@ function focusSearchResult(entry: SearchEntry) {
   }
   const shows = entry.showIds.flatMap((id) => derived.showsById.get(id) ?? []);
   if (shows.length === 0) return;
+  const placeKey = entry.kind === 'place' ? searchPlaceKey(entry.ref) : null;
   if (entry.kind === 'tour') {
     const [bandId] = entry.bandIds;
     if (bandId !== undefined) soloBand(bandId);
@@ -372,7 +396,11 @@ function focusSearchResult(entry: SearchEntry) {
     map.setUserLocation(null);
     map.fitToShows(shows, true);
   }
-  state.set({ selectedShowIds: new Set(entry.showIds), timePreset: null });
+  state.set(
+    placeKey === null
+      ? { selectedShowIds: new Set(entry.showIds), selectedPlaces: new Set(), timePreset: null }
+      : { selectedShowIds: new Set(), selectedPlaces: new Set([placeKey]), timePreset: null },
+  );
   const start = Math.min(...shows.map((ref) => ref.start));
   const end = Math.max(...shows.map((ref) => ref.end)) + DAY_MS;
   const padding = Math.max(7 * DAY_MS, (end - start) * 0.1);
@@ -391,6 +419,25 @@ function applyPreset(preset: TimePreset | null, animate: boolean) {
   }
   state.set({ timePreset: preset });
   timeline.fitToData(animate, presetRange(preset, shows, today, current.includePastMonth));
+}
+
+function selectPlaces(places: ReadonlySet<PlaceKey>) {
+  state.set({ selectedPlaces: places, selectedShowIds: new Set() });
+}
+
+/** Search keys places as "<city slug>|<COUNTRY>". */
+function searchPlaceKey(ref: string): PlaceKey {
+  const [city, country] = ref.split('|');
+  if (city === undefined || country === undefined) throw new Error(`unexpected place reference ${ref}`);
+  return `${country.toLowerCase()}.${slugify(city)}`;
+}
+
+function placeHeading(current: AppState, derived: ReturnType<typeof derive>): { name: string; range: string } | null {
+  if (current.selectedPlaces.size === 0) return null;
+  const window = current.timeWindow;
+  const range =
+    window === null ? 'on all dates' : `between ${formatDate(formatIsoDate(new Date(window.start)))} and ${formatDate(formatIsoDate(new Date(window.end)))}`;
+  return { name: describePlaces(current.selectedPlaces, derived.visibleShows, countryName), range };
 }
 
 function initialMapView(): MapViewPreset {
@@ -447,7 +494,7 @@ function applyMapView(view: MapViewPreset, animate: boolean) {
 function resetViews() {
   searchFocus = null;
   const current = state.get();
-  state.set({ selectedShowIds: new Set(), hoverShowIds: new Set(), focusBandId: null, mapView: { kind: 'shows' }, locationStatus: null });
+  state.set({ selectedShowIds: new Set(), selectedPlaces: new Set(), hoverShowIds: new Set(), focusBandId: null, mapView: { kind: 'shows' }, locationStatus: null });
   map.setUserLocation(null);
   map.fitToData(true);
   applyPreset(defaultPreset(derive(current).visibleShows, parseIsoDate(current.today).getTime()), true);
@@ -471,6 +518,7 @@ function writeUrlState() {
     from: showWindow ? formatIsoDate(new Date(window.start)) : null,
     to: showWindow ? addDays(formatIsoDate(new Date(window.end)), -1) : null,
     selectedShowIds: [...current.selectedShowIds],
+    selectedPlaces: [...current.selectedPlaces],
     follow: current.followTimeline ? null : false,
     preset: current.timePreset === null || current.timePreset === defaultPreset(derive(current).visibleShows, parseIsoDate(current.today).getTime()) ? null : current.timePreset,
     allLanes: !current.hideEmptyLanes,

@@ -1,6 +1,5 @@
 import { h } from './dom.ts';
-import type { MapMode } from './map.ts';
-import { MAP_REGIONS, NEAR_ME_RADII_KM, findRegion, type MapViewPreset, type NearMeRadius } from './mapRegions.ts';
+import { MAP_REGIONS, NEAR_ME_RADII_KM, findRegion, type MapMode, type MapViewPreset, type NearMeRadius } from './mapRegions.ts';
 
 export interface MapControlsProps {
   readonly view: MapViewPreset;

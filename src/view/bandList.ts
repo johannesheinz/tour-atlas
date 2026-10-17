@@ -44,7 +44,6 @@ interface Row {
 const SORT_LABELS: Record<BandSort, string> = { name: 'Name', 'next-show': 'Next show', 'show-count': 'Most shows' };
 
 export function createBandList(container: HTMLElement, callbacks: BandListCallbacks): BandListView {
-  const toggle = h('button', { type: 'button', class: 'band-list-toggle', 'aria-expanded': 'false', 'aria-controls': 'band-list-body' });
   const filter = h('input', { type: 'search', class: 'band-filter', placeholder: 'Filter bands', 'aria-label': 'Filter bands by name' });
   const sort = h(
     'select',
@@ -87,15 +86,10 @@ export function createBandList(container: HTMLElement, callbacks: BandListCallba
     list,
     empty,
   );
-  container.append(toggle, body);
+  container.append(body);
 
   const rows = new Map<string, Row>();
 
-  toggle.addEventListener('click', () => {
-    const expanded = toggle.getAttribute('aria-expanded') !== 'true';
-    toggle.setAttribute('aria-expanded', String(expanded));
-    container.classList.toggle('is-expanded', expanded);
-  });
   filter.addEventListener('input', () => callbacks.onFilter(filter.value));
   sort.addEventListener('change', () => {
     const value = Object.keys(SORT_LABELS).find((key): key is BandSort => key === sort.value);
@@ -137,7 +131,6 @@ export function createBandList(container: HTMLElement, callbacks: BandListCallba
       const matching = props.bands.filter((band) => query === '' || band.file.band.name.toLocaleLowerCase().includes(query));
       const visibleCount = props.bands.filter((band) => !props.hiddenBandIds.has(band.file.band.id)).length;
 
-      toggle.textContent = `Bands (${visibleCount} of ${props.totalBandCount} shown)`;
       count.textContent = `${visibleCount} of ${props.totalBandCount} shown`;
       for (const [tagId, chip] of tagChips) {
         const bands = props.tagCounts.get(tagId) ?? 0;

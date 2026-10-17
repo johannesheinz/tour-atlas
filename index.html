@@ -23,7 +23,17 @@
         </div>
       </header>
 
-      <aside class="sidebar" id="band-list" aria-label="Bands"></aside>
+      <aside class="sidebar" id="sidebar" aria-label="Bands and places">
+        <button type="button" class="sidebar-toggle" id="sidebar-toggle" aria-expanded="false" aria-controls="sidebar-body"></button>
+        <div class="sidebar-body" id="sidebar-body">
+          <div class="sidebar-tabs" role="tablist" aria-label="Lists">
+            <button type="button" role="tab" class="sidebar-tab" id="tab-bands" aria-selected="true" aria-controls="band-list">Bands</button>
+            <button type="button" role="tab" class="sidebar-tab" id="tab-places" aria-selected="false" aria-controls="place-list" tabindex="-1">Places</button>
+          </div>
+          <div id="band-list" role="tabpanel" aria-labelledby="tab-bands"></div>
+          <div id="place-list" class="place-list" role="tabpanel" aria-labelledby="tab-places" hidden></div>
+        </div>
+      </aside>
 
       <main class="stage">
         <section class="atlas" id="atlas" aria-label="Map and timeline" tabindex="-1">

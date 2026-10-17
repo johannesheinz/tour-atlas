@@ -1,6 +1,7 @@
 import { isInWindow, type AppState, type Derived } from './appState.ts';
 import type { ShowRef } from './model.ts';
 import { countryName } from './view/format.ts';
+import { buildPlaces, showsAtPlaces, type CountryPlace } from './places.ts';
 import type { TimelineLane } from './view/timeline.ts';
 import { buildSearchIndex, type SearchEntry } from './view/searchIndex.ts';
 
@@ -20,8 +21,13 @@ export function createSelectors(maxBandsWithRoutes: number) {
   let lanesKey: [Derived['visibleBands'], AppState['timeWindow'], boolean] | null = null;
   let lanes: { readonly shown: readonly TimelineLane[]; readonly hiddenCount: number } = { shown: [], hiddenCount: 0 };
 
-  let selectionKey: [ReadonlySet<string>, ReadonlyMap<string, ShowRef>] | null = null;
+  let selectionKey: [ReadonlySet<string>, ReadonlySet<string>, AppState['timeWindow'], readonly ShowRef[], ReadonlyMap<string, ShowRef>] | null = null;
   let selection: readonly ShowRef[] = [];
+  let selectedIdsKey: readonly ShowRef[] | null = null;
+  let selectedIds: ReadonlySet<string> = new Set();
+
+  let placesKey: [readonly ShowRef[], AppState['timeWindow']] | null = null;
+  let places: readonly CountryPlace[] = [];
 
   let tagCountKey: Derived['bands'] | null = null;
   let tagCounts: ReadonlyMap<string, number> = new Map();
@@ -36,7 +42,7 @@ export function createSelectors(maxBandsWithRoutes: number) {
           ? derived.visibleBands.map((band) => band.file.band.id)
           : [
               ...(current.focusBandId === null ? [] : [current.focusBandId]),
-              ...[...current.selectedShowIds, ...current.hoverShowIds].flatMap((id) => derived.showsById.get(id)?.band.file.band.id ?? []),
+              ...[...this.selectedIds(current, derived), ...current.hoverShowIds].flatMap((id) => derived.showsById.get(id)?.band.file.band.id ?? []),
             ];
       const key = [...new Set(ids)].toSorted().join(',');
       if (key !== routeKey) {
@@ -76,14 +82,42 @@ export function createSelectors(maxBandsWithRoutes: number) {
       return lanes;
     },
 
+    /** Selected places resolve to their visible shows inside the time window; otherwise the selected show ids. */
     selection(current: AppState, derived: Derived): readonly ShowRef[] {
-      if (selectionKey === null || selectionKey[0] !== current.selectedShowIds || selectionKey[1] !== derived.showsById) {
-        selectionKey = [current.selectedShowIds, derived.showsById];
-        selection = [...current.selectedShowIds]
-          .flatMap((id) => derived.showsById.get(id) ?? [])
-          .toSorted((a, b) => a.start - b.start || a.band.file.band.name.localeCompare(b.band.file.band.name));
+      const key = selectionKey;
+      if (
+        key === null ||
+        key[0] !== current.selectedShowIds ||
+        key[1] !== current.selectedPlaces ||
+        key[2] !== current.timeWindow ||
+        key[3] !== derived.visibleShows ||
+        key[4] !== derived.showsById
+      ) {
+        selectionKey = [current.selectedShowIds, current.selectedPlaces, current.timeWindow, derived.visibleShows, derived.showsById];
+        const refs =
+          current.selectedPlaces.size > 0
+            ? showsAtPlaces(derived.visibleShows, current.selectedPlaces, current.timeWindow)
+            : [...current.selectedShowIds].flatMap((id) => derived.showsById.get(id) ?? []);
+        selection = refs.toSorted((a, b) => a.start - b.start || a.band.file.band.name.localeCompare(b.band.file.band.name));
       }
       return selection;
+    },
+
+    selectedIds(current: AppState, derived: Derived): ReadonlySet<string> {
+      const refs = this.selection(current, derived);
+      if (refs !== selectedIdsKey) {
+        selectedIdsKey = refs;
+        selectedIds = new Set(refs.map((ref) => ref.show.id));
+      }
+      return selectedIds;
+    },
+
+    places(current: AppState, derived: Derived): readonly CountryPlace[] {
+      if (placesKey === null || placesKey[0] !== derived.visibleShows || placesKey[1] !== current.timeWindow) {
+        placesKey = [derived.visibleShows, current.timeWindow];
+        places = buildPlaces(derived.visibleShows, current.timeWindow, countryName);
+      }
+      return places;
     },
 
     tagCounts(derived: Derived): ReadonlyMap<string, number> {

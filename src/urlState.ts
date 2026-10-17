@@ -2,6 +2,7 @@ import { DATE_PATTERN } from './data/ids.ts';
 import { isCalendarDate } from './data/dates.ts';
 import type { BandSort } from './model.ts';
 import { PRESET_IDS, type TimePreset } from './view/timePresets.ts';
+import { PLACE_KEY_PATTERN } from './places.ts';
 
 /** View state kept in the URL hash: shareable, never stored, never sent to a server. */
 export interface UrlState {
@@ -11,6 +12,7 @@ export interface UrlState {
   readonly from: string | null;
   readonly to: string | null;
   readonly selectedShowIds: readonly string[];
+  readonly selectedPlaces: readonly string[];
   readonly follow: boolean | null;
   readonly preset: TimePreset | null;
   readonly allLanes: boolean;
@@ -42,6 +44,7 @@ export function parseUrlState(hash: string): UrlState {
     from: validRange ? from : null,
     to: validRange ? to : null,
     selectedShowIds: list('show'),
+    selectedPlaces: (params.get('at') ?? '').split(',').filter((key) => PLACE_KEY_PATTERN.test(key)),
     follow: followParam === '0' ? false : followParam === '1' ? true : null,
     preset: PRESET_IDS.find((preset) => preset === params.get('when')) ?? null,
     allLanes: params.get('lanes') === 'all',
@@ -61,6 +64,7 @@ export function serializeUrlState(state: UrlState): string {
     params.set('to', state.to);
   }
   if (state.selectedShowIds.length > 0) params.set('show', state.selectedShowIds.toSorted().join(','));
+  if (state.selectedPlaces.length > 0) params.set('at', state.selectedPlaces.toSorted().join(','));
   if (state.follow !== null) params.set('follow', state.follow ? '1' : '0');
   if (state.preset !== null) params.set('when', state.preset);
   if (state.allLanes) params.set('lanes', 'all');

@@ -1,7 +1,6 @@
-import type { ThemeMode } from '../model.ts';
+import type { ThemeMode, ThemePreference } from '../model.ts';
 
-export type ThemePreference = 'auto' | 'light' | 'dark';
-export type { ThemeMode } from '../model.ts';
+export type { ThemeMode, ThemePreference } from '../model.ts';
 
 export interface ThemeColors {
   readonly mode: ThemeMode;

@@ -21,6 +21,14 @@ export const MAP_REGIONS: readonly MapRegion[] = [
   { id: 'world', label: 'World', west: -180, south: -60, east: 180, north: 80 },
 ];
 
+export type MapMode = 'flat' | 'globe';
+
+export interface UserLocation {
+  readonly lon: number;
+  readonly lat: number;
+  readonly radiusKm: number;
+}
+
 export const NEAR_ME_RADII_KM = [25, 50, 100, 250] as const;
 export type NearMeRadius = (typeof NEAR_ME_RADII_KM)[number];
 

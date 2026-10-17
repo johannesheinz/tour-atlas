@@ -9,7 +9,8 @@ import type { ShowRef } from '../model.ts';
 import { context2d, h, prefersReducedMotion, s } from './dom.ts';
 import { formatDate, plural } from './format.ts';
 import { computeGlobeFit, computeMapFit, interpolateFit, type LonLat, type MapFit } from './geoFit.ts';
-import { radiusDegrees } from './mapRegions.ts';
+import { radiusDegrees, type MapMode, type UserLocation } from './mapRegions.ts';
+export type { MapMode, UserLocation } from './mapRegions.ts';
 import { placeLabels } from './labels.ts';
 import { clusterGroups, groupByCoordinates, pinLabel, type DisplayPin, type PinGroup } from './pins.ts';
 import { annularSectorPath, pinSegments, type PinSegment } from './pinSegments.ts';
@@ -55,14 +56,6 @@ export interface MapProps {
 export interface MapCallbacks {
   onHover(shows: readonly ShowRef[] | null): void;
   onSelect(shows: readonly ShowRef[]): void;
-}
-
-export type MapMode = 'flat' | 'globe';
-
-export interface UserLocation {
-  readonly lon: number;
-  readonly lat: number;
-  readonly radiusKm: number;
 }
 
 export interface MapView {

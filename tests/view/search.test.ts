@@ -48,6 +48,7 @@ describe('url state', () => {
       from: '2026-10-01',
       to: '2026-12-31',
       selectedShowIds: ['iron-lantern-2026-10-17-belo-horizonte'],
+      selectedPlaces: ['br.belo-horizonte'],
       follow: false,
       preset: null,
       allLanes: true,
@@ -56,7 +57,7 @@ describe('url state', () => {
       globe: true,
     };
     const hash = serializeUrlState(state);
-    expect(hash).toBe('#hide=glass-harbor,velvet-meridian&tags=doom-metal&sort=next-show&from=2026-10-01&to=2026-12-31&show=iron-lantern-2026-10-17-belo-horizonte&follow=0&lanes=all&recent=1&view=europe&globe=1');
+    expect(hash).toBe('#hide=glass-harbor,velvet-meridian&tags=doom-metal&sort=next-show&from=2026-10-01&to=2026-12-31&show=iron-lantern-2026-10-17-belo-horizonte&at=br.belo-horizonte&follow=0&lanes=all&recent=1&view=europe&globe=1');
     expect(parseUrlState(hash)).toEqual({ ...state, hiddenBandIds: ['glass-harbor', 'velvet-meridian'] });
   });
 
@@ -68,6 +69,7 @@ describe('url state', () => {
       from: null,
       to: null,
       selectedShowIds: [],
+      selectedPlaces: [],
       follow: null,
       preset: null,
       allLanes: false,
@@ -83,6 +85,6 @@ describe('url state', () => {
   });
 
   it('serializes the default view to an empty hash', () => {
-    expect(serializeUrlState({ hiddenBandIds: [], tags: [], sort: null, from: null, to: null, selectedShowIds: [], follow: null, preset: null, allLanes: false, includePastMonth: false, region: null, globe: false })).toBe('');
+    expect(serializeUrlState({ hiddenBandIds: [], tags: [], sort: null, from: null, to: null, selectedShowIds: [], selectedPlaces: [], follow: null, preset: null, allLanes: false, includePastMonth: false, region: null, globe: false })).toBe('');
   });
 });

@@ -19,6 +19,7 @@ export interface ShowRef {
 
 export type BandSort = 'name' | 'next-show' | 'show-count';
 export type ThemeMode = 'light' | 'dark';
+export type ThemePreference = 'auto' | 'light' | 'dark';
 
 export function bandColor(band: BandEntry, mode: ThemeMode): string {
   return band.color[mode];
