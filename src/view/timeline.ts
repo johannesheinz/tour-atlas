@@ -38,6 +38,10 @@ export interface TimelineLane {
 
 export interface TimelineProps {
   readonly lanes: readonly TimelineLane[];
+  /** Every show the timeline fits to, including those in collapsed lanes. */
+  readonly domainShows: readonly ShowRef[];
+  readonly hiddenLaneCount: number;
+  readonly emptyMessage: string;
   readonly highlightedShowIds: ReadonlySet<string>;
   readonly selectedShowIds: ReadonlySet<string>;
   readonly focusBandId: string | null;
@@ -48,13 +52,15 @@ export interface TimelineProps {
 export interface TimelineCallbacks {
   onHover(shows: readonly ShowRef[] | null): void;
   onSelect(shows: readonly ShowRef[]): void;
-  /** Called when a zoom or pan gesture ends, after fits and on resize. */
-  onWindowChange(window: TimeWindow): void;
+  /** Called when a zoom or pan gesture ends, after fits and on resize. byUser is false for programmatic fits. */
+  onWindowChange(window: TimeWindow, byUser: boolean): void;
+  onShowAllLanes(): void;
 }
 
 export interface TimelineView {
   render(props: TimelineProps): void;
-  fitToData(animate: boolean): void;
+  /** Recomputes the full date range from domainShows, then shows `range` (or everything when null). */
+  fitToData(animate: boolean, range: readonly [number, number] | null): void;
   zoomToRange(start: number, end: number, animate: boolean): void;
   zoomBy(factor: number): void;
   isAtFit(): boolean;
@@ -73,8 +79,12 @@ export function createTimeline(container: HTMLElement, callbacks: TimelineCallba
   const scroller = h('div', { class: 'timeline-scroll' }, lanesCanvas, spacer);
   const cursor = h('button', { type: 'button', class: 'timeline-cursor', 'aria-label': 'Timeline. Use the arrow keys to move between shows.' });
   const announcer = h('div', { class: 'visually-hidden', 'aria-live': 'polite' });
-  const empty = h('p', { class: 'timeline-empty', hidden: true }, 'No bands are shown. Turn bands on in the list to see their dates.');
-  container.append(axisCanvas, scroller, cursor, announcer, empty);
+  const empty = h('p', { class: 'timeline-empty', hidden: true });
+  const noteText = h('span');
+  const showAllLanes = h('button', { type: 'button', class: 'text-button' }, 'Show all lanes');
+  const note = h('p', { class: 'timeline-note', hidden: true }, noteText, showAllLanes);
+  showAllLanes.addEventListener('click', () => callbacks.onShowAllLanes());
+  container.append(axisCanvas, scroller, cursor, announcer, empty, note);
   const tooltip = createTooltip(container);
 
   const axisContext = context2d(axisCanvas);
@@ -93,6 +103,7 @@ export function createTimeline(container: HTMLElement, callbacks: TimelineCallba
   let silent = false;
   let hasFitted = false;
   let pendingRange: [number, number] | null = null;
+  let programmatic = false;
 
   const zoomBehavior = zoom<HTMLDivElement, unknown>()
     .filter((event: Event) => {
@@ -101,6 +112,9 @@ export function createTimeline(container: HTMLElement, callbacks: TimelineCallba
       return true;
     })
     .clickDistance(4)
+    .on('start', (event: D3ZoomEvent<HTMLDivElement, unknown>) => {
+      if (event.sourceEvent !== null) programmatic = false;
+    })
     .on('zoom', (event: D3ZoomEvent<HTMLDivElement, unknown>) => {
       if (event.sourceEvent !== null) tooltip.hide();
       transform = event.transform;
@@ -108,7 +122,9 @@ export function createTimeline(container: HTMLElement, callbacks: TimelineCallba
       positionCursor();
     })
     .on('end', () => {
-      if (!silent) emitWindow();
+      if (silent) return;
+      emitWindow(!programmatic);
+      programmatic = false;
     });
   const scrollerSelection = select(scroller);
   scrollerSelection.call(zoomBehavior);
@@ -198,7 +214,7 @@ export function createTimeline(container: HTMLElement, callbacks: TimelineCallba
     if (nextWidth === width) return;
     width = nextWidth;
     layout();
-    fitToData(false);
+    fitToData(false, null);
     if (pendingRange !== null) {
       const [start, end] = pendingRange;
       pendingRange = null;
@@ -235,14 +251,20 @@ export function createTimeline(container: HTMLElement, callbacks: TimelineCallba
     const previous = props;
     props = next;
     empty.hidden = next.lanes.length > 0;
+    empty.textContent = next.emptyMessage;
+    note.hidden = next.hiddenLaneCount === 0;
+    noteText.textContent = `${next.hiddenLaneCount === 1 ? '1 band has' : `${next.hiddenLaneCount} bands have`} no shows in this window and ${next.hiddenLaneCount === 1 ? 'is' : 'are'} hidden. `;
     if (previous === null || previous.lanes.length !== next.lanes.length) layout();
     if (cursorPosition !== null && next.lanes[cursorPosition.lane]?.shows[cursorPosition.show] === undefined) cursorPosition = null;
     scheduleDraw();
   }
 
-  function fitToData(animate: boolean) {
-    if (props === null || width === 0) return;
-    const ranges = props.lanes.flatMap((lane) => lane.shows);
+  function fitToData(animate: boolean, range: readonly [number, number] | null) {
+    if (props === null || width === 0) {
+      if (range !== null) pendingRange = [range[0], range[1]];
+      return;
+    }
+    const ranges = props.domainShows;
     const domain: [number, number] =
       ranges.length === 0
         ? [props.today - 30 * DAY_MS, props.today + 30 * DAY_MS]
@@ -255,15 +277,21 @@ export function createTimeline(container: HTMLElement, callbacks: TimelineCallba
     const maxZoom = Math.max(1, (domain[1] - domain[0]) / (TIMELINE_SETTINGS.minVisibleDays * DAY_MS));
     zoomBehavior.scaleExtent([0.5, maxZoom]);
 
+    const target = range === null ? zoomIdentity : transformFor(range[0], range[1]);
     const [currentStart, currentEnd] = currentDomain;
     if (!animate || !hadDomain || prefersReducedMotion() || currentStart === undefined || currentEnd === undefined) {
-      setTransform(zoomIdentity, false);
-      emitWindow();
+      setTransform(target);
+      emitWindow(false);
       return;
     }
-    const k = width / (baseScale(currentEnd) - baseScale(currentStart));
-    setTransform(new ZoomTransform(k, -k * baseScale(currentStart), 0), true);
-    scrollerSelection.transition().duration(TIMELINE_SETTINGS.fitDurationMs).call(zoomBehavior.transform, zoomIdentity);
+    setTransform(transformFor(currentStart, currentEnd));
+    programmatic = true;
+    scrollerSelection.transition().duration(TIMELINE_SETTINGS.fitDurationMs).call(zoomBehavior.transform, target);
+  }
+
+  function transformFor(start: number, end: number): ZoomTransform {
+    const k = width / (baseScale(end) - baseScale(start));
+    return new ZoomTransform(k, -k * baseScale(start), 0);
   }
 
   function zoomToRange(start: number, end: number, animate: boolean) {
@@ -272,18 +300,19 @@ export function createTimeline(container: HTMLElement, callbacks: TimelineCallba
       pendingRange = [start, end];
       return;
     }
-    const k = width / (baseScale(end) - baseScale(start));
-    const target = new ZoomTransform(k, -k * baseScale(start), 0);
+    const target = transformFor(start, end);
     if (!animate || prefersReducedMotion()) {
-      setTransform(target, false);
-      emitWindow();
+      setTransform(target);
+      emitWindow(false);
       return;
     }
+    programmatic = true;
     scrollerSelection.transition().duration(TIMELINE_SETTINGS.fitDurationMs).call(zoomBehavior.transform, target);
   }
 
-  function setTransform(next: ZoomTransform, quiet: boolean) {
-    silent = quiet;
+  /** Jumps without emitting a window change; callers that need one emit it themselves. */
+  function setTransform(next: ZoomTransform) {
+    silent = true;
     scrollerSelection.interrupt().call(zoomBehavior.transform, next);
     silent = false;
     transform = next;
@@ -298,10 +327,10 @@ export function createTimeline(container: HTMLElement, callbacks: TimelineCallba
     return transform.rescaleX(baseScale);
   }
 
-  function emitWindow() {
+  function emitWindow(byUser: boolean) {
     const [start, end] = currentScale().domain();
     if (start === undefined || end === undefined) return;
-    callbacks.onWindowChange({ start: start.getTime(), end: end.getTime() });
+    callbacks.onWindowChange({ start: start.getTime(), end: end.getTime() }, byUser);
   }
 
   function scheduleDraw() {

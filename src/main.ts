@@ -19,6 +19,8 @@ import type { SearchEntry } from './view/searchIndex.ts';
 import { applyThemePreference, readThemeColors, watchSystemTheme, type ThemeColors, type ThemePreference } from './view/theme.ts';
 import { DAY_MS } from './view/timeScale.ts';
 import { createTimeline } from './view/timeline.ts';
+import { createTimelineControls } from './view/timelineControls.ts';
+import { PRESET_IDS, defaultPreset, isPresetAvailable, presetRange, type TimePreset } from './view/timePresets.ts';
 
 const WINDOW_DEBOUNCE_MS = 150;
 const URL_DEBOUNCE_MS = 300;
@@ -40,6 +42,8 @@ const state = createStore<AppState>({
   selectedShowIds: new Set(urlState.selectedShowIds),
   timeWindow: null,
   followTimeline: urlState.follow ?? true,
+  timePreset: urlState.preset,
+  hideEmptyLanes: !urlState.allLanes,
   theme: 'auto',
   today: localToday(new Date()),
 });
@@ -60,10 +64,12 @@ let windowTimer: ReturnType<typeof setTimeout> | undefined;
 const timeline = createTimeline(requireElement(document, '#timeline', HTMLDivElement), {
   onHover: (shows) => state.set({ hoverShowIds: idsOf(shows) }),
   onSelect: (shows) => state.set({ selectedShowIds: idsOf(shows) }),
-  onWindowChange(window) {
+  onWindowChange(window, byUser) {
+    if (byUser) state.set({ timePreset: null });
     clearTimeout(windowTimer);
     windowTimer = setTimeout(() => state.set({ timeWindow: window }), WINDOW_DEBOUNCE_MS);
   },
+  onShowAllLanes: () => state.set({ hideEmptyLanes: false }),
 });
 
 const bandList = createBandList(requireElement(document, '#band-list', HTMLElement), {
@@ -97,11 +103,11 @@ const previewPanel = createPreviewPanel(requireElement(document, '#preview-panel
 
 const search = createSearch(requireElement(document, '#search', HTMLDivElement), { onChoose: focusSearchResult });
 
-const followButton = h('button', { type: 'button', class: 'button button-small', 'aria-pressed': 'true' }, 'Follow timeline');
-const fitTimelineButton = h('button', { type: 'button', class: 'button button-small' }, 'Fit timeline');
-followButton.addEventListener('click', () => state.set({ followTimeline: !state.get().followTimeline }));
-fitTimelineButton.addEventListener('click', () => timeline.fitToData(true));
-requireElement(document, '#timeline-controls', HTMLDivElement).append(followButton, fitTimelineButton);
+const timelineControls = createTimelineControls(requireElement(document, '#timeline-controls', HTMLDivElement), {
+  onPreset: (preset) => applyPreset(preset, true),
+  onHideEmptyLanes: (hide) => state.set({ hideEmptyLanes: hide }),
+  onFollowTimeline: (follow) => state.set({ followTimeline: follow }),
+});
 const toolbarHint = requireElement(document, '#toolbar-hint', HTMLParagraphElement);
 
 requireElement(document, '#zoom-in', HTMLButtonElement).addEventListener('click', () => map.zoomBy(1.6));
@@ -158,8 +164,15 @@ function renderAll() {
     previousFitShows = fitShows;
   }
 
+  const lanes = select.lanes(current, derived);
   timeline.render({
-    lanes: select.lanes(derived),
+    lanes: lanes.shown,
+    domainShows: derived.visibleShows,
+    hiddenLaneCount: lanes.hiddenCount,
+    emptyMessage:
+      derived.visibleBands.length === 0
+        ? 'No bands are shown. Turn bands on in the list to see their dates.'
+        : 'No shows in this window. Pick another time window or zoom out.',
     highlightedShowIds: current.hoverShowIds,
     selectedShowIds: current.selectedShowIds,
     focusBandId: current.focusBandId,
@@ -168,15 +181,24 @@ function renderAll() {
   });
   if (derived.visibleBands !== previousVisibleBands) {
     const firstRender = previousVisibleBands === null;
-    timeline.fitToData(!firstRender);
     previousVisibleBands = derived.visibleBands;
     if (firstRender && restoreWindow !== null) {
-      timeline.zoomToRange(parseIsoDate(restoreWindow.from).getTime(), parseIsoDate(restoreWindow.to).getTime() + DAY_MS, false);
+      timeline.fitToData(false, [parseIsoDate(restoreWindow.from).getTime(), parseIsoDate(restoreWindow.to).getTime() + DAY_MS]);
       restoreWindow = null;
+    } else {
+      const today = parseIsoDate(current.today).getTime();
+      const preset = firstRender ? (current.timePreset ?? defaultPreset(derived.visibleShows, today)) : current.timePreset;
+      queueMicrotask(() => applyPreset(preset, !firstRender));
     }
   }
 
-  followButton.setAttribute('aria-pressed', String(current.followTimeline));
+  const today = parseIsoDate(current.today).getTime();
+  timelineControls.render({
+    preset: state.get().timePreset,
+    availablePresets: new Set(PRESET_IDS.filter((preset) => isPresetAvailable(preset, derived.visibleShows, today))),
+    hideEmptyLanes: current.hideEmptyLanes,
+    followTimeline: current.followTimeline,
+  });
   toolbarHint.textContent = timeline.lanesOverflow()
     ? 'Scroll to zoom the timeline, drag to pan, Shift + scroll for more bands'
     : 'Scroll to zoom the timeline, drag to pan';
@@ -290,18 +312,33 @@ function focusSearchResult(entry: SearchEntry) {
     }
     map.fitToShows(shows, true);
   }
-  state.set({ selectedShowIds: new Set(entry.showIds) });
+  state.set({ selectedShowIds: new Set(entry.showIds), timePreset: null });
   const start = Math.min(...shows.map((ref) => ref.start));
   const end = Math.max(...shows.map((ref) => ref.end)) + DAY_MS;
   const padding = Math.max(7 * DAY_MS, (end - start) * 0.1);
   timeline.zoomToRange(start - padding, end + padding, true);
 }
 
+/** Null keeps a custom window's behaviour: fit everything. Unavailable presets fall back to all dates. */
+function applyPreset(preset: TimePreset | null, animate: boolean) {
+  const current = state.get();
+  const shows = derive(current).visibleShows;
+  const today = parseIsoDate(current.today).getTime();
+  if (preset === null || !isPresetAvailable(preset, shows, today)) {
+    if (preset !== null) state.set({ timePreset: 'all' });
+    timeline.fitToData(animate, null);
+    return;
+  }
+  state.set({ timePreset: preset });
+  timeline.fitToData(animate, presetRange(preset, shows, today));
+}
+
 function resetViews() {
   searchFocus = null;
+  const current = state.get();
   state.set({ selectedShowIds: new Set(), hoverShowIds: new Set(), focusBandId: null });
   map.fitToData(true);
-  timeline.fitToData(true);
+  applyPreset(defaultPreset(derive(current).visibleShows, parseIsoDate(current.today).getTime()), true);
 }
 
 let urlTimer: ReturnType<typeof setTimeout> | undefined;
@@ -314,7 +351,7 @@ function scheduleUrlUpdate() {
 function writeUrlState() {
   const current = state.get();
   const window = current.timeWindow;
-  const showWindow = window !== null && !timeline.isAtFit();
+  const showWindow = window !== null && current.timePreset === null && !timeline.isAtFit();
   const hash = serializeUrlState({
     hiddenBandIds: [...current.hiddenBandIds],
     sort: current.bandSort === 'name' ? null : current.bandSort,
@@ -322,6 +359,8 @@ function writeUrlState() {
     to: showWindow ? addDays(formatIsoDate(new Date(window.end)), -1) : null,
     selectedShowIds: [...current.selectedShowIds],
     follow: current.followTimeline ? null : false,
+    preset: current.timePreset === null || current.timePreset === defaultPreset(derive(current).visibleShows, parseIsoDate(current.today).getTime()) ? null : current.timePreset,
+    allLanes: !current.hideEmptyLanes,
   });
   if (hash === location.hash || (hash === '' && location.hash === '')) return;
   const url = `${location.pathname}${location.search}${hash}`;

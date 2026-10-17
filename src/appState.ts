@@ -2,6 +2,7 @@ import type { BandFile } from './data/types.ts';
 import type { PreviewResult } from './preview.ts';
 import { buildBandEntries, showRefs, sortBands, type BandEntry, type BandSort, type ShowRef } from './model.ts';
 import type { ThemePreference } from './view/theme.ts';
+import type { TimePreset } from './view/timePresets.ts';
 
 export interface TimeWindow {
   readonly start: number;
@@ -21,6 +22,9 @@ export interface AppState {
   readonly selectedShowIds: ReadonlySet<string>;
   readonly timeWindow: TimeWindow | null;
   readonly followTimeline: boolean;
+  /** The preset that produced the current window; null once the user zooms or pans. */
+  readonly timePreset: TimePreset | null;
+  readonly hideEmptyLanes: boolean;
   readonly theme: ThemePreference;
   readonly today: string;
 }

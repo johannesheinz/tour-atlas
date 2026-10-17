@@ -17,8 +17,8 @@ export function createSelectors(maxBandsWithRoutes: number) {
   let fitKey: [readonly ShowRef[], ShowFilter | null] | null = null;
   let fitShows: readonly ShowRef[] = [];
 
-  let lanesKey: Derived['visibleBands'] | null = null;
-  let lanes: readonly TimelineLane[] = [];
+  let lanesKey: [Derived['visibleBands'], AppState['timeWindow'], boolean] | null = null;
+  let lanes: { readonly shown: readonly TimelineLane[]; readonly hiddenCount: number } = { shown: [], hiddenCount: 0 };
 
   let selectionKey: [ReadonlySet<string>, ReadonlyMap<string, ShowRef>] | null = null;
   let selection: readonly ShowRef[] = [];
@@ -62,10 +62,14 @@ export function createSelectors(maxBandsWithRoutes: number) {
       return fitShows;
     },
 
-    lanes(derived: Derived): readonly TimelineLane[] {
-      if (derived.visibleBands !== lanesKey) {
-        lanesKey = derived.visibleBands;
-        lanes = derived.visibleBands.map((band) => ({ band, shows: derived.refsByBand.get(band) ?? [] }));
+    /** Timeline lanes in band-list order; with hideEmptyLanes, bands without a show in the window collapse. */
+    lanes(current: AppState, derived: Derived): { readonly shown: readonly TimelineLane[]; readonly hiddenCount: number } {
+      if (lanesKey === null || lanesKey[0] !== derived.visibleBands || lanesKey[1] !== current.timeWindow || lanesKey[2] !== current.hideEmptyLanes) {
+        lanesKey = [derived.visibleBands, current.timeWindow, current.hideEmptyLanes];
+        const all = derived.visibleBands.map((band) => ({ band, shows: derived.refsByBand.get(band) ?? [] }));
+        const window = current.timeWindow;
+        const shown = current.hideEmptyLanes && window !== null ? all.filter((lane) => lane.shows.some((ref) => isInWindow(ref, window))) : all;
+        lanes = { shown, hiddenCount: all.length - shown.length };
       }
       return lanes;
     },

@@ -1,6 +1,7 @@
 import { DATE_PATTERN } from './data/ids.ts';
 import { isCalendarDate } from './data/dates.ts';
 import type { BandSort } from './model.ts';
+import { PRESET_IDS, type TimePreset } from './view/timePresets.ts';
 
 /** View state kept in the URL hash: shareable, never stored, never sent to a server. */
 export interface UrlState {
@@ -10,6 +11,8 @@ export interface UrlState {
   readonly to: string | null;
   readonly selectedShowIds: readonly string[];
   readonly follow: boolean | null;
+  readonly preset: TimePreset | null;
+  readonly allLanes: boolean;
 }
 
 const SORTS: readonly BandSort[] = ['name', 'next-show', 'show-count'];
@@ -34,6 +37,8 @@ export function parseUrlState(hash: string): UrlState {
     to: validRange ? to : null,
     selectedShowIds: list('show'),
     follow: followParam === '0' ? false : followParam === '1' ? true : null,
+    preset: PRESET_IDS.find((preset) => preset === params.get('when')) ?? null,
+    allLanes: params.get('lanes') === 'all',
   };
 }
 
@@ -47,6 +52,8 @@ export function serializeUrlState(state: UrlState): string {
   }
   if (state.selectedShowIds.length > 0) params.set('show', state.selectedShowIds.toSorted().join(','));
   if (state.follow !== null) params.set('follow', state.follow ? '1' : '0');
+  if (state.preset !== null) params.set('when', state.preset);
+  if (state.allLanes) params.set('lanes', 'all');
   const text = params.toString().replaceAll('%2C', ',');
   return text === '' ? '' : `#${text}`;
 }
