@@ -9,7 +9,7 @@
       "symphonic-metal",
       "progressive-metal"
     ],
-    "logoUrl": null
+    "logoUrl": "https://upload.wikimedia.org/wikipedia/fi/0/05/Sonata_Arctica_logo.svg"
   },
   "source": {
     "url": "https://rest.bandsintown.com/artists/id_2463/events?app_id=js_www.sonataarctica.info&date=upcoming",

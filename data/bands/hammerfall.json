@@ -8,7 +8,7 @@
       "heavy-metal",
       "power-metal"
     ],
-    "logoUrl": null
+    "logoUrl": "https://upload.wikimedia.org/wikipedia/commons/5/57/HammerFall_-_Logo.svg"
   },
   "source": {
     "url": "https://rest.bandsintown.com/artists/id_2709/events?app_id=js_hammerfall.net&date=upcoming",
