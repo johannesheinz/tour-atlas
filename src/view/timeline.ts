@@ -390,11 +390,12 @@ export function createTimeline(container: HTMLElement, callbacks: TimelineCallba
       axisContext.fillText(tick.label, labelLeft, height / 2 - 1);
     }
     if (todayVisible) {
+      const labelLeft = Math.max(0, Math.min(width - todayWidth, todayX - todayWidth / 2));
       axisContext.fillStyle = current.theme.ink;
-      axisContext.fillRect(todayX - todayWidth / 2, 6, todayWidth, 18);
+      axisContext.fillRect(labelLeft, 6, todayWidth, 18);
       axisContext.fillStyle = current.theme.stock;
       axisContext.textAlign = 'center';
-      axisContext.fillText(todayLabel, todayX, height / 2 - 1);
+      axisContext.fillText(todayLabel, labelLeft + todayWidth / 2, height / 2 - 1);
       axisContext.textAlign = 'start';
     }
   }

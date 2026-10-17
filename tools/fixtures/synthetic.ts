@@ -77,7 +77,7 @@ export function syntheticBands(bandCount: number, showsPerBand: number): Identif
         geo: { lat: round5(lat + (random() - 0.5) * 0.05), lon: round5(lon + (random() - 0.5) * 0.05), precision: random() < 0.5 ? 'venue' : 'city', source: 'nominatim' },
       };
     });
-    const tags = [pick(GENRES), pick(REGIONS), ...(random() < 0.3 ? [pick(LABELS)] : [])];
+    const tags = [pick(GENRES), pick(REGIONS), ...(LABELS.length > 0 && random() < 0.3 ? [pick(LABELS)] : [])];
     return normalizeBandFile({ schemaVersion: 1, band: { id, name, color: null, tags }, source: { url: sourceUrl, retrievedAt: '2026-10-01' }, shows });
   });
 }

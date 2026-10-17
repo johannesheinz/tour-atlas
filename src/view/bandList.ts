@@ -69,7 +69,13 @@ export function createBandList(container: HTMLElement, callbacks: BandListCallba
   const clearTags = h('button', { type: 'button', class: 'text-button' }, 'Clear tags');
   clearTags.addEventListener('click', () => callbacks.onClearTags());
   const tagNote = h('p', { class: 'tag-note', hidden: true });
-  const tagFilter = h('div', { class: 'tag-filter' }, ...tagGroups.map((group) => group.element), h('div', { class: 'tag-actions' }, tagNote, clearTags));
+  const tagSummary = h('summary', { class: 'tag-summary' });
+  const tagFilter = h(
+    'details',
+    { class: 'tag-filter' },
+    tagSummary,
+    h('div', { class: 'tag-groups' }, ...tagGroups.map((group) => group.element), h('div', { class: 'tag-actions' }, tagNote, clearTags)),
+  );
   const list = h('ul', { class: 'band-rows' });
   const empty = h('p', { class: 'band-empty', hidden: true });
   const body = h(
@@ -142,6 +148,7 @@ export function createBandList(container: HTMLElement, callbacks: BandListCallba
       }
       for (const group of tagGroups) group.element.hidden = group.tagIds.every((tagId) => (props.tagCounts.get(tagId) ?? 0) === 0);
       tagFilter.hidden = props.tagCounts.size === 0;
+      tagSummary.textContent = props.tagFilter.size === 0 ? 'Filter by genre or region' : `Filter by genre or region (${props.tagFilter.size} selected)`;
       const filteredOut = props.totalBandCount - props.bands.length;
       clearTags.hidden = props.tagFilter.size === 0;
       tagNote.hidden = filteredOut === 0;
