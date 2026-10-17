@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "band": {
+    "id": "powerwolf",
+    "name": "Powerwolf",
+    "color": null,
+    "tags": [
+      "heavy-metal",
+      "power-metal",
+      "western-europe"
+    ]
+  },
+  "source": {
+    "url": "https://www.powerwolf.net/live",
+    "retrievedAt": "2026-10-16"
+  },
+  "shows": [
+    {
+      "id": "powerwolf-2026-10-25-yokohama",
+      "date": "2026-10-25",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": "Full Metal Japan",
+      "venue": null,
+      "city": "Yokohama",
+      "region": null,
+      "countryCode": "JP",
+      "status": "scheduled",
+      "ticketUrl": "https://fullmetaljapan.com/",
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 35.45034,
+        "lon": 139.63438,
+        "precision": "city",
+        "source": "nominatim"
+      }
+    }
+  ]
+}

@@ -1,0 +1,481 @@
+{
+  "schemaVersion": 1,
+  "band": {
+    "id": "hammerfall",
+    "name": "HammerFall",
+    "color": null,
+    "tags": [
+      "heavy-metal",
+      "power-metal",
+      "nordic"
+    ]
+  },
+  "source": {
+    "url": "https://rest.bandsintown.com/artists/id_2709/events?app_id=js_hammerfall.net&date=upcoming",
+    "retrievedAt": "2026-10-16"
+  },
+  "shows": [
+    {
+      "id": "hammerfall-2027-01-14-miami",
+      "date": "2027-01-14",
+      "endDate": "2027-01-18",
+      "startTime": null,
+      "tourName": null,
+      "eventName": "70000TONS OF METAL",
+      "venue": null,
+      "city": "Miami",
+      "region": "FL",
+      "countryCode": "US",
+      "status": "scheduled",
+      "ticketUrl": "https://www.bandsintown.com/t/108721321?app_id=js_hammerfall.net&came_from=267&utm_medium=api&utm_source=public_api&utm_campaign=ticket",
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 25.77416,
+        "lon": -80.1936,
+        "precision": "city",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "hammerfall-2027-04-09-roskilde",
+      "date": "2027-04-09",
+      "endDate": "2027-04-10",
+      "startTime": null,
+      "tourName": null,
+      "eventName": "Epic Fest",
+      "venue": null,
+      "city": "Roskilde",
+      "region": null,
+      "countryCode": "DK",
+      "status": "scheduled",
+      "ticketUrl": "https://www.bandsintown.com/t/108220904?app_id=js_hammerfall.net&came_from=267&utm_medium=api&utm_source=public_api&utm_campaign=ticket",
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 55.64335,
+        "lon": 12.08192,
+        "precision": "city",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "hammerfall-2027-04-19-buenos-aires",
+      "date": "2027-04-19",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "El Teatro Flores",
+      "city": "Buenos Aires",
+      "region": null,
+      "countryCode": "AR",
+      "status": "scheduled",
+      "ticketUrl": "https://www.bandsintown.com/t/108969193?app_id=js_hammerfall.net&came_from=267&utm_medium=api&utm_source=public_api&utm_campaign=ticket",
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": -34.63231,
+        "lon": -58.47464,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "hammerfall-2027-04-20-montevideo",
+      "date": "2027-04-20",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "Montevideo Music Box",
+      "city": "Montevideo",
+      "region": null,
+      "countryCode": "UY",
+      "status": "scheduled",
+      "ticketUrl": "https://www.bandsintown.com/t/108969244?app_id=js_hammerfall.net&came_from=267&utm_medium=api&utm_source=public_api&utm_campaign=ticket",
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": -34.88061,
+        "lon": -56.15288,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "hammerfall-2027-04-22-santiago",
+      "date": "2027-04-22",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "Teatro Cariola",
+      "city": "Santiago",
+      "region": null,
+      "countryCode": "CL",
+      "status": "scheduled",
+      "ticketUrl": "https://www.bandsintown.com/t/108969334?app_id=js_hammerfall.net&came_from=267&utm_medium=api&utm_source=public_api&utm_campaign=ticket",
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": -33.44818,
+        "lon": -70.65053,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "hammerfall-2027-04-25-belo-horizonte",
+      "date": "2027-04-25",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "Mister Rock",
+      "city": "Belo Horizonte",
+      "region": null,
+      "countryCode": "BR",
+      "status": "scheduled",
+      "ticketUrl": "https://www.bandsintown.com/t/108969339?app_id=js_hammerfall.net&came_from=267&utm_medium=api&utm_source=public_api&utm_campaign=ticket",
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": -19.92273,
+        "lon": -43.94509,
+        "precision": "city",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "hammerfall-2027-04-27-curitiba",
+      "date": "2027-04-27",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "Tork n' Roll",
+      "city": "Curitiba",
+      "region": null,
+      "countryCode": "BR",
+      "status": "scheduled",
+      "ticketUrl": "https://www.bandsintown.com/t/108969357?app_id=js_hammerfall.net&came_from=267&utm_medium=api&utm_source=public_api&utm_campaign=ticket",
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": -25.44456,
+        "lon": -49.26511,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "hammerfall-2027-04-29-sao-paulo",
+      "date": "2027-04-29",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "Carioca Club",
+      "city": "São Paulo",
+      "region": null,
+      "countryCode": "BR",
+      "status": "scheduled",
+      "ticketUrl": "https://www.bandsintown.com/t/108969403?app_id=js_hammerfall.net&came_from=267&utm_medium=api&utm_source=public_api&utm_campaign=ticket",
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": -23.56934,
+        "lon": -46.69477,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "hammerfall-2027-05-01-lima",
+      "date": "2027-05-01",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "Centro de convenciones Kantaro",
+      "city": "Lima",
+      "region": null,
+      "countryCode": "PE",
+      "status": "scheduled",
+      "ticketUrl": "https://www.bandsintown.com/t/108969363?app_id=js_hammerfall.net&came_from=267&utm_medium=api&utm_source=public_api&utm_campaign=ticket",
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": -12.04598,
+        "lon": -77.03059,
+        "precision": "city",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "hammerfall-2027-05-02-bogota",
+      "date": "2027-05-02",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "Royal center",
+      "city": "Bogotá",
+      "region": null,
+      "countryCode": "CO",
+      "status": "scheduled",
+      "ticketUrl": "https://www.bandsintown.com/t/108969372?app_id=js_hammerfall.net&came_from=267&utm_medium=api&utm_source=public_api&utm_campaign=ticket",
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 4.65315,
+        "lon": -74.06274,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "hammerfall-2027-05-04-zapote",
+      "date": "2027-05-04",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "Pepper Disco Club",
+      "city": "Zapote",
+      "region": null,
+      "countryCode": "CR",
+      "status": "scheduled",
+      "ticketUrl": "https://www.bandsintown.com/t/108969384?app_id=js_hammerfall.net&came_from=267&utm_medium=api&utm_source=public_api&utm_campaign=ticket",
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 10.22524,
+        "lon": -84.41964,
+        "precision": "city",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "hammerfall-2027-05-06-monterrey",
+      "date": "2027-05-06",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "Cafe Iguana",
+      "city": "Monterrey",
+      "region": null,
+      "countryCode": "MX",
+      "status": "scheduled",
+      "ticketUrl": "https://www.bandsintown.com/t/108969388?app_id=js_hammerfall.net&came_from=267&utm_medium=api&utm_source=public_api&utm_campaign=ticket",
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 25.66671,
+        "lon": -100.30741,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "hammerfall-2027-05-07-chihuahua",
+      "date": "2027-05-07",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "Pistoleros House Of Show",
+      "city": "Chihuahua",
+      "region": null,
+      "countryCode": "MX",
+      "status": "scheduled",
+      "ticketUrl": "https://www.bandsintown.com/t/108969391?app_id=js_hammerfall.net&came_from=267&utm_medium=api&utm_source=public_api&utm_campaign=ticket",
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 28.63687,
+        "lon": -106.07674,
+        "precision": "city",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "hammerfall-2027-05-08-ciudad-de-mexico",
+      "date": "2027-05-08",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "Circo Volador",
+      "city": "Ciudad de México",
+      "region": null,
+      "countryCode": "MX",
+      "status": "scheduled",
+      "ticketUrl": "https://www.bandsintown.com/t/108969395?app_id=js_hammerfall.net&came_from=267&utm_medium=api&utm_source=public_api&utm_campaign=ticket",
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 19.40598,
+        "lon": -99.12558,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "hammerfall-2027-07-15-leoben",
+      "date": "2027-07-15",
+      "endDate": "2027-07-17",
+      "startTime": null,
+      "tourName": null,
+      "eventName": "AREA 53 Festival",
+      "venue": null,
+      "city": "Leoben",
+      "region": null,
+      "countryCode": "AT",
+      "status": "scheduled",
+      "ticketUrl": "https://www.bandsintown.com/t/108653638?app_id=js_hammerfall.net&came_from=267&utm_medium=api&utm_source=public_api&utm_campaign=ticket",
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 47.38051,
+        "lon": 15.09478,
+        "precision": "city",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "hammerfall-2027-07-15-neukirchen-vluyn",
+      "date": "2027-07-15",
+      "endDate": "2027-07-17",
+      "startTime": null,
+      "tourName": null,
+      "eventName": "Dong Open Air",
+      "venue": null,
+      "city": "Neukirchen-Vluyn",
+      "region": null,
+      "countryCode": "DE",
+      "status": "scheduled",
+      "ticketUrl": "https://www.bandsintown.com/t/108668043?app_id=js_hammerfall.net&came_from=267&utm_medium=api&utm_source=public_api&utm_campaign=ticket",
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 51.44137,
+        "lon": 6.54676,
+        "precision": "city",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "hammerfall-2027-07-29-wacken",
+      "date": "2027-07-29",
+      "endDate": "2027-07-31",
+      "startTime": null,
+      "tourName": null,
+      "eventName": "Wacken Open Air",
+      "venue": null,
+      "city": "Wacken",
+      "region": null,
+      "countryCode": "DE",
+      "status": "scheduled",
+      "ticketUrl": "https://www.bandsintown.com/t/108727032?app_id=js_hammerfall.net&came_from=267&utm_medium=api&utm_source=public_api&utm_campaign=ticket",
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 54.02861,
+        "lon": 9.36642,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "hammerfall-2027-08-05-kortrijk",
+      "date": "2027-08-05",
+      "endDate": "2027-08-08",
+      "startTime": null,
+      "tourName": null,
+      "eventName": "Alcatraz Festival",
+      "venue": null,
+      "city": "Kortrijk",
+      "region": null,
+      "countryCode": "BE",
+      "status": "scheduled",
+      "ticketUrl": "https://www.bandsintown.com/t/108746767?app_id=js_hammerfall.net&came_from=267&utm_medium=api&utm_source=public_api&utm_campaign=ticket",
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 50.82764,
+        "lon": 3.26599,
+        "precision": "city",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "hammerfall-2027-08-12-sulingen",
+      "date": "2027-08-12",
+      "endDate": "2027-08-14",
+      "startTime": null,
+      "tourName": null,
+      "eventName": "Reload Festival",
+      "venue": null,
+      "city": "Sulingen",
+      "region": null,
+      "countryCode": "DE",
+      "status": "scheduled",
+      "ticketUrl": "https://www.bandsintown.com/t/108773232?app_id=js_hammerfall.net&came_from=267&utm_medium=api&utm_source=public_api&utm_campaign=ticket",
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 52.68284,
+        "lon": 8.80189,
+        "precision": "city",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "hammerfall-2027-08-18-dinkelsbuhl",
+      "date": "2027-08-18",
+      "endDate": "2027-08-21",
+      "startTime": null,
+      "tourName": null,
+      "eventName": "Summer Breeze Open Air",
+      "venue": null,
+      "city": "Dinkelsbühl",
+      "region": null,
+      "countryCode": "DE",
+      "status": "scheduled",
+      "ticketUrl": "https://www.bandsintown.com/t/108789383?app_id=js_hammerfall.net&came_from=267&utm_medium=api&utm_source=public_api&utm_campaign=ticket",
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 49.06917,
+        "lon": 10.3194,
+        "precision": "city",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "hammerfall-2027-08-20-cudrefin",
+      "date": "2027-08-20",
+      "endDate": "2027-08-22",
+      "startTime": null,
+      "tourName": null,
+      "eventName": "Rock The Lakes",
+      "venue": null,
+      "city": "Cudrefin",
+      "region": null,
+      "countryCode": "CH",
+      "status": "scheduled",
+      "ticketUrl": "https://www.bandsintown.com/t/108783158?app_id=js_hammerfall.net&came_from=267&utm_medium=api&utm_source=public_api&utm_campaign=ticket",
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 46.95604,
+        "lon": 7.01831,
+        "precision": "city",
+        "source": "nominatim"
+      }
+    }
+  ]
+}

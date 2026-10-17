@@ -1,0 +1,239 @@
+{
+  "schemaVersion": 1,
+  "band": {
+    "id": "paradise-lost",
+    "name": "Paradise Lost",
+    "color": null,
+    "tags": [
+      "doom-metal",
+      "gothic-metal",
+      "western-europe"
+    ]
+  },
+  "source": {
+    "url": "https://www.bandsintown.com/a/3485",
+    "retrievedAt": "2026-10-16"
+  },
+  "shows": [
+    {
+      "id": "paradise-lost-2026-10-16-beijing",
+      "date": "2026-10-16",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "MAO Livehouse Beijing (Wukesong 店)",
+      "city": "Beijing",
+      "region": null,
+      "countryCode": "CN",
+      "status": "scheduled",
+      "ticketUrl": "https://www.bandsintown.com/t/108487241?app_id=js_paradiselost.co.uk",
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 39.90571,
+        "lon": 116.3913,
+        "precision": "city",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "paradise-lost-2026-10-18-newstead",
+      "date": "2026-10-18",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "The Triffid",
+      "city": "Newstead",
+      "region": null,
+      "countryCode": "AU",
+      "status": "scheduled",
+      "ticketUrl": "https://www.bandsintown.com/t/107880154?app_id=js_paradiselost.co.uk",
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": -27.4523,
+        "lon": 153.04205,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "paradise-lost-2026-10-19-marrickville",
+      "date": "2026-10-19",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "Factory Theatre",
+      "city": "Marrickville",
+      "region": null,
+      "countryCode": "AU",
+      "status": "scheduled",
+      "ticketUrl": "https://www.bandsintown.com/t/107880170?app_id=js_paradiselost.co.uk",
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": -33.9057,
+        "lon": 151.16526,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "paradise-lost-2026-10-20-melbourne",
+      "date": "2026-10-20",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "Max Watts Melbourne",
+      "city": "Melbourne",
+      "region": null,
+      "countryCode": "AU",
+      "status": "scheduled",
+      "ticketUrl": "https://www.bandsintown.com/t/107880204?app_id=js_paradiselost.co.uk",
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": -37.81425,
+        "lon": 144.96317,
+        "precision": "city",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "paradise-lost-2026-10-22-bangkok",
+      "date": "2026-10-22",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "Mr.FOX Live House",
+      "city": "Bangkok",
+      "region": null,
+      "countryCode": "TH",
+      "status": "scheduled",
+      "ticketUrl": "https://www.bandsintown.com/t/108668656?app_id=js_paradiselost.co.uk",
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 13.75249,
+        "lon": 100.49351,
+        "precision": "city",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "paradise-lost-2026-10-25-maastricht",
+      "date": "2026-10-25",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": "Samhain Festival Maastricht",
+      "venue": null,
+      "city": "Maastricht",
+      "region": null,
+      "countryCode": "NL",
+      "status": "scheduled",
+      "ticketUrl": "https://www.bandsintown.com/t/107776038?app_id=js_paradiselost.co.uk",
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 50.85799,
+        "lon": 5.69699,
+        "precision": "city",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "paradise-lost-2026-11-11-athina",
+      "date": "2026-11-11",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "Floyd - Live Music Venue",
+      "city": "Athina",
+      "region": null,
+      "countryCode": "GR",
+      "status": "scheduled",
+      "ticketUrl": "https://www.bandsintown.com/t/108026542?app_id=js_paradiselost.co.uk",
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 37.97556,
+        "lon": 23.73483,
+        "precision": "city",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "paradise-lost-2026-11-13-st-julian-s",
+      "date": "2026-11-13",
+      "endDate": "2026-11-15",
+      "startTime": null,
+      "tourName": null,
+      "eventName": "Malta Metal Weekend",
+      "venue": null,
+      "city": "St. Julian's",
+      "region": null,
+      "countryCode": "MT",
+      "status": "scheduled",
+      "ticketUrl": "https://www.bandsintown.com/t/108163056?app_id=js_paradiselost.co.uk",
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 35.91992,
+        "lon": 14.48771,
+        "precision": "city",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "paradise-lost-2026-11-15-istanbul",
+      "date": "2026-11-15",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "IF Performance Hall",
+      "city": "İstanbul",
+      "region": null,
+      "countryCode": "TR",
+      "status": "scheduled",
+      "ticketUrl": "https://www.bandsintown.com/t/108161873?app_id=js_paradiselost.co.uk",
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 41.04438,
+        "lon": 29.0066,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "paradise-lost-2026-11-16-cankaya",
+      "date": "2026-11-16",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "Milyon Performance Hall",
+      "city": "Çankaya",
+      "region": null,
+      "countryCode": "TR",
+      "status": "scheduled",
+      "ticketUrl": "https://www.bandsintown.com/t/108161884?app_id=js_paradiselost.co.uk",
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 39.88533,
+        "lon": 32.8555,
+        "precision": "city",
+        "source": "nominatim"
+      }
+    }
+  ]
+}

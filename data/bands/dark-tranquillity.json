@@ -1,0 +1,128 @@
+{
+  "schemaVersion": 1,
+  "band": {
+    "id": "dark-tranquillity",
+    "name": "Dark Tranquillity",
+    "color": null,
+    "tags": [
+      "melodic-death-metal",
+      "nordic"
+    ]
+  },
+  "source": {
+    "url": "https://www.bandsintown.com/a/3112-dark-tranquillity",
+    "retrievedAt": "2026-10-16"
+  },
+  "shows": [
+    {
+      "id": "dark-tranquillity-2026-10-20-barca-trencada",
+      "date": "2026-10-20",
+      "endDate": "2026-10-27",
+      "startTime": null,
+      "tourName": null,
+      "eventName": "Full Metal Holiday",
+      "venue": "Iberostar Club Cala Barca",
+      "city": "Barca Trencada",
+      "region": null,
+      "countryCode": "ES",
+      "status": null,
+      "ticketUrl": null,
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 39.35328,
+        "lon": 3.19801,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "dark-tranquillity-2026-11-28-jyvaskyla",
+      "date": "2026-11-28",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": "John Smith Rock Frozen",
+      "venue": "Paviljonki",
+      "city": "Jyväskylä",
+      "region": null,
+      "countryCode": "FI",
+      "status": null,
+      "ticketUrl": null,
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 62.23935,
+        "lon": 25.75882,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "dark-tranquillity-2027-07-29-wacken",
+      "date": "2027-07-29",
+      "endDate": "2027-07-31",
+      "startTime": null,
+      "tourName": null,
+      "eventName": "Wacken Open Air",
+      "venue": "Wacken Open Air Infield",
+      "city": "Wacken",
+      "region": null,
+      "countryCode": "DE",
+      "status": null,
+      "ticketUrl": null,
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 54.01986,
+        "lon": 9.3766,
+        "precision": "city",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "dark-tranquillity-2027-08-26-naestved",
+      "date": "2027-08-26",
+      "endDate": "2027-08-28",
+      "startTime": null,
+      "tourName": null,
+      "eventName": "Næstved Metalfest",
+      "venue": "Grønnegades Barracks Cultural Center",
+      "city": "Næstved",
+      "region": null,
+      "countryCode": "DK",
+      "status": null,
+      "ticketUrl": null,
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 55.23283,
+        "lon": 11.76741,
+        "precision": "city",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "dark-tranquillity-2027-09-03-stockholm",
+      "date": "2027-09-03",
+      "endDate": "2027-09-05",
+      "startTime": null,
+      "tourName": null,
+      "eventName": "Close-up Båten",
+      "venue": "Silja Serenade",
+      "city": "Stockholm",
+      "region": null,
+      "countryCode": "SE",
+      "status": null,
+      "ticketUrl": null,
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 59.32512,
+        "lon": 18.07109,
+        "precision": "city",
+        "source": "nominatim"
+      }
+    }
+  ]
+}

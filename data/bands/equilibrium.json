@@ -1,0 +1,151 @@
+{
+  "schemaVersion": 1,
+  "band": {
+    "id": "equilibrium",
+    "name": "Equilibrium",
+    "color": null,
+    "tags": [
+      "folk-metal",
+      "black-metal",
+      "western-europe"
+    ]
+  },
+  "source": {
+    "url": "https://www.bandsintown.com/a/55830-equilibrium",
+    "retrievedAt": "2026-10-16"
+  },
+  "shows": [
+    {
+      "id": "equilibrium-2027-01-14-miami",
+      "date": "2027-01-14",
+      "endDate": "2027-01-18",
+      "startTime": null,
+      "tourName": null,
+      "eventName": "70000TONS OF METAL 2027",
+      "venue": null,
+      "city": "Miami",
+      "region": "FL",
+      "countryCode": "US",
+      "status": "scheduled",
+      "ticketUrl": "https://www.bandsintown.com/t/108813311",
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 25.77416,
+        "lon": -80.1936,
+        "precision": "city",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "equilibrium-2027-02-27-leipzig",
+      "date": "2027-02-27",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": "The 25 Year Anniversary Show",
+      "venue": "Hellraiser-Leipzig",
+      "city": "Leipzig",
+      "region": null,
+      "countryCode": "DE",
+      "status": "scheduled",
+      "ticketUrl": "https://www.bandsintown.com/t/1039739301",
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 51.3398,
+        "lon": 12.46086,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "equilibrium-2027-06-18-kettenkamp",
+      "date": "2027-06-18",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": "B:O:A - Bruch Open Air",
+      "venue": null,
+      "city": "Kettenkamp",
+      "region": null,
+      "countryCode": "DE",
+      "status": "scheduled",
+      "ticketUrl": "https://www.bandsintown.com/t/108813303",
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 52.58639,
+        "lon": 7.82901,
+        "precision": "city",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "equilibrium-2027-07-08-ballenstedt",
+      "date": "2027-07-08",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": "Rockharz",
+      "venue": null,
+      "city": "Ballenstedt",
+      "region": null,
+      "countryCode": "DE",
+      "status": "scheduled",
+      "ticketUrl": "https://www.bandsintown.com/t/108813287",
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 51.74261,
+        "lon": 11.23053,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "equilibrium-2027-08-19-wittelshofen",
+      "date": "2027-08-19",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": "Summer Breeze Open Air 2027",
+      "venue": null,
+      "city": "Wittelshofen",
+      "region": null,
+      "countryCode": "DE",
+      "status": "scheduled",
+      "ticketUrl": "https://www.bandsintown.com/t/108813285",
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 49.06197,
+        "lon": 10.48294,
+        "precision": "city",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "equilibrium-2027-08-20-carhaix-plouguer",
+      "date": "2027-08-20",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": "Motocultor Festival 2027",
+      "venue": null,
+      "city": "Carhaix-Plouguer",
+      "region": null,
+      "countryCode": "FR",
+      "status": "scheduled",
+      "ticketUrl": "https://www.bandsintown.com/t/108813298",
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 48.2765,
+        "lon": -3.57115,
+        "precision": "city",
+        "source": "nominatim"
+      }
+    }
+  ]
+}

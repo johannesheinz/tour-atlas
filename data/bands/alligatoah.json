@@ -1,0 +1,194 @@
+{
+  "schemaVersion": 1,
+  "band": {
+    "id": "alligatoah",
+    "name": "Alligatoah",
+    "color": null,
+    "tags": [
+      "hip-hop",
+      "western-europe"
+    ]
+  },
+  "source": {
+    "url": "https://alligatoah.de/pages/live",
+    "retrievedAt": "2026-10-16"
+  },
+  "shows": [
+    {
+      "id": "alligatoah-2027-06-18-leipzig",
+      "date": "2027-06-18",
+      "endDate": null,
+      "startTime": null,
+      "tourName": "21 Jahre Alligatoah",
+      "eventName": null,
+      "venue": "Flughafen",
+      "city": "Leipzig",
+      "region": null,
+      "countryCode": "DE",
+      "status": "scheduled",
+      "ticketUrl": "https://www.eventim.de/noapp/event/22159947/?affiliate=KAN&utm_source=KAN&utm_medium=dp&utm_campaign=kantelive",
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 51.39217,
+        "lon": 12.39764,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "alligatoah-2027-06-19-waghausel",
+      "date": "2027-06-19",
+      "endDate": null,
+      "startTime": null,
+      "tourName": "21 Jahre Alligatoah",
+      "eventName": null,
+      "venue": "Eremitage",
+      "city": "Waghäusel",
+      "region": null,
+      "countryCode": "DE",
+      "status": "scheduled",
+      "ticketUrl": "https://www.eventim.de/noapp/event/22167564/?affiliate=KAN&utm_source=KAN&utm_medium=dp&utm_campaign=kantelive",
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 49.255,
+        "lon": 8.50655,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "alligatoah-2027-07-08-nurnberg",
+      "date": "2027-07-08",
+      "endDate": null,
+      "startTime": null,
+      "tourName": "21 Jahre Alligatoah",
+      "eventName": null,
+      "venue": "Stadionpark",
+      "city": "Nürnberg",
+      "region": null,
+      "countryCode": "DE",
+      "status": "scheduled",
+      "ticketUrl": "https://www.eventim.de/noapp/event/22162855/?affiliate=KAN&utm_source=KAN&utm_medium=dp&utm_campaign=kantelive",
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 49.42511,
+        "lon": 11.12345,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "alligatoah-2027-07-09-saarbrucken",
+      "date": "2027-07-09",
+      "endDate": null,
+      "startTime": null,
+      "tourName": "21 Jahre Alligatoah",
+      "eventName": null,
+      "venue": "Hinter dem E-Werk",
+      "city": "Saarbrücken",
+      "region": null,
+      "countryCode": "DE",
+      "status": "scheduled",
+      "ticketUrl": "https://www.eventim.de/noapp/event/22160988/?affiliate=KAN&utm_source=KAN&utm_medium=dp&utm_campaign=kantelive",
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 49.23436,
+        "lon": 6.99638,
+        "precision": "city",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "alligatoah-2027-07-10-dortmund",
+      "date": "2027-07-10",
+      "endDate": null,
+      "startTime": null,
+      "tourName": "21 Jahre Alligatoah",
+      "eventName": null,
+      "venue": "Westfalenpark",
+      "city": "Dortmund",
+      "region": null,
+      "countryCode": "DE",
+      "status": "scheduled",
+      "ticketUrl": "https://www.eventim.de/noapp/event/22189896/?affiliate=KAN&utm_source=KAN&utm_medium=dp&utm_campaign=kantelive",
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 51.49534,
+        "lon": 7.47682,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "alligatoah-2027-07-15-bonn",
+      "date": "2027-07-15",
+      "endDate": null,
+      "startTime": null,
+      "tourName": "21 Jahre Alligatoah",
+      "eventName": null,
+      "venue": "Kunstrasen",
+      "city": "Bonn",
+      "region": null,
+      "countryCode": "DE",
+      "status": "scheduled",
+      "ticketUrl": "https://www.eventim.de/noapp/event/22164722/?affiliate=KAN&utm_source=KAN&utm_medium=dp&utm_campaign=kantelive",
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 50.71005,
+        "lon": 7.1174,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "alligatoah-2027-08-04-neu-ulm",
+      "date": "2027-08-04",
+      "endDate": null,
+      "startTime": null,
+      "tourName": "21 Jahre Alligatoah",
+      "eventName": null,
+      "venue": "Wiley Sportpark",
+      "city": "Neu-Ulm",
+      "region": null,
+      "countryCode": "DE",
+      "status": "scheduled",
+      "ticketUrl": "https://www.eventim.de/noapp/event/22168805/?affiliate=KAN&utm_source=KAN&utm_medium=dp&utm_campaign=kantelive",
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 48.38218,
+        "lon": 10.01048,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "alligatoah-2027-08-05-graz",
+      "date": "2027-08-05",
+      "endDate": null,
+      "startTime": null,
+      "tourName": "21 Jahre Alligatoah",
+      "eventName": null,
+      "venue": "Freiluftarena B",
+      "city": "Graz",
+      "region": null,
+      "countryCode": "AT",
+      "status": "scheduled",
+      "ticketUrl": "https://www.oeticket.com/event/22164983",
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 47.07087,
+        "lon": 15.43828,
+        "precision": "city",
+        "source": "nominatim"
+      }
+    }
+  ]
+}

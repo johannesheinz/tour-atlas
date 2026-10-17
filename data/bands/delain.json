@@ -1,0 +1,238 @@
+{
+  "schemaVersion": 1,
+  "band": {
+    "id": "delain",
+    "name": "Delain",
+    "color": null,
+    "tags": [
+      "symphonic-metal",
+      "western-europe"
+    ]
+  },
+  "source": {
+    "url": "https://www.delain.nl/",
+    "retrievedAt": "2026-10-16"
+  },
+  "shows": [
+    {
+      "id": "delain-2027-02-02-cologne",
+      "date": "2027-02-02",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "Live Music Hall",
+      "city": "Cologne",
+      "region": null,
+      "countryCode": "DE",
+      "status": "scheduled",
+      "ticketUrl": "https://www.eventim.de/event/delain-infected-rain-live-music-hall-21594563/",
+      "sourceUrl": null,
+      "notes": "Feat. Marko Hietala & more guests TBA, w/ Infected Rain",
+      "geo": {
+        "lat": 50.94932,
+        "lon": 6.90948,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "delain-2027-02-03-bremen",
+      "date": "2027-02-03",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "Modernes",
+      "city": "Bremen",
+      "region": null,
+      "countryCode": "DE",
+      "status": "scheduled",
+      "ticketUrl": "https://www.eventim.de/event/delain-release-tour-2027-modernes-21606290/",
+      "sourceUrl": null,
+      "notes": "Feat. Marko Hietala & more guests TBA, w/ Infected Rain",
+      "geo": {
+        "lat": 53.07217,
+        "lon": 8.79464,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "delain-2027-02-04-berlin",
+      "date": "2027-02-04",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "Columbia Theater",
+      "city": "Berlin",
+      "region": null,
+      "countryCode": "DE",
+      "status": "scheduled",
+      "ticketUrl": "https://tickets.vertikalconcerts.com/events/delain-columbia-theater",
+      "sourceUrl": null,
+      "notes": "Feat. Marko Hietala & more guests TBA, w/ Infected Rain",
+      "geo": {
+        "lat": 52.48473,
+        "lon": 13.39144,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "delain-2027-02-05-leipzig",
+      "date": "2027-02-05",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "Hellraiser",
+      "city": "Leipzig",
+      "region": null,
+      "countryCode": "DE",
+      "status": "scheduled",
+      "ticketUrl": "https://www.eventim.de/event/delain-infected-rain-hellraiser-21604617/?affiliate=GMD",
+      "sourceUrl": null,
+      "notes": "Feat. Marko Hietala & more guests TBA, w/ Infected Rain",
+      "geo": {
+        "lat": 51.3398,
+        "lon": 12.46086,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "delain-2027-02-06-karlsruhe",
+      "date": "2027-02-06",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "Substage",
+      "city": "Karlsruhe",
+      "region": null,
+      "countryCode": "DE",
+      "status": "scheduled",
+      "ticketUrl": "http://www.eventim.de/event/delain-infected-rain-substage-karlsruhe-21601316/",
+      "sourceUrl": null,
+      "notes": "Feat. Marko Hietala & more guests TBA, w/ Infected Rain",
+      "geo": {
+        "lat": 49.00528,
+        "lon": 8.42973,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "delain-2027-02-07-pratteln",
+      "date": "2027-02-07",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "Z7",
+      "city": "Pratteln",
+      "region": null,
+      "countryCode": "CH",
+      "status": "scheduled",
+      "ticketUrl": "https://z-7.ch/event/delain-2027/",
+      "sourceUrl": null,
+      "notes": "Feat. Marko Hietala & more guests TBA, w/ Infected Rain",
+      "geo": {
+        "lat": 47.52731,
+        "lon": 7.69425,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "delain-2027-02-08-munich",
+      "date": "2027-02-08",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "Backstage",
+      "city": "Munich",
+      "region": null,
+      "countryCode": "DE",
+      "status": "scheduled",
+      "ticketUrl": "http://www.eventim.de/event/delain-infected-rain-backstage-muenchen-21629540/",
+      "sourceUrl": null,
+      "notes": "Feat. Marko Hietala & more guests TBA, w/ Infected Rain",
+      "geo": {
+        "lat": 48.14498,
+        "lon": 11.52197,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "delain-2027-02-09-frankfurt",
+      "date": "2027-02-09",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "Batschkapp",
+      "city": "Frankfurt",
+      "region": null,
+      "countryCode": "DE",
+      "status": "scheduled",
+      "ticketUrl": "https://batschkapp.reservix.de/p/reservix/event/2557456",
+      "sourceUrl": null,
+      "notes": "Feat. Marko Hietala & more guests TBA, w/ Infected Rain",
+      "geo": {
+        "lat": 50.13506,
+        "lon": 8.7388,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "delain-2027-02-10-esch-sur-alzette",
+      "date": "2027-02-10",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "Rockhal",
+      "city": "Esch-sur-Alzette",
+      "region": null,
+      "countryCode": "LU",
+      "status": "scheduled",
+      "ticketUrl": "https://rockhal.lu/shows/delain27/",
+      "sourceUrl": null,
+      "notes": "Feat. Marko Hietala & more guests TBA, w/ Infected Rain",
+      "geo": {
+        "lat": 49.49984,
+        "lon": 5.94749,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "delain-2027-02-11-tilburg",
+      "date": "2027-02-11",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "013",
+      "city": "Tilburg",
+      "region": null,
+      "countryCode": "NL",
+      "status": "scheduled",
+      "ticketUrl": "https://tickets.013.nl/ec5a95e28b5246a6957b5ed65a4b718e",
+      "sourceUrl": null,
+      "notes": "Feat. Marko Hietala & more guests TBA, w/ Infected Rain",
+      "geo": {
+        "lat": 51.55624,
+        "lon": 5.0886,
+        "precision": "city",
+        "source": "nominatim"
+      }
+    }
+  ]
+}

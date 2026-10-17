@@ -1,0 +1,238 @@
+{
+  "schemaVersion": 1,
+  "band": {
+    "id": "threshold",
+    "name": "Threshold",
+    "color": null,
+    "tags": [
+      "progressive-metal",
+      "western-europe"
+    ]
+  },
+  "source": {
+    "url": "https://web.archive.org/web/20260915013243/https://www.thresh.net/tour/",
+    "retrievedAt": "2026-10-16"
+  },
+  "shows": [
+    {
+      "id": "threshold-2026-10-18-chepstow",
+      "date": "2026-10-18",
+      "endDate": null,
+      "startTime": null,
+      "tourName": "Hypothetical 25th Anniversary Tour",
+      "eventName": "Summer's End Festival",
+      "venue": "Chepstow Drill Hall",
+      "city": "Chepstow",
+      "region": null,
+      "countryCode": "GB",
+      "status": null,
+      "ticketUrl": null,
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 51.64093,
+        "lon": -2.67669,
+        "precision": "city",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "threshold-2026-10-22-kortrijk",
+      "date": "2026-10-22",
+      "endDate": null,
+      "startTime": null,
+      "tourName": "Hypothetical 25th Anniversary Tour",
+      "eventName": null,
+      "venue": "DVG Club",
+      "city": "Kortrijk",
+      "region": null,
+      "countryCode": "BE",
+      "status": null,
+      "ticketUrl": null,
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 50.81835,
+        "lon": 3.25252,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "threshold-2026-10-23-aschaffenburg",
+      "date": "2026-10-23",
+      "endDate": null,
+      "startTime": null,
+      "tourName": "Hypothetical 25th Anniversary Tour",
+      "eventName": null,
+      "venue": "Colos-Saal",
+      "city": "Aschaffenburg",
+      "region": null,
+      "countryCode": "DE",
+      "status": null,
+      "ticketUrl": null,
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 49.97583,
+        "lon": 9.14917,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "threshold-2026-10-24-zoetermeer",
+      "date": "2026-10-24",
+      "endDate": null,
+      "startTime": null,
+      "tourName": "Hypothetical 25th Anniversary Tour",
+      "eventName": null,
+      "venue": "Boerderij",
+      "city": "Zoetermeer",
+      "region": null,
+      "countryCode": "NL",
+      "status": null,
+      "ticketUrl": null,
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 52.06333,
+        "lon": 4.46946,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "threshold-2026-10-25-essen",
+      "date": "2026-10-25",
+      "endDate": null,
+      "startTime": null,
+      "tourName": "Hypothetical 25th Anniversary Tour",
+      "eventName": null,
+      "venue": "Turock",
+      "city": "Essen",
+      "region": null,
+      "countryCode": "DE",
+      "status": null,
+      "ticketUrl": null,
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 51.46147,
+        "lon": 7.01382,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "threshold-2026-10-27-siegburg",
+      "date": "2026-10-27",
+      "endDate": null,
+      "startTime": null,
+      "tourName": "Hypothetical 25th Anniversary Tour",
+      "eventName": null,
+      "venue": "Kubana",
+      "city": "Siegburg",
+      "region": null,
+      "countryCode": "DE",
+      "status": null,
+      "ticketUrl": null,
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 50.80169,
+        "lon": 7.21733,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "threshold-2026-10-28-munich",
+      "date": "2026-10-28",
+      "endDate": null,
+      "startTime": null,
+      "tourName": "Hypothetical 25th Anniversary Tour",
+      "eventName": null,
+      "venue": "Feierwerk",
+      "city": "Munich",
+      "region": null,
+      "countryCode": "DE",
+      "status": null,
+      "ticketUrl": null,
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 48.12856,
+        "lon": 11.5346,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "threshold-2026-10-29-pratteln",
+      "date": "2026-10-29",
+      "endDate": null,
+      "startTime": null,
+      "tourName": "Hypothetical 25th Anniversary Tour",
+      "eventName": null,
+      "venue": "Z7",
+      "city": "Pratteln",
+      "region": null,
+      "countryCode": "CH",
+      "status": null,
+      "ticketUrl": null,
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 47.52731,
+        "lon": 7.69425,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "threshold-2026-10-30-karlsruhe",
+      "date": "2026-10-30",
+      "endDate": null,
+      "startTime": null,
+      "tourName": "Hypothetical 25th Anniversary Tour",
+      "eventName": null,
+      "venue": "Stadtmitte",
+      "city": "Karlsruhe",
+      "region": null,
+      "countryCode": "DE",
+      "status": null,
+      "ticketUrl": null,
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 49.01015,
+        "lon": 8.39799,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "threshold-2026-10-31-helmond",
+      "date": "2026-10-31",
+      "endDate": null,
+      "startTime": null,
+      "tourName": "Hypothetical 25th Anniversary Tour",
+      "eventName": null,
+      "venue": "Cacaofabriek",
+      "city": "Helmond",
+      "region": null,
+      "countryCode": "NL",
+      "status": null,
+      "ticketUrl": null,
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 51.47331,
+        "lon": 5.65498,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    }
+  ]
+}

@@ -1,0 +1,502 @@
+{
+  "schemaVersion": 1,
+  "band": {
+    "id": "epica",
+    "name": "Epica",
+    "color": null,
+    "tags": [
+      "symphonic-metal",
+      "western-europe"
+    ]
+  },
+  "source": {
+    "url": "https://www.epica.nl/tour",
+    "retrievedAt": "2026-10-16"
+  },
+  "shows": [
+    {
+      "id": "epica-2027-01-29-amsterdam",
+      "date": "2027-01-29",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "Royal Theatre Carré",
+      "city": "Amsterdam",
+      "region": null,
+      "countryCode": "NL",
+      "status": "soldout",
+      "ticketUrl": "https://www.ticketmaster.nl/event/1173762195",
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 52.37308,
+        "lon": 4.89245,
+        "precision": "city",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "epica-2027-01-30-amsterdam",
+      "date": "2027-01-30",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "Royal Theatre Carré",
+      "city": "Amsterdam",
+      "region": null,
+      "countryCode": "NL",
+      "status": "soldout",
+      "ticketUrl": "https://www.ticketmaster.nl/event/1691164177",
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 52.37308,
+        "lon": 4.89245,
+        "precision": "city",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "epica-2027-01-31-amsterdam",
+      "date": "2027-01-31",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "Royal Theatre Carré",
+      "city": "Amsterdam",
+      "region": null,
+      "countryCode": "NL",
+      "status": "soldout",
+      "ticketUrl": "https://www.ticketmaster.nl/event/1909496467",
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 52.37308,
+        "lon": 4.89245,
+        "precision": "city",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "epica-2027-03-03-montevideo",
+      "date": "2027-03-03",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "Montevideo Music Box",
+      "city": "Montevideo",
+      "region": null,
+      "countryCode": "UY",
+      "status": "scheduled",
+      "ticketUrl": "https://redtickets.uy/evento/EPICA-en-Montevideo/32473/",
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": -34.88061,
+        "lon": -56.15288,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "epica-2027-03-06-santiago",
+      "date": "2027-03-06",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "Movistar Arena",
+      "city": "Santiago",
+      "region": null,
+      "countryCode": "CL",
+      "status": "scheduled",
+      "ticketUrl": "https://www.puntoticket.com/epica-rhapsody",
+      "sourceUrl": null,
+      "notes": "w/ Rhapsody The Final Shows",
+      "geo": {
+        "lat": -33.46273,
+        "lon": -70.66194,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "epica-2027-03-07-buenos-aires",
+      "date": "2027-03-07",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "Estadio Malvinas Argentinas",
+      "city": "Buenos Aires",
+      "region": null,
+      "countryCode": "AR",
+      "status": "scheduled",
+      "ticketUrl": "https://www.passline.com/eventos/epica-25-years-celebration-rhapsody-the-last-shows",
+      "sourceUrl": null,
+      "notes": "w/ Rhapsody",
+      "geo": {
+        "lat": -34.51353,
+        "lon": -58.70635,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "epica-2027-03-09-san-jose",
+      "date": "2027-03-09",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "Palacios de los Deportes",
+      "city": "San José",
+      "region": null,
+      "countryCode": "CR",
+      "status": "scheduled",
+      "ticketUrl": "https://eleven-to.com/product/epica-y-rhapsody-25th-anniversary-tour/",
+      "sourceUrl": null,
+      "notes": "w/ Rhapsody The Final Shows",
+      "geo": {
+        "lat": 9.93274,
+        "lon": -84.07967,
+        "precision": "city",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "epica-2027-03-11-bogota",
+      "date": "2027-03-11",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "Chamorro City Hall",
+      "city": "Bogotá",
+      "region": null,
+      "countryCode": "CO",
+      "status": "scheduled",
+      "ticketUrl": "https://tickets.eticketablanca.com/event/epica-y-rhapsody-en-bogota-as57p2",
+      "sourceUrl": null,
+      "notes": "w/ Rhapsody The Final Shows",
+      "geo": {
+        "lat": 4.65338,
+        "lon": -74.08363,
+        "precision": "city",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "epica-2027-05-01-kopervik",
+      "date": "2027-05-01",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": "Karmoygeddon Metal Festival",
+      "venue": null,
+      "city": "Kopervik",
+      "region": null,
+      "countryCode": "NO",
+      "status": "scheduled",
+      "ticketUrl": "https://tikkio.com/events/64166-karmoygeddon-metal-festival-2027",
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 59.28358,
+        "lon": 5.3067,
+        "precision": "city",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "epica-2027-06-04-maastricht",
+      "date": "2027-06-04",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": "Epic Metal Fest",
+      "venue": null,
+      "city": "Maastricht",
+      "region": null,
+      "countryCode": "NL",
+      "status": "scheduled",
+      "ticketUrl": "https://muziekgieterij.stager.co/shop/soh-2027",
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 50.85799,
+        "lon": 5.69699,
+        "precision": "city",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "epica-2027-09-24-antwerpen",
+      "date": "2027-09-24",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "Lotto Arena",
+      "city": "Antwerpen",
+      "region": null,
+      "countryCode": "BE",
+      "status": "scheduled",
+      "ticketUrl": "https://www.livenation.be/event/epica-the-symphonic-synergy-tour-antwerpen-tickets-edp1692214?utm_source=artist&utm_medium=artistchannels&utm_campaign=artist-epica",
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 51.23012,
+        "lon": 4.44185,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "epica-2027-09-25-frankfurt-am-main",
+      "date": "2027-09-25",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "Jahrhunderthalle",
+      "city": "Frankfurt am Main",
+      "region": null,
+      "countryCode": "DE",
+      "status": "scheduled",
+      "ticketUrl": "https://www.eventim.de/event/epica-the-symphonic-synergy-tour-2027-myticket-jahrhunderthalle-frankfurt-22110003/",
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 50.0995,
+        "lon": 8.51897,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "epica-2027-09-26-prague",
+      "date": "2027-09-26",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "Forum Karlin",
+      "city": "Prague",
+      "region": null,
+      "countryCode": "CZ",
+      "status": "scheduled",
+      "ticketUrl": "https://www.ticketportal.cz/event/Epica-The-Symphonic-Synergy-Tour-2027",
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 50.09185,
+        "lon": 14.45488,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "epica-2027-09-29-gliwice",
+      "date": "2027-09-29",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "PreZero Arena Gliwice",
+      "city": "Gliwice",
+      "region": null,
+      "countryCode": "PL",
+      "status": "scheduled",
+      "ticketUrl": "https://winiarybookings.pl/wydarzenie/epica-gliwice-w1n1ary-gliwice-wrzesien-2027-3",
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 50.28567,
+        "lon": 18.68612,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "epica-2027-10-01-berlin",
+      "date": "2027-10-01",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "Admiralspalast",
+      "city": "Berlin",
+      "region": null,
+      "countryCode": "DE",
+      "status": "scheduled",
+      "ticketUrl": "https://www.eventim.de/event/epica-the-symphonic-synergy-tour-2027-admiralspalast-22062123/",
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 52.52077,
+        "lon": 13.3889,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "epica-2027-10-03-milano",
+      "date": "2027-10-03",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "Teatro Arcimboldi",
+      "city": "Milano",
+      "region": null,
+      "countryCode": "IT",
+      "status": "scheduled",
+      "ticketUrl": "https://mc2live.vivaticket.it/it/event/epica/314542",
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 45.51353,
+        "lon": 9.21246,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "epica-2027-10-04-zurich",
+      "date": "2027-10-04",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "The Hall",
+      "city": "Zürich",
+      "region": null,
+      "countryCode": "CH",
+      "status": "scheduled",
+      "ticketUrl": "https://www.ticketcorner.ch/event/epica-the-hall-22081239/",
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 47.39563,
+        "lon": 8.59786,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "epica-2027-10-06-london",
+      "date": "2027-10-06",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "Royal Albert Hall",
+      "city": "London",
+      "region": null,
+      "countryCode": "GB",
+      "status": "soldout",
+      "ticketUrl": null,
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 51.50101,
+        "lon": -0.17741,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "epica-2027-10-08-paris",
+      "date": "2027-10-08",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "Le Zénith",
+      "city": "Paris",
+      "region": null,
+      "countryCode": "FR",
+      "status": "scheduled",
+      "ticketUrl": "http://bit.ly/Epica_Paris27",
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 48.89421,
+        "lon": 2.39318,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "epica-2027-10-10-madrid",
+      "date": "2027-10-10",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "Palacio Vistalegre",
+      "city": "Madrid",
+      "region": null,
+      "countryCode": "ES",
+      "status": "scheduled",
+      "ticketUrl": "https://www.madnesslive.es/es/conciertos-en-madrid/2057-comprar-entrada-epica-the-symphonic-synergy-madrid.html",
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 40.38626,
+        "lon": -3.73907,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "epica-2027-10-11-lisboa",
+      "date": "2027-10-11",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "Sagres Campo Pequeno",
+      "city": "Lisboa",
+      "region": null,
+      "countryCode": "PT",
+      "status": "scheduled",
+      "ticketUrl": "https://www.ticketline.pt/pt/evento/epica-the-symphonic-synergy-tour-107851",
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 38.73365,
+        "lon": -9.15017,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "epica-2027-11-20-sao-paulo",
+      "date": "2027-11-20",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "Vibra",
+      "city": "São Paulo",
+      "region": null,
+      "countryCode": "BR",
+      "status": "soldout",
+      "ticketUrl": null,
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": -23.63253,
+        "lon": -46.54245,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    }
+  ]
+}

@@ -1,0 +1,238 @@
+{
+  "schemaVersion": 1,
+  "band": {
+    "id": "yasuharu-takanashi",
+    "name": "Yasuharu Takanashi",
+    "color": null,
+    "tags": [
+      "soundtrack",
+      "east-asia"
+    ]
+  },
+  "source": {
+    "url": "https://jrocknews.com/tour/the-battle-for-glory",
+    "retrievedAt": "2026-10-16"
+  },
+  "shows": [
+    {
+      "id": "yasuharu-takanashi-2026-09-30-helsinki",
+      "date": "2026-09-30",
+      "endDate": null,
+      "startTime": null,
+      "tourName": "The Battle for Glory EU Tour 2026",
+      "eventName": null,
+      "venue": "On The Rocks",
+      "city": "Helsinki",
+      "region": null,
+      "countryCode": "FI",
+      "status": null,
+      "ticketUrl": "https://tiketti.fi/tapahtuma/118451",
+      "sourceUrl": null,
+      "notes": "Far East Groove project",
+      "geo": {
+        "lat": 60.1711,
+        "lon": 24.94551,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "yasuharu-takanashi-2026-10-02-london",
+      "date": "2026-10-02",
+      "endDate": null,
+      "startTime": null,
+      "tourName": "The Battle for Glory EU Tour 2026",
+      "eventName": null,
+      "venue": "Dingwalls",
+      "city": "London",
+      "region": null,
+      "countryCode": "GB",
+      "status": null,
+      "ticketUrl": "https://shop.snapticket.de/event/yasuharu-takanashi-london-pntuu9",
+      "sourceUrl": null,
+      "notes": "Far East Groove project",
+      "geo": {
+        "lat": 51.50745,
+        "lon": -0.12777,
+        "precision": "city",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "yasuharu-takanashi-2026-10-04-warsaw",
+      "date": "2026-10-04",
+      "endDate": null,
+      "startTime": null,
+      "tourName": "The Battle for Glory EU Tour 2026",
+      "eventName": null,
+      "venue": "Hybrydy",
+      "city": "Warsaw",
+      "region": null,
+      "countryCode": "PL",
+      "status": null,
+      "ticketUrl": "https://shop.snapticket.de/seller/goodraht-87hz/s/1_yNCy5P",
+      "sourceUrl": null,
+      "notes": "Far East Groove project",
+      "geo": {
+        "lat": 52.23274,
+        "lon": 21.01163,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "yasuharu-takanashi-2026-10-05-berlin",
+      "date": "2026-10-05",
+      "endDate": null,
+      "startTime": null,
+      "tourName": "The Battle for Glory EU Tour 2026",
+      "eventName": null,
+      "venue": "SO36",
+      "city": "Berlin",
+      "region": null,
+      "countryCode": "DE",
+      "status": null,
+      "ticketUrl": "https://shop.snapticket.de/seller/goodraht-yrs8/s/U58JkysV",
+      "sourceUrl": null,
+      "notes": "Far East Groove project",
+      "geo": {
+        "lat": 52.50039,
+        "lon": 13.42216,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "yasuharu-takanashi-2026-10-06-munich",
+      "date": "2026-10-06",
+      "endDate": null,
+      "startTime": null,
+      "tourName": "The Battle for Glory EU Tour 2026",
+      "eventName": null,
+      "venue": "Ampere",
+      "city": "Munich",
+      "region": null,
+      "countryCode": "DE",
+      "status": null,
+      "ticketUrl": "https://shop.snapticket.de/seller/goodraht-yrs8/s/MNMX4bsw",
+      "sourceUrl": null,
+      "notes": "Far East Groove project",
+      "geo": {
+        "lat": 48.13289,
+        "lon": 11.58949,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "yasuharu-takanashi-2026-10-08-milan",
+      "date": "2026-10-08",
+      "endDate": null,
+      "startTime": null,
+      "tourName": "The Battle for Glory EU Tour 2026",
+      "eventName": null,
+      "venue": "Legend Club",
+      "city": "Milan",
+      "region": null,
+      "countryCode": "IT",
+      "status": null,
+      "ticketUrl": "https://link.dice.fm/q24c8907a038",
+      "sourceUrl": null,
+      "notes": "Far East Groove project",
+      "geo": {
+        "lat": 45.51616,
+        "lon": 9.17944,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "yasuharu-takanashi-2026-10-09-yverdon-les-bains",
+      "date": "2026-10-09",
+      "endDate": null,
+      "startTime": null,
+      "tourName": "The Battle for Glory EU Tour 2026",
+      "eventName": null,
+      "venue": "L'Amalgame",
+      "city": "Yverdon-les-Bains",
+      "region": null,
+      "countryCode": "CH",
+      "status": null,
+      "ticketUrl": "https://shop.snapticket.de/seller/goodraht-joaw/s/Z3QRHabF",
+      "sourceUrl": null,
+      "notes": "Far East Groove project",
+      "geo": {
+        "lat": 46.78218,
+        "lon": 6.64974,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "yasuharu-takanashi-2026-10-11-paris",
+      "date": "2026-10-11",
+      "endDate": null,
+      "startTime": null,
+      "tourName": "The Battle for Glory EU Tour 2026",
+      "eventName": null,
+      "venue": "Pan Piper",
+      "city": "Paris",
+      "region": null,
+      "countryCode": "FR",
+      "status": null,
+      "ticketUrl": "https://shop.snapticket.de/seller/goodraht-yrs8/s/1pwcrY0n",
+      "sourceUrl": null,
+      "notes": "Far East Groove project",
+      "geo": {
+        "lat": 48.85801,
+        "lon": 2.38868,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "yasuharu-takanashi-2026-10-13-barcelona",
+      "date": "2026-10-13",
+      "endDate": null,
+      "startTime": null,
+      "tourName": "The Battle for Glory EU Tour 2026",
+      "eventName": null,
+      "venue": "Wolf",
+      "city": "Barcelona",
+      "region": null,
+      "countryCode": "ES",
+      "status": null,
+      "ticketUrl": "https://madnesslive.es/es/conciertos-en-barcelona/1970-comprar-entrada-far-east-groove-barcelona.html",
+      "sourceUrl": null,
+      "notes": "Far East Groove project",
+      "geo": {
+        "lat": 41.39589,
+        "lon": 2.18867,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "yasuharu-takanashi-2026-10-14-madrid",
+      "date": "2026-10-14",
+      "endDate": null,
+      "startTime": null,
+      "tourName": "The Battle for Glory EU Tour 2026",
+      "eventName": null,
+      "venue": "Revi Live",
+      "city": "Madrid",
+      "region": null,
+      "countryCode": "ES",
+      "status": null,
+      "ticketUrl": "https://madnesslive.es/es/conciertos-en-madrid/1971-comprar-entrada-far-east-groove-madrid.html",
+      "sourceUrl": null,
+      "notes": "Far East Groove project",
+      "geo": {
+        "lat": 40.41678,
+        "lon": -3.70351,
+        "precision": "city",
+        "source": "nominatim"
+      }
+    }
+  ]
+}

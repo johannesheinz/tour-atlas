@@ -1,0 +1,61 @@
+{
+  "schemaVersion": 1,
+  "band": {
+    "id": "miracle-of-sound",
+    "name": "Miracle Of Sound",
+    "color": null,
+    "tags": [
+      "western-europe"
+    ]
+  },
+  "source": {
+    "url": "https://www.miracleofsound.net/tour",
+    "retrievedAt": "2026-10-16"
+  },
+  "shows": [
+    {
+      "id": "miracle-of-sound-2025-02-15-dublin",
+      "date": "2025-02-15",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "The Academy",
+      "city": "Dublin",
+      "region": null,
+      "countryCode": "IE",
+      "status": null,
+      "ticketUrl": "https://www.ticketmaster.ie/miracle-of-sound-dublin-15-02-2025/event/180060960855795C",
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 53.34449,
+        "lon": -6.25011,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "miracle-of-sound-2026-03-22-paris",
+      "date": "2026-03-22",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "Élysée Montmartre",
+      "city": "Paris",
+      "region": null,
+      "countryCode": "FR",
+      "status": null,
+      "ticketUrl": "https://www.seetickets.com/fr/d/event/feuerschwanz-miracle-of-sound/elysee-montmartre/11354647",
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 48.88311,
+        "lon": 2.34342,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    }
+  ]
+}

@@ -1,0 +1,85 @@
+{
+  "schemaVersion": 1,
+  "band": {
+    "id": "royal-republic",
+    "name": "Royal Republic",
+    "color": null,
+    "tags": [
+      "hard-rock",
+      "alternative-rock",
+      "nordic"
+    ]
+  },
+  "source": {
+    "url": "https://www.royalrepublic.net/dates/",
+    "retrievedAt": "2026-10-16"
+  },
+  "shows": [
+    {
+      "id": "royal-republic-2026-10-20-rouen",
+      "date": "2026-10-20",
+      "endDate": null,
+      "startTime": null,
+      "tourName": "LoveCop Tour 2026",
+      "eventName": null,
+      "venue": "Le 106",
+      "city": "Rouen",
+      "region": null,
+      "countryCode": "FR",
+      "status": "scheduled",
+      "ticketUrl": "https://billetterie.le106.com/share/event/738-Royal-Republic",
+      "sourceUrl": null,
+      "notes": "Support: Storm Orchestra; Rescheduled from 13.03.2026. Tickets remain valid.",
+      "geo": {
+        "lat": 49.44051,
+        "lon": 1.07519,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "royal-republic-2027-04-15-palma-de-mallorca",
+      "date": "2027-04-15",
+      "endDate": "2027-04-21",
+      "startTime": null,
+      "tourName": null,
+      "eventName": "Tattoo Cruise 2027",
+      "venue": null,
+      "city": "Palma de Mallorca",
+      "region": null,
+      "countryCode": "ES",
+      "status": "scheduled",
+      "ticketUrl": "https://www.meinschiff.com/de/eventreisen/tattoocruise",
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 39.56958,
+        "lon": 2.65007,
+        "precision": "city",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "royal-republic-2027-07-09-knislinge",
+      "date": "2027-07-09",
+      "endDate": "2027-07-12",
+      "startTime": null,
+      "tourName": null,
+      "eventName": "Time To Rock Festival",
+      "venue": null,
+      "city": "Knislinge",
+      "region": null,
+      "countryCode": "SE",
+      "status": "scheduled",
+      "ticketUrl": "https://nortic.se/ticket/event/85815",
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 56.1942,
+        "lon": 14.08514,
+        "precision": "city",
+        "source": "nominatim"
+      }
+    }
+  ]
+}

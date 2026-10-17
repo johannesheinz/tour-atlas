@@ -1,0 +1,393 @@
+{
+  "schemaVersion": 1,
+  "band": {
+    "id": "harakiri-for-the-sky",
+    "name": "Harakiri for the Sky",
+    "color": null,
+    "tags": [
+      "black-metal",
+      "post-black-metal",
+      "western-europe"
+    ]
+  },
+  "source": {
+    "url": "https://www.bandsintown.com/HarakiriForTheSky",
+    "retrievedAt": "2026-10-16"
+  },
+  "shows": [
+    {
+      "id": "harakiri-for-the-sky-2026-10-18-shanghai",
+      "date": "2026-10-18",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "Vas Ear",
+      "city": "Shanghai",
+      "region": null,
+      "countryCode": "CN",
+      "status": null,
+      "ticketUrl": null,
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 31.23153,
+        "lon": 121.42197,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "harakiri-for-the-sky-2026-10-29-seoul",
+      "date": "2026-10-29",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "JS Art Hall",
+      "city": "Seoul",
+      "region": null,
+      "countryCode": "KR",
+      "status": "scheduled",
+      "ticketUrl": null,
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 37.56668,
+        "lon": 126.97829,
+        "precision": "city",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "harakiri-for-the-sky-2026-10-31-osaka",
+      "date": "2026-10-31",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "Shinsaibashi CLAPPER",
+      "city": "Osaka",
+      "region": null,
+      "countryCode": "JP",
+      "status": "scheduled",
+      "ticketUrl": null,
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 34.69376,
+        "lon": 135.50145,
+        "precision": "city",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "harakiri-for-the-sky-2026-11-01-tokyo",
+      "date": "2026-11-01",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "clubasia",
+      "city": "Tokyo",
+      "region": null,
+      "countryCode": "JP",
+      "status": "scheduled",
+      "ticketUrl": null,
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 35.67686,
+        "lon": 139.76389,
+        "precision": "city",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "harakiri-for-the-sky-2026-11-03-bangkok",
+      "date": "2026-11-03",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "Mr.FOX Live House",
+      "city": "Bangkok",
+      "region": null,
+      "countryCode": "TH",
+      "status": "scheduled",
+      "ticketUrl": null,
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 13.75249,
+        "lon": 100.49351,
+        "precision": "city",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "harakiri-for-the-sky-2026-11-19-southampton",
+      "date": "2026-11-19",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "Papillon",
+      "city": "Southampton",
+      "region": null,
+      "countryCode": "GB",
+      "status": "scheduled",
+      "ticketUrl": null,
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 50.90253,
+        "lon": -1.40419,
+        "precision": "city",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "harakiri-for-the-sky-2026-11-20-london",
+      "date": "2026-11-20",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "The Underworld",
+      "city": "London",
+      "region": null,
+      "countryCode": "GB",
+      "status": "scheduled",
+      "ticketUrl": "https://tinyurl.com/UWharakiri",
+      "sourceUrl": "https://www.songkick.com/concerts/43302458-harakiri-for-the-sky-at-underworld",
+      "notes": "Special guests: Sunken",
+      "geo": {
+        "lat": 51.53918,
+        "lon": -0.14221,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "harakiri-for-the-sky-2026-11-21-newcastle-upon-tyne",
+      "date": "2026-11-21",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "Newcastle University Student Union",
+      "city": "Newcastle upon Tyne",
+      "region": null,
+      "countryCode": "GB",
+      "status": "scheduled",
+      "ticketUrl": null,
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 54.97385,
+        "lon": -1.61316,
+        "precision": "city",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "harakiri-for-the-sky-2026-11-22-edinburgh",
+      "date": "2026-11-22",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "La Belle",
+      "city": "Edinburgh",
+      "region": null,
+      "countryCode": "GB",
+      "status": "scheduled",
+      "ticketUrl": null,
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 55.97745,
+        "lon": -3.16947,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "harakiri-for-the-sky-2026-11-23-glasgow",
+      "date": "2026-11-23",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "Saint Luke's",
+      "city": "Glasgow",
+      "region": null,
+      "countryCode": "GB",
+      "status": "scheduled",
+      "ticketUrl": null,
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 55.85467,
+        "lon": -4.23459,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "harakiri-for-the-sky-2026-11-24-dublin",
+      "date": "2026-11-24",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "Opium",
+      "city": "Dublin",
+      "region": null,
+      "countryCode": "IE",
+      "status": "scheduled",
+      "ticketUrl": null,
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 53.33669,
+        "lon": -6.26604,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "harakiri-for-the-sky-2026-11-25-belfast",
+      "date": "2026-11-25",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "Limelight",
+      "city": "Belfast",
+      "region": null,
+      "countryCode": "GB",
+      "status": "scheduled",
+      "ticketUrl": null,
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 54.59289,
+        "lon": -5.92854,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "harakiri-for-the-sky-2026-11-26-manchester",
+      "date": "2026-11-26",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "Manchester Academy 3",
+      "city": "Manchester",
+      "region": null,
+      "countryCode": "GB",
+      "status": "scheduled",
+      "ticketUrl": null,
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 53.44246,
+        "lon": -2.23245,
+        "precision": "city",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "harakiri-for-the-sky-2026-11-27-bristol",
+      "date": "2026-11-27",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "Strange Brew",
+      "city": "Bristol",
+      "region": null,
+      "countryCode": "GB",
+      "status": "scheduled",
+      "ticketUrl": null,
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 51.4563,
+        "lon": -2.59235,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "harakiri-for-the-sky-2027-04-29-kopervik",
+      "date": "2027-04-29",
+      "endDate": "2027-05-01",
+      "startTime": null,
+      "tourName": null,
+      "eventName": "Karmoygeddon Festival",
+      "venue": "Ovenpaa",
+      "city": "Kopervik",
+      "region": null,
+      "countryCode": "NO",
+      "status": "scheduled",
+      "ticketUrl": null,
+      "sourceUrl": "https://www.songkick.com/festivals/144396-karmoygeddon/id/43288719-karmoygeddon-festival-2027",
+      "notes": null,
+      "geo": {
+        "lat": 59.28358,
+        "lon": 5.3067,
+        "precision": "city",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "harakiri-for-the-sky-2027-05-06-bornstedt",
+      "date": "2027-05-06",
+      "endDate": "2027-05-08",
+      "startTime": null,
+      "tourName": null,
+      "eventName": "Dark Troll Festival",
+      "venue": "Burg Bornstedt",
+      "city": "Bornstedt",
+      "region": null,
+      "countryCode": "DE",
+      "status": "scheduled",
+      "ticketUrl": null,
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 51.48338,
+        "lon": 11.49026,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "harakiri-for-the-sky-2027-05-27-slavicin",
+      "date": "2027-05-27",
+      "endDate": "2027-05-29",
+      "startTime": null,
+      "tourName": null,
+      "eventName": "Karpaty Hard Fest",
+      "venue": "Army Park",
+      "city": "Slavičín",
+      "region": null,
+      "countryCode": "CZ",
+      "status": "scheduled",
+      "ticketUrl": null,
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 49.08896,
+        "lon": 17.87481,
+        "precision": "city",
+        "source": "nominatim"
+      }
+    }
+  ]
+}

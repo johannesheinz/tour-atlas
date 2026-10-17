@@ -1,0 +1,85 @@
+{
+  "schemaVersion": 1,
+  "band": {
+    "id": "jorn",
+    "name": "JORN",
+    "color": null,
+    "tags": [
+      "heavy-metal",
+      "hard-rock",
+      "nordic"
+    ]
+  },
+  "source": {
+    "url": "https://jornlande.com/home",
+    "retrievedAt": "2026-10-16"
+  },
+  "shows": [
+    {
+      "id": "jorn-2026-10-02-trondheim",
+      "date": "2026-10-02",
+      "endDate": null,
+      "startTime": "20:00",
+      "tourName": null,
+      "eventName": null,
+      "venue": "Byscenen",
+      "city": "Trondheim",
+      "region": null,
+      "countryCode": "NO",
+      "status": null,
+      "ticketUrl": "https://byscn.no/jorn_extra_26",
+      "sourceUrl": "https://www.byscenen.no/event/jorn-trondheim",
+      "notes": "Presentert av Trondheim Stage",
+      "geo": {
+        "lat": 63.43013,
+        "lon": 10.39169,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "jorn-2026-10-24-mallorca",
+      "date": "2026-10-24",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": "Full Metal Holiday",
+      "venue": "Iberostar Waves Club Cala Barca",
+      "city": "Santanyí",
+      "region": null,
+      "countryCode": "ES",
+      "status": null,
+      "ticketUrl": "https://www.willstduweg.de/index.php?mcms_id=106",
+      "sourceUrl": "https://www.full-metal-holiday.com/en/jorn/",
+      "notes": null,
+      "geo": {
+        "lat": 39.35328,
+        "lon": 3.19801,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "jorn-2026-11-14-larvik",
+      "date": "2026-11-14",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": "Spetakkelfestivalen",
+      "venue": "Jotron Arena",
+      "city": "Larvik",
+      "region": null,
+      "countryCode": "NO",
+      "status": null,
+      "ticketUrl": "https://spetakkel.hoopla.no/event/762591642",
+      "sourceUrl": "https://spetakkelfestivalen.no/",
+      "notes": null,
+      "geo": {
+        "lat": 59.0497,
+        "lon": 10.05312,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    }
+  ]
+}

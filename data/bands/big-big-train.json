@@ -1,0 +1,304 @@
+{
+  "schemaVersion": 1,
+  "band": {
+    "id": "big-big-train",
+    "name": "Big Big Train",
+    "color": null,
+    "tags": [
+      "progressive-rock",
+      "western-europe"
+    ]
+  },
+  "source": {
+    "url": "https://www.bandsintown.com/a/91502-big-big-train",
+    "retrievedAt": "2026-10-16"
+  },
+  "shows": [
+    {
+      "id": "big-big-train-2026-03-01-southampton",
+      "date": "2026-03-01",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "The 1865",
+      "city": "Southampton",
+      "region": null,
+      "countryCode": "GB",
+      "status": null,
+      "ticketUrl": null,
+      "sourceUrl": "https://www.songkick.com/artists/8309078-big-big-train/gigography",
+      "notes": null,
+      "geo": {
+        "lat": 50.89857,
+        "lon": -1.40049,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "big-big-train-2026-03-04-miami",
+      "date": "2026-03-04",
+      "endDate": "2026-03-09",
+      "startTime": null,
+      "tourName": null,
+      "eventName": "Cruise to the Edge",
+      "venue": "Norwegian Pearl",
+      "city": "Miami",
+      "region": "FL",
+      "countryCode": "US",
+      "status": null,
+      "ticketUrl": null,
+      "sourceUrl": "https://www.songkick.com/artists/8309078-big-big-train/gigography",
+      "notes": null,
+      "geo": {
+        "lat": 25.77416,
+        "lon": -80.1936,
+        "precision": "city",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "big-big-train-2026-04-24-london",
+      "date": "2026-04-24",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "Here East",
+      "city": "London",
+      "region": null,
+      "countryCode": "GB",
+      "status": null,
+      "ticketUrl": null,
+      "sourceUrl": "https://www.songkick.com/artists/8309078-big-big-train/gigography",
+      "notes": null,
+      "geo": {
+        "lat": 51.54802,
+        "lon": -0.02362,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "big-big-train-2026-09-28-bury-st-edmunds",
+      "date": "2026-09-28",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "Apex",
+      "city": "Bury St Edmunds",
+      "region": null,
+      "countryCode": "GB",
+      "status": null,
+      "ticketUrl": null,
+      "sourceUrl": "https://www.songkick.com/artists/8309078-big-big-train/gigography",
+      "notes": null,
+      "geo": {
+        "lat": 52.2458,
+        "lon": 0.71049,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "big-big-train-2026-09-30-verviers",
+      "date": "2026-09-30",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "Spirit of 66",
+      "city": "Verviers",
+      "region": null,
+      "countryCode": "BE",
+      "status": null,
+      "ticketUrl": null,
+      "sourceUrl": "https://www.songkick.com/artists/8309078-big-big-train/gigography",
+      "notes": null,
+      "geo": {
+        "lat": 50.5936,
+        "lon": 5.86105,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "big-big-train-2026-10-01-aschaffenburg",
+      "date": "2026-10-01",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "Colos-Saal",
+      "city": "Aschaffenburg",
+      "region": null,
+      "countryCode": "DE",
+      "status": null,
+      "ticketUrl": null,
+      "sourceUrl": "https://www.songkick.com/artists/8309078-big-big-train/gigography",
+      "notes": null,
+      "geo": {
+        "lat": 49.97583,
+        "lon": 9.14917,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "big-big-train-2026-10-02-zoetermeer",
+      "date": "2026-10-02",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "Poppodium Boerderij",
+      "city": "Zoetermeer",
+      "region": null,
+      "countryCode": "NL",
+      "status": null,
+      "ticketUrl": null,
+      "sourceUrl": "https://www.songkick.com/artists/8309078-big-big-train/gigography",
+      "notes": null,
+      "geo": {
+        "lat": 52.06225,
+        "lon": 4.49012,
+        "precision": "city",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "big-big-train-2026-10-04-pagney-derriere-barine",
+      "date": "2026-10-04",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "Chez Paulette",
+      "city": "Pagney-Derrière-Barine",
+      "region": null,
+      "countryCode": "FR",
+      "status": null,
+      "ticketUrl": null,
+      "sourceUrl": "https://www.songkick.com/artists/8309078-big-big-train/gigography",
+      "notes": null,
+      "geo": {
+        "lat": 48.69301,
+        "lon": 5.84199,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "big-big-train-2026-10-09-schio",
+      "date": "2026-10-09",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "Teatro Astra",
+      "city": "Schio",
+      "region": null,
+      "countryCode": "IT",
+      "status": null,
+      "ticketUrl": null,
+      "sourceUrl": "https://www.songkick.com/artists/8309078-big-big-train/gigography",
+      "notes": null,
+      "geo": {
+        "lat": 45.71302,
+        "lon": 11.35853,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "big-big-train-2026-10-10-fontaneto-d-agogna",
+      "date": "2026-10-10",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "Pala Phenomenon",
+      "city": "Fontaneto d'Agogna",
+      "region": null,
+      "countryCode": "IT",
+      "status": null,
+      "ticketUrl": null,
+      "sourceUrl": "https://www.songkick.com/artists/8309078-big-big-train/gigography",
+      "notes": null,
+      "geo": {
+        "lat": 45.64347,
+        "lon": 8.48083,
+        "precision": "city",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "big-big-train-2026-10-13-manchester",
+      "date": "2026-10-13",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "RNCM Theatre",
+      "city": "Manchester",
+      "region": null,
+      "countryCode": "GB",
+      "status": null,
+      "ticketUrl": null,
+      "sourceUrl": "https://www.songkick.com/artists/8309078-big-big-train/gigography",
+      "notes": null,
+      "geo": {
+        "lat": 53.44246,
+        "lon": -2.23245,
+        "precision": "city",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "big-big-train-2026-10-14-whitley-bay",
+      "date": "2026-10-14",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "Playhouse",
+      "city": "Whitley Bay",
+      "region": null,
+      "countryCode": "GB",
+      "status": null,
+      "ticketUrl": null,
+      "sourceUrl": "https://www.songkick.com/artists/8309078-big-big-train/gigography",
+      "notes": null,
+      "geo": {
+        "lat": 55.04675,
+        "lon": -1.44997,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "big-big-train-2026-10-17-london",
+      "date": "2026-10-17",
+      "endDate": null,
+      "startTime": "19:00",
+      "tourName": "Woodcut and Other Stories",
+      "eventName": null,
+      "venue": "O2 Shepherds Bush Empire",
+      "city": "London",
+      "region": null,
+      "countryCode": "GB",
+      "status": null,
+      "ticketUrl": null,
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 51.50745,
+        "lon": -0.12777,
+        "precision": "city",
+        "source": "nominatim"
+      }
+    }
+  ]
+}

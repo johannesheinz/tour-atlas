@@ -1,0 +1,85 @@
+{
+  "schemaVersion": 1,
+  "band": {
+    "id": "knorkator",
+    "name": "Knorkator",
+    "color": null,
+    "tags": [
+      "heavy-metal",
+      "comedy-rock",
+      "western-europe"
+    ]
+  },
+  "source": {
+    "url": "https://knorkator.de/termine/",
+    "retrievedAt": "2026-10-16"
+  },
+  "shows": [
+    {
+      "id": "knorkator-2026-11-28-weissenhauser-strand",
+      "date": "2026-11-28",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": "Metal Hammer Paradise",
+      "venue": "Ferienpark Weissenhäuser Strand",
+      "city": "Weißenhäuser Strand",
+      "region": null,
+      "countryCode": "DE",
+      "status": "scheduled",
+      "ticketUrl": "https://metal-hammer-paradise.de/tickets/festivalpass/",
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 54.30648,
+        "lon": 10.79415,
+        "precision": "city",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "knorkator-2027-04-15-palma",
+      "date": "2027-04-15",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": "Tattoo Cruise 2027",
+      "venue": "Mein Schiff 4",
+      "city": "Palma",
+      "region": null,
+      "countryCode": "ES",
+      "status": "scheduled",
+      "ticketUrl": "https://www.meinschiff.com/de/eventreisen/tattoocruise?utm_source=socialmedia&utm_medium=post&utm_campaign=nonpaid_partner&utm_content=100626_TattooCruise_Partner&campaign=partner/nonpaid",
+      "sourceUrl": null,
+      "notes": "Cruise route: Palma/ Rom/ Marseille/ Barcelona/ Palma",
+      "geo": {
+        "lat": 39.56958,
+        "lon": 2.65007,
+        "precision": "city",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "knorkator-2027-09-04-potsdam",
+      "date": "2027-09-04",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": "Waschhaus Open Air",
+      "venue": "Waschhaus",
+      "city": "Potsdam",
+      "region": null,
+      "countryCode": "DE",
+      "status": "scheduled",
+      "ticketUrl": "https://www.eventim.de/event/knorkator-laedt-ein-zum-open-air-am-4-september-knotsdam-waschhaus-open-air-gelaende-21477104/",
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 52.40428,
+        "lon": 13.03528,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    }
+  ]
+}

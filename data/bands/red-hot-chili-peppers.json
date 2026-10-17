@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "band": {
+    "id": "red-hot-chili-peppers",
+    "name": "Red Hot Chili Peppers",
+    "color": null,
+    "tags": [
+      "alternative-rock",
+      "funk-rock",
+      "north-america"
+    ]
+  },
+  "source": {
+    "url": "https://www.songkick.com/artists/468146-red-hot-chili-peppers",
+    "retrievedAt": "2026-10-16"
+  },
+  "shows": [
+    {
+      "id": "red-hot-chili-peppers-2026-10-17-los-angeles",
+      "date": "2026-10-17",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": "Silverlake Conservatory of Music 25th Anniversary",
+      "venue": "Hollywood Palladium",
+      "city": "Los Angeles",
+      "region": "CA",
+      "countryCode": "US",
+      "status": "scheduled",
+      "ticketUrl": null,
+      "sourceUrl": "https://www.songkick.com/festivals/3807702-silverlake-conservatory-of-music-25th-anniversary/id/43443391-silverlake-conservatory-of-music-25th-anniversary-2026",
+      "notes": "Lineup: Red Hot Chili Peppers, Vince Staples, Dave Grohl, Marc Maron",
+      "geo": {
+        "lat": 34.09849,
+        "lon": -118.32429,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    }
+  ]
+}

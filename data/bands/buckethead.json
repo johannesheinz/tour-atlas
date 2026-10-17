@@ -1,0 +1,107 @@
+{
+  "schemaVersion": 1,
+  "band": {
+    "id": "buckethead",
+    "name": "Buckethead",
+    "color": null,
+    "tags": [
+      "progressive-metal",
+      "experimental",
+      "north-america"
+    ]
+  },
+  "source": {
+    "url": "https://www.bucketheadpikes.com/solo_shows.html",
+    "retrievedAt": "2026-10-16"
+  },
+  "shows": [
+    {
+      "id": "buckethead-2026-08-07-pelham",
+      "date": "2026-08-07",
+      "endDate": null,
+      "startTime": "20:00",
+      "tourName": null,
+      "eventName": null,
+      "venue": "The Caverns",
+      "city": "Pelham",
+      "region": "TN",
+      "countryCode": "US",
+      "status": null,
+      "ticketUrl": "https://www.thecaverns.com/event/buckethead-in-the-caverns-4",
+      "sourceUrl": "https://www.thecaverns.com/event/buckethead-in-the-caverns-4",
+      "notes": "Listed as Grundy County, TN",
+      "geo": {
+        "lat": 35.31008,
+        "lon": -85.88081,
+        "precision": "city",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "buckethead-2026-10-04-sacramento",
+      "date": "2026-10-04",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": "Aftershock Festival",
+      "venue": null,
+      "city": "Sacramento",
+      "region": "CA",
+      "countryCode": "US",
+      "status": null,
+      "ticketUrl": "https://aftershockfestival.com/",
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 38.58106,
+        "lon": -121.49389,
+        "precision": "city",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "buckethead-2026-11-06-estes-park",
+      "date": "2026-11-06",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "The Stanley",
+      "city": "Estes Park",
+      "region": "CO",
+      "countryCode": "US",
+      "status": "scheduled",
+      "ticketUrl": "https://stanleyhotel.ticketspice.com/112026-buckethead",
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 40.383,
+        "lon": -105.51944,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "buckethead-2026-11-07-estes-park",
+      "date": "2026-11-07",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "The Stanley",
+      "city": "Estes Park",
+      "region": "CO",
+      "countryCode": "US",
+      "status": "scheduled",
+      "ticketUrl": "https://stanleyhotel.ticketspice.com/112026-buckethead",
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 40.383,
+        "lon": -105.51944,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    }
+  ]
+}

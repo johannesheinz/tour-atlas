@@ -1,0 +1,482 @@
+{
+  "schemaVersion": 1,
+  "band": {
+    "id": "alestorm",
+    "name": "Alestorm",
+    "color": null,
+    "tags": [
+      "heavy-metal",
+      "power-metal",
+      "folk-metal",
+      "western-europe"
+    ]
+  },
+  "source": {
+    "url": "https://www.alestorm.net/#tourdates",
+    "retrievedAt": "2026-10-16"
+  },
+  "shows": [
+    {
+      "id": "alestorm-2026-12-12-madrid",
+      "date": "2026-12-12",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": "Saurom Juglar Fest",
+      "venue": null,
+      "city": "Madrid",
+      "region": null,
+      "countryCode": "ES",
+      "status": "scheduled",
+      "ticketUrl": "https://saurom.com/saurom-juglar-fest/",
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 40.41678,
+        "lon": -3.70351,
+        "precision": "city",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "alestorm-2027-01-14-cardiff",
+      "date": "2027-01-14",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "Great Hall",
+      "city": "Cardiff",
+      "region": null,
+      "countryCode": "GB",
+      "status": "scheduled",
+      "ticketUrl": "https://www.universe.com/events/alestorm-tickets-J7T0YR",
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 51.48848,
+        "lon": -3.1774,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "alestorm-2027-01-15-birmingham",
+      "date": "2027-01-15",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "Academy",
+      "city": "Birmingham",
+      "region": null,
+      "countryCode": "GB",
+      "status": "scheduled",
+      "ticketUrl": "https://www.ticketmaster.co.uk/event/3E0064F4F344298A",
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 55.86395,
+        "lon": -4.02846,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "alestorm-2027-01-16-bristol",
+      "date": "2027-01-16",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "Academy",
+      "city": "Bristol",
+      "region": null,
+      "countryCode": "GB",
+      "status": "scheduled",
+      "ticketUrl": "https://www.ticketmaster.co.uk/event/3E0064F58DB20EE7",
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 51.45812,
+        "lon": -2.6083,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "alestorm-2027-01-17-bournemouth",
+      "date": "2027-01-17",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "Academy",
+      "city": "Bournemouth",
+      "region": null,
+      "countryCode": "GB",
+      "status": "scheduled",
+      "ticketUrl": "https://www.ticketmaster.co.uk/event/3E0064F5A33A133D",
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 50.74725,
+        "lon": -1.89127,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "alestorm-2027-01-19-newcastle",
+      "date": "2027-01-19",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "City Hall",
+      "city": "Newcastle",
+      "region": null,
+      "countryCode": "GB",
+      "status": "scheduled",
+      "ticketUrl": "https://www.ticketmaster.co.uk/event/3E0064F5918E0F9A",
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 54.97738,
+        "lon": -1.61023,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "alestorm-2027-01-20-leeds",
+      "date": "2027-01-20",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "Academy",
+      "city": "Leeds",
+      "region": null,
+      "countryCode": "GB",
+      "status": "scheduled",
+      "ticketUrl": "https://www.ticketmaster.co.uk/event/3E0064F4EDFC2773",
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 53.81478,
+        "lon": -1.43422,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "alestorm-2027-01-21-manchester",
+      "date": "2027-01-21",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "Ritz",
+      "city": "Manchester",
+      "region": null,
+      "countryCode": "GB",
+      "status": "scheduled",
+      "ticketUrl": "https://www.ticketmaster.co.uk/event/3E0064F599D710E9",
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 53.47447,
+        "lon": -2.24301,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "alestorm-2027-01-22-norwich",
+      "date": "2027-01-22",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "LCR",
+      "city": "Norwich",
+      "region": null,
+      "countryCode": "GB",
+      "status": "scheduled",
+      "ticketUrl": "https://www.ueaticketbookings.co.uk/event/alestorm/",
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 52.62856,
+        "lon": 1.2924,
+        "precision": "city",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "alestorm-2027-01-23-dundee",
+      "date": "2027-01-23",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "Livehouse",
+      "city": "Dundee",
+      "region": null,
+      "countryCode": "GB",
+      "status": "scheduled",
+      "ticketUrl": "https://www.ticketmaster.co.uk/event/350064F7E5D98903",
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 56.45831,
+        "lon": -2.97222,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "alestorm-2027-01-24-glasgow",
+      "date": "2027-01-24",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "Academy",
+      "city": "Glasgow",
+      "region": null,
+      "countryCode": "GB",
+      "status": "scheduled",
+      "ticketUrl": "https://www.ticketmaster.co.uk/event/3E0064F59E6C1209",
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 55.12665,
+        "lon": -3.35893,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "alestorm-2027-01-25-belfast",
+      "date": "2027-01-25",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "Ulster Hall",
+      "city": "Belfast",
+      "region": null,
+      "countryCode": "GB",
+      "status": "scheduled",
+      "ticketUrl": "https://www.ulsterhall.co.uk/what-s-on/alestorm/",
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 54.59462,
+        "lon": -5.93052,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "alestorm-2027-01-27-dublin",
+      "date": "2027-01-27",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "Olympia",
+      "city": "Dublin",
+      "region": null,
+      "countryCode": "IE",
+      "status": "scheduled",
+      "ticketUrl": "https://www.ticketmaster.ie/artist/131143?venueId=198239",
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 53.34457,
+        "lon": -6.26606,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "alestorm-2027-01-28-nottingham",
+      "date": "2027-01-28",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "Rock City",
+      "city": "Nottingham",
+      "region": null,
+      "countryCode": "GB",
+      "status": "scheduled",
+      "ticketUrl": "https://www.alttickets.com/alestorm-tickets",
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 52.95606,
+        "lon": -1.15403,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "alestorm-2027-01-29-oxford",
+      "date": "2027-01-29",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "Academy",
+      "city": "Oxford",
+      "region": null,
+      "countryCode": "GB",
+      "status": "scheduled",
+      "ticketUrl": "https://www.ticketmaster.co.uk/event/3E0064F4F15C289F",
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 51.74282,
+        "lon": -1.21855,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "alestorm-2027-01-30-london",
+      "date": "2027-01-30",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "Forum",
+      "city": "London",
+      "region": null,
+      "countryCode": "GB",
+      "status": "scheduled",
+      "ticketUrl": "https://www.ticketmaster.co.uk/event/3E0064F7B87A187F",
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 51.55214,
+        "lon": -0.1422,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "alestorm-2027-06-24-natz",
+      "date": "2027-06-24",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": "Alpenflair",
+      "venue": null,
+      "city": "Natz",
+      "region": null,
+      "countryCode": "IT",
+      "status": "scheduled",
+      "ticketUrl": "https://www.alpen-flair.com",
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 46.75252,
+        "lon": 11.68062,
+        "precision": "city",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "alestorm-2027-07-03-volos",
+      "date": "2027-07-03",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": "Golden R",
+      "venue": null,
+      "city": "Volos",
+      "region": null,
+      "countryCode": "GR",
+      "status": "scheduled",
+      "ticketUrl": "https://goldenrfestival.com",
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 39.36248,
+        "lon": 22.94019,
+        "precision": "city",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "alestorm-2027-07-08-vizovice",
+      "date": "2027-07-08",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": "Masters of Rock",
+      "venue": null,
+      "city": "Vizovice",
+      "region": null,
+      "countryCode": "CZ",
+      "status": "scheduled",
+      "ticketUrl": "https://www.mastersofrock.cz/",
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 49.22314,
+        "lon": 17.85451,
+        "precision": "city",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "alestorm-2027-07-09-ballenstedt",
+      "date": "2027-07-09",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": "Rockharz",
+      "venue": null,
+      "city": "Ballenstedt",
+      "region": null,
+      "countryCode": "DE",
+      "status": "scheduled",
+      "ticketUrl": "https://www.rockharz-festival.com",
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 51.74261,
+        "lon": 11.23053,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "alestorm-2027-08-13-villena",
+      "date": "2027-08-13",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": "Leyendas Del Rock",
+      "venue": null,
+      "city": "Villena",
+      "region": null,
+      "countryCode": "ES",
+      "status": "scheduled",
+      "ticketUrl": "https://www.leyendasdelrockfestival.com",
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 38.6361,
+        "lon": -0.86597,
+        "precision": "city",
+        "source": "nominatim"
+      }
+    }
+  ]
+}

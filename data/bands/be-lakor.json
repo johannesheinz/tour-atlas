@@ -1,0 +1,458 @@
+{
+  "schemaVersion": 1,
+  "band": {
+    "id": "be-lakor",
+    "name": "Be'lakor",
+    "color": null,
+    "tags": [
+      "melodic-death-metal",
+      "oceania"
+    ]
+  },
+  "source": {
+    "url": "https://www.bandsintown.com/a/266048-be'lakor",
+    "retrievedAt": "2026-10-16"
+  },
+  "shows": [
+    {
+      "id": "be-lakor-2025-08-30-west-hollywood",
+      "date": "2025-08-30",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "Whisky A Go Go",
+      "city": "West Hollywood",
+      "region": "CA",
+      "countryCode": "US",
+      "status": null,
+      "ticketUrl": null,
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 34.09086,
+        "lon": -118.38571,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "be-lakor-2025-08-31-mesa",
+      "date": "2025-08-31",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "The Nile Theater",
+      "city": "Mesa",
+      "region": "AZ",
+      "countryCode": "US",
+      "status": null,
+      "ticketUrl": null,
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 33.41454,
+        "lon": -111.83451,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "be-lakor-2025-09-02-austin",
+      "date": "2025-09-02",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "Come and Take It Live",
+      "city": "Austin",
+      "region": "TX",
+      "countryCode": "US",
+      "status": null,
+      "ticketUrl": null,
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 30.24086,
+        "lon": -97.72887,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "be-lakor-2025-09-03-dallas",
+      "date": "2025-09-03",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "Granada Theater",
+      "city": "Dallas",
+      "region": "TX",
+      "countryCode": "US",
+      "status": null,
+      "ticketUrl": null,
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 32.83087,
+        "lon": -96.76982,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "be-lakor-2025-09-05-atlanta",
+      "date": "2025-09-05",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "Center Stage",
+      "city": "Atlanta",
+      "region": "GA",
+      "countryCode": "US",
+      "status": null,
+      "ticketUrl": null,
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 33.79221,
+        "lon": -84.38824,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "be-lakor-2025-09-06-greensboro",
+      "date": "2025-09-06",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "Hangar 1819",
+      "city": "Greensboro",
+      "region": "NC",
+      "countryCode": "US",
+      "status": null,
+      "ticketUrl": null,
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 36.06335,
+        "lon": -79.82257,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "be-lakor-2025-09-07-philadelphia",
+      "date": "2025-09-07",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "Underground Arts",
+      "city": "Philadelphia",
+      "region": "PA",
+      "countryCode": "US",
+      "status": null,
+      "ticketUrl": null,
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 39.95909,
+        "lon": -75.15901,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "be-lakor-2025-09-08-brooklyn",
+      "date": "2025-09-08",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "The Brooklyn Monarch",
+      "city": "Brooklyn",
+      "region": "NY",
+      "countryCode": "US",
+      "status": null,
+      "ticketUrl": null,
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 40.71084,
+        "lon": -73.93631,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "be-lakor-2025-09-10-quebec",
+      "date": "2025-09-10",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "Théâtre Capitole",
+      "city": "Quebec",
+      "region": null,
+      "countryCode": "CA",
+      "status": null,
+      "ticketUrl": null,
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 46.81326,
+        "lon": -71.21426,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "be-lakor-2025-09-11-montreal",
+      "date": "2025-09-11",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "Théâtre Beanfield",
+      "city": "Montréal",
+      "region": null,
+      "countryCode": "CA",
+      "status": null,
+      "ticketUrl": null,
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 45.48289,
+        "lon": -73.57507,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "be-lakor-2025-09-12-toronto",
+      "date": "2025-09-12",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "Lee's Palace",
+      "city": "Toronto",
+      "region": null,
+      "countryCode": "CA",
+      "status": null,
+      "ticketUrl": null,
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 43.66532,
+        "lon": -79.40943,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "be-lakor-2025-09-13-joliet",
+      "date": "2025-09-13",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "The Forge",
+      "city": "Joliet",
+      "region": "IL",
+      "countryCode": "US",
+      "status": null,
+      "ticketUrl": null,
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 41.5277,
+        "lon": -88.08209,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "be-lakor-2025-09-14-st-paul",
+      "date": "2025-09-14",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "Turf Club",
+      "city": "St Paul",
+      "region": "MN",
+      "countryCode": "US",
+      "status": null,
+      "ticketUrl": null,
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 44.95606,
+        "lon": -93.16797,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "be-lakor-2025-09-16-calgary",
+      "date": "2025-09-16",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "Dickens Pub",
+      "city": "Calgary",
+      "region": null,
+      "countryCode": "CA",
+      "status": null,
+      "ticketUrl": null,
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 51.0454,
+        "lon": -114.08398,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "be-lakor-2025-09-17-vancouver",
+      "date": "2025-09-17",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "Rickshaw Theatre",
+      "city": "Vancouver",
+      "region": null,
+      "countryCode": "CA",
+      "status": null,
+      "ticketUrl": null,
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 49.28102,
+        "lon": -123.09835,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "be-lakor-2025-09-18-seattle",
+      "date": "2025-09-18",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "El Corazon",
+      "city": "Seattle",
+      "region": "WA",
+      "countryCode": "US",
+      "status": null,
+      "ticketUrl": null,
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 47.61873,
+        "lon": -122.32932,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "be-lakor-2025-09-20-roseville",
+      "date": "2025-09-20",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "Goldfield Trading Post Roseville",
+      "city": "Roseville",
+      "region": "CA",
+      "countryCode": "US",
+      "status": null,
+      "ticketUrl": null,
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 38.75212,
+        "lon": -121.28801,
+        "precision": "city",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "be-lakor-2025-10-09-fortitude-valley",
+      "date": "2025-10-09",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "Crowbar Brisbane",
+      "city": "Fortitude Valley",
+      "region": null,
+      "countryCode": "AU",
+      "status": null,
+      "ticketUrl": null,
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": -27.45772,
+        "lon": 153.03597,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "be-lakor-2025-10-10-marrickville",
+      "date": "2025-10-10",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "Factory Theatre",
+      "city": "Marrickville",
+      "region": null,
+      "countryCode": "AU",
+      "status": null,
+      "ticketUrl": null,
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": -33.9057,
+        "lon": 151.16526,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "be-lakor-2025-10-11-thornbury",
+      "date": "2025-10-11",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "The Croxton Bandroom",
+      "city": "Thornbury",
+      "region": null,
+      "countryCode": "AU",
+      "status": null,
+      "ticketUrl": null,
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": -37.75827,
+        "lon": 145.00515,
+        "precision": "city",
+        "source": "nominatim"
+      }
+    }
+  ]
+}

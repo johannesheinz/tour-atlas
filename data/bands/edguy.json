@@ -1,0 +1,151 @@
+{
+  "schemaVersion": 1,
+  "band": {
+    "id": "edguy",
+    "name": "Edguy",
+    "color": null,
+    "tags": [
+      "heavy-metal",
+      "power-metal",
+      "western-europe"
+    ]
+  },
+  "source": {
+    "url": "https://edguy.net/",
+    "retrievedAt": "2026-10-16"
+  },
+  "shows": [
+    {
+      "id": "edguy-2027-06-13-plzen",
+      "date": "2027-06-13",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": "Metalfest Open Air",
+      "venue": null,
+      "city": "Plzeň",
+      "region": null,
+      "countryCode": "CZ",
+      "status": null,
+      "ticketUrl": null,
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 49.74774,
+        "lon": 13.37752,
+        "precision": "city",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "edguy-2027-06-17-zamora",
+      "date": "2027-06-17",
+      "endDate": "2027-06-19",
+      "startTime": null,
+      "tourName": null,
+      "eventName": "Z! Live",
+      "venue": null,
+      "city": "Zamora",
+      "region": null,
+      "countryCode": "ES",
+      "status": null,
+      "ticketUrl": null,
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 41.51628,
+        "lon": -5.7736,
+        "precision": "city",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "edguy-2027-06-25-fulda",
+      "date": "2027-06-25",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "Domplatz",
+      "city": "Fulda",
+      "region": null,
+      "countryCode": "DE",
+      "status": "scheduled",
+      "ticketUrl": "https://www.eventim.de/artist/edguy/",
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 50.55402,
+        "lon": 9.6732,
+        "precision": "city",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "edguy-2027-07-15-leoben",
+      "date": "2027-07-15",
+      "endDate": "2027-07-17",
+      "startTime": null,
+      "tourName": null,
+      "eventName": "Area 53",
+      "venue": null,
+      "city": "Leoben",
+      "region": null,
+      "countryCode": "AT",
+      "status": null,
+      "ticketUrl": null,
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 47.38051,
+        "lon": 15.09478,
+        "precision": "city",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "edguy-2027-07-28-wacken",
+      "date": "2027-07-28",
+      "endDate": "2027-07-31",
+      "startTime": null,
+      "tourName": null,
+      "eventName": "Wacken Open Air",
+      "venue": null,
+      "city": "Wacken",
+      "region": null,
+      "countryCode": "DE",
+      "status": null,
+      "ticketUrl": null,
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 54.02861,
+        "lon": 9.36642,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "edguy-2027-08-18-dinkelsbuhl",
+      "date": "2027-08-18",
+      "endDate": "2027-08-21",
+      "startTime": null,
+      "tourName": null,
+      "eventName": "SummerBreeze",
+      "venue": null,
+      "city": "Dinkelsbühl",
+      "region": null,
+      "countryCode": "DE",
+      "status": null,
+      "ticketUrl": null,
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 49.06917,
+        "lon": 10.3194,
+        "precision": "city",
+        "source": "nominatim"
+      }
+    }
+  ]
+}

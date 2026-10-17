@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "band": {
+    "id": "elvenking",
+    "name": "Elvenking",
+    "color": null,
+    "tags": [
+      "power-metal",
+      "folk-metal",
+      "southern-europe"
+    ]
+  },
+  "source": {
+    "url": "https://www.elvenking.net/tour/",
+    "retrievedAt": "2026-10-16"
+  },
+  "shows": [
+    {
+      "id": "elvenking-2027-05-21-madison",
+      "date": "2027-05-21",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": "Mad With Power Fest",
+      "venue": null,
+      "city": "Madison",
+      "region": "WI",
+      "countryCode": "US",
+      "status": "scheduled",
+      "ticketUrl": "https://madwithpowerfest.com/",
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 43.07469,
+        "lon": -89.38417,
+        "precision": "city",
+        "source": "nominatim"
+      }
+    }
+  ]
+}

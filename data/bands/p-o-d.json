@@ -1,0 +1,240 @@
+{
+  "schemaVersion": 1,
+  "band": {
+    "id": "p-o-d",
+    "name": "P.O.D.",
+    "color": null,
+    "tags": [
+      "alternative-metal",
+      "nu-metal",
+      "christian-metal",
+      "north-america"
+    ]
+  },
+  "source": {
+    "url": "https://www.bandsintown.com/a/366-p.o.d.",
+    "retrievedAt": "2026-10-16"
+  },
+  "shows": [
+    {
+      "id": "p-o-d-2026-10-17-mesa",
+      "date": "2026-10-17",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": "Mesa Music Festival 2026",
+      "venue": "Mesa Arts Center",
+      "city": "Mesa",
+      "region": "AZ",
+      "countryCode": "US",
+      "status": "scheduled",
+      "ticketUrl": "https://www.bandsintown.com/t/108996861",
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 33.41416,
+        "lon": -111.83029,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "p-o-d-2026-10-24-fort-worth",
+      "date": "2026-10-24",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": "Sick New World Texas 2026",
+      "venue": "Texas Motor Speedway",
+      "city": "Fort Worth",
+      "region": "TX",
+      "countryCode": "US",
+      "status": "scheduled",
+      "ticketUrl": "https://www.bandsintown.com/t/107499711",
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 33.03712,
+        "lon": -97.28163,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "p-o-d-2026-10-31-anaheim",
+      "date": "2026-10-31",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "House of Blues Anaheim",
+      "city": "Anaheim",
+      "region": "CA",
+      "countryCode": "US",
+      "status": "scheduled",
+      "ticketUrl": "https://www.bandsintown.com/t/108737390",
+      "sourceUrl": null,
+      "notes": "Lineup with Coal Chamber, Cradle of Filth, Black Satellite",
+      "geo": {
+        "lat": 33.8064,
+        "lon": -117.91227,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "p-o-d-2026-11-07-saltillo",
+      "date": "2026-11-07",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": "Brujas Festival 2026",
+      "venue": "Hacienda El Mimbre",
+      "city": "Saltillo",
+      "region": null,
+      "countryCode": "MX",
+      "status": "scheduled",
+      "ticketUrl": "https://www.bandsintown.com/t/108717949",
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 25.42304,
+        "lon": -100.99275,
+        "precision": "city",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "p-o-d-2026-11-29-newstead",
+      "date": "2026-11-29",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "The Triffid",
+      "city": "Newstead",
+      "region": null,
+      "countryCode": "AU",
+      "status": "scheduled",
+      "ticketUrl": "https://www.bandsintown.com/t/108906112",
+      "sourceUrl": null,
+      "notes": "Good Things // Side Show; Lineup with Ocean Grove",
+      "geo": {
+        "lat": -27.4523,
+        "lon": 153.04205,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "p-o-d-2026-12-01-hindmarsh",
+      "date": "2026-12-01",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "The Gov",
+      "city": "Hindmarsh",
+      "region": null,
+      "countryCode": "AU",
+      "status": "scheduled",
+      "ticketUrl": "https://www.bandsintown.com/t/108906137",
+      "sourceUrl": null,
+      "notes": "Good Things // Side Show; Lineup with Ocean Grove",
+      "geo": {
+        "lat": -34.90703,
+        "lon": 138.57579,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "p-o-d-2026-12-02-melbourne",
+      "date": "2026-12-02",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "170 Russell",
+      "city": "Melbourne",
+      "region": null,
+      "countryCode": "AU",
+      "status": "scheduled",
+      "ticketUrl": "https://www.bandsintown.com/t/108906146",
+      "sourceUrl": null,
+      "notes": "Good Things // Side Show; Lineup with Ocean Grove",
+      "geo": {
+        "lat": -37.81199,
+        "lon": 144.96796,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "p-o-d-2026-12-04-melbourne",
+      "date": "2026-12-04",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": "Good Things Festival",
+      "venue": "Flemington Racecourse",
+      "city": "Melbourne",
+      "region": null,
+      "countryCode": "AU",
+      "status": "scheduled",
+      "ticketUrl": "https://www.bandsintown.com/t/108760528",
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": -37.78925,
+        "lon": 144.91277,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "p-o-d-2026-12-05-sydney-olympic-park",
+      "date": "2026-12-05",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": "Good Things Festival",
+      "venue": "Sydney Showground",
+      "city": "Sydney Olympic Park",
+      "region": null,
+      "countryCode": "AU",
+      "status": "scheduled",
+      "ticketUrl": "https://www.bandsintown.com/t/108760536",
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": -33.84341,
+        "lon": 151.06687,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "p-o-d-2026-12-06-brisbane",
+      "date": "2026-12-06",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": "Good Things Festival",
+      "venue": "Brisbane Showgrounds",
+      "city": "Brisbane",
+      "region": null,
+      "countryCode": "AU",
+      "status": "scheduled",
+      "ticketUrl": "https://www.bandsintown.com/t/108760537",
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": -27.44997,
+        "lon": 153.03295,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    }
+  ]
+}

@@ -1,0 +1,279 @@
+{
+  "schemaVersion": 1,
+  "band": {
+    "id": "michael-schlierf",
+    "name": "Michael Schlierf",
+    "color": null,
+    "tags": []
+  },
+  "source": {
+    "url": "https://www.michael-schlierf.de/termine",
+    "retrievedAt": "2026-10-16"
+  },
+  "shows": [
+    {
+      "id": "michael-schlierf-2026-10-16-bretten",
+      "date": "2026-10-16",
+      "endDate": null,
+      "startTime": "19:30",
+      "tourName": null,
+      "eventName": "Was bleibt – Töne die tragen",
+      "venue": "Kreuzkirche",
+      "city": "Bretten",
+      "region": null,
+      "countryCode": "DE",
+      "status": "scheduled",
+      "ticketUrl": "https://stiftung-lohrer.de/tickets/",
+      "sourceUrl": null,
+      "notes": "Benefit evening by Stiftung Lohrer and DRK Bretten",
+      "geo": {
+        "lat": 49.03664,
+        "lon": 8.70493,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "michael-schlierf-2026-10-23-althengstett",
+      "date": "2026-10-23",
+      "endDate": null,
+      "startTime": "19:30",
+      "tourName": "Zuversicht",
+      "eventName": null,
+      "venue": "Evang. Gemeindehaus",
+      "city": "Althengstett",
+      "region": null,
+      "countryCode": "DE",
+      "status": null,
+      "ticketUrl": null,
+      "sourceUrl": null,
+      "notes": "Free entry, donations requested",
+      "geo": {
+        "lat": 48.72324,
+        "lon": 8.79645,
+        "precision": "city",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "michael-schlierf-2026-10-29-stuttgart",
+      "date": "2026-10-29",
+      "endDate": null,
+      "startTime": "20:15",
+      "tourName": null,
+      "eventName": "Die Sway-Show",
+      "venue": "Theaterhaus",
+      "city": "Stuttgart",
+      "region": null,
+      "countryCode": "DE",
+      "status": null,
+      "ticketUrl": null,
+      "sourceUrl": null,
+      "notes": "Mike Janipka's Sway-Show with Michael Schlierf on piano; the description gives the address Stuttgarter Straße 42, 71638 Ludwigsburg",
+      "geo": {
+        "lat": 48.81031,
+        "lon": 9.17904,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "michael-schlierf-2026-11-09-stuttgart",
+      "date": "2026-11-09",
+      "endDate": null,
+      "startTime": "19:00",
+      "tourName": "Zuversicht",
+      "eventName": "OBEN PIANO SPECIAL",
+      "venue": "SWR Fernsehturm",
+      "city": "Stuttgart",
+      "region": null,
+      "countryCode": "DE",
+      "status": "scheduled",
+      "ticketUrl": "https://leonhardts-stuttgart.de/event/oben-piano-special-ein-abend-mit-michael-schlierf/",
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 48.77845,
+        "lon": 9.18001,
+        "precision": "city",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "michael-schlierf-2026-11-29-neustadt-an-der-aisch",
+      "date": "2026-11-29",
+      "endDate": null,
+      "startTime": "18:30",
+      "tourName": "Pannen unter Tannen",
+      "eventName": null,
+      "venue": "Orangerie Alle Hotel",
+      "city": "Neustadt an der Aisch",
+      "region": null,
+      "countryCode": "DE",
+      "status": null,
+      "ticketUrl": null,
+      "sourceUrl": null,
+      "notes": "With Evelyn Wedel",
+      "geo": {
+        "lat": 49.58,
+        "lon": 10.60876,
+        "precision": "city",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "michael-schlierf-2026-12-04-schockingen",
+      "date": "2026-12-04",
+      "endDate": null,
+      "startTime": "20:00",
+      "tourName": "Pannen unter Tannen",
+      "eventName": null,
+      "venue": "Altes Rathaus",
+      "city": "Schöckingen",
+      "region": null,
+      "countryCode": "DE",
+      "status": null,
+      "ticketUrl": null,
+      "sourceUrl": null,
+      "notes": "Advance sale starts 16.11.2026",
+      "geo": {
+        "lat": 48.84527,
+        "lon": 9.0298,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "michael-schlierf-2026-12-06-bietigheim-bissingen",
+      "date": "2026-12-06",
+      "endDate": null,
+      "startTime": "18:00",
+      "tourName": "Pannen unter Tannen",
+      "eventName": null,
+      "venue": "Altes Kino",
+      "city": "Bietigheim-Bissingen",
+      "region": null,
+      "countryCode": "DE",
+      "status": "scheduled",
+      "ticketUrl": "https://www.altes-kino.live/events/2612061900",
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 48.94932,
+        "lon": 9.13642,
+        "precision": "city",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "michael-schlierf-2026-12-11-gerlingen",
+      "date": "2026-12-11",
+      "endDate": null,
+      "startTime": "20:00",
+      "tourName": "Pannen unter Tannen",
+      "eventName": null,
+      "venue": "HubRaum",
+      "city": "Gerlingen",
+      "region": null,
+      "countryCode": "DE",
+      "status": "scheduled",
+      "ticketUrl": "https://artisthof.de/veranstaltungen-im-hubraum-/pannen-unter-tannen",
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 48.79839,
+        "lon": 9.06244,
+        "precision": "city",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "michael-schlierf-2026-12-12-spiegelberg",
+      "date": "2026-12-12",
+      "endDate": null,
+      "startTime": "19:00",
+      "tourName": "Pannen unter Tannen",
+      "eventName": null,
+      "venue": "Kulturlämmle",
+      "city": "Spiegelberg",
+      "region": null,
+      "countryCode": "DE",
+      "status": "scheduled",
+      "ticketUrl": "https://eventfrog.de/de/p/klassik-opern/klassik/michael-schlierf-pannen-unter-tannen-7429956871253961395.html",
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 49.03901,
+        "lon": 9.44705,
+        "precision": "city",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "michael-schlierf-2026-12-19-weissach-flacht",
+      "date": "2026-12-19",
+      "endDate": null,
+      "startTime": "19:00",
+      "tourName": "Dezemberlicht",
+      "eventName": null,
+      "venue": "Laurentiuskirche",
+      "city": "Weissach-Flacht",
+      "region": null,
+      "countryCode": "DE",
+      "status": null,
+      "ticketUrl": null,
+      "sourceUrl": null,
+      "notes": "With Beate Ling; free entry, donations requested",
+      "geo": {
+        "lat": 48.8342,
+        "lon": 8.91274,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "michael-schlierf-2026-12-20-grossbottwar",
+      "date": "2026-12-20",
+      "endDate": null,
+      "startTime": "18:00",
+      "tourName": "Zuversicht",
+      "eventName": null,
+      "venue": "Altes Rathaus",
+      "city": "Großbottwar",
+      "region": null,
+      "countryCode": "DE",
+      "status": null,
+      "ticketUrl": null,
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 49.01379,
+        "lon": 9.27764,
+        "precision": "city",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "michael-schlierf-2027-01-03-sachsenheim",
+      "date": "2027-01-03",
+      "endDate": null,
+      "startTime": "18:30",
+      "tourName": "Zeichen auf dem Weg",
+      "eventName": null,
+      "venue": "Schmid’s Domino",
+      "city": "Sachsenheim",
+      "region": null,
+      "countryCode": "DE",
+      "status": null,
+      "ticketUrl": null,
+      "sourceUrl": null,
+      "notes": "Benefit concert with Beate Ling",
+      "geo": {
+        "lat": 48.95715,
+        "lon": 9.07991,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    }
+  ]
+}

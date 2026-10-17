@@ -1,0 +1,415 @@
+{
+  "schemaVersion": 1,
+  "band": {
+    "id": "foo-fighters",
+    "name": "Foo Fighters",
+    "color": null,
+    "tags": [
+      "hard-rock",
+      "alternative-rock",
+      "north-america"
+    ]
+  },
+  "source": {
+    "url": "https://foofighters.com/wp-json/wp/v2/events",
+    "retrievedAt": "2026-10-16"
+  },
+  "shows": [
+    {
+      "id": "foo-fighters-2026-11-05-brisbane",
+      "date": "2026-11-05",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "Suncorp Stadium",
+      "city": "Brisbane",
+      "region": "QLD",
+      "countryCode": "AU",
+      "status": "scheduled",
+      "ticketUrl": "https://frntr.co/FooFighters26Bne",
+      "sourceUrl": null,
+      "notes": "Support: Full Flower Moon Band, Mini Skirt",
+      "geo": {
+        "lat": -27.46486,
+        "lon": 153.00961,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "foo-fighters-2026-11-07-townsville",
+      "date": "2026-11-07",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "QLD Country Bank Stadium",
+      "city": "Townsville",
+      "region": "QLD",
+      "countryCode": "AU",
+      "status": "scheduled",
+      "ticketUrl": "https://frntr.co/FooFighters26Tsv",
+      "sourceUrl": null,
+      "notes": "Support: Full Flower Moon Band, Downgirl",
+      "geo": {
+        "lat": -19.25694,
+        "lon": 146.82395,
+        "precision": "city",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "foo-fighters-2026-11-10-sydney",
+      "date": "2026-11-10",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "Accor Stadium",
+      "city": "Sydney",
+      "region": "NSW",
+      "countryCode": "AU",
+      "status": "scheduled",
+      "ticketUrl": "https://frntr.co/FooFighters26Syd",
+      "sourceUrl": null,
+      "notes": "Support: The Belair Lip Bombs, TEENS",
+      "geo": {
+        "lat": -33.84711,
+        "lon": 151.06338,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "foo-fighters-2026-11-12-newcastle",
+      "date": "2026-11-12",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "McDonald Jones Stadium",
+      "city": "Newcastle",
+      "region": "NSW",
+      "countryCode": "AU",
+      "status": "scheduled",
+      "ticketUrl": "https://frntr.co/FooFighters26Newc",
+      "sourceUrl": null,
+      "notes": "Support: The Buoys, C.O.F.F.I.N.",
+      "geo": {
+        "lat": -32.91882,
+        "lon": 151.7265,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "foo-fighters-2026-11-14-melbourne",
+      "date": "2026-11-14",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "Marvel Stadium",
+      "city": "Melbourne",
+      "region": "VIC",
+      "countryCode": "AU",
+      "status": "scheduled",
+      "ticketUrl": "https://frntr.co/FooFighters26Mel",
+      "sourceUrl": null,
+      "notes": "Support: The Belair Lip Bombs, Frenzee",
+      "geo": {
+        "lat": -37.81653,
+        "lon": 144.94752,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "foo-fighters-2026-11-16-melbourne",
+      "date": "2026-11-16",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "Crown Live",
+      "city": "Melbourne",
+      "region": "VIC",
+      "countryCode": "AU",
+      "status": "scheduled",
+      "ticketUrl": "https://www.crownmelbourne.com.au/foofighters",
+      "sourceUrl": null,
+      "notes": "Support: Full Flower Moon Band",
+      "geo": {
+        "lat": -37.81425,
+        "lon": 144.96317,
+        "precision": "city",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "foo-fighters-2026-11-17-adelaide",
+      "date": "2026-11-17",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "Coopers Stadium",
+      "city": "Adelaide",
+      "region": "SA",
+      "countryCode": "AU",
+      "status": "scheduled",
+      "ticketUrl": "https://frntr.co/FooFighters26Adl",
+      "sourceUrl": null,
+      "notes": "Support: Kurralta Park, Spooky Eyes",
+      "geo": {
+        "lat": -34.9075,
+        "lon": 138.56893,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "foo-fighters-2027-01-19-christchurch",
+      "date": "2027-01-19",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "One New Zealand Stadium",
+      "city": "Christchurch",
+      "region": null,
+      "countryCode": "NZ",
+      "status": "scheduled",
+      "ticketUrl": "https://frntr.co/FooFighters27Chc",
+      "sourceUrl": null,
+      "notes": "Support: Dartz, Seek Help!",
+      "geo": {
+        "lat": -43.53403,
+        "lon": 172.64417,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "foo-fighters-2027-01-22-auckland",
+      "date": "2027-01-22",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "Western Springs Stadium",
+      "city": "Auckland",
+      "region": null,
+      "countryCode": "NZ",
+      "status": "scheduled",
+      "ticketUrl": "https://frntr.co/FooFighters27Akl",
+      "sourceUrl": null,
+      "notes": "Support: Dick Move, Ringlets",
+      "geo": {
+        "lat": -36.86434,
+        "lon": 174.72706,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "foo-fighters-2027-01-25-perth",
+      "date": "2027-01-25",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "HBF Park",
+      "city": "Perth",
+      "region": "WA",
+      "countryCode": "AU",
+      "status": "scheduled",
+      "ticketUrl": "https://frntr.co/FooFighters27Per",
+      "sourceUrl": null,
+      "notes": "Support: Southern River Band, Las Quokka",
+      "geo": {
+        "lat": -31.94573,
+        "lon": 115.86992,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "foo-fighters-2027-01-29-bangalore",
+      "date": "2027-01-29",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "Bengaluru LIVE",
+      "city": "Bangalore",
+      "region": null,
+      "countryCode": "IN",
+      "status": "scheduled",
+      "ticketUrl": "https://FooFighters.lnk.to/Bangalore",
+      "sourceUrl": null,
+      "notes": "Support: The Pretty Reckless, Die Spitz, Alain Johannes, Pinkshift",
+      "geo": {
+        "lat": 12.97679,
+        "lon": 77.59008,
+        "precision": "city",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "foo-fighters-2027-01-31-mumbai",
+      "date": "2027-01-31",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "Mahalaxmi Racecourse",
+      "city": "Mumbai",
+      "region": null,
+      "countryCode": "IN",
+      "status": "scheduled",
+      "ticketUrl": "https://FooFighters.lnk.to/Mumbai",
+      "sourceUrl": null,
+      "notes": "Support: The Pretty Reckless, Die Spitz, Still in Therapy, Mali",
+      "geo": {
+        "lat": 18.9852,
+        "lon": 72.8206,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "foo-fighters-2027-02-18-belo-horizonte",
+      "date": "2027-02-18",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "Arena MRV",
+      "city": "Belo Horizonte",
+      "region": null,
+      "countryCode": "BR",
+      "status": "scheduled",
+      "ticketUrl": "https://FooFighters.lnk.to/BHB-27",
+      "sourceUrl": null,
+      "notes": "Support: Karen Dio, Deb and the Mentals",
+      "geo": {
+        "lat": -19.93001,
+        "lon": -44.01388,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "foo-fighters-2027-02-20-sao-paulo",
+      "date": "2027-02-20",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "Estádio MorumBIS",
+      "city": "São Paulo",
+      "region": null,
+      "countryCode": "BR",
+      "status": "scheduled",
+      "ticketUrl": "https://FooFighters.lnk.to/SPB-27",
+      "sourceUrl": null,
+      "notes": "Support: Karen Dio, Deb and the Mentals",
+      "geo": {
+        "lat": -23.6001,
+        "lon": -46.72013,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "foo-fighters-2027-02-23-montevideo",
+      "date": "2027-02-23",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "Estadio Centenario",
+      "city": "Montevideo",
+      "region": null,
+      "countryCode": "UY",
+      "status": "scheduled",
+      "ticketUrl": "https://FooFighters.lnk.to/MUY27",
+      "sourceUrl": null,
+      "notes": "Support: Niña Lobo, Gamepad",
+      "geo": {
+        "lat": -34.89454,
+        "lon": -56.15268,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "foo-fighters-2027-02-25-buenos-aires",
+      "date": "2027-02-25",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "Estadio River Plate",
+      "city": "Buenos Aires",
+      "region": null,
+      "countryCode": "AR",
+      "status": "scheduled",
+      "ticketUrl": "https://FooFighters.lnk.to/BAAR27",
+      "sourceUrl": null,
+      "notes": "Support: Usted Señalemelo, Pacifica",
+      "geo": {
+        "lat": -34.58253,
+        "lon": -58.39905,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "foo-fighters-2027-02-28-santiago",
+      "date": "2027-02-28",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "Parque Estadio Nacional",
+      "city": "Santiago",
+      "region": null,
+      "countryCode": "CL",
+      "status": "scheduled",
+      "ticketUrl": "https://FooFighters.lnk.to/SCL27",
+      "sourceUrl": null,
+      "notes": "Support: Adelaida, Aurora Voraz",
+      "geo": {
+        "lat": -33.46625,
+        "lon": -70.61069,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "foo-fighters-2027-03-03-lima",
+      "date": "2027-03-03",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "Estadio San Marcos",
+      "city": "Lima",
+      "region": null,
+      "countryCode": "PE",
+      "status": "scheduled",
+      "ticketUrl": "https://FooFighters.lnk.to/LPE27",
+      "sourceUrl": null,
+      "notes": "Support: Cometa a la Deriva, Lucy Perez",
+      "geo": {
+        "lat": -12.6637,
+        "lon": -76.62965,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    }
+  ]
+}

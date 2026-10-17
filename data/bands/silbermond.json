@@ -1,0 +1,62 @@
+{
+  "schemaVersion": 1,
+  "band": {
+    "id": "silbermond",
+    "name": "Silbermond",
+    "color": null,
+    "tags": [
+      "pop-rock",
+      "western-europe"
+    ]
+  },
+  "source": {
+    "url": "https://www.silbermond.de/",
+    "retrievedAt": "2026-10-16"
+  },
+  "shows": [
+    {
+      "id": "silbermond-2027-06-19-dresden",
+      "date": "2027-06-19",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": "25 Jahre Silbermond",
+      "venue": "Rudolf-Harbig-Stadion",
+      "city": "Dresden",
+      "region": null,
+      "countryCode": "DE",
+      "status": "soldout",
+      "ticketUrl": null,
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 51.04085,
+        "lon": 13.74804,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "silbermond-2027-06-20-dresden",
+      "date": "2027-06-20",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": "25 Jahre Silbermond",
+      "venue": "Rudolf-Harbig-Stadion",
+      "city": "Dresden",
+      "region": null,
+      "countryCode": "DE",
+      "status": "scheduled",
+      "ticketUrl": "https://www.eventim.de/noapp/event/silbermond-xxv-rudolf-harbig-stadion-21109896/?affiliate=UNE&utm_campaign=undercover&utm_source=une&utm_medium=dp",
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 51.04085,
+        "lon": 13.74804,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    }
+  ]
+}

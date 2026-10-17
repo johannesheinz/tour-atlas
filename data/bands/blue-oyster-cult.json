@@ -1,0 +1,481 @@
+{
+  "schemaVersion": 1,
+  "band": {
+    "id": "blue-oyster-cult",
+    "name": "Blue Öyster Cult",
+    "color": null,
+    "tags": [
+      "heavy-metal",
+      "hard-rock",
+      "north-america"
+    ]
+  },
+  "source": {
+    "url": "http://blueoystercult.com/OnTour.html",
+    "retrievedAt": "2026-10-16"
+  },
+  "shows": [
+    {
+      "id": "blue-oyster-cult-2026-08-01-houston",
+      "date": "2026-08-01",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "Stafford Centre",
+      "city": "Houston",
+      "region": "TX",
+      "countryCode": "US",
+      "status": null,
+      "ticketUrl": "https://www.etix.com/ticket/p/63641681/blue-%C3%B6yster-cult-stafford-official-box-office-for-stafford-centre",
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 29.75894,
+        "lon": -95.3677,
+        "precision": "city",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "blue-oyster-cult-2026-08-07-reno",
+      "date": "2026-08-07",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "Grand Sierra Resort",
+      "city": "Reno",
+      "region": "NV",
+      "countryCode": "US",
+      "status": null,
+      "ticketUrl": "https://www.eventbrite.com/e/blue-oyster-cult-at-street-heat-tickets-1983403174286",
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 39.52345,
+        "lon": -119.77886,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "blue-oyster-cult-2026-08-21-lancaster",
+      "date": "2026-08-21",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "American Music Theatre",
+      "city": "Lancaster",
+      "region": "PA",
+      "countryCode": "US",
+      "status": null,
+      "ticketUrl": "https://amtshows.com/show/blue-oyster-cult-2026",
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 40.02496,
+        "lon": -76.20044,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "blue-oyster-cult-2026-08-23-cape-may",
+      "date": "2026-08-23",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "Cape May Convention Hall",
+      "city": "Cape May",
+      "region": "NJ",
+      "countryCode": "US",
+      "status": null,
+      "ticketUrl": "https://capemaycity.vbotickets.com/event/Blue_Oyster_Cult/188387",
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 38.93016,
+        "lon": -74.91747,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "blue-oyster-cult-2026-08-28-paw-paw",
+      "date": "2026-08-28",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "Warner Vineyards",
+      "city": "Paw Paw",
+      "region": "MI",
+      "countryCode": "US",
+      "status": null,
+      "ticketUrl": "https://wl.eventim.us/event/blue-oyster-cult/677250?afflky=JLEntertainment",
+      "sourceUrl": null,
+      "notes": "With Bad Company's Simon Kirke",
+      "geo": {
+        "lat": 42.21782,
+        "lon": -85.89112,
+        "precision": "city",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "blue-oyster-cult-2026-08-29-new-lenox",
+      "date": "2026-08-29",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "New Lenox Concert Series",
+      "city": "New Lenox",
+      "region": "IL",
+      "countryCode": "US",
+      "status": null,
+      "ticketUrl": "https://www.newlenox.net/454/Blue-yster-Cult",
+      "sourceUrl": null,
+      "notes": "With Bad Company's Simon Kirke",
+      "geo": {
+        "lat": 41.51198,
+        "lon": -87.96561,
+        "precision": "city",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "blue-oyster-cult-2026-11-06-davenport",
+      "date": "2026-11-06",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "Rhythm City Casino",
+      "city": "Davenport",
+      "region": "IA",
+      "countryCode": "US",
+      "status": "scheduled",
+      "ticketUrl": "https://rhythmcitycasino.showare.com/eventperformances.asp?evt=277",
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 41.59485,
+        "lon": -90.53078,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "blue-oyster-cult-2026-11-07-larchwood",
+      "date": "2026-11-07",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "Grand Falls Casino",
+      "city": "Larchwood",
+      "region": "IA",
+      "countryCode": "US",
+      "status": "scheduled",
+      "ticketUrl": "https://tickets.grandfallscasinoresort.com/eventperformances.asp?evt=257",
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 43.45388,
+        "lon": -96.43406,
+        "precision": "city",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "blue-oyster-cult-2026-11-13-anaheim",
+      "date": "2026-11-13",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "Grove of Anaheim",
+      "city": "Anaheim",
+      "region": "CA",
+      "countryCode": "US",
+      "status": "scheduled",
+      "ticketUrl": "https://www.ticketmaster.com/event/09006488C7C0D628",
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 33.8032,
+        "lon": -117.88569,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "blue-oyster-cult-2026-11-14-henderson",
+      "date": "2026-11-14",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "M Resort Spa Casino",
+      "city": "Henderson",
+      "region": "NV",
+      "countryCode": "US",
+      "status": "scheduled",
+      "ticketUrl": "https://www.ticketmaster.com/event/17006481660DA5A8",
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 36.03014,
+        "lon": -114.98155,
+        "precision": "city",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "blue-oyster-cult-2026-11-25-red-bank",
+      "date": "2026-11-25",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "Count Basie Center for the Arts",
+      "city": "Red Bank",
+      "region": "NJ",
+      "countryCode": "US",
+      "status": "scheduled",
+      "ticketUrl": "https://www.ticketmaster.com/event/1D0064A7AD7D74FF",
+      "sourceUrl": null,
+      "notes": "At Hackensack Meridian Health Theatre",
+      "geo": {
+        "lat": 40.34705,
+        "lon": -74.06431,
+        "precision": "city",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "blue-oyster-cult-2026-11-27-patchogue",
+      "date": "2026-11-27",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "Patchogue Theatre for the Performing Arts",
+      "city": "Patchogue",
+      "region": "NY",
+      "countryCode": "US",
+      "status": "scheduled",
+      "ticketUrl": "https://ci.ovationtix.com/34780/production/1276814?performanceId=11813903",
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 40.76565,
+        "lon": -73.01511,
+        "precision": "city",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "blue-oyster-cult-2026-12-01-jacksonville",
+      "date": "2026-12-01",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "Florida Theatre",
+      "city": "Jacksonville",
+      "region": "FL",
+      "countryCode": "US",
+      "status": "scheduled",
+      "ticketUrl": "https://floridatheatre.showare.com/eventperformances.asp?evt=1677",
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 30.32632,
+        "lon": -81.65576,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "blue-oyster-cult-2026-12-04-immokalee",
+      "date": "2026-12-04",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "Seminole Center",
+      "city": "Immokalee",
+      "region": "FL",
+      "countryCode": "US",
+      "status": "scheduled",
+      "ticketUrl": "https://www.ticketmaster.com/event/0D0064D0BE1978D7",
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 26.41854,
+        "lon": -81.4174,
+        "precision": "city",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "blue-oyster-cult-2026-12-05-okeechobee",
+      "date": "2026-12-05",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "Seminole Casino Brighton Event Center",
+      "city": "Okeechobee",
+      "region": "FL",
+      "countryCode": "US",
+      "status": "scheduled",
+      "ticketUrl": "https://www.ticketmaster.com/event/0D0064CA98286A44",
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 27.24371,
+        "lon": -80.8299,
+        "precision": "city",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "blue-oyster-cult-2026-12-19-lawrenceburg",
+      "date": "2026-12-19",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "Lawrenceburg Event Center",
+      "city": "Lawrenceburg",
+      "region": "IN",
+      "countryCode": "US",
+      "status": "scheduled",
+      "ticketUrl": "https://www.ticketmaster.com/event/160064C487977336",
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 39.09166,
+        "lon": -84.84751,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "blue-oyster-cult-2026-12-20-st-charles",
+      "date": "2026-12-20",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "Arcada Theatre",
+      "city": "St. Charles",
+      "region": "IL",
+      "countryCode": "US",
+      "status": "scheduled",
+      "ticketUrl": "https://www.etix.com/ticket/p/55610199/blue-oyster-cult-stcharles-the-arcada-theatre",
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 41.91339,
+        "lon": -88.31208,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "blue-oyster-cult-2027-02-19-toppenish",
+      "date": "2027-02-19",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "Legends Casino",
+      "city": "Toppenish",
+      "region": "WA",
+      "countryCode": "US",
+      "status": "scheduled",
+      "ticketUrl": "https://www.ticketmaster.com/blue-oyster-cult-foghat-toppenish-washington-02-19-2027/event/0F006524D6CB1621",
+      "sourceUrl": null,
+      "notes": "With Foghat",
+      "geo": {
+        "lat": 46.37327,
+        "lon": -120.34134,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "blue-oyster-cult-2027-02-20-lincoln-city",
+      "date": "2027-02-20",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "Chinook Winds Casino Resort",
+      "city": "Lincoln City",
+      "region": "OR",
+      "countryCode": "US",
+      "status": "scheduled",
+      "ticketUrl": "https://www.etix.com/ticket/p/91856888/blue-oyster-cult-lincoln-city-chinook-winds-casino-resort-showroom?cobrand=chinookwinds",
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 44.96179,
+        "lon": -124.01595,
+        "precision": "city",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "blue-oyster-cult-2027-04-01-london",
+      "date": "2027-04-01",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "Royal Albert Hall",
+      "city": "London",
+      "region": null,
+      "countryCode": "GB",
+      "status": "scheduled",
+      "ticketUrl": "https://www.ticketmaster.co.uk/blue-oyster-cult-london-01-04-2027/event/1F006546C9594668",
+      "sourceUrl": "https://www.blueoystercult.com/",
+      "notes": "Special guests: Magnum",
+      "geo": {
+        "lat": 51.50101,
+        "lon": -0.17741,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "blue-oyster-cult-2027-04-03-glasgow",
+      "date": "2027-04-03",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "Glasgow Royal Concert Hall",
+      "city": "Glasgow",
+      "region": null,
+      "countryCode": "GB",
+      "status": "scheduled",
+      "ticketUrl": "https://www.ticketmaster.co.uk/blue-oyster-cult-glasgow-03-04-2027/event/36006546D77D73C3",
+      "sourceUrl": "https://www.blueoystercult.com/",
+      "notes": "Special guests: When Rivers Meet",
+      "geo": {
+        "lat": 55.86454,
+        "lon": -4.25313,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    }
+  ]
+}

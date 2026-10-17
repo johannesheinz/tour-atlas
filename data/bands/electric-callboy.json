@@ -1,0 +1,459 @@
+{
+  "schemaVersion": 1,
+  "band": {
+    "id": "electric-callboy",
+    "name": "Electric Callboy",
+    "color": null,
+    "tags": [
+      "metalcore",
+      "electronic",
+      "western-europe"
+    ]
+  },
+  "source": {
+    "url": "https://www.electriccallboy.com/",
+    "retrievedAt": "2026-10-16"
+  },
+  "shows": [
+    {
+      "id": "electric-callboy-2027-01-21-dublin",
+      "date": "2027-01-21",
+      "endDate": null,
+      "startTime": null,
+      "tourName": "TANZNEID World Tour",
+      "eventName": null,
+      "venue": "3Arena",
+      "city": "Dublin",
+      "region": null,
+      "countryCode": "IE",
+      "status": "scheduled",
+      "ticketUrl": "https://www.ticketmaster.ie/artist/1698751?venueId=197033",
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 53.34762,
+        "lon": -6.22841,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "electric-callboy-2027-01-23-manchester",
+      "date": "2027-01-23",
+      "endDate": null,
+      "startTime": null,
+      "tourName": "TANZNEID World Tour",
+      "eventName": null,
+      "venue": "Co-op Live",
+      "city": "Manchester",
+      "region": null,
+      "countryCode": "GB",
+      "status": "scheduled",
+      "ticketUrl": "https://www.alttickets.com/electric-callboy-tickets",
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 53.48641,
+        "lon": -2.2,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "electric-callboy-2027-01-24-nottingham",
+      "date": "2027-01-24",
+      "endDate": null,
+      "startTime": null,
+      "tourName": "TANZNEID World Tour",
+      "eventName": null,
+      "venue": "Motorpoint Arena",
+      "city": "Nottingham",
+      "region": null,
+      "countryCode": "GB",
+      "status": "scheduled",
+      "ticketUrl": "https://www.alttickets.com/electric-callboy-tickets",
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 52.95281,
+        "lon": -1.13949,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "electric-callboy-2027-01-26-bournemouth",
+      "date": "2027-01-26",
+      "endDate": null,
+      "startTime": null,
+      "tourName": "TANZNEID World Tour",
+      "eventName": null,
+      "venue": "International Centre",
+      "city": "Bournemouth",
+      "region": null,
+      "countryCode": "GB",
+      "status": "scheduled",
+      "ticketUrl": "https://www.alttickets.com/electric-callboy-tickets",
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 50.71637,
+        "lon": -1.87853,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "electric-callboy-2027-01-27-cardiff",
+      "date": "2027-01-27",
+      "endDate": null,
+      "startTime": null,
+      "tourName": "TANZNEID World Tour",
+      "eventName": null,
+      "venue": "Utilitia Arena",
+      "city": "Cardiff",
+      "region": null,
+      "countryCode": "GB",
+      "status": "scheduled",
+      "ticketUrl": "https://www.alttickets.com/electric-callboy-tickets",
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 51.48165,
+        "lon": -3.17919,
+        "precision": "city",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "electric-callboy-2027-01-29-toulouse",
+      "date": "2027-01-29",
+      "endDate": null,
+      "startTime": null,
+      "tourName": "TANZNEID World Tour",
+      "eventName": null,
+      "venue": "Zénith Toulouse Métropole",
+      "city": "Toulouse",
+      "region": null,
+      "countryCode": "FR",
+      "status": "scheduled",
+      "ticketUrl": "http://bit.ly/ElectricCallboy_ToulousePrevente",
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 43.59822,
+        "lon": 1.40925,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "electric-callboy-2027-01-30-bordeaux",
+      "date": "2027-01-30",
+      "endDate": null,
+      "startTime": null,
+      "tourName": "TANZNEID World Tour",
+      "eventName": null,
+      "venue": "Arkéa Arena",
+      "city": "Bordeaux",
+      "region": null,
+      "countryCode": "FR",
+      "status": "scheduled",
+      "ticketUrl": "http://bit.ly/ElectricCallboy_BordeauxPrevente",
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 44.82477,
+        "lon": -0.53136,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "electric-callboy-2027-01-31-nantes",
+      "date": "2027-01-31",
+      "endDate": null,
+      "startTime": null,
+      "tourName": "TANZNEID World Tour",
+      "eventName": null,
+      "venue": "Zénith Nantes Métropole",
+      "city": "Nantes",
+      "region": null,
+      "countryCode": "FR",
+      "status": "scheduled",
+      "ticketUrl": "http://bit.ly/ElectricCallboy_NantesPrevente",
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 47.22871,
+        "lon": -1.62798,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "electric-callboy-2027-02-15-paris",
+      "date": "2027-02-15",
+      "endDate": null,
+      "startTime": null,
+      "tourName": "TANZNEID World Tour",
+      "eventName": null,
+      "venue": "Accor Arena",
+      "city": "Paris",
+      "region": null,
+      "countryCode": "FR",
+      "status": "scheduled",
+      "ticketUrl": "http://bit.ly/ElectricCallboy_ParisPrevente",
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 48.83871,
+        "lon": 2.37877,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "electric-callboy-2027-02-16-brussels",
+      "date": "2027-02-16",
+      "endDate": null,
+      "startTime": null,
+      "tourName": "TANZNEID World Tour",
+      "eventName": null,
+      "venue": "Forest National",
+      "city": "Brussels",
+      "region": null,
+      "countryCode": "BE",
+      "status": "scheduled",
+      "ticketUrl": "https://www.vorst-nationaal.be/en/event/electric-callboy-e8e1af94",
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 50.80965,
+        "lon": 4.32607,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "electric-callboy-2027-02-18-hanover",
+      "date": "2027-02-18",
+      "endDate": null,
+      "startTime": null,
+      "tourName": "TANZNEID World Tour",
+      "eventName": null,
+      "venue": "ZAG Arena",
+      "city": "Hanover",
+      "region": null,
+      "countryCode": "DE",
+      "status": "scheduled",
+      "ticketUrl": "https://short.contrapromotion.com/ycksxz8j",
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 52.32243,
+        "lon": 9.8165,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "electric-callboy-2027-02-20-mannheim",
+      "date": "2027-02-20",
+      "endDate": null,
+      "startTime": null,
+      "tourName": "TANZNEID World Tour",
+      "eventName": null,
+      "venue": "SAP Arena",
+      "city": "Mannheim",
+      "region": null,
+      "countryCode": "DE",
+      "status": "scheduled",
+      "ticketUrl": "https://short.contrapromotion.com/f24p5u9f",
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 49.46412,
+        "lon": 8.51796,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "electric-callboy-2027-02-21-bern",
+      "date": "2027-02-21",
+      "endDate": null,
+      "startTime": null,
+      "tourName": "TANZNEID World Tour",
+      "eventName": null,
+      "venue": "BERNEXPO Festhalle",
+      "city": "Bern",
+      "region": null,
+      "countryCode": "CH",
+      "status": "scheduled",
+      "ticketUrl": "https://www.ticketcorner.ch/artist/electric-callboy/",
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 46.94847,
+        "lon": 7.45217,
+        "precision": "city",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "electric-callboy-2027-02-22-milan",
+      "date": "2027-02-22",
+      "endDate": null,
+      "startTime": null,
+      "tourName": "TANZNEID World Tour",
+      "eventName": null,
+      "venue": "Unipol Forum",
+      "city": "Milan",
+      "region": null,
+      "countryCode": "IT",
+      "status": "scheduled",
+      "ticketUrl": "https://mc2live.vivaticket.it/it/event/electric-callboy/303283",
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 45.40136,
+        "lon": 9.1423,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "electric-callboy-2027-02-24-prague",
+      "date": "2027-02-24",
+      "endDate": null,
+      "startTime": null,
+      "tourName": "TANZNEID World Tour",
+      "eventName": null,
+      "venue": "O2 Arena",
+      "city": "Prague",
+      "region": null,
+      "countryCode": "CZ",
+      "status": "scheduled",
+      "ticketUrl": "https://www.ticketmaster.cz/artist/electric-callboy-vstupenky/884731",
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 50.10475,
+        "lon": 14.49362,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "electric-callboy-2027-02-25-graz",
+      "date": "2027-02-25",
+      "endDate": null,
+      "startTime": null,
+      "tourName": "TANZNEID World Tour",
+      "eventName": null,
+      "venue": "Stadthalle Graz",
+      "city": "Graz",
+      "region": null,
+      "countryCode": "AT",
+      "status": "scheduled",
+      "ticketUrl": "https://www.eventim.de/event/electric-callboy-tanzneid-world-tour-stadthalle-graz-21947938/",
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 47.05768,
+        "lon": 15.44752,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "electric-callboy-2027-02-27-dortmund",
+      "date": "2027-02-27",
+      "endDate": null,
+      "startTime": null,
+      "tourName": "TANZNEID World Tour",
+      "eventName": null,
+      "venue": "Westfalenhalle",
+      "city": "Dortmund",
+      "region": null,
+      "countryCode": "DE",
+      "status": "soldout",
+      "ticketUrl": null,
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 51.49651,
+        "lon": 7.45693,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "electric-callboy-2027-02-28-nuremberg",
+      "date": "2027-02-28",
+      "endDate": null,
+      "startTime": null,
+      "tourName": "TANZNEID World Tour",
+      "eventName": null,
+      "venue": "PSD Bank Nürnberg Arena",
+      "city": "Nuremberg",
+      "region": null,
+      "countryCode": "DE",
+      "status": "scheduled",
+      "ticketUrl": "https://short.contrapromotion.com/2p87ne9w",
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 49.4276,
+        "lon": 11.1229,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "electric-callboy-2027-03-02-leipzig",
+      "date": "2027-03-02",
+      "endDate": null,
+      "startTime": null,
+      "tourName": "TANZNEID World Tour",
+      "eventName": null,
+      "venue": "Quarterback Immobilien Arena",
+      "city": "Leipzig",
+      "region": null,
+      "countryCode": "DE",
+      "status": "scheduled",
+      "ticketUrl": "https://short.contrapromotion.com/492ythnz",
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 51.34294,
+        "lon": 12.35468,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "electric-callboy-2027-03-04-gliwice",
+      "date": "2027-03-04",
+      "endDate": null,
+      "startTime": null,
+      "tourName": "TANZNEID World Tour",
+      "eventName": null,
+      "venue": "PreZero Arena",
+      "city": "Gliwice",
+      "region": null,
+      "countryCode": "PL",
+      "status": "scheduled",
+      "ticketUrl": "https://www.ebilet.pl/muzyka/hard-heavy/electric-callboy",
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 50.28567,
+        "lon": 18.68612,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    }
+  ]
+}

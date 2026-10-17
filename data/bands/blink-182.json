@@ -1,0 +1,151 @@
+{
+  "schemaVersion": 1,
+  "band": {
+    "id": "blink-182",
+    "name": "blink-182",
+    "color": null,
+    "tags": [
+      "punk-rock",
+      "pop-punk",
+      "north-america"
+    ]
+  },
+  "source": {
+    "url": "https://cdn.seated.com/api/tour/55439e12-f3b1-4281-a9f0-a427fa1b04df?include=tour-events",
+    "retrievedAt": "2026-10-16"
+  },
+  "shows": [
+    {
+      "id": "blink-182-2027-06-02-hradec-kralove",
+      "date": "2027-06-02",
+      "endDate": "2027-06-05",
+      "startTime": null,
+      "tourName": null,
+      "eventName": "Rock For People",
+      "venue": null,
+      "city": "Hradec Králové",
+      "region": null,
+      "countryCode": "CZ",
+      "status": "scheduled",
+      "ticketUrl": "https://link.seated.com/4a644623-a4ab-47d2-87df-060d1e67356c",
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 50.20921,
+        "lon": 15.83275,
+        "precision": "city",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "blink-182-2027-06-04-nurburg",
+      "date": "2027-06-04",
+      "endDate": "2027-06-06",
+      "startTime": null,
+      "tourName": null,
+      "eventName": "Rock Am Ring",
+      "venue": null,
+      "city": "Nürburg",
+      "region": null,
+      "countryCode": "DE",
+      "status": "scheduled",
+      "ticketUrl": "https://link.seated.com/90309e79-e578-455a-8d2d-cec693a1015c",
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 50.34134,
+        "lon": 6.95192,
+        "precision": "city",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "blink-182-2027-06-04-nuremberg",
+      "date": "2027-06-04",
+      "endDate": "2027-06-06",
+      "startTime": null,
+      "tourName": null,
+      "eventName": "Rock im Park",
+      "venue": null,
+      "city": "Nuremberg",
+      "region": null,
+      "countryCode": "DE",
+      "status": "scheduled",
+      "ticketUrl": "https://link.seated.com/d0c2bf4b-950f-4b08-8be9-75a3b8333744",
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 49.43032,
+        "lon": 11.12253,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "blink-182-2027-06-08-berlin",
+      "date": "2027-06-08",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "Waldbühne",
+      "city": "Berlin",
+      "region": null,
+      "countryCode": "DE",
+      "status": "scheduled",
+      "ticketUrl": "https://link.seated.com/1bc2d8f1-ba23-40eb-a11d-a543d2e1504a",
+      "sourceUrl": null,
+      "notes": "With Billy Talent",
+      "geo": {
+        "lat": 52.51555,
+        "lon": 13.22952,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "blink-182-2027-06-13-milan",
+      "date": "2027-06-13",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": "I-Days",
+      "venue": "Ippodromo SNAI San Siro",
+      "city": "Milan",
+      "region": null,
+      "countryCode": "IT",
+      "status": "scheduled",
+      "ticketUrl": "https://link.seated.com/10cbe863-40c7-436e-8ad7-7c55a933cf98",
+      "sourceUrl": null,
+      "notes": "With Pierce The Veil",
+      "geo": {
+        "lat": 45.46419,
+        "lon": 9.18963,
+        "precision": "city",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "blink-182-2027-06-15-paris",
+      "date": "2027-06-15",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "Plenitude Arena",
+      "city": "Paris",
+      "region": null,
+      "countryCode": "FR",
+      "status": "scheduled",
+      "ticketUrl": "https://link.seated.com/ef994a06-518a-4bad-9eb1-9651c21c2e27",
+      "sourceUrl": null,
+      "notes": "With Pierce The Veil",
+      "geo": {
+        "lat": 48.8535,
+        "lon": 2.34839,
+        "precision": "city",
+        "source": "nominatim"
+      }
+    }
+  ]
+}
