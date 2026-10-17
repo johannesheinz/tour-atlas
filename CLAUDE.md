@@ -19,6 +19,7 @@ npm run normalize      # rewrite data/bands in canonical form; add --check to on
 npm run geocode        # fill missing geo via Nominatim; reads NOMINATIM_CONTACT from .env.local (ask the user)
 npm run review -- --base origin/main   # diff + plausibility warnings, as posted by CI
 npm run tags           # copy data/tags.json ids into the schema's band.tags enum
+npm run logos          # download band.logoUrl images once into data/logos/<id>.webp (silhouettes)
 npm run check          # everything CI runs, in order
 ```
 
@@ -54,7 +55,7 @@ Only for work that needs judgement; everything checkable is a tool or a CI job.
 
 - Runtime dependencies are an allowlist: d3-geo, d3-scale, d3-time, d3-time-format, d3-zoom, d3-selection,
   d3-transition, d3-quadtree, topojson-client, world-atlas, @fontsource/league-gothic, @fontsource/archivo.
-  Justify any addition in the PR.
+  Justify any addition in the PR. `sharp` is a dev dependency for tools/logos.ts only; it never reaches the bundle.
 - No network at runtime, no CDNs, no cookies, no localStorage/sessionStorage/IndexedDB. View state lives in
   the URL hash only. `tools/check-dist.ts` fails the build otherwise; the CSP sets `connect-src 'none'` and
   `font-src 'self'`.

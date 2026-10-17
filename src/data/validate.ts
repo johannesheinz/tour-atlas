@@ -258,8 +258,9 @@ function validateBand(c: Collector, path: string, value: unknown): Checked<Band>
   const name = c.required(record, path, 'name', c.text(LIMITS.bandName));
   const color = c.nullable(record, path, 'color', c.matching(COLOR_PATTERN, 'is not a lowercase hex colour like "#3a7bd5"'));
   const tags = c.required(record, path, 'tags', (fieldPath, value) => validateTags(c, fieldPath, value));
-  if (id === INVALID || name === INVALID || color === INVALID || tags === INVALID) return INVALID;
-  return { id, name, color, tags };
+  const logoUrl = c.nullable(record, path, 'logoUrl', c.url);
+  if (id === INVALID || name === INVALID || color === INVALID || tags === INVALID || logoUrl === INVALID) return INVALID;
+  return { id, name, color, tags, logoUrl };
 }
 
 function validateTags(c: Collector, path: string, value: unknown): Checked<readonly string[]> {

@@ -40,7 +40,8 @@
         "id",
         "name",
         "color",
-        "tags"
+        "tags",
+        "logoUrl"
       ],
       "properties": {
         "id": {
@@ -105,6 +106,14 @@
               "stoner-rock"
             ]
           }
+        },
+        "logoUrl": {
+          "description": "Address of the band's logo image (SVG, PNG, JPEG or WebP), preferably from the band's own site or Wikimedia Commons. tools/logos.ts downloads it once and stores a small copy; the app never loads it from this address. Null when no logo is known.",
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^https?://\\S+$"
         }
       }
     },

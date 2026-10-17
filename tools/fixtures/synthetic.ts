@@ -77,6 +77,6 @@ export function syntheticBands(bandCount: number, showsPerBand: number): Identif
       };
     });
     const tags = [pick(GENRES), ...(LABELS.length > 0 && random() < 0.3 ? [pick(LABELS)] : [])];
-    return normalizeBandFile({ schemaVersion: 1, band: { id, name, color: null, tags }, source: { url: sourceUrl, retrievedAt: '2026-10-01' }, shows });
+    return normalizeBandFile({ schemaVersion: 1, band: { id, name, color: null, tags, logoUrl: null }, source: { url: sourceUrl, retrievedAt: '2026-10-01' }, shows });
   });
 }

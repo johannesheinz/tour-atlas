@@ -9,6 +9,8 @@ export interface TooltipLine {
 }
 
 export interface TooltipContent {
+  /** Set when the tooltip is about one band, so its logo can be shown. */
+  readonly bandId: string | null;
   readonly title: string;
   readonly lines: readonly TooltipLine[];
   readonly more: string | null;
@@ -33,6 +35,7 @@ function withStatus(ref: ShowRef, text: string): string {
 /** One timeline dot. */
 export function showTooltip(ref: ShowRef, mode: ThemeMode): TooltipContent {
   return {
+    bandId: ref.band.file.band.id,
     title: ref.band.file.band.name,
     lines: [
       { color: bandColor(ref.band, mode), text: withStatus(ref, when(ref)), detail: `${where(ref)}, ${countryName(ref.show.countryCode)}` },
@@ -54,6 +57,7 @@ export function pinTooltip(shows: readonly ShowRef[], place: string, mode: Theme
   const title = `${plural(shows.length, 'show')} in ${place}`;
   if (byBand.size === 1) {
     return {
+      bandId: first.band.file.band.id,
       title: `${first.band.file.band.name}: ${title}`,
       lines: shows.slice(0, MAX_LINES).map((ref) => ({ color: bandColor(ref.band, mode), text: withStatus(ref, when(ref)), detail: where(ref) })),
       more: shows.length > MAX_LINES ? `and ${plural(shows.length - MAX_LINES, 'more show')}` : null,
@@ -64,6 +68,7 @@ export function pinTooltip(shows: readonly ShowRef[], place: string, mode: Theme
     ([a, aShows], [b, bShows]) => bShows.length - aShows.length || a.file.band.name.localeCompare(b.file.band.name),
   );
   return {
+    bandId: null,
     title,
     lines: bands.slice(0, MAX_LINES).map(([band, bandShows]) => {
       const next = bandShows.find((ref) => !ref.isPast) ?? bandShows.at(-1) ?? first;

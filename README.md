@@ -14,6 +14,7 @@ self-hosted font files next to it. No backend, no network requests to third part
 - Light and dark themes that follow the system, with a toggle; keyboard navigation with visible focus
 - Hover tooltips, time presets (upcoming, next 3 months, past, all), collapsed empty lanes, band-colour rings on
   shared pins, and genre filters from the fixed tag list in `data/tags.json`
+- Band logos as one-colour silhouettes in the band list, tooltips and detail panel, stored in `data/logos/`
 
 Tour data lives in [`data/bands/`](data/bands/), one JSON file per band, and is changed through pull requests.
 See [CONTRIBUTING.md](CONTRIBUTING.md) and [docs/DATA_FORMAT.md](docs/DATA_FORMAT.md).
@@ -82,7 +83,8 @@ Dependabot keeps npm packages and the SHA-pinned GitHub Actions up to date.
 ## Privacy
 
 - No cookies, no localStorage, sessionStorage or IndexedDB, no analytics, no third-party fonts or scripts;
-  the fonts are served from the same place as the page.
+  the fonts and band logos are served from the same place as the page. Logos are downloaded once by
+  `npm run logos`; the page never contacts the original image hosts.
 - View state (hidden bands, time window, selection) lives in the URL hash only, so a view can be shared
   as a link. The hash is never sent to a server.
 - Previewed files are read in the browser and kept in memory until the tab closes.

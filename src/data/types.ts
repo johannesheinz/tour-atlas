@@ -22,6 +22,8 @@ export interface Band {
   readonly color: string | null;
   /** Ids from data/tags.json, in vocabulary order. */
   readonly tags: readonly string[];
+  /** Where the logo comes from; tools/logos.ts stores it as data/logos/<id>.webp. */
+  readonly logoUrl: string | null;
 }
 
 export interface Source {
@@ -76,7 +78,7 @@ export type BandFile = BandFileOf<Show>;
 
 /** Canonical key order. Shared by the validator, normalize and the schema test. */
 export const BAND_FILE_KEYS = ['schemaVersion', 'band', 'source', 'shows'] as const satisfies readonly (keyof DraftBandFile)[];
-export const BAND_KEYS = ['id', 'name', 'color', 'tags'] as const satisfies readonly (keyof Band)[];
+export const BAND_KEYS = ['id', 'name', 'color', 'tags', 'logoUrl'] as const satisfies readonly (keyof Band)[];
 export const SOURCE_KEYS = ['url', 'retrievedAt'] as const satisfies readonly (keyof Source)[];
 export const GEO_KEYS = ['lat', 'lon', 'precision', 'source'] as const satisfies readonly (keyof Geo)[];
 export const SHOW_KEYS = [

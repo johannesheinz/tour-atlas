@@ -30,7 +30,7 @@ describe('diffBand', () => {
   });
 
   it('reports band field changes', () => {
-    const renamed = { ...makeFile([berlin]), band: { id: 'test-band', name: 'Test Band II', color: '#123456', tags: ['doom-metal'] } };
-    expect(diffBand(makeFile([berlin]), renamed).bandFields).toEqual(['name', 'color', 'tags']);
+    const renamed = { ...makeFile([berlin]), band: { id: 'test-band', name: 'Test Band II', color: '#123456', tags: ['doom-metal'], logoUrl: 'https://example.org/logo.svg' } };
+    expect(diffBand(makeFile([berlin]), renamed).bandFields).toEqual(['name', 'color', 'tags', 'logoUrl']);
   });
 });

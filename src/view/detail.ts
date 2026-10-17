@@ -1,4 +1,5 @@
 import type { ShowRef } from '../model.ts';
+import { logoFor } from '../logos.ts';
 import { h, safeExternalLink } from './dom.ts';
 import { countryName, formatDate, formatWeekday, plural, statusLabel } from './format.ts';
 import { bandColor, type ThemeMode } from '../model.ts';
@@ -114,7 +115,7 @@ function showRow(ref: ShowRef, mode: ThemeMode): HTMLLIElement {
     h(
       'div',
       { class: 'show-info' },
-      h('p', { class: 'show-band' }, swatch, h('strong', {}, band.file.band.name), show.tourName === null ? null : h('span', { class: 'show-tour' }, show.tourName)),
+      h('p', { class: 'show-band' }, swatch, bandLogo(band.file.band.id), h('strong', {}, band.file.band.name), show.tourName === null ? null : h('span', { class: 'show-tour' }, show.tourName)),
       h('p', { class: 'show-facts' }, ...facts),
       show.notes === null ? null : h('p', { class: 'show-notes' }, show.notes),
       h(
@@ -134,4 +135,9 @@ function statusTag(ref: ShowRef): HTMLSpanElement | null {
   if (label === null) return null;
   const tone = label === 'Played' ? 'past' : (ref.show.status ?? 'unknown');
   return h('span', { class: `status-tag status-${tone}` }, label);
+}
+
+function bandLogo(bandId: string): HTMLImageElement | null {
+  const url = logoFor(bandId);
+  return url === null ? null : h('img', { class: 'detail-logo', src: url, alt: '', loading: 'lazy', decoding: 'async' });
 }

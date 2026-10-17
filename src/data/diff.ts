@@ -39,7 +39,7 @@ export function diffBand(base: ComparableFile | null, next: ComparableFile): Ban
   }
 
   const removed = (base?.shows ?? []).filter((show) => !nextIds.has(show.id));
-  const bandFields = base === null ? [] : (['name', 'color', 'tags'] as const).filter((key) => !sameValue(base.band[key], next.band[key]));
+  const bandFields = base === null ? [] : (['name', 'color', 'tags', 'logoUrl'] as const).filter((key) => !sameValue(base.band[key], next.band[key]));
 
   return { bandId: next.band.id, isNewBand: base === null, bandFields, added, removed, changed, unchangedCount };
 }

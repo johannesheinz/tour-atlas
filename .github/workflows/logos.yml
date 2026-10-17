@@ -1,0 +1,51 @@
+name: Logos
+
+# When a pull request sets band.logoUrl, download the image once, store it as
+# data/logos/<band-id>.webp and commit it to the pull request branch.
+# Only branches of this repository get the commit; pull requests from forks
+# see the result in the job summary and run "npm run logos" themselves.
+
+on:
+  pull_request:
+    paths:
+      - data/bands/**
+
+permissions:
+  contents: read
+
+concurrency:
+  group: logos-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  logos:
+    name: Store band logos
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - name: Download and convert new logos
+        run: node tools/logos.ts data/bands
+      - name: Commit logos to the pull request
+        if: github.event.pull_request.head.repo.full_name == github.repository
+        env:
+          HEAD_REF: ${{ github.head_ref }}
+        run: |
+          git add data/logos
+          if git diff --cached --quiet; then
+            echo "No new logos to commit."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "Store band logos"
+          git push origin "HEAD:${HEAD_REF}"

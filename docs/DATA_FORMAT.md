@@ -41,6 +41,7 @@ Files in `data/bands/` must be in the repository stage. The build fails otherwis
 | `id` | string | lowercase ASCII slug, words joined by `-`, e.g. `glass-harbor`. Must equal the file name. Never changes. |
 | `name` | string | as the band writes it, up to 120 characters |
 | `color` | string or null | lowercase hex like `#3a7bd5`; `null` lets the app pick from its palette |
+| `logoUrl` | string or null | address of the band's logo image (PNG with a transparent background preferred, SVG fine), e.g. from the band's site or Wikimedia. `npm run logos` stores a copy; the app never loads this address. |
 | `tags` | list of strings | tag ids from [`data/tags.json`](../data/tags.json), at most 12, no duplicates; `[]` when none applies. Never invent a tag. |
 
 ### `source`
@@ -90,6 +91,14 @@ matches, and every group with a selection must match.
 - A new tag goes into `data/tags.json` in the same pull request as the first band that uses it.
 - There are no location tags: where a band plays comes from its shows (map regions, the Places list).
 
+## Logos
+
+`band.logoUrl` names the source image. `npm run logos` (and the "Logos" workflow on pull requests)
+downloads it once, scales it to 80 px high and stores it as a black silhouette in
+`data/logos/<band-id>.webp`; the app prints that silhouette in its ink colour, so every logo fits both
+themes. Existing files are kept; `node tools/logos.ts data/bands --force` replaces them. Link the image
+file itself (for Wikipedia: the "Original file" link), not the page around it.
+
 ## Rules beyond the schema
 
 - Dates are real calendar dates between 1950 and 2100; `endDate` is not before `date`.
@@ -119,7 +128,7 @@ keys in schema order, shows sorted by `date` then `id`, text trimmed, 2-space in
 ```json
 {
   "schemaVersion": 1,
-  "band": { "id": "iron-lantern", "name": "Iron Lantern", "color": "#c0392b", "tags": ["stoner-rock"] },
+  "band": { "id": "iron-lantern", "name": "Iron Lantern", "color": "#c0392b", "tags": ["stoner-rock"], "logoUrl": null },
   "source": { "url": "https://example.com/iron-lantern/tour", "retrievedAt": "2026-10-15" },
   "shows": [
     {

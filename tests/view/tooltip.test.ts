@@ -21,6 +21,7 @@ describe('tooltips', () => {
     const [ref] = betaShows;
     if (ref === undefined) throw new Error('no show');
     expect(showTooltip(ref, 'light')).toEqual({
+      bandId: 'beta',
       title: 'Test Band',
       lines: [{ color: beta.color.light, text: '9 Nov 2026', detail: 'Berlin, Germany' }],
       more: null,

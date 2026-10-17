@@ -1,5 +1,6 @@
 import { dateRange, type BandEntry, type BandSort } from '../model.ts';
 import { TAG_VOCABULARY } from '../data/tags.ts';
+import { logoFor } from '../logos.ts';
 import { h } from './dom.ts';
 import { formatDate, plural } from './format.ts';
 import { bandColor, type ThemeMode } from '../model.ts';
@@ -37,6 +38,7 @@ interface Row {
   readonly element: HTMLLIElement;
   readonly checkbox: HTMLInputElement;
   readonly name: HTMLSpanElement;
+  readonly logo: HTMLImageElement;
   readonly meta: HTMLSpanElement;
   readonly badge: HTMLSpanElement;
 }
@@ -109,8 +111,9 @@ export function createBandList(container: HTMLElement, callbacks: BandListCallba
     const name = h('span', { class: 'band-name' });
     const badge = h('span', { class: 'preview-badge' }, 'Preview');
     const meta = h('span', { class: 'band-meta' });
+    const logo = h('img', { class: 'band-logo', alt: '', loading: 'lazy', decoding: 'async', hidden: true });
     const solo = h('button', { type: 'button', class: 'band-solo', 'aria-label': `Show only ${band.file.band.name}` }, 'Only');
-    const label = h('label', { class: 'band-label', for: checkbox.id }, h('span', { class: 'band-text' }, name, meta));
+    const label = h('label', { class: 'band-label', for: checkbox.id }, h('span', { class: 'band-text' }, name, logo, meta));
     const element = h('li', { class: 'band-row' }, checkbox, label, badge, solo);
 
     checkbox.addEventListener('change', () => callbacks.onToggle(bandId, checkbox.checked));
@@ -122,7 +125,7 @@ export function createBandList(container: HTMLElement, callbacks: BandListCallba
     solo.addEventListener('click', () => callbacks.onSolo(bandId));
     element.addEventListener('mouseenter', () => callbacks.onFocusBand(bandId));
     element.addEventListener('focusin', () => callbacks.onFocusBand(bandId));
-    return { element, checkbox, name, meta, badge };
+    return { element, checkbox, name, logo, meta, badge };
   }
 
   return {
@@ -166,6 +169,9 @@ export function createBandList(container: HTMLElement, callbacks: BandListCallba
         row.checkbox.checked = !props.hiddenBandIds.has(bandId);
         row.checkbox.style.setProperty('--swatch', bandColor(band, props.mode));
         row.name.textContent = band.file.band.name;
+        const logoUrl = logoFor(bandId);
+        row.logo.hidden = logoUrl === null;
+        if (logoUrl !== null && row.logo.getAttribute('src') !== logoUrl) row.logo.setAttribute('src', logoUrl);
         row.meta.replaceChildren(h('span', {}, plural(band.file.shows.length, 'show')), range === null ? '' : h('span', {}, `${formatDate(range.first)} – ${formatDate(range.last)}`));
         row.badge.hidden = !band.isPreview;
         row.element.classList.toggle('is-hidden', props.hiddenBandIds.has(bandId));

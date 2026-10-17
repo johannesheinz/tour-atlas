@@ -38,6 +38,9 @@
   --gutter: 24px;
   --sidebar: 300px;
   --radius-control: 3px;
+  /* Logos are stored as black silhouettes: printed in ink, inverted where the ink is light. */
+  --logo-filter: none;
+  --logo-filter-on-ink: invert(1);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -50,6 +53,8 @@
     --ink-muted: #94928c;
     --past: #8a8990;
     --border-line: #1c1b20;
+    --logo-filter: invert(0.94);
+    --logo-filter-on-ink: none;
   }
 }
 
@@ -62,6 +67,8 @@
   --ink-muted: #94928c;
   --past: #8a8990;
   --border-line: #1c1b20;
+  --logo-filter: invert(0.94);
+  --logo-filter-on-ink: none;
 }
 
 *,
@@ -595,6 +602,16 @@ input[type='search']::placeholder {
   overflow-wrap: anywhere;
 }
 
+.band-logo {
+  display: block;
+  height: 22px;
+  max-width: 160px;
+  margin: 3px 0 1px;
+  object-fit: contain;
+  object-position: left center;
+  filter: var(--logo-filter);
+}
+
 .band-meta {
   display: flex;
   flex-wrap: wrap;
@@ -1035,6 +1052,13 @@ input[type='search']::placeholder {
   background: var(--swatch);
 }
 
+.detail-logo {
+  height: 18px;
+  max-width: 120px;
+  object-fit: contain;
+  filter: var(--logo-filter);
+}
+
 .show-tour {
   color: var(--ink-soft);
 }
@@ -1261,6 +1285,16 @@ input[type='search']::placeholder {
   font-size: 13px;
   line-height: 1.35;
   pointer-events: none;
+}
+
+.tooltip-logo {
+  display: block;
+  height: 26px;
+  max-width: 220px;
+  margin-bottom: 6px;
+  object-fit: contain;
+  object-position: left center;
+  filter: var(--logo-filter-on-ink);
 }
 
 .tooltip-title {

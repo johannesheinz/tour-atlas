@@ -82,13 +82,14 @@ describe('validateRepository', () => {
   });
 
   it('rejects file-level problems', () => {
-    const file = { ...makeFile([makeShow()]), schemaVersion: 2, band: { id: 'Test Band', name: 'Test', color: '#FFF', tags: [] } };
+    const file = { ...makeFile([makeShow()]), schemaVersion: 2, band: { id: 'Test Band', name: 'Test', color: '#FFF', tags: [], logoUrl: 'ftp://logo' } };
     const result = validateRepository(file, 'test-band.json');
     expect(result.value).toBeNull();
     expect(result.issues.map(formatIssue)).toEqual([
       'test-band.json schemaVersion: must be 1 (got 2)',
       'test-band.json band.id: "Test Band" must be a lowercase slug like "glass-harbor"',
       'test-band.json band.color: "#FFF" is not a lowercase hex colour like "#3a7bd5"',
+      'test-band.json band.logoUrl: "ftp://logo" is not an http(s) URL',
     ]);
   });
 
@@ -97,7 +98,7 @@ describe('validateRepository', () => {
     ['duplicate tag', ['shoegaze', 'shoegaze'], 'band.tags[1]: "shoegaze" is listed twice'],
     ['not a list', 'shoegaze', 'band.tags: must be a list of tag ids (got "shoegaze"); use [] for none'],
   ])('reports %s', (_name, tags, expected) => {
-    const file = { ...makeFile([makeShow()]), band: { id: 'test-band', name: 'Test Band', color: null, tags } };
+    const file = { ...makeFile([makeShow()]), band: { id: 'test-band', name: 'Test Band', color: null, tags, logoUrl: null } };
     const result = validateRepository(file, 'test-band.json');
     expect(result.value).toBeNull();
     expect(result.issues.map(formatIssue)).toEqual([`test-band.json ${expected}`]);

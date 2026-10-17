@@ -10,6 +10,8 @@ fonts next to it, no remote resources, no storage or network APIs, and a transfe
 (gzipped HTML + fonts) within the budget (default 600 kB).`;
 
 const FONT_FILE = /^[\w.-]+\.woff2$/;
+const LOGO_FILE = /^[\w.-]+\.webp$/;
+const MAX_LOGO_KB = 40;
 
 const FORBIDDEN_PATTERNS: readonly [RegExp, string][] = [
   [/<script[^>]+\bsrc=/i, 'external <script src>'],
@@ -38,9 +40,14 @@ runCli(USAGE, () => {
     .filter((entry) => entry.isFile())
     .map((entry) => relative(distDir, join(entry.parentPath, entry.name)));
   const fonts = files.filter((file) => FONT_FILE.test(file));
-  const unexpected = files.filter((file) => file !== 'index.html' && !FONT_FILE.test(file));
+  const logos = files.filter((file) => LOGO_FILE.test(file));
+  const unexpected = files.filter((file) => file !== 'index.html' && !FONT_FILE.test(file) && !LOGO_FILE.test(file));
   if (!files.includes('index.html')) problems.push('index.html is missing');
-  if (unexpected.length > 0) problems.push(`only index.html and *.woff2 fonts are expected, found also: ${unexpected.join(', ')}`);
+  if (unexpected.length > 0) problems.push(`only index.html, *.woff2 fonts and *.webp logos are expected, found also: ${unexpected.join(', ')}`);
+  for (const logo of logos) {
+    const kb = statSync(join(distDir, logo)).size / 1000;
+    if (kb > MAX_LOGO_KB) problems.push(`${logo} is ${kb.toFixed(1)} kB; logos must stay under ${MAX_LOGO_KB} kB`);
+  }
 
   const html = readFileSync(join(distDir, 'index.html'), 'utf8');
   for (const [pattern, description] of FORBIDDEN_PATTERNS) {
@@ -56,7 +63,8 @@ runCli(USAGE, () => {
   const totalKb = htmlGzipKb + fontKb;
   console.log(
     `index.html: ${(Buffer.byteLength(html) / 1000).toFixed(1)} kB raw, ${htmlGzipKb.toFixed(1)} kB gzipped; ` +
-      `${fonts.length} fonts: ${fontKb.toFixed(1)} kB; total ${totalKb.toFixed(1)} kB (budget ${budgetKb} kB)`,
+      `${fonts.length} fonts: ${fontKb.toFixed(1)} kB; total ${totalKb.toFixed(1)} kB (budget ${budgetKb} kB)` +
+      (logos.length > 0 ? `; ${logos.length} logos load when shown` : ''),
   );
   if (totalKb > budgetKb) problems.push(`transfer size ${totalKb.toFixed(1)} kB exceeds the budget of ${budgetKb} kB`);
 

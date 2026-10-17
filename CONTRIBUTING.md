@@ -68,6 +68,13 @@ operator can reach whoever sends the requests. It goes into the User-Agent heade
   or switch to a provider whose terms allow storing results. The simpler option is to keep geocoding in the
   review step: uploads arrive as drafts and a maintainer or a scheduled job geocodes them.
 
+## Add a logo
+
+Put the address of the logo image in `band.logoUrl` (a PNG with a transparent background is best; SVG
+works too). On a pull request the "Logos" workflow downloads it, converts it and commits
+`data/logos/<band-id>.webp` to your branch. Locally: `npm run logos`. If the download fails, the job
+says why; give another address. The app never loads logos from the original address.
+
 ## Add a tag
 
 Add it to `data/tags.json` (id, label, group), run `npm run tags` to update the schema, and commit both

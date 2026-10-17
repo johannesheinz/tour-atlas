@@ -19,6 +19,7 @@
     "validate": "node tools/validate.ts data/bands",
     "normalize": "node tools/normalize.ts data/bands",
     "geocode": "node --env-file-if-exists=.env.local tools/geocode.ts data/bands",
+    "logos": "node tools/logos.ts data/bands",
     "tags": "node tools/tags.ts",
     "review": "node tools/review.ts",
     "check": "npm run typecheck && npm run validate && node tools/normalize.ts data/bands --check && node tools/tags.ts --check && npm test && npm run build"
@@ -51,6 +52,7 @@
     "@types/topojson-client": "3.1.5",
     "@types/topojson-specification": "1.0.5",
     "ajv": "8.20.0",
+    "sharp": "0.35.5",
     "typescript": "7.0.2",
     "vite": "8.3.4",
     "vite-plugin-singlefile": "2.3.3",

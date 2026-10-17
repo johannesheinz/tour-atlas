@@ -11,7 +11,7 @@ export function normalizeBandFile(file: DraftBandFile): IdentifiedBandFile {
   const shows = assignShowIds(file.band.id, trimmed).toSorted(compareShows).map(orderShowKeys);
   return {
     schemaVersion: file.schemaVersion,
-    band: { id: file.band.id, name: file.band.name.trim(), color: file.band.color, tags: sortTags(file.band.tags) },
+    band: { id: file.band.id, name: file.band.name.trim(), color: file.band.color, tags: sortTags(file.band.tags), logoUrl: file.band.logoUrl },
     source: { url: file.source.url, retrievedAt: file.source.retrievedAt },
     shows,
   };

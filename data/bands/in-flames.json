@@ -7,7 +7,8 @@
     "tags": [
       "melodic-death-metal",
       "alternative-metal"
-    ]
+    ],
+    "logoUrl": null
   },
   "source": {
     "url": "https://rest.bandsintown.com/artists/id_26695/events?app_id=js_www.inflames.com&date=upcoming",
