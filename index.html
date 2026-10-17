@@ -20,15 +20,17 @@
         </div>
       </header>
 
-      <aside class="sidebar" id="sidebar" aria-label="Bands and places">
+      <aside class="sidebar" id="sidebar" aria-label="Bands, places and genres">
         <button type="button" class="sidebar-toggle" id="sidebar-toggle" aria-expanded="false" aria-controls="sidebar-body"></button>
         <div class="sidebar-body" id="sidebar-body">
           <div class="sidebar-tabs" role="tablist" aria-label="Lists">
             <button type="button" role="tab" class="sidebar-tab" id="tab-bands" aria-selected="true" aria-controls="band-list">Bands</button>
             <button type="button" role="tab" class="sidebar-tab" id="tab-places" aria-selected="false" aria-controls="place-list" tabindex="-1">Places</button>
+            <button type="button" role="tab" class="sidebar-tab" id="tab-genres" aria-selected="false" aria-controls="genre-list" tabindex="-1">Genres</button>
           </div>
           <div id="band-list" role="tabpanel" aria-labelledby="tab-bands"></div>
           <div id="place-list" class="place-list" role="tabpanel" aria-labelledby="tab-places" hidden></div>
+          <div id="genre-list" class="genre-list" role="tabpanel" aria-labelledby="tab-genres" hidden></div>
           <section id="selection-panel" class="selection-panel" aria-label="Selected shows" hidden></section>
           <section id="preview-panel" class="preview-panel" aria-label="Previewed files" hidden></section>
         </div>

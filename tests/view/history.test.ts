@@ -32,14 +32,16 @@ describe('drill-down history', () => {
 });
 
 describe('selectionFromUrl and sidebarPanel', () => {
-  const none = { selectedPlaces: [], selectedBandIds: [], selectedShowIds: [] };
+  const none = { selectedPlaces: [], selectedBandIds: [], selectedGenres: [], selectedShowIds: [] };
+  const isGenre = (id: string) => id === 'doom-metal';
 
-  it('restores places before bands before shows and ignores unknown bands', () => {
+  it('restores places before bands before genres before shows and ignores unknown bands and genres', () => {
     const known = new Set(['alpha']);
-    expect(selectionFromUrl({ ...none, selectedPlaces: ['de.berlin'], selectedBandIds: ['alpha'] }, known)).toEqual({ kind: 'places', places: new Set(['de.berlin']) });
-    expect(selectionFromUrl({ ...none, selectedBandIds: ['alpha', 'gone'], selectedShowIds: ['x'] }, known)).toEqual({ kind: 'bands', bandIds: new Set(['alpha']) });
-    expect(selectionFromUrl({ ...none, selectedBandIds: ['gone'], selectedShowIds: ['x'] }, known)).toEqual({ kind: 'shows', showIds: new Set(['x']) });
-    expect(selectionFromUrl(none, known)).toEqual(NO_SELECTION);
+    expect(selectionFromUrl({ ...none, selectedPlaces: ['de.berlin'], selectedBandIds: ['alpha'] }, known, isGenre)).toEqual({ kind: 'places', places: new Set(['de.berlin']) });
+    expect(selectionFromUrl({ ...none, selectedBandIds: ['alpha', 'gone'], selectedGenres: ['doom-metal'] }, known, isGenre)).toEqual({ kind: 'bands', bandIds: new Set(['alpha']) });
+    expect(selectionFromUrl({ ...none, selectedGenres: ['doom-metal', 'polka'], selectedShowIds: ['x'] }, known, isGenre)).toEqual({ kind: 'genres', genreIds: new Set(['doom-metal']) });
+    expect(selectionFromUrl({ ...none, selectedBandIds: ['gone'], selectedShowIds: ['x'] }, known, isGenre)).toEqual({ kind: 'shows', showIds: new Set(['x']) });
+    expect(selectionFromUrl(none, known, isGenre)).toEqual(NO_SELECTION);
   });
 
   it('shows a selection before open previews, and previews only while there are some', () => {

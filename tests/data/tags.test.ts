@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { TAG_VOCABULARY, TagVocabularyError, matchesTagFilter, parseTagVocabulary, sortTags } from '../../src/data/tags.ts';
+import { NO_GENRE, TAG_VOCABULARY, TagVocabularyError, hasGenre, matchesTagFilter, parseTagVocabulary, sortTags } from '../../src/data/tags.ts';
 import { readJson } from '../helpers.ts';
 
 describe('tag vocabulary', () => {
@@ -36,5 +36,13 @@ describe('tag vocabulary', () => {
     expect(matchesTagFilter(band, new Set())).toBe(true);
     expect(matchesTagFilter(band, new Set(['post-rock', 'doom-metal']))).toBe(true);
     expect(matchesTagFilter(band, new Set(['doom-metal']))).toBe(false);
+  });
+
+  it('treats NO_GENRE as a genre that bands without a genre tag match', () => {
+    expect(hasGenre([])).toBe(false);
+    expect(hasGenre(['doom-metal'])).toBe(true);
+    expect(matchesTagFilter([], new Set([NO_GENRE]))).toBe(true);
+    expect(matchesTagFilter(['doom-metal'], new Set([NO_GENRE]))).toBe(false);
+    expect(matchesTagFilter(['doom-metal'], new Set([NO_GENRE, 'doom-metal']))).toBe(true);
   });
 });

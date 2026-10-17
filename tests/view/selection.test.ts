@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { NO_SELECTION } from '../../src/appState.ts';
+import { NO_GENRE } from '../../src/data/tags.ts';
 import { parseIsoDate } from '../../src/data/dates.ts';
 import type { BandFile } from '../../src/data/types.ts';
 import { buildBandEntries, showRefs } from '../../src/model.ts';
@@ -44,6 +45,11 @@ describe('selectionShows', () => {
   it('resolves places to the visible shows in the window, across bands', () => {
     const berlin = { kind: 'places', places: new Set(['de.berlin']) } as const;
     expect(ids(selectionShows(berlin, autumn, derived))).toEqual(['test-band-2026-11-02-berlin', 'other-band-2026-11-10-berlin']);
+  });
+
+  it('lists the shows of every band in a genre, and of bands without one for NO_GENRE', () => {
+    expect(selectionShows({ kind: 'genres', genreIds: new Set(['doom-metal']) }, autumn, derived)).toEqual([]);
+    expect(ids(selectionShows({ kind: 'genres', genreIds: new Set([NO_GENRE]) }, autumn, derived))).toEqual(['test-band-2026-11-02-berlin', 'other-band-2026-11-10-berlin', 'test-band-2026-12-01-sao-paulo']);
   });
 
   it('keeps picked shows regardless of the window and drops unknown ids', () => {

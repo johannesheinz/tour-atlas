@@ -1,5 +1,6 @@
 import { isInWindow, type AppState, type Derived, type Selection } from './appState.ts';
 import { selectionShows } from './selection.ts';
+import { NO_GENRE, TAG_VOCABULARY, hasGenre } from './data/tags.ts';
 import { showsInRange, sortBands, type BandEntry, type ShowRef } from './model.ts';
 import { countryName } from './view/format.ts';
 import { buildPlaces, type CountryPlace } from './places.ts';
@@ -7,6 +8,14 @@ import type { TimelineLane } from './view/timeline.ts';
 import { buildSearchIndex, type SearchEntry } from './view/searchIndex.ts';
 
 export type ShowFilter = (ref: ShowRef) => boolean;
+
+/** A row of the Genres tab: a genre tag, or NO_GENRE for bands without one. Counts are for the time window. */
+export interface GenreSummary {
+  readonly id: string;
+  readonly label: string;
+  readonly bandCount: number;
+  readonly showCount: number;
+}
 
 export interface BandsInRange {
   readonly ordered: readonly BandEntry[];
@@ -38,8 +47,8 @@ export function createSelectors(maxBandsWithRoutes: number) {
   let placesKey: [readonly ShowRef[], AppState['timeWindow']] | null = null;
   let places: readonly CountryPlace[] = [];
 
-  let tagCountKey: Derived['bands'] | null = null;
-  let tagCounts: ReadonlyMap<string, number> = new Map();
+  let genresKey: [Derived['refsByBand'], AppState['timeWindow']] | null = null;
+  let genres: readonly GenreSummary[] = [];
 
   let searchKey: Derived['bands'] | null = null;
   let searchIndex: readonly SearchEntry[] = [];
@@ -128,16 +137,26 @@ export function createSelectors(maxBandsWithRoutes: number) {
       return places;
     },
 
-    tagCounts(derived: Derived): ReadonlyMap<string, number> {
-      if (derived.bands !== tagCountKey) {
-        tagCountKey = derived.bands;
-        const counts = new Map<string, number>();
-        for (const band of derived.bands) {
-          for (const tag of band.file.band.tags) counts.set(tag, (counts.get(tag) ?? 0) + 1);
+    /** Every genre some band plays, alphabetically, with its bands and shows in the time window. */
+    genres(current: AppState, derived: Derived): readonly GenreSummary[] {
+      if (genresKey === null || genresKey[0] !== derived.refsByBand || genresKey[1] !== current.timeWindow) {
+        genresKey = [derived.refsByBand, current.timeWindow];
+        const totals = new Map<string, { bandCount: number; showCount: number }>();
+        for (const [band, refs] of derived.refsByBand) {
+          const tags = band.file.band.tags;
+          const ids = hasGenre(tags) ? tags.filter((id) => TAG_VOCABULARY.byId.get(id)?.group === 'genre') : [NO_GENRE];
+          const shows = showsInRange(refs, current.timeWindow).length;
+          for (const id of ids) {
+            const total = totals.get(id) ?? { bandCount: 0, showCount: 0 };
+            totals.set(id, { bandCount: total.bandCount + (shows > 0 ? 1 : 0), showCount: total.showCount + shows });
+          }
         }
-        tagCounts = counts;
+        const label = (id: string) => (id === NO_GENRE ? 'No genre' : (TAG_VOCABULARY.byId.get(id)?.label ?? id));
+        genres = [...totals]
+          .map(([id, total]) => ({ id, label: label(id), ...total }))
+          .toSorted((a, b) => Number(a.id === NO_GENRE) - Number(b.id === NO_GENRE) || a.label.localeCompare(b.label));
       }
-      return tagCounts;
+      return genres;
     },
 
     searchIndex(derived: Derived): readonly SearchEntry[] {

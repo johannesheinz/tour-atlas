@@ -92,12 +92,20 @@ export function sortTags(ids: readonly string[]): string[] {
   return ids.toSorted((a, b) => position(a) - position(b));
 }
 
-/** Any selected tag within a group matches; every group with a selection must match. */
+/** A filter value, not a tag: bands without any genre tag. */
+export const NO_GENRE = 'no-genre';
+const GENRE_GROUP = 'genre';
+
+export function hasGenre(bandTags: readonly string[]): boolean {
+  return bandTags.some((id) => TAG_VOCABULARY.byId.get(id)?.group === GENRE_GROUP);
+}
+
+/** Any selected tag within a group matches; every group with a selection must match. NO_GENRE counts as a genre. */
 export function matchesTagFilter(bandTags: readonly string[], filter: ReadonlySet<string>): boolean {
   if (filter.size === 0) return true;
   const selectedByGroup = Map.groupBy(
-    [...filter].flatMap((id) => TAG_VOCABULARY.byId.get(id) ?? []),
+    [...filter].flatMap((id) => (id === NO_GENRE ? [{ id, group: GENRE_GROUP }] : (TAG_VOCABULARY.byId.get(id) ?? []))),
     (tag) => tag.group,
   );
-  return [...selectedByGroup.values()].every((selected) => selected.some((tag) => bandTags.includes(tag.id)));
+  return [...selectedByGroup.values()].every((selected) => selected.some((tag) => (tag.id === NO_GENRE ? !hasGenre(bandTags) : bandTags.includes(tag.id))));
 }

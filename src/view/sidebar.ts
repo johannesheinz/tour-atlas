@@ -1,7 +1,10 @@
 import type { SidebarPanel } from '../selection.ts';
 import { requireElement } from './dom.ts';
 
-export type SidebarTab = 'bands' | 'places';
+export type SidebarTab = 'bands' | 'places' | 'genres';
+
+const TABS: readonly SidebarTab[] = ['bands', 'places', 'genres'];
+const LIST_IDS: Readonly<Record<SidebarTab, string>> = { bands: '#band-list', places: '#place-list', genres: '#genre-list' };
 
 export interface SidebarView {
   setToggleLabel(text: string): void;
@@ -17,10 +20,10 @@ export function createSidebar(root: HTMLElement): SidebarView {
   const toggle = requireElement(root, '#sidebar-toggle', HTMLButtonElement);
   const scroller = requireElement(root, '#sidebar-body', HTMLElement);
   const tabList = requireElement(root, '.sidebar-tabs', HTMLElement);
-  const tabs = [requireElement(root, '#tab-bands', HTMLButtonElement), requireElement(root, '#tab-places', HTMLButtonElement)] as const;
-  const lists = [requireElement(root, '#band-list', HTMLElement), requireElement(root, '#place-list', HTMLElement)] as const;
+  const tabs = TABS.map((tab) => requireElement(root, `#tab-${tab}`, HTMLButtonElement));
+  const lists = TABS.map((tab) => requireElement(root, LIST_IDS[tab], HTMLElement));
   const drillDowns = { selection: requireElement(root, '#selection-panel', HTMLElement), previews: requireElement(root, '#preview-panel', HTMLElement) } as const;
-  let active: 0 | 1 = 0;
+  let active = 0;
   let shown: { panel: SidebarPanel; key: string } = { panel: 'lists', key: 'lists' };
   let listScrollTop = 0;
 
@@ -30,7 +33,7 @@ export function createSidebar(root: HTMLElement): SidebarView {
     root.classList.toggle('is-expanded', expanded);
   });
 
-  const select = (index: 0 | 1, focus: boolean) => {
+  const select = (index: number, focus: boolean) => {
     active = index;
     tabs.forEach((tab, position) => {
       const selected = position === index;
@@ -40,14 +43,14 @@ export function createSidebar(root: HTMLElement): SidebarView {
     lists.forEach((list, position) => {
       list.hidden = shown.panel !== 'lists' || position !== index;
     });
-    if (focus) tabs[index].focus();
+    if (focus) tabs[index]?.focus();
   };
   tabs.forEach((tab, index) => {
-    tab.addEventListener('click', () => select(index === 0 ? 0 : 1, false));
+    tab.addEventListener('click', () => select(index, false));
     tab.addEventListener('keydown', (event) => {
       if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return;
       event.preventDefault();
-      select(index === 0 ? 1 : 0, true);
+      select((index + (event.key === 'ArrowRight' ? 1 : tabs.length - 1)) % tabs.length, true);
     });
   });
 
@@ -55,9 +58,13 @@ export function createSidebar(root: HTMLElement): SidebarView {
     setToggleLabel: (text) => {
       toggle.textContent = text;
     },
-    showTab: (tab) => select(tab === 'bands' ? 0 : 1, false),
-    activeTab: () => (active === 0 ? 'bands' : 'places'),
-    focusActiveTab: () => tabs[active].focus(),
+    showTab: (tab) => select(TABS.indexOf(tab), false),
+    activeTab: () => {
+      const tab = TABS[active];
+      if (tab === undefined) throw new Error(`no tab at ${active}`);
+      return tab;
+    },
+    focusActiveTab: () => tabs[active]?.focus(),
     show(panel, contentKey) {
       if (panel === shown.panel && contentKey === shown.key) return;
       if (shown.panel === 'lists') listScrollTop = scroller.scrollTop;

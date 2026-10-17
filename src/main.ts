@@ -10,7 +10,7 @@ import { createStore } from './state.ts';
 import { createBundledStore } from './store/bundled.ts';
 import { parseUrlState, serializeUrlState, type UrlState } from './urlState.ts';
 import { createCountryLocator, type CountryLocator } from './data/countryLocator.ts';
-import { isKnownTag } from './data/tags.ts';
+import { NO_GENRE, TAG_VOCABULARY } from './data/tags.ts';
 import { exportAll, mergePreviews, normalizedFileText, processPreviewFile, type PreviewResult } from './preview.ts';
 import { createBandList } from './view/bandList.ts';
 import { createPreviewPanel } from './view/previewPanel.ts';
@@ -27,6 +27,7 @@ import { createMapControls } from './view/mapControls.ts';
 import { createSettings } from './view/settings.ts';
 import { icon } from './view/icons.ts';
 import { createPlaceList } from './view/placeList.ts';
+import { createGenreList } from './view/genreList.ts';
 import { createSelectionPanel, type SelectionHeading } from './view/selectionPanel.ts';
 import { createSidebar } from './view/sidebar.ts';
 import { cityKey, describePlaces, showsAtPlaces, type PlaceKey } from './places.ts';
@@ -49,12 +50,12 @@ const state = createStore<AppState>({
   previews: [],
   previewsOpen: false,
   hiddenBandIds: new Set(urlState.hiddenBandIds.filter((id) => knownBandIds.has(id))),
-  tagFilter: new Set(urlState.tags.filter(isKnownTag)),
+  tagFilter: new Set(urlState.tags.filter(isGenreId)),
   bandSort: urlState.sort ?? 'name',
   bandFilter: '',
   focusBandId: null,
   hoverShowIds: new Set(),
-  selection: selectionFromUrl(urlState, knownBandIds),
+  selection: selectionFromUrl(urlState, knownBandIds, isGenreId),
   timeWindow: null,
   followTimeline: urlState.follow ?? true,
   timePreset: urlState.preset,
@@ -127,12 +128,6 @@ const bandList = createBandList(requireElement(document, '#band-list', HTMLEleme
   onFilter: (text) => state.set({ bandFilter: text }),
   onSort: (sort) => state.set({ bandSort: sort }),
   onFocusBand: (bandId) => state.set({ focusBandId: bandId }),
-  onToggleTag(tagId) {
-    const tags = new Set(state.get().tagFilter);
-    if (tags.has(tagId)) tags.delete(tagId);
-    else tags.add(tagId);
-    state.set({ tagFilter: tags });
-  },
   onClearTags: () => state.set({ tagFilter: new Set() }),
 });
 
@@ -163,6 +158,20 @@ const placeList = createPlaceList(requireElement(document, '#place-list', HTMLEl
     selectPlaces(new Set([key]));
     selectionPanel.focusTitle();
     fitMapTo(showsAtPlaces(derive(state.get()).visibleShows, new Set([key]), state.get().timeWindow));
+  },
+});
+
+const genreList = createGenreList(requireElement(document, '#genre-list', HTMLElement), {
+  onToggle(genreId) {
+    const tags = new Set(state.get().tagFilter);
+    if (tags.has(genreId)) tags.delete(genreId);
+    else tags.add(genreId);
+    state.set({ tagFilter: tags });
+  },
+  onClearChecked: () => state.set({ tagFilter: new Set() }),
+  onSelect(genreId) {
+    selectGenre(genreId);
+    selectionPanel.focusTitle();
   },
 });
 
@@ -309,8 +318,7 @@ function renderAll() {
     showsInRange: inRange.shows,
     collapseBandsWithoutShows: current.hideEmptyLanes,
     totalBandCount: derived.bands.length,
-    tagFilter: current.tagFilter,
-    tagCounts: select.tagCounts(derived),
+    checkedGenreCount: current.tagFilter.size,
     hiddenBandIds: current.hiddenBandIds,
     filter: current.bandFilter,
     sort: current.bandSort,
@@ -321,7 +329,7 @@ function renderAll() {
   const panel = sidebarPanel(current);
   const previewsShown = current.previewsOpen && current.previewResults.length > 0;
   sidebar.show(panel, panel === 'selection' ? selectionKey(current.selection) : panel);
-  const listsLabel = sidebar.activeTab() === 'bands' ? 'Back to bands' : 'Back to places';
+  const listsLabel = `Back to ${sidebar.activeTab()}`;
   if (current.selection.kind !== 'none') {
     selectionPanel.render({
       heading: selectionHeading(current, derived, selected),
@@ -332,7 +340,8 @@ function renderAll() {
     });
   }
   placeList.render({ places: select.places(current, derived), selected: current.selection.kind === 'places' ? current.selection.places : NO_PLACES });
-  sidebar.setToggleLabel(`Bands and places (${derived.visibleBands.length} of ${derived.bands.length} bands shown)`);
+  genreList.render({ genres: select.genres(current, derived), checked: current.tagFilter });
+  sidebar.setToggleLabel(`Bands, places and genres (${derived.visibleBands.length} of ${derived.bands.length} bands shown)`);
   search.setIndex(select.searchIndex(derived));
   previewPanel.render(current.previewResults, listsLabel);
   scheduleUrlUpdate();
@@ -427,6 +436,24 @@ function selectBands(bandIds: ReadonlySet<string>) {
   fitMapTo(selectionShows(selection, timeWindow, derive(state.get())));
 }
 
+function selectGenre(genreId: string) {
+  sidebar.showTab('genres');
+  const selection: Selection = { kind: 'genres', genreIds: new Set([genreId]) };
+  state.set({ selection });
+  fitMapTo(selectionShows(selection, state.get().timeWindow, derive(state.get())));
+}
+
+function isGenreId(id: string): boolean {
+  return id === NO_GENRE || TAG_VOCABULARY.byId.get(id)?.group === 'genre';
+}
+
+function genreLabel(id: string): string {
+  if (id === NO_GENRE) return 'No genre';
+  const tag = TAG_VOCABULARY.byId.get(id);
+  if (tag === undefined) throw new Error(`unknown genre ${id}`);
+  return tag.label;
+}
+
 function fitMapTo(shows: readonly ShowRef[]) {
   if (shows.length === 0) return;
   state.set({ mapView: { kind: 'shows' } });
@@ -442,7 +469,7 @@ function focusSearchResult(entry: SearchEntry) {
     return;
   }
   if (entry.kind === 'tag') {
-    state.set({ tagFilter: new Set([entry.ref]), hiddenBandIds: new Set() });
+    selectGenre(entry.ref);
     return;
   }
   const shows = entry.showIds.flatMap((id) => derived.showsById.get(id) ?? []);
@@ -497,6 +524,8 @@ function selectionKey(selection: Selection): string {
       return `places:${[...selection.places].toSorted().join(',')}`;
     case 'bands':
       return `bands:${[...selection.bandIds].toSorted().join(',')}`;
+    case 'genres':
+      return `genres:${[...selection.genreIds].toSorted().join(',')}`;
   }
 }
 
@@ -528,6 +557,10 @@ function selectionHeading(current: AppState, derived: Derived, shows: readonly S
         emptyMessage: `No ${subject} ${range}. Zoom the timeline out or pick a wider time range.`,
       };
     }
+    case 'genres': {
+      const title = listFormat.format([...selection.genreIds].map(genreLabel));
+      return { title, bandId: null, note: live, emptyMessage: `No ${title} shows ${range}. Zoom the timeline out or pick a wider time range.` };
+    }
     case 'places': {
       const name = describePlaces(selection.places, derived.visibleShows, countryName);
       return { title: name, bandId: null, note: live, emptyMessage: `No shows in ${name} ${range}. Zoom the timeline out or pick a wider time range.` };
@@ -558,7 +591,7 @@ function applyUrlView(url: UrlState) {
   const mapView = mapViewForRegion(url.region);
   const mapMode = url.globe ? 'globe' : 'flat';
   const hiddenBandIds = new Set(url.hiddenBandIds.filter((id) => knownBandIds.has(id)));
-  const tagFilter = new Set(url.tags.filter(isKnownTag));
+  const tagFilter = new Set(url.tags.filter(isGenreId));
   const range = url.from !== null && url.to !== null ? ([parseIsoDate(url.from).getTime(), parseIsoDate(url.to).getTime() + DAY_MS] as const) : null;
   const current = state.get();
   const shows = derive({ ...current, hiddenBandIds, tagFilter }).visibleShows;
@@ -568,7 +601,7 @@ function applyUrlView(url: UrlState) {
     tagFilter,
     bandSort: url.sort ?? 'name',
     bandFilter: '',
-    selection: selectionFromUrl(url, knownBandIds),
+    selection: selectionFromUrl(url, knownBandIds, isGenreId),
     followTimeline: url.follow ?? true,
     hideEmptyLanes: !url.allLanes,
     includePastMonth: url.includePastMonth,
@@ -674,6 +707,7 @@ function currentHash(): string {
     selectedShowIds: current.selection.kind === 'shows' ? [...current.selection.showIds] : [],
     selectedPlaces: current.selection.kind === 'places' ? [...current.selection.places] : [],
     selectedBandIds: current.selection.kind === 'bands' ? [...current.selection.bandIds] : [],
+    selectedGenres: current.selection.kind === 'genres' ? [...current.selection.genreIds] : [],
     follow: current.followTimeline ? null : false,
     preset: current.timePreset === null || current.timePreset === defaultPreset(derive(current).visibleShows, parseIsoDate(current.today).getTime()) ? null : current.timePreset,
     allLanes: !current.hideEmptyLanes,
@@ -711,7 +745,7 @@ function createNavigation() {
 
   if (previousPanel !== 'lists') {
     const sharedHash = location.hash;
-    writeEntry('replaceState', null, serializeUrlState({ ...urlState, selectedShowIds: [], selectedPlaces: [], selectedBandIds: [] }));
+    writeEntry('replaceState', null, serializeUrlState({ ...urlState, selectedShowIds: [], selectedPlaces: [], selectedBandIds: [], selectedGenres: [] }));
     writeEntry('pushState', drillDownEntry(previousPanel), sharedHash);
   }
 
@@ -736,7 +770,7 @@ function createNavigation() {
     const url = parseUrlState(location.hash);
     quietly(() => {
       if (wholeView) applyUrlView(url);
-      else state.set({ selection: selectionFromUrl(url, knownBandIds) });
+      else state.set({ selection: selectionFromUrl(url, knownBandIds, isGenreId) });
       state.set({ previewsOpen: asDrillDownEntry(history.state)?.previews === true });
     });
   });

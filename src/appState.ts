@@ -12,7 +12,8 @@ export type Selection =
   | { readonly kind: 'none' }
   | { readonly kind: 'shows'; readonly showIds: ReadonlySet<string> }
   | { readonly kind: 'places'; readonly places: ReadonlySet<PlaceKey> }
-  | { readonly kind: 'bands'; readonly bandIds: ReadonlySet<string> };
+  | { readonly kind: 'bands'; readonly bandIds: ReadonlySet<string> }
+  | { readonly kind: 'genres'; readonly genreIds: ReadonlySet<string> };
 
 export const NO_SELECTION: Selection = { kind: 'none' };
 
