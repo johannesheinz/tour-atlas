@@ -52,7 +52,7 @@ export function createSettings(trigger: HTMLButtonElement, panel: HTMLElement, c
     return { button, row: h('div', { class: 'setting' }, button, h('p', { class: 'setting-note', id: noteId }, note)) };
   };
   const follow = toggle('Follow timeline', 'The map shows only the shows in the time range.', callbacks.onFollowTimeline);
-  const hideEmpty = toggle('Hide empty lanes', 'Bands without shows in the time range collapse on the timeline.', callbacks.onHideEmptyLanes);
+  const hideEmpty = toggle('Hide bands without shows', 'Bands without shows in the time range collapse in the band list and on the timeline.', callbacks.onHideEmptyLanes);
   const pastMonth = toggle('Include last month', 'Upcoming ranges start a month back, to follow a running tour.', callbacks.onIncludePastMonth);
 
   const preview = h('button', { type: 'button', class: 'button button-small' }, 'Preview files…');

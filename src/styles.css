@@ -947,6 +947,11 @@ input[type='search']::placeholder {
   color: var(--ink-muted);
 }
 
+.band-quiet {
+  padding: 10px 6px;
+  border-bottom: 1px solid var(--stock-deep);
+}
+
 /* Atlas: map and timeline share one frame, width and margins */
 
 .atlas {

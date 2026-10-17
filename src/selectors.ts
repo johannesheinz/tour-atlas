@@ -1,12 +1,17 @@
 import { isInWindow, type AppState, type Derived, type Selection } from './appState.ts';
 import { selectionShows } from './selection.ts';
-import type { ShowRef } from './model.ts';
+import { showsInRange, sortBands, type BandEntry, type ShowRef } from './model.ts';
 import { countryName } from './view/format.ts';
 import { buildPlaces, type CountryPlace } from './places.ts';
 import type { TimelineLane } from './view/timeline.ts';
 import { buildSearchIndex, type SearchEntry } from './view/searchIndex.ts';
 
 export type ShowFilter = (ref: ShowRef) => boolean;
+
+export interface BandsInRange {
+  readonly ordered: readonly BandEntry[];
+  readonly shows: ReadonlyMap<BandEntry, readonly ShowRef[]>;
+}
 
 /** Memoised view inputs: each returns the same object until its inputs change, so views can compare by reference. */
 export function createSelectors(maxBandsWithRoutes: number) {
@@ -19,7 +24,10 @@ export function createSelectors(maxBandsWithRoutes: number) {
   let mapKey: [readonly ShowRef[], ShowFilter | null] | null = null;
   let mapShows: readonly ShowRef[] = [];
 
-  let lanesKey: [Derived['visibleBands'], AppState['timeWindow'], boolean] | null = null;
+  let rangeKey: [Derived['filteredBands'], Derived['refsByBand'], AppState['timeWindow'], AppState['bandSort']] | null = null;
+  let bandsInRange: BandsInRange = { ordered: [], shows: new Map() };
+
+  let lanesKey: [BandsInRange, AppState['hiddenBandIds'], boolean] | null = null;
   let lanes: { readonly shown: readonly TimelineLane[]; readonly hiddenCount: number } = { shown: [], hiddenCount: 0 };
 
   let selectionKey: [Selection, AppState['timeWindow'], Derived] | null = null;
@@ -71,14 +79,25 @@ export function createSelectors(maxBandsWithRoutes: number) {
       return mapShows;
     },
 
+    /** Bands that pass the tag filter, sorted by what they play in the time window, with those shows. */
+    bandsInRange(current: AppState, derived: Derived): BandsInRange {
+      const key = rangeKey;
+      if (key === null || key[0] !== derived.filteredBands || key[1] !== derived.refsByBand || key[2] !== current.timeWindow || key[3] !== current.bandSort) {
+        rangeKey = [derived.filteredBands, derived.refsByBand, current.timeWindow, current.bandSort];
+        const shows = new Map(derived.filteredBands.map((band) => [band, showsInRange(derived.refsByBand.get(band) ?? [], current.timeWindow)] as const));
+        bandsInRange = { ordered: sortBands(derived.filteredBands, current.bandSort, (band) => shows.get(band) ?? []), shows };
+      }
+      return bandsInRange;
+    },
+
     /** Timeline lanes in band-list order; with hideEmptyLanes, bands without a show in the window collapse. */
     lanes(current: AppState, derived: Derived): { readonly shown: readonly TimelineLane[]; readonly hiddenCount: number } {
-      if (lanesKey === null || lanesKey[0] !== derived.visibleBands || lanesKey[1] !== current.timeWindow || lanesKey[2] !== current.hideEmptyLanes) {
-        lanesKey = [derived.visibleBands, current.timeWindow, current.hideEmptyLanes];
-        const all = derived.visibleBands.map((band) => ({ band, shows: derived.refsByBand.get(band) ?? [] }));
-        const window = current.timeWindow;
-        const shown = current.hideEmptyLanes && window !== null ? all.filter((lane) => lane.shows.some((ref) => isInWindow(ref, window))) : all;
-        lanes = { shown, hiddenCount: all.length - shown.length };
+      const inRange = this.bandsInRange(current, derived);
+      if (lanesKey === null || lanesKey[0] !== inRange || lanesKey[1] !== current.hiddenBandIds || lanesKey[2] !== current.hideEmptyLanes) {
+        lanesKey = [inRange, current.hiddenBandIds, current.hideEmptyLanes];
+        const visible = inRange.ordered.filter((band) => !current.hiddenBandIds.has(band.file.band.id));
+        const shown = current.hideEmptyLanes && current.timeWindow !== null ? visible.filter((band) => (inRange.shows.get(band) ?? []).length > 0) : visible;
+        lanes = { shown: shown.map((band) => ({ band, shows: derived.refsByBand.get(band) ?? [] })), hiddenCount: visible.length - shown.length };
       }
       return lanes;
     },

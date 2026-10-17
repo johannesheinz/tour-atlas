@@ -48,35 +48,46 @@ export function showRefs(band: BandEntry, today: string): ShowRef[] {
   }));
 }
 
-export function nextShowDate(band: BandEntry, today: string): string | null {
-  return band.file.shows.find((show) => (show.endDate ?? show.date) >= today)?.date ?? null;
+export interface TimeRange {
+  readonly start: number;
+  readonly end: number;
 }
 
-export function sortBands(bands: readonly BandEntry[], sort: BandSort, today: string): BandEntry[] {
-  const byName = (a: BandEntry, b: BandEntry) => a.file.band.name.localeCompare(b.file.band.name);
+export function byBandName(a: BandEntry, b: BandEntry): number {
+  return a.file.band.name.localeCompare(b.file.band.name);
+}
+
+/** The shows that touch the range; all shows without a range. */
+export function showsInRange(refs: readonly ShowRef[], range: TimeRange | null): readonly ShowRef[] {
+  return range === null ? refs : refs.filter((ref) => ref.end >= range.start && ref.start <= range.end);
+}
+
+/** Sorts by what happens in the time range: most shows in it, or the earliest upcoming show in it. */
+export function sortBands(bands: readonly BandEntry[], sort: BandSort, inRange: (band: BandEntry) => readonly ShowRef[]): BandEntry[] {
   switch (sort) {
     case 'name':
-      return bands.toSorted(byName);
+      return bands.toSorted(byBandName);
     case 'show-count':
-      return bands.toSorted((a, b) => b.file.shows.length - a.file.shows.length || byName(a, b));
-    case 'next-show':
+      return bands.toSorted((a, b) => inRange(b).length - inRange(a).length || byBandName(a, b));
+    case 'next-show': {
+      const next = (band: BandEntry) => Math.min(...inRange(band).filter((ref) => !ref.isPast).map((ref) => ref.start));
       return bands.toSorted((a, b) => {
-        const nextA = nextShowDate(a, today);
-        const nextB = nextShowDate(b, today);
-        if (nextA === nextB) return byName(a, b);
-        if (nextA === null) return 1;
-        if (nextB === null) return -1;
+        const nextA = next(a);
+        const nextB = next(b);
+        if (nextA === nextB) return byBandName(a, b);
         return nextA < nextB ? -1 : 1;
       });
+    }
   }
 }
 
-export function dateRange(band: BandEntry): { readonly first: string; readonly last: string } | null {
-  const first = band.file.shows[0];
+export function dateRange(refs: readonly ShowRef[]): { readonly first: string; readonly last: string } | null {
+  const [first] = refs;
   if (first === undefined) return null;
-  const last = band.file.shows.reduce((latest, show) => {
-    const end = show.endDate ?? show.date;
+  const firstDate = refs.reduce((earliest, ref) => (ref.show.date < earliest ? ref.show.date : earliest), first.show.date);
+  const lastDate = refs.reduce((latest, ref) => {
+    const end = ref.show.endDate ?? ref.show.date;
     return end > latest ? end : latest;
-  }, first.date);
-  return { first: first.date, last };
+  }, first.show.endDate ?? first.show.date);
+  return { first: firstDate, last: lastDate };
 }

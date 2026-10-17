@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { NO_SELECTION } from '../../src/appState.ts';
-import { asDrillDownEntry, drillDownEntry, historyStep } from '../../src/drillDownHistory.ts';
+import { HOME_ENTRY, asDrillDownEntry, drillDownEntry, historyStep, isHomeEntry } from '../../src/drillDownHistory.ts';
 import { selectionFromUrl, sidebarPanel } from '../../src/selection.ts';
 
 describe('drill-down history', () => {
@@ -22,6 +22,12 @@ describe('drill-down history', () => {
     expect(asDrillDownEntry(null)).toBeNull();
     expect(asDrillDownEntry({ other: 'app' })).toBeNull();
     expect(() => drillDownEntry('lists')).toThrow();
+  });
+
+  it('marks the entry the home link adds, and only that one', () => {
+    expect(isHomeEntry(HOME_ENTRY)).toBe(true);
+    expect(isHomeEntry(drillDownEntry('selection'))).toBe(false);
+    expect(isHomeEntry(null)).toBe(false);
   });
 });
 

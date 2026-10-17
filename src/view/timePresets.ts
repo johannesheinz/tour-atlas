@@ -75,6 +75,8 @@ export function isPresetAvailable(preset: TimePreset, shows: readonly Dated[], t
 }
 
 /** All upcoming shows first; a dataset of history only opens on everything. */
+/** The next six months when anything is on then; otherwise everything upcoming; otherwise all dates. */
 export function defaultPreset(shows: readonly Dated[], today: number): TimePreset {
+  if (isPresetAvailable('next-6-months', shows, today, false)) return 'next-6-months';
   return isPresetAvailable('upcoming', shows, today, false) ? 'upcoming' : 'all';
 }

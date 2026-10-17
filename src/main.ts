@@ -303,8 +303,11 @@ function renderAll() {
   });
   settings.render({ theme: current.theme, followTimeline: current.followTimeline, hideEmptyLanes: current.hideEmptyLanes, includePastMonth: current.includePastMonth });
 
+  const inRange = select.bandsInRange(current, derived);
   bandList.render({
-    bands: derived.filteredBands,
+    bands: inRange.ordered,
+    showsInRange: inRange.shows,
+    collapseBandsWithoutShows: current.hideEmptyLanes,
     totalBandCount: derived.bands.length,
     tagFilter: current.tagFilter,
     tagCounts: select.tagCounts(derived),

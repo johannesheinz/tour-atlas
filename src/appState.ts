@@ -1,7 +1,7 @@
 import { matchesTagFilter } from './data/tags.ts';
 import type { BandFile } from './data/types.ts';
 import type { PreviewResult } from './preview.ts';
-import { buildBandEntries, showRefs, sortBands, type BandEntry, type BandSort, type ShowRef } from './model.ts';
+import { buildBandEntries, byBandName, showRefs, type BandEntry, type BandSort, type ShowRef } from './model.ts';
 import type { ThemePreference } from './model.ts';
 import type { TimePreset } from './view/timePresets.ts';
 import type { MapMode, MapViewPreset } from './view/mapRegions.ts';
@@ -73,7 +73,7 @@ export function createDeriver(): (state: AppState) => Derived {
   let refsByBand = new Map<BandEntry, readonly ShowRef[]>();
   let showsById: ReadonlyMap<string, ShowRef> = new Map();
 
-  let orderKey: [readonly BandEntry[], BandSort, string] | null = null;
+  let orderKey: readonly BandEntry[] | null = null;
   let orderedBands: readonly BandEntry[] = [];
 
   let filterKey: [readonly BandEntry[], ReadonlySet<string>] | null = null;
@@ -92,9 +92,9 @@ export function createDeriver(): (state: AppState) => Derived {
       refsByBand = new Map(bands.map((band) => [band, showRefs(band, state.today)]));
       showsById = new Map([...refsByBand.values()].flat().map((ref) => [ref.show.id, ref]));
     }
-    if (orderKey === null || orderKey[0] !== bands || orderKey[1] !== state.bandSort || orderKey[2] !== state.today) {
-      orderKey = [bands, state.bandSort, state.today];
-      orderedBands = sortBands(bands, state.bandSort, state.today);
+    if (orderKey !== bands) {
+      orderKey = bands;
+      orderedBands = bands.toSorted(byBandName);
     }
     if (filterKey === null || filterKey[0] !== orderedBands || filterKey[1] !== state.tagFilter) {
       filterKey = [orderedBands, state.tagFilter];

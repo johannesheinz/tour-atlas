@@ -1,4 +1,4 @@
-import { dateRange, type BandEntry, type BandSort } from '../model.ts';
+import { dateRange, type BandEntry, type BandSort, type ShowRef } from '../model.ts';
 import { TAG_VOCABULARY } from '../data/tags.ts';
 import { createBandIdentity, type BandIdentity } from './bandIdentity.ts';
 import { h } from './dom.ts';
@@ -9,6 +9,10 @@ import { bandColor, type ThemeMode } from '../model.ts';
 export interface BandListProps {
   /** Bands that pass the tag filter, in list order. */
   readonly bands: readonly BandEntry[];
+  /** Each band's shows in the time range; counts and dates in the list describe only these. */
+  readonly showsInRange: ReadonlyMap<BandEntry, readonly ShowRef[]>;
+  /** Bands without shows in the range move into a collapsed group at the end. */
+  readonly collapseBandsWithoutShows: boolean;
   readonly totalBandCount: number;
   readonly tagFilter: ReadonlySet<string>;
   /** Bands per tag across all bands; tags without bands get no chip. */
@@ -104,6 +108,14 @@ export function createBandList(container: HTMLElement, callbacks: BandListCallba
   container.append(body);
 
   const rows = new Map<string, Row>();
+  let quietOpen = false;
+  let lastProps: BandListProps | null = null;
+  const quietButton = h('button', { type: 'button', class: 'text-button band-quiet-toggle', 'aria-expanded': 'false' });
+  const quietRow = h('li', { class: 'band-quiet' }, quietButton);
+  quietButton.addEventListener('click', () => {
+    quietOpen = !quietOpen;
+    if (lastProps !== null) render(lastProps);
+  });
 
   filter.addEventListener('input', () => callbacks.onFilter(filter.value));
   sort.addEventListener('change', () => {
@@ -143,64 +155,75 @@ export function createBandList(container: HTMLElement, callbacks: BandListCallba
     return { element, checkbox, select, identity, meta, badge };
   }
 
-  return {
-    render(props) {
-      const query = props.filter.trim().toLocaleLowerCase();
-      const matching = props.bands.filter((band) => query === '' || band.file.band.name.toLocaleLowerCase().includes(query));
-      const visibleCount = props.bands.filter((band) => !props.hiddenBandIds.has(band.file.band.id)).length;
+  function render(props: BandListProps) {
+    lastProps = props;
+    const query = props.filter.trim().toLocaleLowerCase();
+    const matching = props.bands.filter((band) => query === '' || band.file.band.name.toLocaleLowerCase().includes(query));
+    const visibleCount = props.bands.filter((band) => !props.hiddenBandIds.has(band.file.band.id)).length;
 
-      count.textContent = `${visibleCount} of ${props.totalBandCount} shown`;
-      listShown.hidden = visibleCount < 2 || visibleCount > MAX_LISTABLE_BANDS;
-      openPreviews.hidden = props.previewCount === 0;
-      openPreviews.textContent = `Open ${plural(props.previewCount, 'previewed file')}`;
-      listShown.setAttribute('aria-label', `List the dates of the ${visibleCount} shown bands`);
-      for (const [tagId, chip] of tagChips) {
-        const bands = props.tagCounts.get(tagId) ?? 0;
-        chip.hidden = bands === 0;
-        chip.setAttribute('aria-pressed', String(props.tagFilter.has(tagId)));
-        const countLabel = chip.lastElementChild;
-        if (countLabel !== null) countLabel.textContent = String(bands);
-      }
-      for (const group of tagGroups) group.element.hidden = group.tagIds.every((tagId) => (props.tagCounts.get(tagId) ?? 0) === 0);
-      tagFilter.hidden = props.tagCounts.size === 0;
-      tagSummary.textContent = props.tagFilter.size === 0 ? 'Filter by genre' : `Filter by genre (${props.tagFilter.size} selected)`;
-      const filteredOut = props.totalBandCount - props.bands.length;
-      clearTags.hidden = props.tagFilter.size === 0;
-      tagNote.hidden = filteredOut === 0;
-      tagNote.textContent = `${filteredOut} ${filteredOut === 1 ? 'band does' : 'bands do'} not match the tags.`;
-      if (filter.value !== props.filter) filter.value = props.filter;
-      sort.value = props.sort;
-      empty.hidden = matching.length > 0;
-      empty.textContent =
-        props.totalBandCount === 0
-          ? 'No bands yet. Drop band files here to preview them.'
-          : props.bands.length === 0
-            ? 'No band has all the selected tags. Clear a tag to see more.'
-            : `No band matches “${props.filter}”.`;
+    count.textContent = `${visibleCount} of ${props.totalBandCount} shown`;
+    listShown.hidden = visibleCount < 2 || visibleCount > MAX_LISTABLE_BANDS;
+    openPreviews.hidden = props.previewCount === 0;
+    openPreviews.textContent = `Open ${plural(props.previewCount, 'previewed file')}`;
+    listShown.setAttribute('aria-label', `List the dates of the ${visibleCount} shown bands`);
+    for (const [tagId, chip] of tagChips) {
+      const bands = props.tagCounts.get(tagId) ?? 0;
+      chip.hidden = bands === 0;
+      chip.setAttribute('aria-pressed', String(props.tagFilter.has(tagId)));
+      const countLabel = chip.lastElementChild;
+      if (countLabel !== null) countLabel.textContent = String(bands);
+    }
+    for (const group of tagGroups) group.element.hidden = group.tagIds.every((tagId) => (props.tagCounts.get(tagId) ?? 0) === 0);
+    tagFilter.hidden = props.tagCounts.size === 0;
+    tagSummary.textContent = props.tagFilter.size === 0 ? 'Filter by genre' : `Filter by genre (${props.tagFilter.size} selected)`;
+    const filteredOut = props.totalBandCount - props.bands.length;
+    clearTags.hidden = props.tagFilter.size === 0;
+    tagNote.hidden = filteredOut === 0;
+    tagNote.textContent = `${filteredOut} ${filteredOut === 1 ? 'band does' : 'bands do'} not match the tags.`;
+    if (filter.value !== props.filter) filter.value = props.filter;
+    sort.value = props.sort;
+    empty.hidden = matching.length > 0;
+    empty.textContent =
+      props.totalBandCount === 0
+        ? 'No bands yet. Drop band files here to preview them.'
+        : props.bands.length === 0
+          ? 'No band has all the selected tags. Clear a tag to see more.'
+          : `No band matches “${props.filter}”.`;
 
-      const seen = new Set<string>();
-      const ordered = matching.map((band) => {
-        const bandId = band.file.band.id;
-        seen.add(bandId);
-        const row = rows.get(bandId) ?? createRow(band);
-        rows.set(bandId, row);
-        const range = dateRange(band);
-        row.checkbox.checked = !props.hiddenBandIds.has(bandId);
-        row.checkbox.style.setProperty('--swatch', bandColor(band, props.mode));
-        row.identity.update(bandId, band.file.band.name);
-        row.meta.replaceChildren(h('span', {}, plural(band.file.shows.length, 'show')), range === null ? '' : h('span', {}, `${formatDate(range.first)} – ${formatDate(range.last)}`));
-        row.badge.hidden = !band.isPreview;
-        row.element.classList.toggle('is-hidden', props.hiddenBandIds.has(bandId));
-        return row.element;
-      });
-      for (const [bandId, row] of rows) {
-        if (seen.has(bandId)) continue;
-        row.element.remove();
-        if (!props.bands.some((band) => band.file.band.id === bandId)) rows.delete(bandId);
-      }
-      ordered.forEach((element, index) => {
-        if (list.children[index] !== element) list.insertBefore(element, list.children[index] ?? null);
-      });
-    },
-  };
+    const rowFor = (band: BandEntry): HTMLLIElement => {
+      const bandId = band.file.band.id;
+      const row = rows.get(bandId) ?? createRow(band);
+      rows.set(bandId, row);
+      const refs = props.showsInRange.get(band) ?? [];
+      const range = dateRange(refs);
+      row.checkbox.checked = !props.hiddenBandIds.has(bandId);
+      row.checkbox.style.setProperty('--swatch', bandColor(band, props.mode));
+      row.identity.update(bandId, band.file.band.name);
+      row.meta.replaceChildren(
+        h('span', {}, refs.length === 0 ? 'No shows in this time range' : plural(refs.length, 'show')),
+        range === null ? '' : h('span', {}, range.first === range.last ? formatDate(range.first) : `${formatDate(range.first)} – ${formatDate(range.last)}`),
+      );
+      row.badge.hidden = !band.isPreview;
+      row.element.classList.toggle('is-hidden', props.hiddenBandIds.has(bandId));
+      row.element.classList.toggle('is-quiet', refs.length === 0);
+      return row.element;
+    };
+    const playing = matching.filter((band) => (props.showsInRange.get(band) ?? []).length > 0);
+    const quiet = matching.filter((band) => (props.showsInRange.get(band) ?? []).length === 0);
+    const collapse = props.collapseBandsWithoutShows && quiet.length > 0;
+    quietButton.textContent = `${quietOpen ? 'Hide' : 'Show'} ${plural(quiet.length, 'band')} without shows in this time range`;
+    quietButton.setAttribute('aria-expanded', String(quietOpen));
+    const displayed = collapse
+      ? [...playing.map(rowFor), quietRow, ...(quietOpen ? quiet.map(rowFor) : [])]
+      : matching.map(rowFor);
+
+    const keep = new Set<Element>(displayed);
+    for (const child of [...list.children]) if (!keep.has(child)) child.remove();
+    for (const bandId of rows.keys()) if (!props.bands.some((band) => band.file.band.id === bandId)) rows.delete(bandId);
+    displayed.forEach((element, index) => {
+      if (list.children[index] !== element) list.insertBefore(element, list.children[index] ?? null);
+    });
+  }
+
+  return { render };
 }

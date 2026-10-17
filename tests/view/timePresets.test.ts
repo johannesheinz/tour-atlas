@@ -47,7 +47,8 @@ describe('time presets', () => {
     expect(isPresetAvailable('next-12-months', [{ start: day('2027-06-18'), end: day('2027-06-20') }], today, false)).toBe(true);
     expect(isPresetAvailable('next-3-months', [{ start: day('2026-10-01'), end: day('2026-10-01') }], today, true)).toBe(true);
     expect(defaultPreset(history, today)).toBe('all');
-    expect(defaultPreset(shows, today)).toBe('upcoming');
+    expect(defaultPreset(shows, today)).toBe('next-6-months');
+    expect(defaultPreset([{ start: day('2027-06-18'), end: day('2027-06-20') }], today)).toBe('upcoming');
     expect(() => presetRange('upcoming', history, today, false)).toThrow(RangeError);
   });
 });
