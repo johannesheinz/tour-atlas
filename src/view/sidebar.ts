@@ -1,7 +1,7 @@
+import type { SidebarPanel } from '../selection.ts';
 import { requireElement } from './dom.ts';
 
 export type SidebarTab = 'bands' | 'places';
-export type SidebarPanel = 'lists' | 'selection' | 'previews';
 
 export interface SidebarView {
   setToggleLabel(text: string): void;

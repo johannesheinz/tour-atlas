@@ -4,7 +4,8 @@ import { NO_SELECTION, createDeriver, type AppState, type Derived, type Selectio
 import { addDays, formatIsoDate, localToday, parseIsoDate } from './data/dates.ts';
 import type { ShowRef } from './model.ts';
 import { createSelectors } from './selectors.ts';
-import { selectionShows } from './selection.ts';
+import { selectionFromUrl, selectionShows, sidebarPanel } from './selection.ts';
+import { asDrillDownEntry, drillDownEntry, historyStep } from './drillDownHistory.ts';
 import { createStore } from './state.ts';
 import { createBundledStore } from './store/bundled.ts';
 import { parseUrlState, serializeUrlState } from './urlState.ts';
@@ -51,7 +52,7 @@ const state = createStore<AppState>({
   bandFilter: '',
   focusBandId: null,
   hoverShowIds: new Set(),
-  selection: initialSelection(),
+  selection: selectionFromUrl(urlState, knownBandIds),
   timeWindow: null,
   followTimeline: urlState.follow ?? true,
   timePreset: urlState.preset,
@@ -312,8 +313,8 @@ function renderAll() {
     previewCount: current.previewResults.length,
   });
   const selected = select.selection(current, derived);
+  const panel = sidebarPanel(current);
   const previewsShown = current.previewsOpen && current.previewResults.length > 0;
-  const panel = current.selection.kind !== 'none' ? 'selection' : previewsShown ? 'previews' : 'lists';
   sidebar.show(panel, panel === 'selection' ? selectionKey(current.selection) : panel);
   const listsLabel = sidebar.activeTab() === 'bands' ? 'Back to bands' : 'Back to places';
   if (current.selection.kind !== 'none') {
@@ -480,14 +481,6 @@ function selectPlaces(places: ReadonlySet<PlaceKey>) {
   state.set({ selection: places.size === 0 ? NO_SELECTION : { kind: 'places', places } });
 }
 
-function initialSelection(): Selection {
-  if (urlState.selectedPlaces.length > 0) return { kind: 'places', places: new Set(urlState.selectedPlaces) };
-  const bandIds = urlState.selectedBandIds.filter((id) => knownBandIds.has(id));
-  if (bandIds.length > 0) return { kind: 'bands', bandIds: new Set(bandIds) };
-  if (urlState.selectedShowIds.length > 0) return { kind: 'shows', showIds: new Set(urlState.selectedShowIds) };
-  return NO_SELECTION;
-}
-
 /** Changes when a different selection opens, so the sidebar starts it at the top. */
 function selectionKey(selection: Selection): string {
   switch (selection.kind) {
@@ -617,10 +610,21 @@ function scheduleUrlUpdate() {
 }
 
 function writeUrlState() {
+  const hash = currentHash();
+  if (hash === location.hash || (hash === '' && location.hash === '')) return;
+  const url = `${location.pathname}${location.search}${hash}`;
+  try {
+    history.replaceState(history.state, '', url === '' ? location.pathname : url);
+  } catch {
+    location.replace(hash === '' ? '#' : hash);
+  }
+}
+
+function currentHash(): string {
   const current = state.get();
   const window = current.timeWindow;
   const showWindow = window !== null && current.timePreset === null && !timeline.isAtFit();
-  const hash = serializeUrlState({
+  return serializeUrlState({
     hiddenBandIds: [...current.hiddenBandIds],
     tags: [...current.tagFilter],
     sort: current.bandSort === 'name' ? null : current.bandSort,
@@ -636,13 +640,44 @@ function writeUrlState() {
     region: current.mapView.kind === 'region' ? current.mapView.region.id : null,
     globe: current.mapMode === 'globe',
   });
-  if (hash === location.hash || (hash === '' && location.hash === '')) return;
-  const url = `${location.pathname}${location.search}${hash}`;
-  try {
-    history.replaceState(null, '', url === '' ? location.pathname : url);
-  } catch {
-    location.replace(hash === '' ? '#' : hash);
+}
+
+/** Drill-downs get their own history entry, so browser Back (and the mouse's back button) returns to the lists. */
+function mountDrillDownHistory() {
+  let applyingHistory = false;
+  let previousPanel = sidebarPanel(state.get());
+  const writeEntry = (method: 'pushState' | 'replaceState', entry: unknown, hash: string) => {
+    try {
+      history[method](entry, '', `${location.pathname}${location.search}${hash}`);
+    } catch {
+      return;
+    }
+  };
+
+  if (previousPanel !== 'lists') {
+    const sharedHash = location.hash;
+    writeEntry('replaceState', null, serializeUrlState({ ...urlState, selectedShowIds: [], selectedPlaces: [], selectedBandIds: [] }));
+    writeEntry('pushState', drillDownEntry(previousPanel), sharedHash);
   }
+
+  state.subscribe((current) => {
+    const panel = sidebarPanel(current);
+    const step = applyingHistory ? 'none' : historyStep(previousPanel, panel, asDrillDownEntry(history.state) !== null);
+    previousPanel = panel;
+    if (step === 'push') writeEntry('pushState', drillDownEntry(panel), currentHash());
+    else if (step === 'replace') writeEntry('replaceState', drillDownEntry(panel), currentHash());
+    else if (step === 'back') history.back();
+  });
+
+  window.addEventListener('popstate', () => {
+    applyingHistory = true;
+    try {
+      const entry = asDrillDownEntry(history.state);
+      state.set({ selection: selectionFromUrl(parseUrlState(location.hash), knownBandIds), previewsOpen: entry?.previews === true });
+    } finally {
+      applyingHistory = false;
+    }
+  });
 }
 
 function refreshTheme() {
@@ -669,4 +704,5 @@ function mountThemeSwitch(fieldset: HTMLFieldSetElement) {
 }
 
 state.subscribe(renderAll);
+mountDrillDownHistory();
 renderAll();
