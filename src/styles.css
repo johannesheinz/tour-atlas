@@ -1273,14 +1273,73 @@ input[type='search']::placeholder {
   font-weight: 600;
 }
 
-.timeline-help-anchor {
-  position: relative;
+.pills {
+  display: none;
+  border: var(--rule) solid var(--ink);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.pill {
+  min-height: 30px;
+  padding: 0 13px;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.pill + .pill {
+  border-left: var(--rule) solid var(--ink);
+}
+
+.pill:hover:not(:disabled),
+.pill[aria-pressed='true'] {
+  background: var(--ink);
+  color: var(--stock);
+}
+
+.pill:disabled {
+  color: var(--ink-muted);
+  cursor: not-allowed;
+}
+
+.pill:focus-visible {
+  outline: 3px solid var(--ink);
+  outline-offset: -5px;
+}
+
+@media (min-width: 821px) {
+  .pills {
+    display: inline-flex;
+  }
+
+  .preset-select {
+    display: none;
+  }
+}
+
+.timeline-bar-end {
   margin-left: auto;
 }
 
-.timeline-help {
+.popover-anchor {
+  position: relative;
+}
+
+.timeline-popover {
   right: 0;
   bottom: calc(100% + 10px);
+}
+
+.timeline-options {
+  width: min(320px, calc(100vw - 2 * var(--gutter)));
+}
+
+.timeline-help {
   width: 280px;
   font-size: 13px;
 }

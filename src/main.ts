@@ -181,6 +181,13 @@ const timelineControls = createTimelineControls(requireElement(document, '#timel
   onPreset: (preset) => applyPreset(preset, true),
   onZoomOut: () => timeline.zoomOut(),
   onShift: (direction) => timeline.shift(direction),
+  onFollowTimeline: (follow) => state.set({ followTimeline: follow }),
+  onHideEmptyLanes: (hide) => state.set({ hideEmptyLanes: hide }),
+  onIncludePastMonth(include) {
+    state.set({ includePastMonth: include });
+    const { timePreset } = state.get();
+    if (timePreset !== null && usesPastMonth(timePreset)) applyPreset(timePreset, true);
+  },
 });
 
 const mapControls = createMapControls(requireElement(document, '#map-controls', HTMLDivElement), requireElement(document, '#map-status', HTMLDivElement), {
@@ -209,19 +216,12 @@ fileInput.addEventListener('change', () => {
 mountDropZone();
 
 const settingsButton = requireElement(document, '#settings-button', HTMLButtonElement);
-settingsButton.append(icon('settings'));
+settingsButton.append(icon('gear'));
 const settings = createSettings(settingsButton, requireElement(document, '#settings-panel', HTMLDivElement), {
   onTheme(preference) {
     applyThemePreference(preference);
     state.set({ theme: preference });
     refreshTheme();
-  },
-  onFollowTimeline: (follow) => state.set({ followTimeline: follow }),
-  onHideEmptyLanes: (hide) => state.set({ hideEmptyLanes: hide }),
-  onIncludePastMonth(include) {
-    state.set({ includePastMonth: include });
-    const { timePreset } = state.get();
-    if (timePreset !== null && usesPastMonth(timePreset)) applyPreset(timePreset, true);
   },
   onPreviewFiles: () => fileInput.click(),
   onExportAll() {
@@ -309,8 +309,11 @@ function renderAll() {
   timelineControls.render({
     preset: state.get().timePreset,
     availablePresets: new Set(PRESET_IDS.filter((preset) => isPresetAvailable(preset, derived.visibleShows, today, current.includePastMonth))),
+    followTimeline: current.followTimeline,
+    hideEmptyLanes: current.hideEmptyLanes,
+    includePastMonth: current.includePastMonth,
   });
-  settings.render({ theme: current.theme, followTimeline: current.followTimeline, hideEmptyLanes: current.hideEmptyLanes, includePastMonth: current.includePastMonth });
+  settings.render({ theme: current.theme });
 
   const inRange = select.bandsInRange(current, derived);
   bandList.render({

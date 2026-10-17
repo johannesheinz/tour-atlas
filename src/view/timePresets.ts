@@ -2,13 +2,14 @@ import { DAY_MS } from './timeScale.ts';
 
 export type TimePreset = 'next-3-months' | 'next-6-months' | 'next-12-months' | 'upcoming' | 'past' | 'all';
 
-export const TIME_PRESETS: readonly { readonly id: TimePreset; readonly label: string; readonly title: string }[] = [
-  { id: 'next-3-months', label: 'Next 3 months', title: 'From today to three months ahead' },
-  { id: 'next-6-months', label: 'Next 6 months', title: 'From today to six months ahead' },
-  { id: 'next-12-months', label: 'Next 12 months', title: 'From today to a year ahead' },
-  { id: 'upcoming', label: 'All upcoming', title: 'From today to the last announced show' },
-  { id: 'past', label: 'Past', title: 'From the first show to today' },
-  { id: 'all', label: 'All dates', title: 'Fit the timeline to every show' },
+/** `short` labels the pills on wide screens; `label` is the full name for menus, tooltips and screen readers. */
+export const TIME_PRESETS: readonly { readonly id: TimePreset; readonly label: string; readonly short: string; readonly title: string }[] = [
+  { id: 'next-3-months', label: 'Next 3 months', short: '3M', title: 'From today to three months ahead' },
+  { id: 'next-6-months', label: 'Next 6 months', short: '6M', title: 'From today to six months ahead' },
+  { id: 'next-12-months', label: 'Next 12 months', short: '12M', title: 'From today to a year ahead' },
+  { id: 'upcoming', label: 'All upcoming', short: 'Upcoming', title: 'From today to the last announced show' },
+  { id: 'past', label: 'Past', short: 'Past', title: 'From the first show to today' },
+  { id: 'all', label: 'All dates', short: 'All', title: 'Fit the timeline to every show' },
 ];
 
 export const PRESET_IDS: readonly TimePreset[] = TIME_PRESETS.map((preset) => preset.id);
