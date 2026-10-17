@@ -1,6 +1,7 @@
 import { geoDistance, geoEqualEarth } from 'd3-geo';
 import { describe, expect, it } from 'vitest';
-import { computeMapFit, interpolateFit, longitudeCenter, normalizeLongitude, type LonLat, type MapFit } from '../../src/view/geoFit.ts';
+import { geoOrthographic } from 'd3-geo';
+import { computeGlobeFit, computeMapFit, interpolateFit, longitudeCenter, normalizeLongitude, type LonLat, type MapFit } from '../../src/view/geoFit.ts';
 
 const VIEWPORT = { width: 1000, height: 600, padding: 32, minSpanKm: 300 };
 const EARTH_RADIUS_KM = 6371;
@@ -85,6 +86,35 @@ describe('computeMapFit', () => {
 
   it('rejects a viewport smaller than its padding', () => {
     expect(() => computeMapFit([], { ...VIEWPORT, width: 40 })).toThrow(RangeError);
+  });
+});
+
+describe('computeGlobeFit', () => {
+  const globe = (fit: MapFit, point: LonLat) => {
+    const projected = geoOrthographic().rotate([...fit.rotate]).scale(fit.scale).translate([...fit.translate])([point[0], point[1]]);
+    if (projected === null) throw new Error('did not project');
+    return projected;
+  };
+
+  it('turns the data to the front and keeps it inside the globe circle', () => {
+    const europe: LonLat[] = [[-9.14, 38.72], [24.94, 60.17], [13.4, 52.52]];
+    const fit = computeGlobeFit(europe, VIEWPORT);
+    expect(fit.rotate[0]).toBeLessThan(0);
+    expect(fit.rotate[1]).toBeLessThan(-40);
+    for (const point of europe) {
+      const [x, y] = globe(fit, point);
+      expect(Math.hypot(x - 500, y - 300)).toBeLessThanOrEqual(300 - 32 + 0.5);
+    }
+  });
+
+  it('shows the whole globe for data on both sides of the world', () => {
+    const fit = computeGlobeFit([[-74, 40.7], [139.7, 35.7], [151.2, -33.9], [-46.6, -23.5]], VIEWPORT);
+    expect(fit.scale).toBe(300 - 32);
+  });
+
+  it('keeps about 300 km around a single city', () => {
+    const fit = computeGlobeFit([[-21.94, 64.15]], VIEWPORT);
+    expect(fit.scale).toBeCloseTo((300 - 32) / Math.sin(150 / 6371), 0);
   });
 });
 

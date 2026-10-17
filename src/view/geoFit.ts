@@ -1,4 +1,4 @@
-import { geoEqualEarth } from 'd3-geo';
+import { geoCentroid, geoDistance, geoEqualEarth } from 'd3-geo';
 
 export type LonLat = readonly [lon: number, lat: number];
 
@@ -90,6 +90,30 @@ export function minimumSpanPoints(centerLon: number, centerLat: number, minSpanK
     [centerLon, Math.min(90, clampedLat + halfLat)],
   ];
 }
+
+/**
+ * Orthographic globe: turn the data's centroid to the front, then scale so the farthest point
+ * (or minSpanKm around the centre) stays inside a circle that fits the viewport.
+ * Data spread over more than a hemisphere shows the whole globe.
+ */
+export function computeGlobeFit(points: readonly LonLat[], options: FitOptions): MapFit {
+  const { width, height, padding } = options;
+  if (width <= 2 * padding || height <= 2 * padding) {
+    throw new RangeError(`viewport ${width}×${height} is too small for padding ${padding}`);
+  }
+  const radius = Math.min(width, height) / 2 - padding;
+  const translate: [number, number] = [width / 2, height / 2];
+  if (points.length === 0) return { rotate: [0, -20, 0], scale: radius, translate };
+
+  const [centerLon, centerLat] = geoCentroid({ type: 'MultiPoint', coordinates: points.map(([lon, lat]) => [lon, lat]) });
+  const center: [number, number] = [Number.isFinite(centerLon) ? centerLon : points[0]?.[0] ?? 0, Number.isFinite(centerLat) ? centerLat : points[0]?.[1] ?? 0];
+  const minAngle = options.minSpanKm / 2 / EARTH_RADIUS_KM;
+  const farthest = Math.max(minAngle, ...points.map(([lon, lat]) => geoDistance(center, [lon, lat])));
+  const scale = farthest >= Math.PI / 2 ? radius : radius / Math.sin(farthest);
+  return { rotate: [-center[0], -center[1], 0], scale, translate };
+}
+
+const EARTH_RADIUS_KM = 6371;
 
 function snapshot(projection: ReturnType<typeof geoEqualEarth>): MapFit {
   const [lambda, phi, gamma] = projection.rotate();

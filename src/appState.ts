@@ -4,6 +4,8 @@ import type { PreviewResult } from './preview.ts';
 import { buildBandEntries, showRefs, sortBands, type BandEntry, type BandSort, type ShowRef } from './model.ts';
 import type { ThemePreference } from './view/theme.ts';
 import type { TimePreset } from './view/timePresets.ts';
+import type { MapMode } from './view/map.ts';
+import type { MapViewPreset } from './view/mapRegions.ts';
 
 export interface TimeWindow {
   readonly start: number;
@@ -30,6 +32,12 @@ export interface AppState {
   readonly hideEmptyLanes: boolean;
   /** Forward-looking presets start a month back, to follow a running tour. */
   readonly includePastMonth: boolean;
+  /** Fit to shows (follows the timeline), a region, or the area around the viewer. */
+  readonly mapView: MapViewPreset;
+  readonly mapMode: MapMode;
+  /** The viewer's position, only after they asked for "Near me". Held in memory, never stored or sent. */
+  readonly userPosition: readonly [lon: number, lat: number] | null;
+  readonly locationStatus: string | null;
   readonly theme: ThemePreference;
   readonly today: string;
 }

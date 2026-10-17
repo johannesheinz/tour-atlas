@@ -599,6 +599,50 @@ input[type='search']::placeholder {
   fill: var(--ink);
 }
 
+.map-graticule {
+  fill: none;
+  stroke: var(--ink);
+  stroke-opacity: 0.18;
+  stroke-width: 0.75;
+  vector-effect: non-scaling-stroke;
+}
+
+.map-globe-shade {
+  pointer-events: none;
+}
+
+.globe-shade-clear {
+  stop-color: var(--ink);
+  stop-opacity: 0;
+}
+
+.globe-shade-edge {
+  stop-color: var(--ink);
+  stop-opacity: 0.22;
+}
+
+.map.is-globe .map-sphere {
+  stroke-width: 2.5;
+}
+
+.map.is-globe .map-surface {
+  cursor: move;
+}
+
+.map-radius {
+  fill: color-mix(in srgb, var(--ink) 6%, transparent);
+  stroke: var(--ink);
+  stroke-width: 1.5;
+  stroke-dasharray: 5 4;
+  vector-effect: non-scaling-stroke;
+}
+
+.map-me {
+  fill: var(--stock);
+  stroke: var(--ink);
+  stroke-width: 3;
+}
+
 .map-borders {
   fill: none;
   stroke: var(--border-line);

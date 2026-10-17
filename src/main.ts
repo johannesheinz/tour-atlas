@@ -21,6 +21,8 @@ import { applyThemePreference, readThemeColors, watchSystemTheme, type ThemeColo
 import { DAY_MS } from './view/timeScale.ts';
 import { createTimeline } from './view/timeline.ts';
 import { createTimelineControls } from './view/timelineControls.ts';
+import { createMapControls } from './view/mapControls.ts';
+import { findRegion, regionPoints, showsWithin, type MapViewPreset } from './view/mapRegions.ts';
 import { PRESET_IDS, defaultPreset, isPresetAvailable, presetRange, usesPastMonth, type TimePreset } from './view/timePresets.ts';
 
 const WINDOW_DEBOUNCE_MS = 150;
@@ -47,6 +49,10 @@ const state = createStore<AppState>({
   timePreset: urlState.preset,
   hideEmptyLanes: !urlState.allLanes,
   includePastMonth: urlState.includePastMonth,
+  mapView: initialMapView(),
+  mapMode: urlState.globe ? 'globe' : 'flat',
+  userPosition: null,
+  locationStatus: null,
   theme: 'auto',
   today: localToday(new Date()),
 });
@@ -129,7 +135,23 @@ const toolbarHint = requireElement(document, '#toolbar-hint', HTMLParagraphEleme
 
 requireElement(document, '#zoom-in', HTMLButtonElement).addEventListener('click', () => map.zoomBy(1.6));
 requireElement(document, '#zoom-out', HTMLButtonElement).addEventListener('click', () => map.zoomBy(1 / 1.6));
-requireElement(document, '#fit-map', HTMLButtonElement).addEventListener('click', () => map.fitToData(true));
+requireElement(document, '#fit-map', HTMLButtonElement).addEventListener('click', () => setMapView({ kind: 'shows' }));
+
+const mapControls = createMapControls(requireElement(document, '#map-controls', HTMLDivElement), {
+  onView: (view) => setMapView(view),
+  onMode(mode) {
+    state.set({ mapMode: mode });
+    map.setMode(mode);
+    applyMapView(state.get().mapView, false);
+  },
+  onListNearby() {
+    const current = state.get();
+    if (current.mapView.kind !== 'near' || current.userPosition === null) return;
+    const nearby = showsWithin(select.mapShows(derive(current), select.windowFilter(current)), current.userPosition, current.mapView.radiusKm);
+    state.set({ selectedShowIds: new Set(nearby.map((ref) => ref.show.id)) });
+  },
+});
+map.setMode(state.get().mapMode);
 
 const fileInput = h('input', { type: 'file', accept: '.json,application/json', multiple: true, class: 'visually-hidden', tabindex: '-1', 'aria-hidden': 'true' });
 document.body.append(fileInput);
@@ -174,7 +196,9 @@ function renderAll() {
     focusBandId: current.focusBandId,
     theme,
   });
-  if (fitShows !== previousFitShows) {
+  if (fitShows !== previousFitShows && current.mapView.kind !== 'shows') {
+    previousFitShows = fitShows;
+  } else if (fitShows !== previousFitShows) {
     const focus = searchFocus !== null && performance.now() < searchFocus.until ? searchFocus.shows : null;
     if (focus === null) map.fitToData(previousFitShows !== null);
     else map.fitToShows(focus, true);
@@ -210,6 +234,15 @@ function renderAll() {
   }
 
   const today = parseIsoDate(current.today).getTime();
+  const nearby =
+    current.mapView.kind === 'near' && current.userPosition !== null ? showsWithin(mapShows, current.userPosition, current.mapView.radiusKm) : null;
+  mapControls.render({
+    view: current.mapView,
+    mode: current.mapMode,
+    status: current.locationStatus ?? (nearby === null || current.mapView.kind !== 'near' ? null : `${nearby.length === 1 ? '1 show' : `${nearby.length} shows`} within ${current.mapView.radiusKm} km`),
+    canListNearby: nearby !== null && nearby.length > 0,
+  });
+
   timelineControls.render({
     preset: state.get().timePreset,
     availablePresets: new Set(PRESET_IDS.filter((preset) => isPresetAvailable(preset, derived.visibleShows, today, current.includePastMonth))),
@@ -335,6 +368,8 @@ function focusSearchResult(entry: SearchEntry) {
     if (entry.bandIds.some((bandId) => hiddenBandIds.has(bandId))) {
       state.set({ hiddenBandIds: new Set([...hiddenBandIds].filter((bandId) => !entry.bandIds.includes(bandId))) });
     }
+    state.set({ mapView: { kind: 'shows' } });
+    map.setUserLocation(null);
     map.fitToShows(shows, true);
   }
   state.set({ selectedShowIds: new Set(entry.showIds), timePreset: null });
@@ -358,10 +393,62 @@ function applyPreset(preset: TimePreset | null, animate: boolean) {
   timeline.fitToData(animate, presetRange(preset, shows, today, current.includePastMonth));
 }
 
+function initialMapView(): MapViewPreset {
+  const region = urlState.region === null ? undefined : findRegion(urlState.region);
+  return region === undefined ? { kind: 'shows' } : { kind: 'region', region };
+}
+
+function setMapView(view: MapViewPreset) {
+  const previous = state.get().mapView;
+  state.set({ mapView: view, locationStatus: null });
+  if (view.kind !== 'near') {
+    applyMapView(view, true);
+    return;
+  }
+  if (!('geolocation' in navigator)) {
+    state.set({ mapView: previous, locationStatus: "This browser can't share its location here. Pick a region instead." });
+    return;
+  }
+  const known = state.get().userPosition;
+  if (known !== null) {
+    applyMapView(view, true);
+    return;
+  }
+  state.set({ locationStatus: 'Asking the browser for your location…' });
+  navigator.geolocation.getCurrentPosition(
+    (position) => {
+      state.set({ userPosition: [position.coords.longitude, position.coords.latitude], locationStatus: null });
+      applyMapView(state.get().mapView, true);
+    },
+    (error) => {
+      const message =
+        error.code === error.PERMISSION_DENIED
+          ? 'Location access was denied. Allow it in the browser or pick a region.'
+          : 'Your location could not be determined. Pick a region instead.';
+      state.set({ mapView: previous, locationStatus: message });
+      applyMapView(previous, true);
+    },
+    { enableHighAccuracy: false, timeout: 15_000, maximumAge: 600_000 },
+  );
+}
+
+function applyMapView(view: MapViewPreset, animate: boolean) {
+  const { userPosition } = state.get();
+  if (view.kind === 'near' && userPosition !== null) {
+    map.setUserLocation({ lon: userPosition[0], lat: userPosition[1], radiusKm: view.radiusKm });
+    map.fitToPoints([userPosition], view.radiusKm * 2, animate);
+    return;
+  }
+  map.setUserLocation(null);
+  if (view.kind === 'region') map.fitToPoints(regionPoints(view.region), 300, animate);
+  else map.fitToData(animate);
+}
+
 function resetViews() {
   searchFocus = null;
   const current = state.get();
-  state.set({ selectedShowIds: new Set(), hoverShowIds: new Set(), focusBandId: null });
+  state.set({ selectedShowIds: new Set(), hoverShowIds: new Set(), focusBandId: null, mapView: { kind: 'shows' }, locationStatus: null });
+  map.setUserLocation(null);
   map.fitToData(true);
   applyPreset(defaultPreset(derive(current).visibleShows, parseIsoDate(current.today).getTime()), true);
 }
@@ -388,6 +475,8 @@ function writeUrlState() {
     preset: current.timePreset === null || current.timePreset === defaultPreset(derive(current).visibleShows, parseIsoDate(current.today).getTime()) ? null : current.timePreset,
     allLanes: !current.hideEmptyLanes,
     includePastMonth: current.includePastMonth,
+    region: current.mapView.kind === 'region' ? current.mapView.region.id : null,
+    globe: current.mapMode === 'globe',
   });
   if (hash === location.hash || (hash === '' && location.hash === '')) return;
   const url = `${location.pathname}${location.search}${hash}`;

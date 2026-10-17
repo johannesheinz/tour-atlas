@@ -15,6 +15,9 @@ export interface UrlState {
   readonly preset: TimePreset | null;
   readonly allLanes: boolean;
   readonly includePastMonth: boolean;
+  /** Region id of the map view; "Near me" is never put in the URL. */
+  readonly region: string | null;
+  readonly globe: boolean;
 }
 
 const SORTS: readonly BandSort[] = ['name', 'next-show', 'show-count'];
@@ -43,6 +46,8 @@ export function parseUrlState(hash: string): UrlState {
     preset: PRESET_IDS.find((preset) => preset === params.get('when')) ?? null,
     allLanes: params.get('lanes') === 'all',
     includePastMonth: params.get('recent') === '1',
+    region: ID_PATTERN.test(params.get('view') ?? '') ? params.get('view') : null,
+    globe: params.get('globe') === '1',
   };
 }
 
@@ -60,6 +65,8 @@ export function serializeUrlState(state: UrlState): string {
   if (state.preset !== null) params.set('when', state.preset);
   if (state.allLanes) params.set('lanes', 'all');
   if (state.includePastMonth) params.set('recent', '1');
+  if (state.region !== null) params.set('view', state.region);
+  if (state.globe) params.set('globe', '1');
   const text = params.toString().replaceAll('%2C', ',');
   return text === '' ? '' : `#${text}`;
 }

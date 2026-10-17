@@ -1,4 +1,4 @@
-import { geoEqualEarth, geoPath } from 'd3-geo';
+import { geoCircle, geoDistance, geoEqualEarth, geoGraticule10, geoOrthographic, geoPath, type GeoProjection } from 'd3-geo';
 import { quadtree, type Quadtree } from 'd3-quadtree';
 import { select } from 'd3-selection';
 import { zoom, zoomIdentity, type D3ZoomEvent, type ZoomTransform } from 'd3-zoom';
@@ -8,7 +8,8 @@ import type { WorldTopology } from '../data/countryLocator.ts';
 import type { ShowRef } from '../model.ts';
 import { context2d, h, prefersReducedMotion, s } from './dom.ts';
 import { formatDate, plural } from './format.ts';
-import { computeMapFit, interpolateFit, type LonLat, type MapFit } from './geoFit.ts';
+import { computeGlobeFit, computeMapFit, interpolateFit, type LonLat, type MapFit } from './geoFit.ts';
+import { radiusDegrees } from './mapRegions.ts';
 import { placeLabels } from './labels.ts';
 import { clusterGroups, groupByCoordinates, pinLabel, type DisplayPin, type PinGroup } from './pins.ts';
 import { annularSectorPath, pinSegments, type PinSegment } from './pinSegments.ts';
@@ -30,6 +31,10 @@ export const MAP_SETTINGS = {
   minZoom: 0.5,
   maxZoom: 40,
   fitDurationMs: 300,
+  /** The globe turns further than the flat map moves, so it gets more time. */
+  globeFitDurationMs: 900,
+  globeMinScale: 0.8,
+  globeMaxScale: 60,
   maxBandsWithRoutes: 8,
   labelFont: '600 12px Archivo, system-ui, sans-serif',
   badgeFont: '600 10px Archivo, system-ui, sans-serif',
@@ -52,11 +57,22 @@ export interface MapCallbacks {
   onSelect(shows: readonly ShowRef[]): void;
 }
 
+export type MapMode = 'flat' | 'globe';
+
+export interface UserLocation {
+  readonly lon: number;
+  readonly lat: number;
+  readonly radiusKm: number;
+}
+
 export interface MapView {
   render(props: MapProps): void;
   fitToData(animate: boolean): void;
   fitToShows(shows: readonly ShowRef[], animate: boolean): void;
+  fitToPoints(points: readonly LonLat[], minSpanKm: number, animate: boolean): void;
   zoomBy(factor: number): void;
+  setMode(mode: MapMode): void;
+  setUserLocation(location: UserLocation | null): void;
 }
 
 interface PinStyle {
@@ -72,22 +88,35 @@ interface PinStyle {
 export function createMapView(container: HTMLElement, world: WorldTopology, callbacks: MapCallbacks): MapView {
   const land = feature(world, world.objects.land);
   const borders = mesh(world, world.objects.countries, (a, b) => a !== b);
-  const projection = geoEqualEarth();
-  const path = geoPath(projection);
+  let mode: MapMode = 'flat';
+  let projection: GeoProjection = geoEqualEarth();
+  let path = geoPath(projection);
+  let userLocation: UserLocation | null = null;
+  let globeFitRadius = 1;
 
   const halftoneDot = s('circle', { class: 'halftone-dot', cx: 2, cy: 2, r: 1.15 });
   const halftone = s('pattern', { id: 'halftone', patternUnits: 'userSpaceOnUse', width: 4, height: 4 }, halftoneDot);
+  const globeShade = s(
+    'radialGradient',
+    { id: 'globe-shade', cx: '42%', cy: '38%', r: '62%' },
+    s('stop', { offset: '70%', class: 'globe-shade-clear' }),
+    s('stop', { offset: '100%', class: 'globe-shade-edge' }),
+  );
   const spherePath = s('path', { class: 'map-sphere' });
+  const graticulePath = s('path', { class: 'map-graticule' });
   const landPath = s('path', { class: 'map-land', fill: 'url(#halftone)' });
   const bordersPath = s('path', { class: 'map-borders' });
+  const shadePath = s('path', { class: 'map-globe-shade', fill: 'url(#globe-shade)' });
+  const radiusPath = s('path', { class: 'map-radius' });
   const routesLayer = s('g', { class: 'map-routes' });
-  const zoomLayer = s('g', { class: 'map-zoom-layer' }, spherePath, landPath, bordersPath, routesLayer);
+  const zoomLayer = s('g', { class: 'map-zoom-layer' }, spherePath, graticulePath, landPath, bordersPath, shadePath, radiusPath, routesLayer);
   const pinsLayer = s('g', { class: 'map-pins' });
-  const surface = s('svg', { class: 'map-surface', role: 'img', 'aria-label': 'World map of tour dates' }, s('defs', {}, halftone), zoomLayer, pinsLayer);
+  const surface = s('svg', { class: 'map-surface', role: 'img', 'aria-label': 'World map of tour dates' }, s('defs', {}, halftone, globeShade), zoomLayer, pinsLayer);
   const canvas = h('canvas', { class: 'map-canvas', 'aria-hidden': 'true' });
   const highlightsLayer = s('g', { class: 'map-highlights' });
   const labelsLayer = s('g', { class: 'map-labels' });
-  const overlay = s('svg', { class: 'map-overlay', 'aria-hidden': 'true' }, labelsLayer, highlightsLayer);
+  const meMarker = s('circle', { class: 'map-me', r: 6, hidden: true });
+  const overlay = s('svg', { class: 'map-overlay', 'aria-hidden': 'true' }, labelsLayer, highlightsLayer, meMarker);
   const cursor = h('button', { type: 'button', class: 'map-cursor', 'aria-label': 'Map pins. Use the arrow keys to move between shows.' });
   const announcer = h('div', { class: 'visually-hidden', 'aria-live': 'polite' });
   container.append(surface, canvas, overlay, cursor, announcer);
@@ -114,6 +143,7 @@ export function createMapView(container: HTMLElement, world: WorldTopology, call
   const labelWidths = new Map<string, number>();
 
   const zoomBehavior = zoom<SVGSVGElement, unknown>()
+    .filter((event: MouseEvent) => mode === 'flat' && (!event.ctrlKey || event.type === 'wheel') && !event.button)
     .scaleExtent([MAP_SETTINGS.minZoom, MAP_SETTINGS.maxZoom])
     .clickDistance(5)
     .on('start', () => {
@@ -147,7 +177,7 @@ export function createMapView(container: HTMLElement, world: WorldTopology, call
     const ratio = window.devicePixelRatio;
     canvas.width = Math.round(width * ratio);
     canvas.height = Math.round(height * ratio);
-    fitToData(false);
+    refit();
   });
   resizeObserver.observe(container);
 
@@ -264,22 +294,54 @@ export function createMapView(container: HTMLElement, world: WorldTopology, call
     drawHighlights();
   }
 
+  /** What the last fit was asked to show; a resize repeats it. */
+  let lastFit: { readonly kind: 'data' } | { readonly kind: 'points'; readonly points: readonly LonLat[]; readonly minSpanKm: number } = { kind: 'data' };
+
+  function refit() {
+    if (lastFit.kind === 'data') fitToData(false);
+    else fitToPoints(lastFit.points, lastFit.minSpanKm, false);
+  }
+
   function fitToData(animate: boolean) {
+    lastFit = { kind: 'data' };
     if (props === null) {
       pendingFit = true;
       return;
     }
-    fitToShows(props.fitShows, animate);
+    fitShowsNow(props.fitShows, animate);
+  }
+
+  function fitShowsNow(shows: readonly ShowRef[], animate: boolean) {
+    fitPointsNow(
+      shows.map((ref): LonLat => [ref.show.geo.lon, ref.show.geo.lat]),
+      MAP_SETTINGS.minSpanKm,
+      animate,
+    );
   }
 
   function fitToShows(shows: readonly ShowRef[], animate: boolean) {
+    fitToPoints(
+      shows.map((ref): LonLat => [ref.show.geo.lon, ref.show.geo.lat]),
+      MAP_SETTINGS.minSpanKm,
+      animate,
+    );
+  }
+
+  function fitToPoints(points: readonly LonLat[], minSpanKm: number, animate: boolean) {
+    lastFit = { kind: 'points', points, minSpanKm };
+    fitPointsNow(points, minSpanKm, animate);
+  }
+
+  function fitPointsNow(points: readonly LonLat[], minSpanKm: number, animate: boolean) {
     if (props === null || width <= 2 * MAP_SETTINGS.padding || height <= 2 * MAP_SETTINGS.padding) {
       pendingFit = true;
       return;
     }
     pendingFit = false;
-    const points: LonLat[] = shows.map((ref) => [ref.show.geo.lon, ref.show.geo.lat]);
-    const target = computeMapFit(points, { width, height, padding: MAP_SETTINGS.padding, minSpanKm: MAP_SETTINGS.minSpanKm });
+    const options = { width, height, padding: MAP_SETTINGS.padding, minSpanKm };
+    const target = mode === 'flat' ? computeMapFit(points, options) : computeGlobeFit(points, options);
+    globeFitRadius = Math.min(width, height) / 2 - MAP_SETTINGS.padding;
+    const duration = mode === 'flat' ? MAP_SETTINGS.fitDurationMs : MAP_SETTINGS.globeFitDurationMs;
     cancelAnimation();
     const start = base === null ? null : flatten(base, transform);
     resetZoomTransform();
@@ -289,7 +351,7 @@ export function createMapView(container: HTMLElement, world: WorldTopology, call
     }
     const startedAt = performance.now();
     const step = (now: number) => {
-      const t = Math.min(1, (now - startedAt) / MAP_SETTINGS.fitDurationMs);
+      const t = Math.min(1, (now - startedAt) / duration);
       applyBase(interpolateFit(start, target, easeInOutCubic(t)), t < 1);
       animationFrame = t < 1 ? requestAnimationFrame(step) : null;
     };
@@ -298,21 +360,94 @@ export function createMapView(container: HTMLElement, world: WorldTopology, call
 
   function zoomBy(factor: number) {
     if (width === 0) return;
+    if (mode === 'globe') {
+      if (base !== null) applyBase(scaleGlobe(base, factor));
+      return;
+    }
     surfaceSelection.call(zoomBehavior.scaleBy, factor, [width / 2, height / 2]);
   }
+
+  function scaleGlobe(fit: MapFit, factor: number): MapFit {
+    const scale = Math.min(globeFitRadius * MAP_SETTINGS.globeMaxScale, Math.max(globeFitRadius * MAP_SETTINGS.globeMinScale, fit.scale * factor));
+    return { ...fit, scale };
+  }
+
+  function setMode(next: MapMode) {
+    if (next === mode) return;
+    mode = next;
+    cancelAnimation();
+    resetZoomTransform();
+    projection = next === 'flat' ? geoEqualEarth() : geoOrthographic().clipAngle(90);
+    path = geoPath(projection);
+    container.classList.toggle('is-globe', next === 'globe');
+    base = null;
+    fitToData(false);
+  }
+
+  function setUserLocation(location: UserLocation | null) {
+    userLocation = location;
+    if (base !== null) applyBase(base);
+  }
+
+  let globeDrag: { readonly x: number; readonly y: number; readonly fit: MapFit } | null = null;
+  let globeSettle: ReturnType<typeof setTimeout> | undefined;
+
+  surface.addEventListener('pointerdown', (event) => {
+    if (mode !== 'globe' || event.button !== 0 || base === null) return;
+    cancelAnimation();
+    tooltip.hide();
+    globeDrag = { x: event.clientX, y: event.clientY, fit: base };
+    surface.setPointerCapture(event.pointerId);
+  });
+  surface.addEventListener('pointermove', (event) => {
+    if (mode !== 'globe' || globeDrag === null) return;
+    const degreesPerPixel = 180 / Math.PI / globeDrag.fit.scale;
+    const [lambda, phi] = globeDrag.fit.rotate;
+    const nextPhi = Math.max(-90, Math.min(90, phi - (event.clientY - globeDrag.y) * degreesPerPixel));
+    applyBase({ ...globeDrag.fit, rotate: [lambda + (event.clientX - globeDrag.x) * degreesPerPixel, nextPhi, 0] }, true);
+  });
+  const endGlobeDrag = () => {
+    if (globeDrag === null) return;
+    globeDrag = null;
+    if (base !== null) applyBase(base);
+  };
+  surface.addEventListener('pointerup', endGlobeDrag);
+  surface.addEventListener('pointercancel', endGlobeDrag);
+  surface.addEventListener(
+    'wheel',
+    (event) => {
+      if (mode !== 'globe' || base === null) return;
+      event.preventDefault();
+      applyBase(scaleGlobe(base, Math.exp(-event.deltaY * 0.002)), true);
+      clearTimeout(globeSettle);
+      globeSettle = setTimeout(() => {
+        if (base !== null) applyBase(base);
+      }, 150);
+    },
+    { passive: false },
+  );
 
   function applyBase(fit: MapFit, inMotion = false) {
     base = fit;
     projection.rotate([...fit.rotate]).scale(fit.scale).translate([...fit.translate]).precision(inMotion ? 2 : 0.5);
-    spherePath.setAttribute('d', path({ type: 'Sphere' }) ?? '');
+    const sphere = path({ type: 'Sphere' }) ?? '';
+    spherePath.setAttribute('d', sphere);
+    shadePath.setAttribute('d', mode === 'globe' ? sphere : '');
+    graticulePath.setAttribute('d', mode === 'globe' ? (path(geoGraticule10()) ?? '') : '');
     landPath.setAttribute('d', path(land) ?? '');
     bordersPath.setAttribute('d', path(borders) ?? '');
+    radiusPath.setAttribute(
+      'd',
+      userLocation === null ? '' : (path(geoCircle().center([userLocation.lon, userLocation.lat]).radius(radiusDegrees(userLocation.radiusKm))()) ?? ''),
+    );
     renderRoutes();
     projectAndCluster(inMotion);
   }
 
   function projectAndCluster(inMotion = false) {
+    const front = frontCenter();
     const projected = groups.flatMap((group) => {
+      if (front !== null && geoDistance(front, [group.lon, group.lat]) > Math.PI / 2) return [];
       const point = projection([group.lon, group.lat]);
       return point === null ? [] : [{ group, x: point[0], y: point[1] }];
     });
@@ -328,6 +463,24 @@ export function createMapView(container: HTMLElement, world: WorldTopology, call
     else placePinLabels();
     drawHighlights();
     positionCursor();
+    positionMeMarker();
+  }
+
+  /** The point facing the viewer on the globe; null on the flat map, where everything is visible. */
+  function frontCenter(): [number, number] | null {
+    if (mode !== 'globe' || base === null) return null;
+    return [-base.rotate[0], -base.rotate[1]];
+  }
+
+  function positionMeMarker() {
+    const front = frontCenter();
+    const hidden = userLocation === null || (front !== null && geoDistance(front, [userLocation.lon, userLocation.lat]) > Math.PI / 2);
+    meMarker.toggleAttribute('hidden', hidden);
+    if (hidden || userLocation === null) return;
+    const point = projection([userLocation.lon, userLocation.lat]);
+    if (point === null) return;
+    meMarker.setAttribute('cx', String(transform.applyX(point[0])));
+    meMarker.setAttribute('cy', String(transform.applyY(point[1])));
   }
 
   function rebuildPins() {
@@ -358,6 +511,7 @@ export function createMapView(container: HTMLElement, world: WorldTopology, call
     positionPins();
     drawHighlights();
     positionCursor();
+    positionMeMarker();
   }
 
   function cancelAnimation() {
@@ -572,11 +726,14 @@ export function createMapView(container: HTMLElement, world: WorldTopology, call
   return {
     render(next) {
       render(next);
-      if (pendingFit) fitToData(false);
+      if (pendingFit) refit();
     },
     fitToData,
     fitToShows,
+    fitToPoints,
     zoomBy,
+    setMode,
+    setUserLocation,
   };
 }
 
