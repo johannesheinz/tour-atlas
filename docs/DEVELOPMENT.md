@@ -30,6 +30,7 @@ for geocoding.
 | `TOUR_ATLAS_BANDS_DIR` | `vite build` | Build from another directory of band files (the size-budget build uses this). Default `data/bands`. |
 | `TOUR_ATLAS_OUT_DIR` | `vite build` | Write the build somewhere else. Default `dist`. |
 | `TOUR_ATLAS_SITE_URL` | `vite build` | The published address, absolute `https:` and ending in `/` (for example `https://example.org/tour-atlas/`). When set, the build adds the OpenGraph/Twitter card tags and puts `og-card.png` next to `index.html`; anything else set fails the build. Unset (local builds, CI, the budget build) means no card. The deploy workflow sets it from GitHub Pages. |
+| `TOUR_ATLAS_CHROMIUM` | `npm run demo-video` | Path to a Chrome or Chromium executable for the recording, instead of the one `npx playwright-core install chromium` downloads. |
 | `GITHUB_STEP_SUMMARY` | `validate`, `review` with `--format github` | Set by GitHub Actions; the tools append their Markdown summary to it. |
 
 For local runs, keep them in `.env.local`, which is git-ignored; `npm run geocode` loads it:
@@ -66,6 +67,26 @@ that blocks local fonts falls back to system fonts and nothing else changes.
 `npm run build:budget` builds the same app with a synthetic 50 bands / 5,000 shows dataset and fails above
 800 kB transferred (gzipped HTML plus every font file of the heaviest style; browsers download only the
 active style's fonts, and the extended Latin files only for letters like ĉ or Č). It is currently about 774 kB.
+
+## Demo video
+
+```sh
+npx playwright-core install chromium   # once, and after updating playwright-core
+npm run demo-video
+```
+
+Builds the app, serves `dist/` with Vite's preview server, plays a scripted 50-second tour through it in
+headless Chromium (title card, map and timeline, a tour, shows around Stockholm, filters, sharing, the phone
+layout, end card) and encodes it with ffmpeg to `docs/demo.mp4` (1920x1080, H.264), plus the poster
+`docs/demo-poster.jpg` from the Stockholm scene that README.md links. Frames go to a temporary directory
+under `.cache/`, removed after a successful run; on failure the files in `docs/` stay untouched.
+
+It needs ffmpeg on the `PATH` and the Chromium build that the pinned `playwright-core` expects (or
+`TOUR_ATLAS_CHROMIUM`, see above). The script, its overlay (cursor, captions, cards) and the phone frame page
+are in `tools/demo-video.ts` and `tools/demo/`; the phone page is served by the preview server only and never
+reaches `dist/`. The recording uses the real band data, so the video changes with it: commit the new files
+after notable data or interface changes. It needs the band Sabaton for the tour scene and shows around
+Stockholm for the area scene, and stops with an error otherwise.
 
 ## Deploy
 

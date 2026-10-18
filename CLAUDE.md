@@ -22,6 +22,7 @@ npm run review -- --base origin/main   # diff + plausibility warnings, as posted
 npm run tags           # copy data/tags.json ids into the schema's band.tags enum
 npm run logos          # download band.logoUrl images once into data/logos/<id>.webp (silhouettes)
 npm run logo:preview -- <band-id> <url>   # check a candidate logo; previews in .cache/logo-previews
+npm run demo-video     # build, then record docs/demo.mp4 + docs/demo-poster.jpg (needs ffmpeg and a Playwright Chromium)
 npm run og-card        # rebuild src/brand/og-card.svg/.png (the social card image); commit both
 npm run check          # everything CI runs, in order
 ```
@@ -76,6 +77,7 @@ Only for work that needs judgement; everything checkable is a tool or a CI job.
   d3-transition, d3-quadtree, topojson-client, world-atlas, @fontsource/league-gothic, @fontsource/archivo,
   @fontsource/jost, @fontsource/charis-sil.
   Justify any addition in the PR. `sharp` is a dev dependency for tools/logos.ts and tools/og-card.ts only; it never runs at build time and never reaches the bundle.
+  `playwright-core` is a dev dependency for tools/demo-video.ts only, likewise.
 - No network at runtime, no CDNs, no cookies, no localStorage/sessionStorage/IndexedDB. View state lives in
   the URL hash only. `tools/check-dist.ts` fails the build otherwise; the CSP sets `connect-src 'none'` and
   `font-src 'self'`.

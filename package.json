@@ -22,6 +22,7 @@
     "logos": "node tools/logos.ts data/bands",
     "logo:preview": "node tools/logos.ts --preview",
     "og-card": "node tools/og-card.ts",
+    "demo-video": "npm run build && node tools/demo-video.ts",
     "tags": "node tools/tags.ts",
     "review": "node tools/review.ts",
     "check": "npm run typecheck && npm run validate && node tools/normalize.ts data/bands --check && node tools/tags.ts --check && npm test && npm run build"
@@ -54,6 +55,7 @@
     "@types/topojson-client": "3.1.5",
     "@types/topojson-specification": "1.0.5",
     "ajv": "8.20.0",
+    "playwright-core": "1.64.1",
     "sharp": "0.35.5",
     "typescript": "7.0.2",
     "vite": "8.3.4",
