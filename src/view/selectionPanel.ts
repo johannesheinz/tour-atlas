@@ -2,7 +2,8 @@ import { bandColor, type ShowRef, type ThemeMode } from '../model.ts';
 import { bandIdentity } from './bandIdentity.ts';
 import { iconButton } from './icons.ts';
 import { h, prefersReducedMotion, safeExternalLink } from './dom.ts';
-import { formats, t } from '../i18n/index.ts';
+import { currentLocale, formats, t } from '../i18n/index.ts';
+import { NEAR_ME_RADII, type Distance } from './mapRegions.ts';
 import { countryName, formatDate, formatTime, formatWeekday, statusKind } from './format.ts';
 
 export interface SelectionHeading {
@@ -23,6 +24,8 @@ export interface SelectionPanelProps {
   readonly showBand: boolean;
   readonly backLabel: string;
   readonly mode: ThemeMode;
+  /** Set when the panel lists one place: the radius chips centre an area on it. */
+  readonly aroundHere: { readonly activeRadius: Distance | null } | null;
 }
 
 export interface SelectionPanelCallbacks {
@@ -30,6 +33,7 @@ export interface SelectionPanelCallbacks {
   /** Hovering or focusing a row points the map and timeline at that show; null when it leaves. */
   onHover(ref: ShowRef | null): void;
   onReplayTour(): void;
+  onAroundHere(radius: Distance): void;
 }
 
 export interface SelectionPanelView {
@@ -50,15 +54,32 @@ export function createSelectionPanel(container: HTMLElement, callbacks: Selectio
   replay.classList.add('selection-replay');
   replay.addEventListener('click', () => callbacks.onReplayTour());
   const note = h('p', { class: 'selection-note' });
+  const unit = currentLocale().distance;
+  const radiusChips = NEAR_ME_RADII[unit].map((value) => {
+    const radius: Distance = { value, unit };
+    const chip = h('button', { type: 'button', class: 'menu-item', 'aria-pressed': 'false' }, formats().distance(value, unit));
+    chip.addEventListener('click', () => callbacks.onAroundHere(radius));
+    return [radius, chip] as const;
+  });
+  const aroundHeading = h('p', { class: 'menu-heading', id: 'selection-around-heading' }, t().map.aroundHere);
+  const aroundRow = h(
+    'div',
+    { class: 'selection-around', role: 'group', 'aria-labelledby': aroundHeading.id, hidden: true },
+    aroundHeading,
+    h('div', { class: 'menu-chips' }, ...radiusChips.map(([, chip]) => chip)),
+  );
   const body = h('div', { class: 'selection-body' });
   const announcer = h('div', { class: 'visually-hidden', 'aria-live': 'polite' });
-  container.append(back, h('div', { class: 'selection-head' }, h('div', { class: 'selection-title-row' }, title, replay), note), body, announcer);
+  container.append(back, h('div', { class: 'selection-head' }, h('div', { class: 'selection-title-row' }, title, replay), note, aroundRow), body, announcer);
   let previous: SelectionPanelProps | null = null;
   let rowsByShowId = new Map<string, HTMLLIElement>();
   let highlighted: readonly HTMLLIElement[] = [];
 
   return {
     render(props) {
+      aroundRow.hidden = props.aroundHere === null;
+      const activeRadius = props.aroundHere?.activeRadius ?? null;
+      for (const [radius, chip] of radiusChips) chip.setAttribute('aria-pressed', String(activeRadius !== null && activeRadius.value === radius.value && activeRadius.unit === radius.unit));
       if (previous !== null && previous.shows === props.shows && previous.mode === props.mode && previous.backLabel === props.backLabel && sameHeading(previous.heading, props.heading)) return;
       const headingChanged = previous === null || !sameHeading(previous.heading, props.heading);
       previous = props;

@@ -39,6 +39,8 @@ export interface Formats {
   readonly regions: RegionNames;
   /** "25 km", "15 mi", "2,5 mil": the unit's symbol is the same in every language. */
   readonly distance: (value: number, unit: DistanceUnit) => string;
+  /** "60.17°": a coordinate's size to two decimals, for the centre of an area that no city names. */
+  readonly degrees: (value: number) => string;
 }
 
 type Months = readonly [string, string, string, string, string, string, string, string, string, string, string, string];
@@ -98,6 +100,7 @@ export function ownWordFormats(locale: ResolvedLocale, words: FormatWords): Form
 
 function buildFormats(hourCycle: HourCycle | undefined, dateFormat: (options: DateOptions) => DateRangeFormat, list: ListFormat, regions: RegionNames, numberLocale: string): Formats {
   const distanceNumber = new Intl.NumberFormat(numberLocale, { maximumFractionDigits: 1, useGrouping: false });
+  const degreeNumber = new Intl.NumberFormat(numberLocale, { minimumFractionDigits: 2, maximumFractionDigits: 2, useGrouping: false });
   const timeOnClock = (clock: HourCycle | undefined) => dateFormat({ hour: 'numeric', minute: '2-digit', ...(clock === undefined ? {} : { hourCycle: clock }) });
   return {
     date: dateFormat({ day: 'numeric', month: 'short', year: 'numeric' }),
@@ -113,6 +116,7 @@ function buildFormats(hourCycle: HourCycle | undefined, dateFormat: (options: Da
     list,
     regions,
     distance: (value, unit) => `${distanceNumber.format(value)}\u00a0${unit}`,
+    degrees: (value) => `${degreeNumber.format(value)}°`,
   };
 }
 

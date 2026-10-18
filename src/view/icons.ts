@@ -3,6 +3,7 @@ import { h, s } from './dom.ts';
 /** Icons on a 24 px grid, drawn in the ink colour like the rest of the print: stroked, except the filled marks below. */
 const PATHS = {
   plus: 'M12 5v14M5 12h14',
+  close: 'M6.5 6.5l11 11M17.5 6.5l-11 11',
   minus: 'M5 12h14',
   fit: 'M4 9V4h5M15 4h5v5M20 15v5h-5M9 20H4v-5',
   globe: 'M12 3a9 9 0 1 0 0 18a9 9 0 1 0 0-18M3.6 9h16.8M3.6 15h16.8M12 3c-2.4 2.6-3.6 5.6-3.6 9s1.2 6.4 3.6 9M12 3c2.4 2.6 3.6 5.6 3.6 9s-1.2 6.4-3.6 9',

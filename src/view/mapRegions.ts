@@ -26,10 +26,12 @@ export const MAP_REGIONS: readonly MapRegion[] = [
 
 export type MapMode = 'flat' | 'globe';
 
-export interface UserLocation {
+/** The circle drawn for an active area, with a marker at its centre: the viewer's position or a picked point. */
+export interface AreaCircle {
   readonly lon: number;
   readonly lat: number;
   readonly radiusKm: number;
+  readonly centre: 'viewer' | 'point';
 }
 
 export interface Distance {
@@ -53,7 +55,8 @@ export function kilometres(distance: Distance): number {
 export type MapViewPreset =
   | { readonly kind: 'shows' }
   | { readonly kind: 'region'; readonly region: MapRegion }
-  | { readonly kind: 'near'; readonly radius: Distance };
+  | { readonly kind: 'near'; readonly radius: Distance }
+  | { readonly kind: 'point'; readonly center: LonLat; readonly radius: Distance };
 
 const EARTH_RADIUS_KM = 6371;
 const EDGE_STEP_DEGREES = 10;

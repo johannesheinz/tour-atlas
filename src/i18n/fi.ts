@@ -106,7 +106,7 @@ export const fi: Messages = {
   shows,
   bands,
   noShowsInRange: 'Ei keikkoja tällä aikavälillä',
-  noShowsNear: (distance) => `Ei keikkoja ${distance}:n säteellä tällä aikavälillä`,
+  noShowsNear: (within) => `Ei keikkoja ${within} tällä aikavälillä`,
   status: { scheduled: 'Tulossa', cancelled: 'Peruttu', postponed: 'Siirretty', soldout: 'Loppuunmyyty', played: 'Soitettu' },
   search: {
     placeholder: 'Hae yhtyeitä, kaupunkeja, keikkapaikkoja, kiertueita',
@@ -138,8 +138,8 @@ export const fi: Messages = {
     noMatch: (query) => `Mikään yhtye ei vastaa hakua ”${query}”.`,
     quietToggle: (open, count) =>
       n(count, open ? { one: 'Piilota # yhtye ilman keikkoja tällä aikavälillä', other: 'Piilota # yhtyettä ilman keikkoja tällä aikavälillä' } : { one: 'Näytä # yhtye ilman keikkoja tällä aikavälillä', other: 'Näytä # yhtyettä ilman keikkoja tällä aikavälillä' }),
-    quietToggleNear: (open, count, distance) =>
-      n(count, open ? { one: `Piilota # yhtye ilman keikkoja ${distance}:n säteellä tällä aikavälillä`, other: `Piilota # yhtyettä ilman keikkoja ${distance}:n säteellä tällä aikavälillä` } : { one: `Näytä # yhtye ilman keikkoja ${distance}:n säteellä tällä aikavälillä`, other: `Näytä # yhtyettä ilman keikkoja ${distance}:n säteellä tällä aikavälillä` }),
+    quietToggleNear: (open, count, within) =>
+      n(count, open ? { one: `Piilota # yhtye ilman keikkoja ${within} tällä aikavälillä`, other: `Piilota # yhtyettä ilman keikkoja ${within} tällä aikavälillä` } : { one: `Näytä # yhtye ilman keikkoja ${within} tällä aikavälillä`, other: `Näytä # yhtyettä ilman keikkoja ${within} tällä aikavälillä` }),
     previewBadge: 'Oma tiedosto',
     showOnMap: (band) => `Näytä ${band} kartalla ja aikajanalla`,
     listDates: (band) => `Näytä yhtyeen ${band} keikat`,
@@ -150,9 +150,9 @@ export const fi: Messages = {
     summary: (cities, countries) =>
       `Aikavälillä keikkoja ${n(cities, { one: '# kaupungissa', other: '# kaupungissa' })} ${n(countries, { one: '# maassa', other: '# maassa' })}`,
     empty: 'Ei keikkoja aikavälillä. Valitse pidempi aikaväli.',
-    summaryNear: (cities, countries, distance) =>
-      `Aikavälillä keikkoja ${distance}:n säteellä ${n(cities, { one: '# kaupungissa', other: '# kaupungissa' })} ${n(countries, { one: '# maassa', other: '# maassa' })}`,
-    emptyNear: (distance) => `Ei keikkoja ${distance}:n säteellä aikavälillä. Valitse pidempi aikaväli tai suurempi alue.`,
+    summaryNear: (cities, countries, within) =>
+      `Aikavälillä keikkoja ${within} ${n(cities, { one: '# kaupungissa', other: '# kaupungissa' })} ${n(countries, { one: '# maassa', other: '# maassa' })}`,
+    emptyNear: (within) => `Ei keikkoja ${within} aikavälillä. Valitse pidempi aikaväli tai suurempi alue.`,
     noMatch: (query) => `Mikään kaupunki tai maa ei vastaa hakua ”${query}”.`,
     showCities: (country) => `Näytä maan ${country} kaupungit`,
     hideCities: (country) => `Piilota maan ${country} kaupungit`,
@@ -179,8 +179,8 @@ export const fi: Messages = {
     emptyNamed: (name, range) => `${name}: ei keikkoja ${range}. ${zoomOutHint}`,
     emptyBands: (range) => `Näillä yhtyeillä ei ole keikkoja ${range}. ${zoomOutHint}`,
     emptyPlace: (place, range) => `${place}: ei keikkoja ${range}. ${zoomOutHint}`,
-    near: (range, distance) => `${distance}:n säteellä ${range}`,
-    nearbyTitle: (distance) => `Keikat ${distance}:n säteellä`,
+    near: (range, within) => `${within} ${range}`,
+    nearbyTitle: (within) => `Keikat ${within}`,
     emptyNearby: (range) => `Ei keikkoja ${range}. ${zoomOutHint}`,
     hiddenPicked: 'Nämä keikat on piilotettu. Ota niiden yhtyeet näkyviin yhtyelistasta.',
     pickedOne: (band, city) => `${band}, ${city}`,
@@ -203,11 +203,11 @@ export const fi: Messages = {
     cursor: 'Aikajana. Siirry keikasta toiseen nuolinäppäimillä.',
     noBandsShown: 'Yhtään yhtyettä ei näytetä. Ota yhtyeitä näkyviin listasta, niin näet niiden keikat.',
     noShowsInWindow: 'Ei keikkoja tällä aikavälillä. Valitse toinen aikaväli tai loitonna.',
-    noShowsInWindowNear: (distance) => `Ei keikkoja ${distance}:n säteellä tällä aikavälillä. Valitse toinen aikaväli tai suurempi alue, tai loitonna.`,
+    noShowsInWindowNear: (within) => `Ei keikkoja ${within} tällä aikavälillä. Valitse toinen aikaväli tai suurempi alue, tai loitonna.`,
     hiddenLanes: (count) =>
       n(count, { one: '# yhtyeellä ei ole keikkoja tällä aikavälillä, joten se on piilotettu.', other: '# yhtyeellä ei ole keikkoja tällä aikavälillä, joten ne on piilotettu.' }),
-    hiddenLanesNear: (count, distance) =>
-      n(count, { one: `# yhtyeellä ei ole keikkoja ${distance}:n säteellä tällä aikavälillä, joten se on piilotettu.`, other: `# yhtyeellä ei ole keikkoja ${distance}:n säteellä tällä aikavälillä, joten ne on piilotettu.` }),
+    hiddenLanesNear: (count, within) =>
+      n(count, { one: `# yhtyeellä ei ole keikkoja ${within} tällä aikavälillä, joten se on piilotettu.`, other: `# yhtyeellä ei ole keikkoja ${within} tällä aikavälillä, joten ne on piilotettu.` }),
     showAllLanes: 'Näytä kaikki rivit',
     dot: (band, date, city, status) => `${band}: ${date}, ${city}${status === null ? '' : `, ${status}`}. Lisätiedot Enter-näppäimellä.`,
     presets: {
@@ -243,15 +243,25 @@ export const fi: Messages = {
     zoomIn: 'Lähennä',
     zoomOut: 'Loitonna',
     fit: 'Sovita näkymä keikkoihin',
-    area: 'Karttanäkymä: lähelläni tai alue',
+    area: 'Karttanäkymä: lähelläni, pisteen ympärillä tai alue',
     areaMenu: 'Karttanäkymä',
     nearMe: 'Lähelläni',
+    aroundPoint: 'Pisteen ympärillä',
+    pickAnother: 'Valitse toinen piste',
+    pickHint: 'Napsauta karttaa asettaaksesi keskipisteen',
+    cancelPick: 'Peruuta',
+    clearArea: 'Poista alue',
+    aroundHere: 'Keikat lähistöllä',
     regions: 'Alueet',
     regionNames: { europe: 'Eurooppa', 'north-america': 'Pohjois-Amerikka', 'south-america': 'Etelä-Amerikka', asia: 'Aasia', africa: 'Afrikka', oceania: 'Oseania', world: 'Koko maailma' },
     asGlobe: 'Näytä maapallona',
     asFlat: 'Näytä tasokarttana',
     listNearby: 'Näytä nämä keikat listana',
-    nearby: (count, distance) => `${shows(count)} ${distance}:n säteellä`,
+    nearby: (count, within) => `${shows(count)} ${within}`,
+    within: (distance) => `${distance}:n säteellä`,
+    withinOf: (distance, place) => `${distance}:n säteellä paikasta ${place}`,
+    compass: { north: 'P', south: 'E', east: 'I', west: 'L' },
+    coordinates: (latitude, longitude) => `${latitude}, ${longitude}`,
     locating: 'Kysytään sijaintiasi selaimelta…',
     locationUnsupported: 'Tämä selain ei voi jakaa sijaintia täällä. Valitse sen sijaan alue.',
     locationDenied: 'Sijainnin käyttö estettiin. Salli se selaimessa tai valitse alue.',

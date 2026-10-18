@@ -39,8 +39,8 @@ export interface Messages {
   readonly shows: Count;
   readonly bands: Count;
   readonly noShowsInRange: Text;
-  /** The distance comes formatted in the viewer's unit, as in every *Near text. */
-  readonly noShowsNear: (distance: string) => string;
+  /** The area comes as map.within or map.withinOf builds it, as in every *Near text. */
+  readonly noShowsNear: (within: string) => string;
   readonly status: Readonly<Record<StatusKind, string>>;
   readonly search: {
     readonly placeholder: Text;
@@ -71,7 +71,7 @@ export interface Messages {
     readonly noBandForGenres: Text;
     readonly noMatch: (query: string) => string;
     readonly quietToggle: (open: boolean, count: number) => string;
-    readonly quietToggleNear: (open: boolean, count: number, distance: string) => string;
+    readonly quietToggleNear: (open: boolean, count: number, within: string) => string;
     readonly previewBadge: Text;
     readonly showOnMap: (band: string) => string;
     readonly listDates: (band: string) => string;
@@ -81,8 +81,8 @@ export interface Messages {
     readonly clearFilter: Text;
     readonly summary: (cities: number, countries: number) => string;
     readonly empty: Text;
-    readonly summaryNear: (cities: number, countries: number, distance: string) => string;
-    readonly emptyNear: (distance: string) => string;
+    readonly summaryNear: (cities: number, countries: number, within: string) => string;
+    readonly emptyNear: (within: string) => string;
     readonly noMatch: (query: string) => string;
     readonly showCities: (country: string) => string;
     readonly hideCities: (country: string) => string;
@@ -110,8 +110,8 @@ export interface Messages {
     readonly emptyBands: (range: string) => string;
     readonly emptyPlace: (place: string, range: string) => string;
     /** Narrows a range text (allDates, between) to the area; the result goes wherever a range text goes. */
-    readonly near: (range: string, distance: string) => string;
-    readonly nearbyTitle: (distance: string) => string;
+    readonly near: (range: string, within: string) => string;
+    readonly nearbyTitle: (within: string) => string;
     readonly emptyNearby: (range: string) => string;
     readonly hiddenPicked: Text;
     readonly pickedOne: (band: string, city: string) => string;
@@ -133,9 +133,9 @@ export interface Messages {
     readonly cursor: Text;
     readonly noBandsShown: Text;
     readonly noShowsInWindow: Text;
-    readonly noShowsInWindowNear: (distance: string) => string;
+    readonly noShowsInWindowNear: (within: string) => string;
     readonly hiddenLanes: Count;
-    readonly hiddenLanesNear: (count: number, distance: string) => string;
+    readonly hiddenLanesNear: (count: number, within: string) => string;
     readonly showAllLanes: Text;
     readonly dot: (band: string, date: string, city: string, status: string | null) => string;
     readonly presets: Readonly<Record<TimePreset, { readonly label: string; readonly short: string }>>;
@@ -163,13 +163,26 @@ export interface Messages {
     readonly area: Text;
     readonly areaMenu: Text;
     readonly nearMe: Text;
+    readonly aroundPoint: Text;
+    readonly pickAnother: Text;
+    readonly pickHint: Text;
+    readonly cancelPick: Text;
+    readonly clearArea: Text;
+    /** Heads the radius choices of the map's context menu and of a place's list. */
+    readonly aroundHere: Text;
     readonly regions: Text;
     readonly regionNames: Readonly<Record<RegionId, string>>;
     readonly asGlobe: Text;
     readonly asFlat: Text;
     readonly listNearby: Text;
-    /** The distance comes formatted in the viewer's unit. */
-    readonly nearby: (shows: number, distance: string) => string;
+    readonly nearby: (shows: number, within: string) => string;
+    /** The area around the viewer, for every *Near text; the distance comes formatted in the viewer's unit. */
+    readonly within: (distance: string) => string;
+    /** The area around a picked point, named by the nearest city or its coordinates. */
+    readonly withinOf: (distance: string, place: string) => string;
+    readonly compass: { readonly north: Text; readonly south: Text; readonly east: Text; readonly west: Text };
+    /** Each part is already "60.17° N". */
+    readonly coordinates: (latitude: string, longitude: string) => string;
     readonly locating: Text;
     readonly locationUnsupported: Text;
     readonly locationDenied: Text;

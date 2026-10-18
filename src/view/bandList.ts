@@ -11,8 +11,8 @@ export interface BandListProps {
   readonly bands: readonly BandEntry[];
   /** Each band's shows in the time range; counts and dates in the list describe only these. */
   readonly showsInRange: ReadonlyMap<BandEntry, readonly ShowRef[]>;
-  /** The area's radius, formatted, while "Near me" limits the counts. */
-  readonly nearDistance: string | null;
+  /** The area as map.within or map.withinOf names it, while one limits the counts. */
+  readonly areaWithin: string | null;
   /** Bands without shows in the range move into a collapsed group at the end. */
   readonly collapseBandsWithoutShows: boolean;
   readonly totalBandCount: number;
@@ -162,7 +162,7 @@ export function createBandList(container: HTMLElement, callbacks: BandListCallba
       row.checkbox.style.setProperty('--swatch', bandColor(band, props.mode));
       row.identity.update(bandId, band.file.band.name);
       row.meta.replaceChildren(
-        h('span', {}, refs.length > 0 ? t().shows(refs.length) : props.nearDistance === null ? t().noShowsInRange : t().noShowsNear(props.nearDistance)),
+        h('span', {}, refs.length > 0 ? t().shows(refs.length) : props.areaWithin === null ? t().noShowsInRange : t().noShowsNear(props.areaWithin)),
         range === null ? '' : h('span', {}, formatDateSpan(range.first, range.first === range.last ? null : range.last)),
       );
       row.badge.hidden = !band.isPreview;
@@ -174,7 +174,7 @@ export function createBandList(container: HTMLElement, callbacks: BandListCallba
     const quiet = matching.filter((band) => (props.showsInRange.get(band) ?? []).length === 0);
     const collapse = props.collapseBandsWithoutShows && quiet.length > 0;
     quietButton.textContent =
-      props.nearDistance === null ? t().bandList.quietToggle(quietOpen, quiet.length) : t().bandList.quietToggleNear(quietOpen, quiet.length, props.nearDistance);
+      props.areaWithin === null ? t().bandList.quietToggle(quietOpen, quiet.length) : t().bandList.quietToggleNear(quietOpen, quiet.length, props.areaWithin);
     quietButton.setAttribute('aria-expanded', String(quietOpen));
     const displayed = collapse
       ? [...playing.map(rowFor), quietRow, ...(quietOpen ? quiet.map(rowFor) : [])]

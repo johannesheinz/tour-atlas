@@ -1,10 +1,13 @@
 import { isInWindow, type AppState, type Derived, type Selection } from './appState.ts';
 import { selectionShows } from './selection.ts';
 import { NO_GENRE, TAG_VOCABULARY, hasGenre } from './data/tags.ts';
-import { t } from './i18n/index.ts';
+import { formats, t } from './i18n/index.ts';
 import { showsInRange, sortBands, type BandEntry, type ShowRef, type TimelineLane } from './model.ts';
-import { countryName } from './view/format.ts';
-import { buildPlaces, type CountryPlace } from './places.ts';
+import { countryName, formatCoordinates } from './view/format.ts';
+import { buildPlaces, cityKey, type CountryPlace } from './places.ts';
+import { nearestCity, placeCenter } from './view/aroundPoint.ts';
+import type { LonLat } from './view/geoFit.ts';
+import { kilometres } from './view/mapRegions.ts';
 import { buildSearchIndex, type SearchEntry } from './view/searchIndex.ts';
 
 export type ShowFilter = (ref: ShowRef) => boolean;
@@ -52,6 +55,12 @@ export function createSelectors(maxBandsWithRoutes: number) {
 
   let nearbyKey: [Derived['visibleShows'], AppState['timeWindow']] | null = null;
   let nearby: readonly ShowRef[] = [];
+
+  let withinKey: [Derived['area'], Derived['showsById']] | null = null;
+  let within: string | null = null;
+
+  let placeKey: [Selection, Derived['showsById']] | null = null;
+  let place: LonLat | null = null;
 
   let searchKey: Derived['bands'] | null = null;
   let searchIndex: readonly SearchEntry[] = [];
@@ -190,6 +199,36 @@ export function createSelectors(maxBandsWithRoutes: number) {
       return nearby;
     },
 
+    /**
+     * The area as the *Near texts name it: "within 50 km" around the viewer; around a picked point "within 50 km of"
+     * the nearest city with shows inside the radius, else the point's coordinates. Null without an area.
+     */
+    areaWithin(current: AppState, derived: Derived): string | null {
+      const { area } = derived;
+      if (area === null) return null;
+      if (withinKey === null || withinKey[0] !== area || withinKey[1] !== derived.showsById) {
+        withinKey = [area, derived.showsById];
+        const distance = formats().distance(area.radius.value, area.radius.unit);
+        if (current.mapView.kind === 'point') {
+          const city = nearestCity(derived.showsById.values(), area.center, kilometres(area.radius));
+          within = t().map.withinOf(distance, city?.city ?? formatCoordinates(area.center));
+        } else {
+          within = t().map.within(distance);
+        }
+      }
+      return within;
+    },
+
+    /** Where "Shows around here" centres for a selection of one place (a city, or shows in one city); null for anything wider. */
+    selectionPlace(current: AppState, derived: Derived): LonLat | null {
+      if (placeKey === null || placeKey[0] !== current.selection || placeKey[1] !== derived.showsById) {
+        placeKey = [current.selection, derived.showsById];
+        const shows = placeShows(current.selection, derived.showsById);
+        place = shows.length === 0 ? null : placeCenter(shows);
+      }
+      return place;
+    },
+
     searchIndex(derived: Derived): readonly SearchEntry[] {
       if (derived.bands !== searchKey) {
         searchKey = derived.bands;
@@ -198,4 +237,17 @@ export function createSelectors(maxBandsWithRoutes: number) {
       return searchIndex;
     },
   };
+}
+
+function placeShows(selection: Selection, showsById: ReadonlyMap<string, ShowRef>): readonly ShowRef[] {
+  if (selection.kind === 'places') {
+    const [key, ...others] = selection.places;
+    if (key === undefined || others.length > 0 || !key.includes('.')) return [];
+    return [...showsById.values()].filter((ref) => cityKey(ref) === key);
+  }
+  if (selection.kind === 'shows') {
+    const shows = [...selection.showIds].flatMap((id) => showsById.get(id) ?? []);
+    return new Set(shows.map(cityKey)).size === 1 ? shows : [];
+  }
+  return [];
 }

@@ -106,7 +106,7 @@ export const fr: Messages = {
   shows,
   bands,
   noShowsInRange: 'Aucun concert sur cette période',
-  noShowsNear: (distance) => `Aucun concert dans un rayon de ${distance} sur cette période`,
+  noShowsNear: (within) => `Aucun concert ${within} sur cette période`,
   status: { scheduled: 'Prévu', cancelled: 'Annulé', postponed: 'Reporté', soldout: 'Complet', played: 'Joué' },
   search: {
     placeholder: 'Chercher groupes, villes, salles, tournées',
@@ -138,8 +138,8 @@ export const fr: Messages = {
     noMatch: (query) => `Aucun groupe ne correspond à « ${query} ».`,
     quietToggle: (open, count) =>
       n(count, open ? { one: 'Masquer # groupe sans concert sur cette période', other: 'Masquer # groupes sans concert sur cette période' } : { one: 'Afficher # groupe sans concert sur cette période', other: 'Afficher # groupes sans concert sur cette période' }),
-    quietToggleNear: (open, count, distance) =>
-      n(count, open ? { one: `Masquer # groupe sans concert dans un rayon de ${distance} sur cette période`, other: `Masquer # groupes sans concert dans un rayon de ${distance} sur cette période` } : { one: `Afficher # groupe sans concert dans un rayon de ${distance} sur cette période`, other: `Afficher # groupes sans concert dans un rayon de ${distance} sur cette période` }),
+    quietToggleNear: (open, count, within) =>
+      n(count, open ? { one: `Masquer # groupe sans concert ${within} sur cette période`, other: `Masquer # groupes sans concert ${within} sur cette période` } : { one: `Afficher # groupe sans concert ${within} sur cette période`, other: `Afficher # groupes sans concert ${within} sur cette période` }),
     previewBadge: 'Votre fichier',
     showOnMap: (band) => `Afficher ${band} sur la carte et la frise`,
     listDates: (band) => `Lister les dates de ${band}`,
@@ -150,9 +150,9 @@ export const fr: Messages = {
     summary: (cities, countries) =>
       `${n(cities, { one: '# ville', other: '# villes' })} dans ${n(countries, { one: '# pays', other: '# pays' })} avec des concerts sur la période`,
     empty: 'Aucun concert sur la période. Choisissez une période plus large.',
-    summaryNear: (cities, countries, distance) =>
-      `${n(cities, { one: '# ville', other: '# villes' })} dans ${n(countries, { one: '# pays', other: '# pays' })} avec des concerts dans un rayon de ${distance} sur la période`,
-    emptyNear: (distance) => `Aucun concert dans un rayon de ${distance} sur la période. Choisissez une période ou un rayon plus large.`,
+    summaryNear: (cities, countries, within) =>
+      `${n(cities, { one: '# ville', other: '# villes' })} dans ${n(countries, { one: '# pays', other: '# pays' })} avec des concerts ${within} sur la période`,
+    emptyNear: (within) => `Aucun concert ${within} sur la période. Choisissez une période ou un rayon plus large.`,
     noMatch: (query) => `Aucune ville ni aucun pays ne correspond à « ${query} ».`,
     showCities: (country) => `Afficher les villes de ${country}`,
     hideCities: (country) => `Masquer les villes de ${country}`,
@@ -179,8 +179,8 @@ export const fr: Messages = {
     emptyNamed: (name, range) => `Aucun concert de ${name} ${range}. ${zoomOutHint}`,
     emptyBands: (range) => `Aucun concert de ces groupes ${range}. ${zoomOutHint}`,
     emptyPlace: (place, range) => `Aucun concert à ${place} ${range}. ${zoomOutHint}`,
-    near: (range, distance) => `dans un rayon de ${distance} ${range}`,
-    nearbyTitle: (distance) => `Concerts dans un rayon de ${distance}`,
+    near: (range, within) => `${within} ${range}`,
+    nearbyTitle: (within) => `Concerts ${within}`,
     emptyNearby: (range) => `Aucun concert ${range}. ${zoomOutHint}`,
     hiddenPicked: 'Ces concerts sont masqués. Affichez leurs groupes dans la liste des groupes.',
     pickedOne: (band, city) => `${band} à ${city}`,
@@ -203,11 +203,11 @@ export const fr: Messages = {
     cursor: 'Frise. Utilisez les flèches pour passer d’un concert à l’autre.',
     noBandsShown: 'Aucun groupe affiché. Activez des groupes dans la liste pour voir leurs dates.',
     noShowsInWindow: 'Aucun concert sur cette période. Choisissez une autre période ou dézoomez.',
-    noShowsInWindowNear: (distance) => `Aucun concert dans un rayon de ${distance} sur cette période. Choisissez une autre période ou un rayon plus large, ou dézoomez.`,
+    noShowsInWindowNear: (within) => `Aucun concert ${within} sur cette période. Choisissez une autre période ou un rayon plus large, ou dézoomez.`,
     hiddenLanes: (count) =>
       n(count, { one: '# groupe n’a aucun concert sur cette période et est masqué.', other: '# groupes n’ont aucun concert sur cette période et sont masqués.' }),
-    hiddenLanesNear: (count, distance) =>
-      n(count, { one: `# groupe n’a aucun concert dans un rayon de ${distance} sur cette période et est masqué.`, other: `# groupes n’ont aucun concert dans un rayon de ${distance} sur cette période et sont masqués.` }),
+    hiddenLanesNear: (count, within) =>
+      n(count, { one: `# groupe n’a aucun concert ${within} sur cette période et est masqué.`, other: `# groupes n’ont aucun concert ${within} sur cette période et sont masqués.` }),
     showAllLanes: 'Afficher toutes les lignes',
     dot: (band, date, city, status) => `${band} : ${date}, ${city}${status === null ? '' : `, ${status}`}. Entrée pour les détails.`,
     presets: {
@@ -243,15 +243,25 @@ export const fr: Messages = {
     zoomIn: 'Zoomer',
     zoomOut: 'Dézoomer',
     fit: 'Ajuster aux concerts',
-    area: 'Zone de la carte : près de moi ou une région',
+    area: 'Zone de la carte : près de moi, autour d’un point ou une région',
     areaMenu: 'Zone de la carte',
     nearMe: 'Près de moi',
+    aroundPoint: 'Autour d’un point',
+    pickAnother: 'Choisir un autre point',
+    pickHint: 'Cliquez sur la carte pour placer le centre',
+    cancelPick: 'Annuler',
+    clearArea: 'Effacer la zone',
+    aroundHere: 'Concerts dans les environs',
     regions: 'Régions',
     regionNames: { europe: 'Europe', 'north-america': 'Amérique du Nord', 'south-america': 'Amérique du Sud', asia: 'Asie', africa: 'Afrique', oceania: 'Océanie', world: 'Monde' },
     asGlobe: 'Afficher en globe',
     asFlat: 'Afficher en carte plane',
     listNearby: 'Lister ces concerts',
-    nearby: (count, distance) => `${shows(count)} dans un rayon de ${distance}`,
+    nearby: (count, within) => `${shows(count)} ${within}`,
+    within: (distance) => `dans un rayon de ${distance}`,
+    withinOf: (distance, place) => `dans un rayon de ${distance} autour de ${place}`,
+    compass: { north: 'N', south: 'S', east: 'E', west: 'O' },
+    coordinates: (latitude, longitude) => `${latitude}, ${longitude}`,
     locating: 'Demande de votre position au navigateur…',
     locationUnsupported: 'Ce navigateur ne peut pas partager votre position ici. Choisissez plutôt une région.',
     locationDenied: 'L’accès à la position a été refusé. Autorisez-le dans le navigateur ou choisissez une région.',

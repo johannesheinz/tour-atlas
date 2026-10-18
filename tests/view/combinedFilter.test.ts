@@ -3,6 +3,8 @@ import { NO_SELECTION, activeArea, createDeriver, type AppState, type Selection,
 import { parseIsoDate } from '../../src/data/dates.ts';
 import type { BandFile, Show } from '../../src/data/types.ts';
 import { createSelectors } from '../../src/selectors.ts';
+import { mapViewFromUrl, parseUrlState } from '../../src/urlState.ts';
+import { pointView } from '../../src/view/aroundPoint.ts';
 import { MAP_REGIONS, type MapViewPreset } from '../../src/view/mapRegions.ts';
 import { makeFile, makeShow } from '../helpers.ts';
 
@@ -53,6 +55,7 @@ function appState(overrides: Partial<AppState> = {}): AppState {
     includePastMonth: false,
     tourPacing: 'calendar',
     mapView: { kind: 'shows' },
+    pickRadius: null,
     mapMode: 'flat',
     userPosition: null,
     locationStatus: null,
@@ -104,6 +107,12 @@ describe('activeArea', () => {
     expect(activeArea({ mapView: { kind: 'region', region: europe }, userPosition: [18.07, 59.33] })).toBeNull();
     expect(activeArea({ mapView: NEAR_STOCKHOLM.mapView, userPosition: null })).toBeNull();
     expect(activeArea(NEAR_STOCKHOLM)).toEqual({ center: [18.07, 59.33], radius: { value: 100, unit: 'km' } });
+  });
+
+  it('centres on a picked point, with or without a known position of the viewer', () => {
+    const picked = pointView([13.4049, 52.5201], { value: 50, unit: 'km' });
+    expect(activeArea({ mapView: picked, userPosition: null })).toEqual({ center: [13.4, 52.52], radius: { value: 50, unit: 'km' } });
+    expect(activeArea({ mapView: picked, userPosition: [18.07, 59.33] })).toEqual({ center: [13.4, 52.52], radius: { value: 50, unit: 'km' } });
   });
 });
 
@@ -210,5 +219,48 @@ describe('order independence', () => {
     const never = viewsAfter([{ timeWindow: NEXT_3_MONTHS }]);
     expect(cleared.views).toEqual(never.views);
     expect(cleared.views.lanes).toHaveLength(3);
+  });
+});
+
+describe('an area around a picked point', () => {
+  const AROUND_STOCKHOLM: Partial<AppState> = { mapView: pointView([18.0712, 59.3291], { value: 100, unit: 'km' }) };
+  const fromUrl = (hash: string): Partial<AppState> => ({ mapView: mapViewFromUrl(parseUrlState(hash)) });
+  const labelAfter = (steps: readonly Partial<AppState>[]) => {
+    const derive = createDeriver();
+    const select = createSelectors(10);
+    let state = appState();
+    for (const step of steps) {
+      state = { ...state, ...step };
+      select.areaWithin(state, derive(state));
+    }
+    return select.areaWithin(state, derive(state));
+  };
+
+  it('filters every view exactly as Near me does around the same spot', () => {
+    const aroundPoint = viewsAfter([{ ...AROUND_STOCKHOLM, timeWindow: NEXT_3_MONTHS }]).views;
+    const nearMe = viewsAfter([{ ...NEAR_STOCKHOLM, timeWindow: NEXT_3_MONTHS }]).views;
+    expect(aroundPoint).toEqual(nearMe);
+    expect(aroundPoint.nearby).toEqual(['alpha-2026-11-05-stockholm']);
+  });
+
+  it('gives the same views and label for a point from the URL as for one picked on the map, in any order with the window', () => {
+    const picked = viewsAfter([{ timeWindow: NEXT_3_MONTHS }, AROUND_STOCKHOLM]);
+    const linked = viewsAfter([fromUrl('#around=59.33,18.07&radius=100km'), { timeWindow: NEXT_3_MONTHS }]);
+    expect(linked.views).toEqual(picked.views);
+    expect(linked.state.mapView).toEqual(picked.state.mapView);
+    expect(labelAfter([{ timeWindow: NEXT_3_MONTHS }, AROUND_STOCKHOLM])).toBe(labelAfter([fromUrl('#around=59.33,18.07&radius=100km'), { timeWindow: NEXT_3_MONTHS }]));
+  });
+
+  it('names the nearest city inside the radius, else the coordinates, and Near me by its radius alone', () => {
+    expect(labelAfter([AROUND_STOCKHOLM])).toBe('within 100\u00a0km of Stockholm');
+    expect(labelAfter([{ mapView: pointView([17.7, 59.8], { value: 100, unit: 'km' }) }])).toBe('within 100\u00a0km of Uppsala');
+    expect(labelAfter([{ mapView: pointView([0, 0], { value: 25, unit: 'km' }) }])).toBe('within 25\u00a0km of 0.00°\u00a0N, 0.00°\u00a0E');
+    expect(labelAfter([NEAR_STOCKHOLM])).toBe('within 100\u00a0km');
+    expect(labelAfter([NO_AREA])).toBeNull();
+  });
+
+  it('returns to the unscoped views when Fit to shows clears the point', () => {
+    const cleared = viewsAfter([AROUND_STOCKHOLM, { timeWindow: NEXT_3_MONTHS }, { mapView: { kind: 'shows' } }]);
+    expect(cleared.views).toEqual(viewsAfter([{ timeWindow: NEXT_3_MONTHS }]).views);
   });
 });

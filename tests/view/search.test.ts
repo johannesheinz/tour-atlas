@@ -57,6 +57,7 @@ describe('url state', () => {
       includePastMonth: true,
       tourPacing: 'even' as const,
       region: 'europe',
+      around: null,
       globe: true,
       style: 'atlas' as const,
       language: 'de' as const,
@@ -85,6 +86,7 @@ describe('url state', () => {
       includePastMonth: false,
       tourPacing: 'calendar',
       region: null,
+      around: null,
       globe: false,
       style: 'stage',
       language: null,
@@ -114,6 +116,6 @@ describe('url state', () => {
   });
 
   it('serializes the default view to an empty hash', () => {
-    expect(serializeUrlState({ hiddenBandIds: [], tags: [], sort: null, from: null, to: null, selectedShowIds: [], selectedPlaces: [], selectedBandIds: [], selectedGenres: [], follow: null, preset: null, allLanes: false, includePastMonth: false, tourPacing: 'calendar', region: null, globe: false, style: 'stage', language: null, clock: null, distance: null })).toBe('');
+    expect(serializeUrlState({ hiddenBandIds: [], tags: [], sort: null, from: null, to: null, selectedShowIds: [], selectedPlaces: [], selectedBandIds: [], selectedGenres: [], follow: null, preset: null, allLanes: false, includePastMonth: false, tourPacing: 'calendar', region: null, around: null, globe: false, style: 'stage', language: null, clock: null, distance: null })).toBe('');
   });
 });

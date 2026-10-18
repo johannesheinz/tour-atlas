@@ -2,6 +2,7 @@ import { parseIsoDate } from '../data/dates.ts';
 import { formats, t } from '../i18n/index.ts';
 import type { StatusKind } from '../i18n/messages.ts';
 import type { ShowRef } from '../model.ts';
+import type { LonLat } from './geoFit.ts';
 
 export function formatDate(isoDate: string): string {
   return formats().date.format(parseIsoDate(isoDate));
@@ -25,6 +26,13 @@ export function formatTime(time: string): string {
 
 export function countryName(countryCode: string): string {
   return formats().regions.of(countryCode) ?? countryCode;
+}
+
+/** "60.17° N, 24.94° E" with the language's compass letters and decimal mark. */
+export function formatCoordinates([lon, lat]: LonLat): string {
+  const { compass, coordinates } = t().map;
+  const degrees = formats().degrees;
+  return coordinates(`${degrees(Math.abs(lat))}\u00a0${lat < 0 ? compass.south : compass.north}`, `${degrees(Math.abs(lon))}\u00a0${lon < 0 ? compass.west : compass.east}`);
 }
 
 export function formatList(items: readonly string[]): string {

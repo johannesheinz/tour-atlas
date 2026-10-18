@@ -41,8 +41,8 @@ export interface TimelineProps {
   /** Every show the timeline fits to, including those in collapsed lanes. */
   readonly domainShows: readonly ShowRef[];
   readonly hiddenLaneCount: number;
-  /** The area's radius, formatted, while "Near me" limits the lanes. */
-  readonly nearDistance: string | null;
+  /** The area as map.within or map.withinOf names it, while one limits the lanes. */
+  readonly areaWithin: string | null;
   readonly emptyMessage: string;
   readonly highlightedShowIds: ReadonlySet<string>;
   readonly selectedShowIds: ReadonlySet<string>;
@@ -321,7 +321,7 @@ export function createTimeline(container: HTMLElement, callbacks: TimelineCallba
     empty.hidden = next.lanes.length > 0;
     empty.textContent = next.emptyMessage;
     note.hidden = next.hiddenLaneCount === 0;
-    const hiddenLanesText = next.nearDistance === null ? t().timeline.hiddenLanes(next.hiddenLaneCount) : t().timeline.hiddenLanesNear(next.hiddenLaneCount, next.nearDistance);
+    const hiddenLanesText = next.areaWithin === null ? t().timeline.hiddenLanes(next.hiddenLaneCount) : t().timeline.hiddenLanesNear(next.hiddenLaneCount, next.areaWithin);
     noteText.textContent = `${hiddenLanesText} `;
     if (previous === null || previous.lanes.length !== next.lanes.length) layout();
     if (cursorPosition !== null && next.lanes[cursorPosition.lane]?.shows[cursorPosition.show] === undefined) cursorPosition = null;

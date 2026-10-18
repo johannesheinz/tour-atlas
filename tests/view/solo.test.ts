@@ -25,6 +25,7 @@ function appState(selection: Selection, hiddenBandIds: ReadonlySet<string>): App
     includePastMonth: false,
     tourPacing: 'calendar',
     mapView: { kind: 'shows' },
+    pickRadius: null,
     mapMode: 'flat',
     userPosition: null,
     locationStatus: null,

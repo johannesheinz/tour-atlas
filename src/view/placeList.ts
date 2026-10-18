@@ -8,8 +8,8 @@ export interface PlaceListProps {
   /** Countries with shows in the time window. */
   readonly places: readonly CountryPlace[];
   readonly selected: ReadonlySet<PlaceKey>;
-  /** The area's radius, formatted, while "Near me" limits the places. */
-  readonly nearDistance: string | null;
+  /** The area as map.within or map.withinOf names it, while one limits the places. */
+  readonly areaWithin: string | null;
 }
 
 export interface PlaceListCallbacks {
@@ -42,7 +42,7 @@ export function createPlaceList(container: HTMLElement, callbacks: PlaceListCall
       return cities.length > 0 ? [{ country, cities, forceOpen: true }] : [];
     });
     const cityCount = current.places.reduce((sum, country) => sum + country.cities.length, 0);
-    const near = current.nearDistance;
+    const near = current.areaWithin;
     count.textContent = near === null ? t().placeList.summary(cityCount, current.places.length) : t().placeList.summaryNear(cityCount, current.places.length, near);
     empty.hidden = matching.length > 0;
     const noPlaces = near === null ? t().placeList.empty : t().placeList.emptyNear(near);
@@ -92,7 +92,7 @@ export function createPlaceList(container: HTMLElement, callbacks: PlaceListCall
       if (props !== null) draw(props);
     },
     render(next) {
-      if (props !== null && props.places === next.places && props.selected === next.selected && props.nearDistance === next.nearDistance) return;
+      if (props !== null && props.places === next.places && props.selected === next.selected && props.areaWithin === next.areaWithin) return;
       props = next;
       draw(next);
     },

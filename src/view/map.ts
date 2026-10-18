@@ -10,8 +10,9 @@ import { context2d, h, prefersReducedMotion, s } from './dom.ts';
 import { t } from '../i18n/index.ts';
 import { formatDate } from './format.ts';
 import { computeGlobeFit, computeMapFit, interpolateFit, type LonLat, type MapFit } from './geoFit.ts';
-import { radiusDegrees, type MapMode, type UserLocation } from './mapRegions.ts';
-export type { MapMode, UserLocation } from './mapRegions.ts';
+import { radiusDegrees, type AreaCircle, type MapMode } from './mapRegions.ts';
+export type { AreaCircle, MapMode } from './mapRegions.ts';
+import { IDLE_PRESS, LONG_PRESS, stepLongPress, type LongPressInput } from './longPress.ts';
 import { placeLabels } from './labels.ts';
 import { clusterGroups, groupByCoordinates, pinLabel, type DisplayPin, type PinGroup } from './pins.ts';
 import { annularSectorPath, pinSegments, type PinSegment } from './pinSegments.ts';
@@ -65,6 +66,10 @@ export interface MapCallbacks {
   onSelect(shows: readonly ShowRef[]): void;
   /** The viewer started panning, zooming or turning the map. */
   onUserMove(): void;
+  /** A click (or Enter on a pin) while picking: the centre for the area. */
+  onPickPoint(point: LonLat): void;
+  /** A right click (byTouch false) or a long press on the map, at that spot of the window. */
+  onPointMenu(point: LonLat, clientX: number, clientY: number, byTouch: boolean): void;
 }
 
 /** The routes of these bands draw themselves leg by leg; `at` gives the animation time a show's date is reached. */
@@ -88,7 +93,9 @@ export interface MapView {
   fitToPoints(points: readonly LonLat[], minSpanKm: number, animate: boolean): void;
   zoomBy(factor: number): void;
   setMode(mode: MapMode): void;
-  setUserLocation(location: UserLocation | null): void;
+  setAreaCircle(circle: AreaCircle | null): void;
+  /** While picking, a click on the map sets a point instead of opening pins. */
+  setPicking(picking: boolean): void;
   /** Null draws the routes whole again. */
   setTour(tour: MapTour | null): void;
   setTourTime(ms: number): void;
@@ -110,7 +117,8 @@ export function createMapView(container: HTMLElement, world: WorldTopology, call
   let mode: MapMode = 'flat';
   let projection: GeoProjection = geoEqualEarth();
   let path = geoPath(projection);
-  let userLocation: UserLocation | null = null;
+  let areaCircle: AreaCircle | null = null;
+  let picking = false;
   let globeFitRadius = 1;
 
   const halftoneDot = s('circle', { class: 'halftone-dot', cx: 2, cy: 2, r: 1.15 });
@@ -135,8 +143,15 @@ export function createMapView(container: HTMLElement, world: WorldTopology, call
   const highlightsLayer = s('g', { class: 'map-highlights' });
   const labelsLayer = s('g', { class: 'map-labels' });
   const meMarker = s('circle', { class: 'map-me', r: 6, hidden: true });
+  const pointMarker = s(
+    'g',
+    { class: 'map-point', hidden: true },
+    s('circle', { class: 'map-point-ring', r: 7 }),
+    s('path', { class: 'map-point-cross', d: 'M-13 0H-7M7 0H13M0 -13V-7M0 7V13' }),
+    s('circle', { class: 'map-point-dot', r: 2 }),
+  );
   const tourHeadsLayer = s('g', { class: 'map-tour-heads' });
-  const overlay = s('svg', { class: 'map-overlay', 'aria-hidden': 'true' }, labelsLayer, highlightsLayer, tourHeadsLayer, meMarker);
+  const overlay = s('svg', { class: 'map-overlay', 'aria-hidden': 'true' }, labelsLayer, highlightsLayer, tourHeadsLayer, meMarker, pointMarker);
   const cursor = h('button', { type: 'button', class: 'map-cursor', 'aria-label': t().map.cursor });
   const announcer = h('div', { class: 'visually-hidden', 'aria-live': 'polite' });
   container.append(surface, canvas, overlay, cursor, announcer);
@@ -206,7 +221,7 @@ export function createMapView(container: HTMLElement, world: WorldTopology, call
   resizeObserver.observe(container);
 
   surface.addEventListener('pointermove', (event) => {
-    if (event.buttons !== 0) return;
+    if (event.buttons !== 0 || picking) return;
     const pin = pinAt(event.offsetX, event.offsetY);
     surface.classList.toggle('is-over-pin', pin !== null);
     if ((pin?.id ?? null) === hoveredPinId) return;
@@ -222,13 +237,74 @@ export function createMapView(container: HTMLElement, world: WorldTopology, call
     callbacks.onHover(null);
   });
   surface.addEventListener('click', (event) => {
-    if (globeDragged) {
+    if (globeDragged || longPressed) {
       globeDragged = false;
+      longPressed = false;
+      return;
+    }
+    if (picking) {
+      const point = pointAt(event.clientX, event.clientY);
+      if (point !== null) callbacks.onPickPoint(point);
       return;
     }
     const pin = pinAt(event.offsetX, event.offsetY);
     callbacks.onSelect(pin === null ? [] : pin.shows);
   });
+
+  /** Touch and pen open the point menu by a long press; their native context menu (Android's comes sooner) is held back. */
+  let lastPointerType = 'mouse';
+  let longPress = IDLE_PRESS;
+  let longPressTimer: ReturnType<typeof setTimeout> | undefined;
+  /** The click that ends a long press must not open a pin. */
+  let longPressed = false;
+  const pressInput = (input: LongPressInput) => {
+    const step = stepLongPress(longPress, input);
+    longPress = step.state;
+    if (longPress.press === null) clearTimeout(longPressTimer);
+    if (step.fired === null) return;
+    longPressed = true;
+    openPointMenu(step.fired.x, step.fired.y, true);
+  };
+  surface.addEventListener('pointerdown', (event) => {
+    lastPointerType = event.pointerType;
+    longPressed = false;
+    pressInput({ kind: 'down', pointerId: event.pointerId, pointerType: event.pointerType, x: event.clientX, y: event.clientY, time: performance.now() });
+    if (longPress.press?.pointerId !== event.pointerId) return;
+    clearTimeout(longPressTimer);
+    longPressTimer = setTimeout(() => pressInput({ kind: 'tick', time: performance.now() }), LONG_PRESS.durationMs);
+  });
+  surface.addEventListener('pointermove', (event) => pressInput({ kind: 'move', pointerId: event.pointerId, x: event.clientX, y: event.clientY }));
+  for (const type of ['pointerup', 'pointercancel'] as const) surface.addEventListener(type, (event) => pressInput({ kind: 'up', pointerId: event.pointerId }));
+  surface.addEventListener('contextmenu', (event) => {
+    if (lastPointerType !== 'mouse') {
+      event.preventDefault();
+      return;
+    }
+    if (openPointMenu(event.clientX, event.clientY, false)) event.preventDefault();
+  });
+
+  function openPointMenu(clientX: number, clientY: number, byTouch: boolean): boolean {
+    const point = pointAt(clientX, clientY);
+    if (point === null) return false;
+    tooltip.hide();
+    callbacks.onPointMenu(point, clientX, clientY, byTouch);
+    return true;
+  }
+
+  /** The place under a spot of the window; null off the map (beside the globe or the flat map's outline). */
+  function pointAt(clientX: number, clientY: number): LonLat | null {
+    if (base === null) return null;
+    const bounds = surface.getBoundingClientRect();
+    const x = transform.invertX(clientX - bounds.left);
+    const y = transform.invertY(clientY - bounds.top);
+    const point = projection.invert?.([x, y]);
+    if (point === undefined || point === null || !Number.isFinite(point[0]) || !Number.isFinite(point[1])) return null;
+    const front = frontCenter();
+    if (front !== null && geoDistance(front, point) > Math.PI / 2) return null;
+    const back = projection(point);
+    if (back === null || Math.hypot(back[0] - x, back[1] - y) > 1) return null;
+    return [point[0], point[1]];
+  }
 
   cursor.addEventListener('focus', () => {
     const pin = currentCursorPin() ?? pins[0];
@@ -258,7 +334,9 @@ export function createMapView(container: HTMLElement, world: WorldTopology, call
     } else if (event.key === 'Enter' || event.key === ' ') {
       event.preventDefault();
       const pin = currentCursorPin();
-      if (pin !== undefined) callbacks.onSelect(pin.shows);
+      const [first] = pin?.shows ?? [];
+      if (picking && first !== undefined) callbacks.onPickPoint([first.show.geo.lon, first.show.geo.lat]);
+      else if (pin !== undefined) callbacks.onSelect(pin.shows);
     } else if (event.key === '+' || event.key === '=') {
       zoomBy(1.6);
     } else if (event.key === '-') {
@@ -413,9 +491,20 @@ export function createMapView(container: HTMLElement, world: WorldTopology, call
     fitToData(false);
   }
 
-  function setUserLocation(location: UserLocation | null) {
-    userLocation = location;
+  function setAreaCircle(circle: AreaCircle | null) {
+    areaCircle = circle;
     if (base !== null) applyBase(base);
+  }
+
+  function setPicking(next: boolean) {
+    if (next === picking) return;
+    picking = next;
+    container.classList.toggle('is-picking', next);
+    if (!next) return;
+    tooltip.hide();
+    hoveredPinId = null;
+    surface.classList.remove('is-over-pin');
+    callbacks.onHover(null);
   }
 
   let globeDrag: { readonly x: number; readonly y: number; readonly fit: MapFit } | null = null;
@@ -473,7 +562,7 @@ export function createMapView(container: HTMLElement, world: WorldTopology, call
     bordersPath.setAttribute('d', path(borders) ?? '');
     radiusPath.setAttribute(
       'd',
-      userLocation === null ? '' : (path(geoCircle().center([userLocation.lon, userLocation.lat]).radius(radiusDegrees(userLocation.radiusKm))()) ?? ''),
+      areaCircle === null ? '' : (path(geoCircle().center([areaCircle.lon, areaCircle.lat]).radius(radiusDegrees(areaCircle.radiusKm))()) ?? ''),
     );
     renderRoutes();
     projectAndCluster(inMotion);
@@ -498,7 +587,7 @@ export function createMapView(container: HTMLElement, world: WorldTopology, call
     else placePinLabels();
     drawHighlights();
     positionCursor();
-    positionMeMarker();
+    positionCentreMarker();
   }
 
   /** The point facing the viewer on the globe; null on the flat map, where everything is visible. */
@@ -507,15 +596,20 @@ export function createMapView(container: HTMLElement, world: WorldTopology, call
     return [-base.rotate[0], -base.rotate[1]];
   }
 
-  function positionMeMarker() {
+  /** The viewer's dot or the picked point's crosshair at the centre of the area. */
+  function positionCentreMarker() {
     const front = frontCenter();
-    const hidden = userLocation === null || (front !== null && geoDistance(front, [userLocation.lon, userLocation.lat]) > Math.PI / 2);
-    meMarker.toggleAttribute('hidden', hidden);
-    if (hidden || userLocation === null) return;
-    const point = projection([userLocation.lon, userLocation.lat]);
+    const circle = areaCircle;
+    const shown = circle !== null && (front === null || geoDistance(front, [circle.lon, circle.lat]) <= Math.PI / 2);
+    const point = shown ? projection([circle.lon, circle.lat]) : null;
+    meMarker.toggleAttribute('hidden', point === null || circle?.centre !== 'viewer');
+    pointMarker.toggleAttribute('hidden', point === null || circle?.centre !== 'point');
     if (point === null) return;
-    meMarker.setAttribute('cx', String(transform.applyX(point[0])));
-    meMarker.setAttribute('cy', String(transform.applyY(point[1])));
+    const x = transform.applyX(point[0]);
+    const y = transform.applyY(point[1]);
+    meMarker.setAttribute('cx', String(x));
+    meMarker.setAttribute('cy', String(y));
+    pointMarker.setAttribute('transform', `translate(${x},${y})`);
   }
 
   function rebuildPins() {
@@ -546,7 +640,7 @@ export function createMapView(container: HTMLElement, world: WorldTopology, call
     positionPins();
     drawHighlights();
     positionCursor();
-    positionMeMarker();
+    positionCentreMarker();
     drawTour();
   }
 
@@ -799,7 +893,8 @@ export function createMapView(container: HTMLElement, world: WorldTopology, call
     fitToPoints,
     zoomBy,
     setMode,
-    setUserLocation,
+    setAreaCircle,
+    setPicking,
     setTour(next) {
       tour = next;
       tourTime = 0;

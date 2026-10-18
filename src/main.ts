@@ -9,7 +9,7 @@ import { createTourClock } from './view/tourClock.ts';
 import { HOME_ENTRY, asDrillDownEntry, drillDownEntry, historyStep, isHomeEntry } from './drillDownHistory.ts';
 import { createStore } from './state.ts';
 import { createBundledStore } from './store/bundled.ts';
-import { parseUrlState, serializeUrlState, type UrlState } from './urlState.ts';
+import { aroundOf, mapViewFromUrl, parseUrlState, serializeUrlState, type UrlState } from './urlState.ts';
 import { createCountryLocator, type CountryLocator } from './data/countryLocator.ts';
 import { NO_GENRE, TAG_VOCABULARY } from './data/tags.ts';
 import { exportAll, mergePreviews, normalizedFileText, processPreviewFile, type PreviewResult } from './preview.ts';
@@ -33,11 +33,13 @@ import { createSelectionPanel, type SelectionHeading } from './view/selectionPan
 import { createSidebar } from './view/sidebar.ts';
 import { cityKey, describePlaces, showsAtPlaces, type PlaceKey } from './places.ts';
 import { countryName, formatDate, formatList } from './view/format.ts';
-import { formats, localeChoice, t, useLocale } from './i18n/index.ts';
+import { localeChoice, t, useLocale } from './i18n/index.ts';
 import { localizePage } from './i18n/page.ts';
 import type { LocaleChoice } from './i18n/locale.ts';
 import { slugify } from './data/ids.ts';
-import { findRegion, kilometres, regionPoints, type MapViewPreset } from './view/mapRegions.ts';
+import { kilometres, regionPoints, type AreaCircle, type Distance, type MapViewPreset } from './view/mapRegions.ts';
+import { pointView } from './view/aroundPoint.ts';
+import type { LonLat } from './view/geoFit.ts';
 import { PRESET_IDS, defaultPreset, isPresetAvailable, presetWindow, usesPastMonth, windowAfterFilterChange, type TimePreset } from './view/timePresets.ts';
 
 const WINDOW_DEBOUNCE_MS = 150;
@@ -70,7 +72,8 @@ const state = createStore<AppState>({
   hideEmptyLanes: !urlState.allLanes,
   includePastMonth: urlState.includePastMonth,
   tourPacing: urlState.tourPacing,
-  mapView: mapViewForRegion(urlState.region),
+  mapView: mapViewFromUrl(urlState),
+  pickRadius: null,
   mapMode: urlState.globe ? 'globe' : 'flat',
   userPosition: null,
   locationStatus: null,
@@ -93,6 +96,12 @@ const map = createMapView(requireElement(document, '#map', HTMLDivElement), worl
   onHover: (shows) => state.set({ hoverShowIds: idsOf(shows) }),
   onSelect: (shows) => selectPlaces(new Set(shows.map(cityKey))),
   onUserMove: () => stopTour(),
+  onPickPoint(point) {
+    const radius = state.get().pickRadius;
+    if (radius === null) throw new Error('a point was picked without a radius to pick it for');
+    setAroundPoint(point, radius);
+  },
+  onPointMenu: (point, clientX, clientY, byTouch) => mapControls.openPointMenu(point, clientX, clientY, byTouch),
 });
 
 const frameLayout = window.matchMedia(FRAME_LAYOUT_QUERY);
@@ -148,6 +157,11 @@ const selectionPanel = createSelectionPanel(requireElement(document, '#selection
   },
   onHover: (ref) => state.set({ hoverShowIds: ref === null ? new Set() : new Set([ref.show.id]) }),
   onReplayTour: () => playTour(),
+  onAroundHere(radius) {
+    const place = select.selectionPlace(state.get(), derive(state.get()));
+    if (place === null) throw new Error('the selection has no single place to centre an area on');
+    setAroundPoint(place, radius);
+  },
 });
 
 const previewPanel = createPreviewPanel(requireElement(document, '#preview-panel', HTMLElement), {
@@ -229,8 +243,25 @@ const mapControls = createMapControls(requireElement(document, '#map-controls', 
     if (derive(state.get()).area === null) throw new Error('there is no area to list the shows of');
     state.set({ selection: { kind: 'nearby' } });
   },
+  onAroundPoint(radius) {
+    const { mapView } = state.get();
+    if (mapView.kind === 'point') setAroundPoint(mapView.center, radius);
+    else startPicking(radius);
+  },
+  onPickAnother() {
+    const { mapView } = state.get();
+    if (mapView.kind !== 'point') throw new Error('there is no picked point to replace');
+    startPicking(mapView.radius);
+  },
+  onCancelPick: () => state.set({ pickRadius: null }),
+  onClearArea() {
+    stopTour();
+    setMapView({ kind: 'shows' });
+  },
+  onAroundHere: (point, radius) => setAroundPoint(point, radius),
 });
 map.setMode(state.get().mapMode);
+applyMapView(state.get().mapView, false);
 
 const fileInput = h('input', { type: 'file', accept: '.json,application/json', multiple: true, class: 'visually-hidden', tabindex: '-1', 'aria-hidden': 'true' });
 document.body.append(fileInput);
@@ -266,7 +297,8 @@ const settings = createSettings(settingsButton, requireElement(document, '#setti
 
 document.addEventListener('keydown', (event) => {
   if (event.key !== 'Escape' || event.defaultPrevented) return;
-  resetViews();
+  if (state.get().pickRadius !== null) state.set({ pickRadius: null });
+  else resetViews();
 });
 
 watchSystemTheme(() => refreshTheme());
@@ -307,19 +339,20 @@ function renderAll() {
     previousFitShows = fitShows;
   }
 
-  const nearDistance = areaDistance(derived.area);
+  map.setPicking(current.pickRadius !== null);
+  const areaWithin = select.areaWithin(current, derived);
   const lanes = select.lanes(current, derived);
   timeline.render({
     lanes: lanes.shown,
     domainShows: derived.visibleShows,
     hiddenLaneCount: lanes.hiddenCount,
-    nearDistance,
+    areaWithin,
     emptyMessage:
       derived.visibleBands.length === 0
         ? t().timeline.noBandsShown
-        : nearDistance === null
+        : areaWithin === null
           ? t().timeline.noShowsInWindow
-          : t().timeline.noShowsInWindowNear(nearDistance),
+          : t().timeline.noShowsInWindowNear(areaWithin),
     highlightedShowIds: current.hoverShowIds,
     selectedShowIds: select.selectedIds(current, derived),
     focusBandId: current.focusBandId,
@@ -359,8 +392,10 @@ function renderAll() {
   mapControls.render({
     view: current.mapView,
     mode: current.mapMode,
-    status: current.locationStatus ?? (nearby === null || nearDistance === null ? null : t().map.nearby(nearby.length, nearDistance)),
+    status: current.locationStatus ?? (nearby === null || areaWithin === null ? null : t().map.nearby(nearby.length, areaWithin)),
     canListNearby: nearby !== null && nearby.length > 0,
+    canClearArea: derived.area !== null,
+    picking: current.pickRadius !== null,
   });
 
   timelineControls.render({
@@ -377,7 +412,7 @@ function renderAll() {
   bandList.render({
     bands: inRange.ordered,
     showsInRange: inRange.shows,
-    nearDistance,
+    areaWithin,
     collapseBandsWithoutShows: current.hideEmptyLanes,
     totalBandCount: derived.bands.length,
     checkedGenreCount: current.tagFilter.size,
@@ -399,10 +434,11 @@ function renderAll() {
       showBand: current.selection.kind !== 'bands' || current.selection.bandIds.size > 1,
       backLabel: previewsShown ? t().selection.back.previews : listsLabel,
       mode: theme.mode,
+      aroundHere: aroundHereRow(current, derived),
     });
     selectionPanel.highlight(current.hoverShowIds);
   }
-  placeList.render({ places: select.places(current, derived), selected: current.selection.kind === 'places' ? current.selection.places : NO_PLACES, nearDistance });
+  placeList.render({ places: select.places(current, derived), selected: current.selection.kind === 'places' ? current.selection.places : NO_PLACES, areaWithin });
   genreList.render({ genres: select.genres(current, derived), checked: current.tagFilter });
   sidebar.setToggleLabel(t().page.sidebarToggle(derived.visibleBands.length, derived.bands.length));
   search.setIndex(select.searchIndex(derived));
@@ -559,7 +595,7 @@ function fitMapTo(shows: readonly ShowRef[]) {
   if (shows.length === 0) return;
   if (derive(state.get()).area === null) {
     state.set({ mapView: { kind: 'shows' } });
-    map.setUserLocation(null);
+    map.setAreaCircle(null);
   }
   map.fitToShows(shows, true);
 }
@@ -577,8 +613,23 @@ function fitToScope() {
   else map.fitToShows(shows, true);
 }
 
-function areaDistance(area: Area | null): string | null {
-  return area === null ? null : formats().distance(area.radius.value, area.radius.unit);
+/** The radius chips of a place's list, pressed while the area is centred on that place. */
+function aroundHereRow(current: AppState, derived: Derived): { readonly activeRadius: Distance | null } | null {
+  const place = select.selectionPlace(current, derived);
+  if (place === null) return null;
+  const { mapView } = current;
+  const centredHere = mapView.kind === 'point' && mapView.center[0] === place[0] && mapView.center[1] === place[1];
+  return { activeRadius: centredHere ? mapView.radius : null };
+}
+
+function startPicking(radius: Distance) {
+  stopTour();
+  state.set({ pickRadius: radius });
+}
+
+function setAroundPoint(center: LonLat, radius: Distance) {
+  stopTour();
+  setMapView(pointView(center, radius));
 }
 
 function focusSearchResult(entry: SearchEntry) {
@@ -604,7 +655,7 @@ function focusSearchResult(entry: SearchEntry) {
   const keepsArea = area !== null && showsInArea(shows, area).length === shows.length;
   const selection: Selection = placeKey === null ? { kind: 'shows', showIds: new Set(entry.showIds) } : { kind: 'places', places: new Set([placeKey]) };
   state.set({ ...(keepsArea ? {} : { mapView: { kind: 'shows' } }), selection, timePreset: null });
-  if (!keepsArea) map.setUserLocation(null);
+  if (!keepsArea) map.setAreaCircle(null);
   map.fitToShows(shows, true);
   const start = Math.min(...shows.map((ref) => ref.start));
   const end = Math.max(...shows.map((ref) => ref.end)) + DAY_MS;
@@ -661,8 +712,8 @@ function selectionHeading(current: AppState, derived: Derived, shows: readonly S
   const window = current.timeWindow;
   const text = t().selection;
   const dates = window === null ? text.allDates : text.between(formatDate(formatIsoDate(new Date(window.start))), formatDate(formatIsoDate(new Date(window.end))));
-  const nearDistance = areaDistance(derived.area);
-  const range = nearDistance === null ? dates : text.near(dates, nearDistance);
+  const areaWithin = select.areaWithin(current, derived);
+  const range = areaWithin === null ? dates : text.near(dates, areaWithin);
   const live = text.live(shows.length, range);
   const { selection } = current;
   switch (selection.kind) {
@@ -686,8 +737,8 @@ function selectionHeading(current: AppState, derived: Derived, shows: readonly S
       return { title, bandId: null, canReplayTour: false, note: live, emptyMessage: text.emptyNamed(title, range) };
     }
     case 'nearby': {
-      if (nearDistance === null) throw new Error('the nearby shows need an area');
-      return { title: text.nearbyTitle(nearDistance), bandId: null, canReplayTour: false, note: live, emptyMessage: text.emptyNearby(range) };
+      if (areaWithin === null) throw new Error('the nearby shows need an area');
+      return { title: text.nearbyTitle(areaWithin), bandId: null, canReplayTour: false, note: live, emptyMessage: text.emptyNearby(range) };
     }
     case 'places': {
       const name = describePlaces(selection.places, derived.bandShows, countryName, t().placeList.andMore);
@@ -709,15 +760,10 @@ function pickedShowsTitle(shows: readonly ShowRef[]): string {
   return cities.size === 1 && onlyCity !== undefined ? text.pickedInCity(shows.length, onlyCity, band) : text.pickedInCities(shows.length, cities.size, band);
 }
 
-function mapViewForRegion(regionId: string | null): MapViewPreset {
-  const region = regionId === null ? undefined : findRegion(regionId);
-  return region === undefined ? { kind: 'shows' } : { kind: 'region', region };
-}
-
 /** Puts the app into the view a URL describes: the home link uses the empty URL, history the one it returns to. */
 function applyUrlView(url: UrlState) {
   searchFocus = null;
-  const mapView = mapViewForRegion(url.region);
+  const mapView = mapViewFromUrl(url);
   const mapMode = url.globe ? 'globe' : 'flat';
   const hiddenBandIds = new Set(url.hiddenBandIds.filter((id) => knownBandIds.has(id)));
   const tagFilter = new Set(url.tags.filter(isGenreId));
@@ -742,6 +788,7 @@ function applyUrlView(url: UrlState) {
     hoverShowIds: new Set(),
     focusBandId: null,
     locationStatus: null,
+    pickRadius: null,
   });
   map.setMode(mapMode);
   applyMapView(mapView, true);
@@ -752,12 +799,12 @@ function applyUrlView(url: UrlState) {
   });
 }
 
-/** The area menu: one choice of fit, area or region. Leaving the area closes the list of its shows. */
+/** The area menu: one choice of fit, Near me, a picked point or region. Leaving the area closes the list of its shows. */
 function setMapView(view: MapViewPreset) {
   const current = state.get();
   const previous = current.mapView;
   const closesNearby = current.selection.kind === 'nearby' && activeArea({ mapView: view, userPosition: current.userPosition }) === null;
-  state.set({ mapView: view, locationStatus: null, ...(closesNearby ? { selection: NO_SELECTION } : {}) });
+  state.set({ mapView: view, locationStatus: null, pickRadius: null, ...(closesNearby ? { selection: NO_SELECTION } : {}) });
   if (view.kind !== 'near') {
     applyMapView(view, true);
     return;
@@ -790,22 +837,26 @@ function setMapView(view: MapViewPreset) {
 }
 
 function applyMapView(view: MapViewPreset, animate: boolean) {
-  const { userPosition } = state.get();
-  if (view.kind === 'near' && userPosition !== null) {
-    const radiusKm = kilometres(view.radius);
-    map.setUserLocation({ lon: userPosition[0], lat: userPosition[1], radiusKm });
-    map.fitToPoints([userPosition], radiusKm * 2, animate);
+  const circle = areaCircle(view, state.get().userPosition);
+  map.setAreaCircle(circle);
+  if (circle !== null) {
+    map.fitToPoints([[circle.lon, circle.lat]], circle.radiusKm * 2, animate);
     return;
   }
-  map.setUserLocation(null);
   if (view.kind === 'region') map.fitToPoints(regionPoints(view.region), 300, animate);
   else map.fitToData(animate);
 }
 
+function areaCircle(view: MapViewPreset, userPosition: AppState['userPosition']): AreaCircle | null {
+  if (view.kind === 'point') return { lon: view.center[0], lat: view.center[1], radiusKm: kilometres(view.radius), centre: 'point' };
+  if (view.kind === 'near' && userPosition !== null) return { lon: userPosition[0], lat: userPosition[1], radiusKm: kilometres(view.radius), centre: 'viewer' };
+  return null;
+}
+
 function resetViews() {
   searchFocus = null;
-  state.set({ selection: NO_SELECTION, hoverShowIds: new Set(), focusBandId: null, mapView: { kind: 'shows' }, locationStatus: null });
-  map.setUserLocation(null);
+  state.set({ selection: NO_SELECTION, hoverShowIds: new Set(), focusBandId: null, mapView: { kind: 'shows' }, pickRadius: null, locationStatus: null });
+  map.setAreaCircle(null);
   map.fitToData(true);
   const current = state.get();
   applyPreset(defaultPreset(derive(current).bandShows, parseIsoDate(current.today).getTime()), true);
@@ -849,6 +900,7 @@ function currentHash(): string {
     includePastMonth: current.includePastMonth,
     tourPacing: current.tourPacing,
     region: current.mapView.kind === 'region' ? current.mapView.region.id : null,
+    around: aroundOf(current.mapView),
     globe: current.mapMode === 'globe',
     style: current.style,
     ...localeChoice(),

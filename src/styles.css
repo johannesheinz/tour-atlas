@@ -1632,6 +1632,34 @@ input[type='search']::placeholder {
   stroke-width: 3;
 }
 
+/* A picked centre: an accent crosshair, unlike the viewer's own dot */
+.map-point-ring {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 2.5;
+}
+
+.map-point-cross {
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+
+.map-point-dot {
+  fill: var(--ink);
+}
+
+.map.is-picking .map-surface,
+.map.is-picking .map-surface.is-over-pin {
+  cursor: crosshair;
+}
+
+.map-surface {
+  -webkit-touch-callout: none;
+  user-select: none;
+}
+
 .map-borders {
   fill: none;
   stroke: var(--map-borders);
@@ -1812,6 +1840,53 @@ input[type='search']::placeholder {
   border-radius: 999px;
   padding: 3px 4px;
   font-size: 12px;
+}
+
+.map-status-clear {
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  margin: -3px -6px -3px -4px;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-control);
+  background: none;
+  color: var(--ink);
+  cursor: pointer;
+}
+
+.map-status-clear:hover {
+  background: var(--hover-fill);
+  color: var(--on-hover-fill);
+}
+
+.map-status-clear .icon {
+  width: 16px;
+  height: 16px;
+}
+
+.map-point-menu {
+  left: var(--x, 0);
+  top: var(--y, 0);
+  width: 230px;
+  padding: 8px;
+}
+
+.map-point-menu .menu-heading {
+  margin-top: 2px;
+}
+
+.selection-around {
+  margin-top: 10px;
+}
+
+.selection-around .menu-heading {
+  margin: 0 0 6px;
+}
+
+.selection-around .menu-chips {
+  padding: 0;
 }
 
 .map-status-bar {

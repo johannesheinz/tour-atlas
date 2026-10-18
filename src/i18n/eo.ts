@@ -164,7 +164,7 @@ export const eo: Messages = {
   shows,
   bands,
   noShowsInRange: 'Neniuj koncertoj en ĉi tiu periodo',
-  noShowsNear: (distance) => `Neniuj koncertoj ene de ${distance} en ĉi tiu periodo`,
+  noShowsNear: (within) => `Neniuj koncertoj ${within} en ĉi tiu periodo`,
   status: { scheduled: 'Planita', cancelled: 'Nuligita', postponed: 'Prokrastita', soldout: 'Elvendita', played: 'Okazinta' },
   search: {
     placeholder: 'Serĉi bandojn, urbojn, koncertejojn, turneojn',
@@ -196,8 +196,8 @@ export const eo: Messages = {
     noMatch: (query) => `Neniu bando kongruas kun “${query}”.`,
     quietToggle: (open, count) =>
       n(count, open ? { one: 'Kaŝi # bandon sen koncertoj en ĉi tiu periodo', other: 'Kaŝi # bandojn sen koncertoj en ĉi tiu periodo' } : { one: 'Montri # bandon sen koncertoj en ĉi tiu periodo', other: 'Montri # bandojn sen koncertoj en ĉi tiu periodo' }),
-    quietToggleNear: (open, count, distance) =>
-      n(count, open ? { one: `Kaŝi # bandon sen koncertoj ene de ${distance} en ĉi tiu periodo`, other: `Kaŝi # bandojn sen koncertoj ene de ${distance} en ĉi tiu periodo` } : { one: `Montri # bandon sen koncertoj ene de ${distance} en ĉi tiu periodo`, other: `Montri # bandojn sen koncertoj ene de ${distance} en ĉi tiu periodo` }),
+    quietToggleNear: (open, count, within) =>
+      n(count, open ? { one: `Kaŝi # bandon sen koncertoj ${within} en ĉi tiu periodo`, other: `Kaŝi # bandojn sen koncertoj ${within} en ĉi tiu periodo` } : { one: `Montri # bandon sen koncertoj ${within} en ĉi tiu periodo`, other: `Montri # bandojn sen koncertoj ${within} en ĉi tiu periodo` }),
     previewBadge: 'Via dosiero',
     showOnMap: (band) => `Montri la bandon ${band} sur la mapo kaj la templinio`,
     listDates: (band) => `Listigi la datojn de ${band}`,
@@ -208,9 +208,9 @@ export const eo: Messages = {
     summary: (cities, countries) =>
       `${n(cities, { one: '# urbo', other: '# urboj' })} en ${n(countries, { one: '# lando', other: '# landoj' })} havas koncertojn en la periodo`,
     empty: 'Neniuj koncertoj en la periodo. Elektu pli longan periodon.',
-    summaryNear: (cities, countries, distance) =>
-      `${n(cities, { one: '# urbo', other: '# urboj' })} en ${n(countries, { one: '# lando', other: '# landoj' })} havas koncertojn ene de ${distance} en la periodo`,
-    emptyNear: (distance) => `Neniuj koncertoj ene de ${distance} en la periodo. Elektu pli longan periodon aŭ pli grandan areon.`,
+    summaryNear: (cities, countries, within) =>
+      `${n(cities, { one: '# urbo', other: '# urboj' })} en ${n(countries, { one: '# lando', other: '# landoj' })} havas koncertojn ${within} en la periodo`,
+    emptyNear: (within) => `Neniuj koncertoj ${within} en la periodo. Elektu pli longan periodon aŭ pli grandan areon.`,
     noMatch: (query) => `Neniu urbo aŭ lando kongruas kun “${query}”.`,
     showCities: (country) => `Montri la urbojn en ${country}`,
     hideCities: (country) => `Kaŝi la urbojn en ${country}`,
@@ -237,8 +237,8 @@ export const eo: Messages = {
     emptyNamed: (name, range) => `Neniuj koncertoj de ${name} ${range}. ${zoomOutHint}`,
     emptyBands: (range) => `Neniuj koncertoj de ĉi tiuj bandoj ${range}. ${zoomOutHint}`,
     emptyPlace: (place, range) => `Neniuj koncertoj en ${place} ${range}. ${zoomOutHint}`,
-    near: (range, distance) => `ene de ${distance} ${range}`,
-    nearbyTitle: (distance) => `Koncertoj ene de ${distance}`,
+    near: (range, within) => `${within} ${range}`,
+    nearbyTitle: (within) => `Koncertoj ${within}`,
     emptyNearby: (range) => `Neniuj koncertoj ${range}. ${zoomOutHint}`,
     hiddenPicked: 'Ĉi tiuj koncertoj estas kaŝitaj. Ŝaltu iliajn bandojn en la listo de bandoj.',
     pickedOne: (band, city) => `${band} en ${city}`,
@@ -261,11 +261,11 @@ export const eo: Messages = {
     cursor: 'Templinio. Uzu la sagoklavojn por moviĝi inter koncertoj.',
     noBandsShown: 'Neniuj bandoj estas videblaj. Ŝaltu bandojn en la listo por vidi iliajn datojn.',
     noShowsInWindow: 'Neniuj koncertoj en ĉi tiu periodo. Elektu alian periodon aŭ malzomu.',
-    noShowsInWindowNear: (distance) => `Neniuj koncertoj ene de ${distance} en ĉi tiu periodo. Elektu alian periodon aŭ pli grandan areon, aŭ malzomu.`,
+    noShowsInWindowNear: (within) => `Neniuj koncertoj ${within} en ĉi tiu periodo. Elektu alian periodon aŭ pli grandan areon, aŭ malzomu.`,
     hiddenLanes: (count) =>
       n(count, { one: '# bando havas neniujn koncertojn en ĉi tiu periodo kaj estas kaŝita.', other: '# bandoj havas neniujn koncertojn en ĉi tiu periodo kaj estas kaŝitaj.' }),
-    hiddenLanesNear: (count, distance) =>
-      n(count, { one: `# bando havas neniujn koncertojn ene de ${distance} en ĉi tiu periodo kaj estas kaŝita.`, other: `# bandoj havas neniujn koncertojn ene de ${distance} en ĉi tiu periodo kaj estas kaŝitaj.` }),
+    hiddenLanesNear: (count, within) =>
+      n(count, { one: `# bando havas neniujn koncertojn ${within} en ĉi tiu periodo kaj estas kaŝita.`, other: `# bandoj havas neniujn koncertojn ${within} en ĉi tiu periodo kaj estas kaŝitaj.` }),
     showAllLanes: 'Montri ĉiujn vicojn',
     dot: (band, date, city, status) => `${band}: ${date}, ${city}${status === null ? '' : `, ${status}`}. Premu la enigan klavon por detaloj.`,
     presets: {
@@ -301,15 +301,25 @@ export const eo: Messages = {
     zoomIn: 'Zomi',
     zoomOut: 'Malzomi',
     fit: 'Adapti al la koncertoj',
-    area: 'Mapa areo: proksime de mi aŭ regiono',
+    area: 'Mapa areo: proksime de mi, ĉirkaŭ punkto aŭ regiono',
     areaMenu: 'Mapa areo',
     nearMe: 'Proksime de mi',
+    aroundPoint: 'Ĉirkaŭ punkto',
+    pickAnother: 'Elekti alian punkton',
+    pickHint: 'Alklaku la mapon por meti la centron',
+    cancelPick: 'Nuligi',
+    clearArea: 'Forigi la areon',
+    aroundHere: 'Koncertoj ĉirkaŭ ĉi tie',
     regions: 'Regionoj',
     regionNames: { europe: 'Eŭropo', 'north-america': 'Nordameriko', 'south-america': 'Sudameriko', asia: 'Azio', africa: 'Afriko', oceania: 'Oceanio', world: 'Mondo' },
     asGlobe: 'Montri kiel globon',
     asFlat: 'Montri kiel ebenan mapon',
     listNearby: 'Listigi ĉi tiujn koncertojn',
-    nearby: (count, distance) => `${shows(count)} ene de ${distance}`,
+    nearby: (count, within) => `${shows(count)} ${within}`,
+    within: (distance) => `ene de ${distance}`,
+    withinOf: (distance, place) => `ene de ${distance} ĉirkaŭ ${place}`,
+    compass: { north: 'N', south: 'S', east: 'O', west: 'U' },
+    coordinates: (latitude, longitude) => `${latitude}, ${longitude}`,
     locating: 'La retumilo estas petata pri via loko…',
     locationUnsupported: 'Ĉi tiu retumilo ne povas sciigi vian lokon ĉi tie. Elektu regionon anstataŭe.',
     locationDenied: 'Aliro al via loko estis rifuzita. Permesu ĝin en la retumilo aŭ elektu regionon.',

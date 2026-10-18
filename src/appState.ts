@@ -52,8 +52,10 @@ export interface AppState {
   /** Forward-looking presets start a month back, to follow a running tour. */
   readonly includePastMonth: boolean;
   readonly tourPacing: TourPacing;
-  /** Fit to shows (follows the timeline), a region, or the area around the viewer. */
+  /** Fit to shows (follows the timeline), a region, or the area around the viewer or a picked point. */
   readonly mapView: MapViewPreset;
+  /** The area menu waits for a click on the map to centre an area of this radius there. */
+  readonly pickRadius: Distance | null;
   readonly mapMode: MapMode;
   /** The viewer's position, only after they asked for "Near me". Held in memory, never stored or sent. */
   readonly userPosition: readonly [lon: number, lat: number] | null;
@@ -69,10 +71,12 @@ export interface Area {
   readonly radius: Distance;
 }
 
-/** "Near me" limits every view once the browser has told where the viewer is; regions only frame the map. */
+/** A picked point, or "Near me" once the browser has told where the viewer is, limits every view; regions only frame the map. */
 export function activeArea(state: Pick<AppState, 'mapView' | 'userPosition'>): Area | null {
-  if (state.mapView.kind !== 'near' || state.userPosition === null) return null;
-  return { center: state.userPosition, radius: state.mapView.radius };
+  const { mapView } = state;
+  if (mapView.kind === 'point') return { center: mapView.center, radius: mapView.radius };
+  if (mapView.kind !== 'near' || state.userPosition === null) return null;
+  return { center: state.userPosition, radius: mapView.radius };
 }
 
 export function showsInArea(refs: readonly ShowRef[], area: Area): ShowRef[] {
