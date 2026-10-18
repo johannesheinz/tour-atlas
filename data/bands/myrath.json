@@ -2583,10 +2583,10 @@
       "sourceUrl": null,
       "notes": null,
       "geo": {
-        "lat": 45.21389,
-        "lon": 5.71076,
+        "lat": 43.18378,
+        "lon": 3.00419,
         "precision": "city",
-        "source": "nominatim"
+        "source": "manual"
       }
     },
     {
