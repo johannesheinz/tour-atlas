@@ -56,7 +56,10 @@ If the silhouette is a blob, look for another file: a transparent PNG or SVG of 
 
 1. Put the URL in `band.logoUrl` of `data/bands/<band-id>.json` (the image file itself).
 2. `npm run logos` downloads and converts it to `data/logos/<band-id>.webp`. Existing files are kept;
-   to replace one, use `node tools/logos.ts data/bands/<band-id>.json --force`.
+   to replace one, use `node tools/logos.ts data/bands/<band-id>.json --force`. Never use `--force` on a
+   band listed under "Hand-made silhouettes" in `docs/DATA_FORMAT.md`: it would replace the cleaned file
+   with the broken automatic one. If no source image converts well, a silhouette cleaned by hand from the
+   same image is an option; ask the user first and add the band to that table.
 3. `npm run validate`, then open a pull request. On GitHub the Logos workflow does step 2 for you.
 
 Report per band: the URL, the format, where you found it, and anything you were unsure about.

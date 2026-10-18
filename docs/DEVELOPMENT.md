@@ -128,8 +128,9 @@ Every view is a pure function of the current choices, so the order in which a vi
   the fonts and band logos are served from the same place as the page. Logos are downloaded once by
   `npm run logos`; the page never contacts the original image hosts.
 - View state (hidden bands, time window, selection) lives in the URL hash only, so a view can be shared
-  as a link. The hash is never sent to a server. Shared links leave out the language, time format and
-  distance settings; the "Near me" position is never put in the URL at all.
+  as a link. The hash is never sent to a server. `src/share.ts` builds the share link from the app state
+  (`currentHash()`), not from the address bar, whose hash is written with a 300 ms delay. Shared links leave
+  out the language, time format and distance settings; the "Near me" position is never put in the URL at all.
 - Previewed files are read in the browser and kept in memory until the tab closes.
 - The Content-Security-Policy sets `connect-src 'none'`, so the page cannot make requests even by mistake.
   Ticket and source links open in a new tab without a referrer.

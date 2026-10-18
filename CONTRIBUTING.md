@@ -5,6 +5,9 @@ reviewed by a person before it appears on the site.
 
 ## Add or update a band
 
+Only active bands go in; a band without announced dates gets an empty show list. Shows are the band's own
+concerts: no side projects, solo shows or former members' bands, and no signings or listening sessions.
+
 1. **Produce the band file.** Usually the upstream pipeline does this: it reads the band's tour page and
    answers with JSON that matches [`schema/tour.schema.json`](schema/tour.schema.json). The fields and rules
    are in [`docs/DATA_FORMAT.md`](docs/DATA_FORMAT.md). By hand works too; copy a file from `samples/`.
@@ -31,6 +34,11 @@ reviewed by a person before it appears on the site.
 
    Shows it cannot resolve are listed. Look up their coordinates yourself, set
    `"geo": { "lat": …, "lon": …, "precision": "city", "source": "manual" }` and say so in the pull request.
+
+   The geocoder looks up the venue and the city. A venue answer more than 50 km from the city centre is a
+   namesake elsewhere in the country, so the city centre is used and the run says so. When the city name
+   itself exists more than once in the country, set `region` (for example `Midtjylland` for Fjellerup), or
+   the city lookup may pick the wrong one.
 
 5. **Normalize and validate.**
 

@@ -39,6 +39,19 @@ The geocoder lists rows it could not place. Find the venue or city on OpenStreet
 `"geo": { "lat": <5 decimals>, "lon": <5 decimals>, "precision": "venue" | "city", "source": "manual" }`.
 Use `city` precision unless you are sure of the building. Mention manual points in the pull request.
 
+## Geocoded to the wrong place
+
+Nominatim answers with the first match in the country, which can be a namesake. Warnings do not catch
+this when both places are in the same country; it shows on the map, or as a wrong nearest-city label.
+
+- The geocoder already rejects venue answers more than 50 km from the city centre (`venue result … km
+  away ignored`). Check that the city centre itself is right.
+- **The city has namesakes in the country:** set `region` on those rows, set their `geo` to `null` and run
+  `npm run geocode` again. The region is part of the cache key, so it queries afresh.
+- **A wrong answer is cached:** correct or delete the entry in `tools/geocache.json`, otherwise the next run
+  repeats it. Explain the change in the commit.
+- **No query finds the right place:** set the coordinates by hand (`"source": "manual"`), as above.
+
 ## Warnings (do not block, always check)
 
 | Warning | Usual cause |

@@ -63,7 +63,7 @@ Files in `data/bands/` must be in the repository stage. The build fails otherwis
 | `eventName` | string or null | festival or event name, e.g. `Fjordstorm Festival` |
 | `venue` | string or null | venue name; `null` if not announced |
 | `city` | string | Latin-script city name (`São Paulo`, `Tokyo`, not `東京`) |
-| `region` | string or null | state or province when it disambiguates the city (`OR` for Portland, Oregon) |
+| `region` | string or null | state or province when it disambiguates the city (`OR` for Portland, Oregon; `Midtjylland` for Fjellerup, one of three in Denmark) |
 | `countryCode` | string | ISO 3166-1 alpha-2, uppercase (`BR`); `XK` is accepted for Kosovo |
 | `status` | string or null | `scheduled`, `cancelled`, `postponed` or `soldout` as stated by the source; `null` if the source says nothing |
 | `ticketUrl` | string or null | ticket page for this show |
@@ -98,6 +98,19 @@ downloads it once, scales it to 80 px high and stores it as a black silhouette i
 `data/logos/<band-id>.webp`; the app prints that silhouette in its ink colour, so every logo fits both
 themes. Existing files are kept; `node tools/logos.ts data/bands --force` replaces them. Link the image
 file itself (for Wikipedia: the "Original file" link), not the page around it.
+
+### Hand-made silhouettes
+
+A few source images convert badly, and no better file exists. Their silhouettes were rebuilt by hand from
+the same image and committed directly; `band.logoUrl` still names that image. `npm run logos` keeps them,
+but `--force` brings back the automatic version, so never run it on these bands. Replace one only with an
+equally cleaned file, and keep this table up to date.
+
+| Band | Change |
+| --- | --- |
+| `deuteronomium` | the letters are black fills inside white outlines; rebuilt from the fills only |
+| `veni-domine` | lettering kept, the ornamental ring around it removed |
+| `whitecross` | the red wordmark kept, the white splatter cross behind it removed |
 
 ## Rules beyond the schema
 

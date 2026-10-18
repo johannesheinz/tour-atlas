@@ -8,6 +8,16 @@ description: Create or refresh a Tour Atlas band file from a band's tour page or
 Reading a tour page is the one step that needs judgement. Everything after it is deterministic tooling.
 Read `docs/DATA_FORMAT.md` before writing anything.
 
+## 0. Is it in scope?
+
+- **Only active bands.** A band that has split up (official statement, Metal Archives "Split-up", years
+  active ended on Wikipedia) is not added. A band on a break or between tours is.
+- **An active band without announced dates** gets a file with `"shows": []`, its official site or live page
+  as `source.url`.
+- **Only the band's own concerts.** Leave out side projects, solo shows and former members' bands (Geoff
+  Tate is not Queensrÿche), and events that are not concerts (signings, listening sessions, meet-and-greets).
+- **An ambiguous name** (several bands of that name) is a question for the user, not a guess.
+
 ## 1. Read the source
 
 - Fetch the page the user names (or use the text they pasted). Prefer the band's own tour page over ticket
@@ -26,7 +36,8 @@ Write each show as a draft row: `id: null`, `geo: null`, every other field prese
 - `startTime` only when printed (doors are not the start time unless the page says so).
 - `status`: map "sold out" → `soldout`, "cancelled" → `cancelled`, "postponed"/"moved" → `postponed`;
   anything else or nothing → `null` (not `scheduled` unless the page lists the show as on sale or confirmed).
-- `city` in Latin script; `region` only when it disambiguates (`Portland, OR`); `countryCode` ISO alpha-2.
+- `city` in Latin script; `region` only when it disambiguates (`Portland, OR`, or a city name that exists
+  more than once in the country); `countryCode` ISO alpha-2.
 - `tourName` only when the page names the tour.
 - `notes`: one short factual line from the page, e.g. "Moved from Kulturhaus", otherwise `null`.
 - `band.tags`: only ids from `data/tags.json`. Genre tags are fine when the band's own site or a
