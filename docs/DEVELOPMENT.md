@@ -80,6 +80,48 @@ GitHub Actions**.
 `TOUR_ATLAS_SITE_URL` that checks the social card, and the size budget.
 Dependabot keeps npm packages and the SHA-pinned GitHub Actions up to date.
 
+## Filtering
+
+Every view is a pure function of the current choices, so the order in which a viewer picks them never matters.
+`tests/view/combinedFilter.test.ts` feeds the same choices in different orders and checks the results are equal.
+
+- **Scope:** visible bands (hidden bands, ticked genres, band-view solo) ∩ the area, when one is active. The
+  deriver in `src/appState.ts` builds `refsInScope` and `visibleShows` from it; every view reads those: map pins
+  and routes, timeline lanes and dots, band list, Places, Genres, drill-downs, the nearby list and the tour.
+  Shows outside the area are hidden, not dimmed. `refsByBand` and `showsById` stay unscoped, as the catalogue
+  for picked shows and search.
+- **Time window on top:** lists, counts, collapsed lanes and the selection panel always apply it; the map
+  applies it only with "Follow timeline" on. That is all Follow means.
+- **Filter changes:** a chosen preset is recomputed against the scoped shows (`windowAfterFilterChange` in
+  `src/view/timePresets.ts`); a custom (zoomed) window is kept. A filter change never rewrites `timePreset`
+  and never falls back to "All".
+- **Presets stay clickable** when the area has nothing in them; availability comes from `bandShows` (visible
+  bands without the area), and the empty state says so in area-aware words.
+- **The area survives drill-downs:** opening a band, genre or place, and the map's corner fit button, keep it
+  and frame the shows inside it. The area menu is one exclusive choice (Fit to shows, Near me, Around a point,
+  a region): picking another entry clears the area.
+- **Regions only frame the map.** Their boxes are rough, so filtering by them would silently drop or include
+  shows; country filtering lives in the Places tab.
+- **"List these shows"** is a live selection (`{ kind: 'nearby' }`) that follows the window and the radius.
+  It is never written to the URL.
+- **Area-aware texts:** with an area active, empty states, counts and headings name it ("within 50 km of
+  Helsinki"). Texts take the whole phrase as a parameter, because "distance + place" does not compose the same
+  way in every language.
+
+### The area
+
+- `activeArea()` in `src/appState.ts` gives `{ center, radius }` from one of two sources: the viewer's position
+  (Near me) or a picked point. Both filter identically.
+- **Near me** positions stay in memory and never reach the URL or a shared link.
+- **A picked point** comes from the area menu (radius chip, then a click), a right-click or a one-second long press
+  on the map (`src/view/longPress.ts`, 8 px move tolerance), or a place's panel. It is stored as
+  `around=<lat>,<lon>&radius=<value><unit>`, rounded to two decimals (about 1 km) the moment it is picked, so
+  the app state equals the URL. Parsing is strict: the radius must be one the menu offers.
+- **The radius is always chosen** by the viewer; there is no default radius.
+- **The label** is the nearest city in the data inside the radius (all bands, ignoring hidden ones, so toggling
+  bands does not change it), otherwise the coordinates. It is derived from the URL alone, so a reloaded or
+  shared link shows the same label.
+
 ## Privacy, technically
 
 - No cookies, no localStorage, sessionStorage or IndexedDB, no analytics, no third-party fonts or scripts;
