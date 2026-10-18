@@ -91,6 +91,12 @@
       "precision": "city",
       "retrievedAt": "2026-10-16"
     },
+    "city|BE|antwerpen|": {
+      "lat": 51.22111,
+      "lon": 4.39971,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
     "city|BE|antwerp|": {
       "lat": 51.22111,
       "lon": 4.39971,
@@ -822,6 +828,12 @@
     "city|DE|lichtenfels|": {
       "lat": 50.13153,
       "lon": 11.08393,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|DE|lindau|": {
+      "lat": 47.57287,
+      "lon": 9.69619,
       "precision": "city",
       "retrievedAt": "2026-10-18"
     },
@@ -1899,6 +1911,12 @@
       "precision": "city",
       "retrievedAt": "2026-10-16"
     },
+    "city|MX|cancun|": {
+      "lat": 21.15275,
+      "lon": -86.84258,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
     "city|MX|chihuahua|": {
       "lat": 28.63687,
       "lon": -106.07674,
@@ -2597,6 +2615,12 @@
       "precision": "city",
       "retrievedAt": "2026-10-18"
     },
+    "city|US|bensalem|pa": {
+      "lat": 40.10455,
+      "lon": -74.95128,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
     "city|US|biloxi|ms": {
       "lat": 30.40076,
       "lon": -88.88938,
@@ -2632,6 +2656,12 @@
       "lon": -71.05783,
       "precision": "city",
       "retrievedAt": "2026-10-16"
+    },
+    "city|US|bow|wa": {
+      "lat": 48.56177,
+      "lon": -122.39822,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
     },
     "city|US|broken-arrow|ok": {
       "lat": 36.0526,
@@ -2710,6 +2740,12 @@
       "lon": -81.69368,
       "precision": "city",
       "retrievedAt": "2026-10-16"
+    },
+    "city|US|columbia|md": {
+      "lat": 39.21562,
+      "lon": -76.8582,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
     },
     "city|US|columbia|sc": {
       "lat": 34.00075,
@@ -3113,6 +3149,12 @@
       "precision": "city",
       "retrievedAt": "2026-10-16"
     },
+    "city|US|lincoln|ri": {
+      "lat": 41.95292,
+      "lon": -71.46639,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
     "city|US|long-beach|ca": {
       "lat": 33.76902,
       "lon": -118.1916,
@@ -3158,6 +3200,12 @@
     "city|US|manheim|pa": {
       "lat": 40.16374,
       "lon": -76.39524,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|US|marion|oh": {
+      "lat": 40.58863,
+      "lon": -83.12873,
       "precision": "city",
       "retrievedAt": "2026-10-18"
     },
@@ -3419,6 +3467,12 @@
       "precision": "city",
       "retrievedAt": "2026-10-18"
     },
+    "city|US|pocola|ok": {
+      "lat": 35.23187,
+      "lon": -94.48099,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
     "city|US|raleigh|nc": {
       "lat": 35.7804,
       "lon": -78.6391,
@@ -3452,6 +3506,12 @@
     "city|US|rochester|in": {
       "lat": 41.06488,
       "lon": -86.216,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|US|rockford|il": {
+      "lat": 42.27139,
+      "lon": -89.09397,
       "precision": "city",
       "retrievedAt": "2026-10-18"
     },
@@ -3538,6 +3598,12 @@
       "lon": -90.19001,
       "precision": "city",
       "retrievedAt": "2026-10-16"
+    },
+    "city|US|suquamish|wa": {
+      "lat": 47.73011,
+      "lon": -122.55299,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
     },
     "city|US|tampa|fl": {
       "lat": 27.94499,
@@ -4203,6 +4269,10 @@
       "miss": true,
       "retrievedAt": "2026-10-16"
     },
+    "venue|BE|antwerpen||kavka-zappa": {
+      "miss": true,
+      "retrievedAt": "2026-10-18"
+    },
     "venue|BE|antwerpen||lotto-arena": {
       "lat": 51.23012,
       "lon": 4.44185,
@@ -4290,6 +4360,10 @@
     "venue|BE|dessel||festivalpark-stenehei": {
       "miss": true,
       "retrievedAt": "2026-10-16"
+    },
+    "venue|BE|dessel||festivalterrein-stenehei": {
+      "miss": true,
+      "retrievedAt": "2026-10-18"
     },
     "venue|BE|dessel||graspop": {
       "lat": 51.22978,
@@ -4898,6 +4972,12 @@
       "lon": -73.57507,
       "precision": "venue",
       "retrievedAt": "2026-10-16"
+    },
+    "venue|CA|niagara-falls|on|fallsview-casino-resort": {
+      "lat": 43.08233,
+      "lon": -79.08065,
+      "precision": "venue",
+      "retrievedAt": "2026-10-18"
     },
     "venue|CA|ottawa|on|canadian-tire-center": {
       "miss": true,
@@ -6653,6 +6733,12 @@
       "precision": "venue",
       "retrievedAt": "2026-10-16"
     },
+    "venue|DE|hannover||pavillon": {
+      "lat": 52.37099,
+      "lon": 9.71125,
+      "precision": "venue",
+      "retrievedAt": "2026-10-18"
+    },
     "venue|DE|hannover||swiss-life-hall": {
       "lat": 52.35704,
       "lon": 9.72997,
@@ -6986,6 +7072,10 @@
       "lon": 9.72332,
       "precision": "venue",
       "retrievedAt": "2026-10-16"
+    },
+    "venue|DE|lindau||vaudeville-e-v-club": {
+      "miss": true,
+      "retrievedAt": "2026-10-18"
     },
     "venue|DE|lingen||alter-schlachthof": {
       "lat": 52.52412,
@@ -8547,6 +8637,12 @@
       "precision": "venue",
       "retrievedAt": "2026-10-16"
     },
+    "venue|FI|helsinki||suvilahti": {
+      "lat": 60.18637,
+      "lon": 24.97165,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
     "venue|FI|helsinki||tavastia": {
       "lat": 60.1685,
       "lon": 24.93297,
@@ -8930,6 +9026,12 @@
       "lon": 7.37103,
       "precision": "venue",
       "retrievedAt": "2026-10-16"
+    },
+    "venue|FR|colombier-saugnieu||champ-de-foire": {
+      "lat": 45.71677,
+      "lon": 5.12574,
+      "precision": "venue",
+      "retrievedAt": "2026-10-18"
     },
     "venue|FR|colombier-saugnieu||plane-r-fest": {
       "miss": true,
@@ -9925,6 +10027,12 @@
       "precision": "venue",
       "retrievedAt": "2026-10-16"
     },
+    "venue|GB|manchester||manchester-academy": {
+      "lat": 53.46366,
+      "lon": -2.23165,
+      "precision": "venue",
+      "retrievedAt": "2026-10-18"
+    },
     "venue|GB|manchester||manchester-academy-2": {
       "lat": 53.46917,
       "lon": -2.21984,
@@ -10543,6 +10651,12 @@
       "precision": "venue",
       "retrievedAt": "2026-10-16"
     },
+    "venue|IT|roncade||new-age-club": {
+      "lat": 45.63925,
+      "lon": 12.38314,
+      "precision": "venue",
+      "retrievedAt": "2026-10-18"
+    },
     "venue|IT|san-dona-di-piave||revolver": {
       "lat": 45.62607,
       "lon": 12.59673,
@@ -10764,6 +10878,10 @@
     "venue|MT|st-julian-s||malta-metal-weekend": {
       "miss": true,
       "retrievedAt": "2026-10-16"
+    },
+    "venue|MX|cancun||the-sands-rocks": {
+      "miss": true,
+      "retrievedAt": "2026-10-18"
     },
     "venue|MX|chihuahua||pistoleros-house-of-show": {
       "miss": true,
@@ -11026,6 +11144,10 @@
     "venue|NL|helmond||the-cacaofabriek": {
       "miss": true,
       "retrievedAt": "2026-10-16"
+    },
+    "venue|NL|leeuwarden||into-the-grave": {
+      "miss": true,
+      "retrievedAt": "2026-10-18"
     },
     "venue|NL|leeuwarden||into-the-grave-2022": {
       "miss": true,
@@ -12433,6 +12555,12 @@
       "miss": true,
       "retrievedAt": "2026-10-18"
     },
+    "venue|US|airway-heights|wa|spokane-tribe-resort-casino": {
+      "lat": 47.64559,
+      "lon": -117.60843,
+      "precision": "venue",
+      "retrievedAt": "2026-10-18"
+    },
     "venue|US|albany|ny|empire-live": {
       "lat": 42.65274,
       "lon": -73.75041,
@@ -12647,6 +12775,10 @@
       "precision": "venue",
       "retrievedAt": "2026-10-16"
     },
+    "venue|US|bensalem|pa|parx-xcite-center": {
+      "miss": true,
+      "retrievedAt": "2026-10-18"
+    },
     "venue|US|benton|ky|first-missionary-baptist-church": {
       "lat": 36.83371,
       "lon": -88.37346,
@@ -12724,6 +12856,10 @@
       "lon": -71.06216,
       "precision": "venue",
       "retrievedAt": "2026-10-16"
+    },
+    "venue|US|bow|wa|skagit-valley-casino-resort-s-winners-lounge": {
+      "miss": true,
+      "retrievedAt": "2026-10-18"
     },
     "venue|US|bristow|va|jiffy-lube-live": {
       "lat": 38.78553,
@@ -12943,6 +13079,10 @@
       "precision": "venue",
       "retrievedAt": "2026-10-18"
     },
+    "venue|US|cincinnati|oh|hard-rock-cincinnati-ballroom": {
+      "miss": true,
+      "retrievedAt": "2026-10-18"
+    },
     "venue|US|cincinnati|oh|heritage-bank-center": {
       "lat": 39.09793,
       "lon": -84.50445,
@@ -12954,6 +13094,12 @@
       "lon": -84.51367,
       "precision": "venue",
       "retrievedAt": "2026-10-16"
+    },
+    "venue|US|clear-lake|ia|surf-ballroom-and-museum": {
+      "lat": 43.13987,
+      "lon": -93.38966,
+      "precision": "venue",
+      "retrievedAt": "2026-10-18"
     },
     "venue|US|clearwater|fl|the-baycare-sound": {
       "lat": 27.9675,
@@ -13008,6 +13154,10 @@
       "lon": -104.82668,
       "precision": "venue",
       "retrievedAt": "2026-10-16"
+    },
+    "venue|US|columbia|md|m3-rock-festival": {
+      "miss": true,
+      "retrievedAt": "2026-10-18"
     },
     "venue|US|columbus|oh|historic-crew-stadium": {
       "lat": 40.00947,
@@ -13068,6 +13218,12 @@
       "lon": -96.79815,
       "precision": "venue",
       "retrievedAt": "2026-10-16"
+    },
+    "venue|US|dallas|tx|state-fair-of-texas": {
+      "lat": 32.78193,
+      "lon": -96.76546,
+      "precision": "venue",
+      "retrievedAt": "2026-10-18"
     },
     "venue|US|dallas|tx|the-bomb-factory": {
       "miss": true,
@@ -13248,6 +13404,12 @@
       "lon": -74.07434,
       "precision": "venue",
       "retrievedAt": "2026-10-16"
+    },
+    "venue|US|el-cajon|ca|sycuan-casino-resort": {
+      "lat": 32.7858,
+      "lon": -116.82932,
+      "precision": "venue",
+      "retrievedAt": "2026-10-18"
     },
     "venue|US|el-paso|tx|abraham-chavez-theatre": {
       "lat": 31.75751,
@@ -13685,6 +13847,10 @@
       "precision": "venue",
       "retrievedAt": "2026-10-16"
     },
+    "venue|US|lake-buena-vista|fl|america-gardens-theatre": {
+      "miss": true,
+      "retrievedAt": "2026-10-18"
+    },
     "venue|US|lake-buena-vista|fl|house-of-blues-orlando": {
       "miss": true,
       "retrievedAt": "2026-10-18"
@@ -13768,6 +13934,10 @@
       "lon": -96.70061,
       "precision": "venue",
       "retrievedAt": "2026-10-16"
+    },
+    "venue|US|lincoln|ri|bally-s-event-center": {
+      "miss": true,
+      "retrievedAt": "2026-10-18"
     },
     "venue|US|lisle|il|basecamp-pub": {
       "lat": 41.78238,
@@ -13865,6 +14035,12 @@
       "miss": true,
       "retrievedAt": "2026-10-16"
     },
+    "venue|US|louisville|ky|iroquois-amphitheater": {
+      "lat": 38.16015,
+      "lon": -85.78029,
+      "precision": "venue",
+      "retrievedAt": "2026-10-18"
+    },
     "venue|US|louisville|ky|louder-than-life-festival": {
       "miss": true,
       "retrievedAt": "2026-10-16"
@@ -13880,6 +14056,12 @@
     "venue|US|loveland|co|budweiser-events-center": {
       "miss": true,
       "retrievedAt": "2026-10-16"
+    },
+    "venue|US|lynn|ma|lynn-memorial-auditorium": {
+      "lat": 42.46481,
+      "lon": -70.95125,
+      "precision": "venue",
+      "retrievedAt": "2026-10-18"
     },
     "venue|US|macon|mo|royal-theatre": {
       "miss": true,
@@ -13931,6 +14113,10 @@
       "lat": 37.73019,
       "lon": -88.92762,
       "precision": "venue",
+      "retrievedAt": "2026-10-18"
+    },
+    "venue|US|marion|oh|popcorn-festival": {
+      "miss": true,
       "retrievedAt": "2026-10-18"
     },
     "venue|US|marshfield|mo|hope-church-of-the-nazarene": {
@@ -14024,6 +14210,18 @@
     "venue|US|miami|fl|norwegian-pearl": {
       "miss": true,
       "retrievedAt": "2026-10-16"
+    },
+    "venue|US|miami|fl|pool-deck-norwegian-joy": {
+      "miss": true,
+      "retrievedAt": "2026-10-18"
+    },
+    "venue|US|miami|fl|pool-deck-norwegian-pearl": {
+      "miss": true,
+      "retrievedAt": "2026-10-18"
+    },
+    "venue|US|miami|fl|stardust-theater-norwegian-pearl": {
+      "miss": true,
+      "retrievedAt": "2026-10-18"
     },
     "venue|US|milford|oh|house-of-restoration": {
       "miss": true,
@@ -14283,6 +14481,12 @@
       "precision": "venue",
       "retrievedAt": "2026-10-16"
     },
+    "venue|US|north-las-vegas|nv|cannery-casino-hotel": {
+      "lat": 36.23829,
+      "lon": -115.1187,
+      "precision": "venue",
+      "retrievedAt": "2026-10-18"
+    },
     "venue|US|norwalk|ct|district-music-hall": {
       "miss": true,
       "retrievedAt": "2026-10-18"
@@ -14331,6 +14535,12 @@
       "precision": "venue",
       "retrievedAt": "2026-10-16"
     },
+    "venue|US|onamia|mn|grand-casino-mille-lacs": {
+      "lat": 46.17985,
+      "lon": -93.75929,
+      "precision": "venue",
+      "retrievedAt": "2026-10-18"
+    },
     "venue|US|ontario|or|lions-park": {
       "lat": 44.02571,
       "lon": -116.97432,
@@ -14340,6 +14550,10 @@
     "venue|US|orlando|fl|hard-rock-live": {
       "miss": true,
       "retrievedAt": "2026-10-16"
+    },
+    "venue|US|orlando|fl|hard-rock-live-orlando": {
+      "miss": true,
+      "retrievedAt": "2026-10-18"
     },
     "venue|US|orlando|fl|the-abbey": {
       "lat": 28.54117,
@@ -14359,6 +14573,12 @@
     },
     "venue|US|oshkosh|wi|lifest": {
       "miss": true,
+      "retrievedAt": "2026-10-18"
+    },
+    "venue|US|paso-robles|ca|frontier-stage": {
+      "lat": 35.63651,
+      "lon": -120.68672,
+      "precision": "venue",
       "retrievedAt": "2026-10-18"
     },
     "venue|US|patchogue|ny|patchogue-theatre-for-the-performing-arts": {
@@ -14507,6 +14727,10 @@
       "precision": "venue",
       "retrievedAt": "2026-10-18"
     },
+    "venue|US|pocola|ok|gilley-s-at-choctaw-casino-pocola": {
+      "miss": true,
+      "retrievedAt": "2026-10-18"
+    },
     "venue|US|pomona|ca|the-glass-house": {
       "lat": 34.0575,
       "lon": -117.75146,
@@ -14628,6 +14852,10 @@
       "lon": -77.61083,
       "precision": "venue",
       "retrievedAt": "2026-10-16"
+    },
+    "venue|US|rockford|il|hard-rock-live-rockford": {
+      "miss": true,
+      "retrievedAt": "2026-10-18"
     },
     "venue|US|roseville|ca|goldfield-trading-post-roseville": {
       "miss": true,
@@ -14817,6 +15045,12 @@
       "precision": "venue",
       "retrievedAt": "2026-10-16"
     },
+    "venue|US|santa-fe|nm|buffalo-thunder-resort-casino": {
+      "lat": 35.86139,
+      "lon": -105.99646,
+      "precision": "venue",
+      "retrievedAt": "2026-10-18"
+    },
     "venue|US|schenectady|ny|proctors-theatre": {
       "lat": 42.81198,
       "lon": -73.94201,
@@ -14895,6 +15129,12 @@
       "precision": "venue",
       "retrievedAt": "2026-10-16"
     },
+    "venue|US|shelton|wa|little-creek-casino-resort": {
+      "lat": 47.12863,
+      "lon": -123.10158,
+      "precision": "venue",
+      "retrievedAt": "2026-10-18"
+    },
     "venue|US|sheridan|wy|bethesda-worship-center": {
       "miss": true,
       "retrievedAt": "2026-10-18"
@@ -14933,6 +15173,12 @@
     },
     "venue|US|sioux-falls|sd|18th-street-church": {
       "miss": true,
+      "retrievedAt": "2026-10-18"
+    },
+    "venue|US|snoqualmie|wa|snoqualmie-casino": {
+      "lat": 47.51863,
+      "lon": -121.84171,
+      "precision": "venue",
       "retrievedAt": "2026-10-18"
     },
     "venue|US|sparks|nv|nugget-event-center": {
@@ -15031,6 +15277,10 @@
       "precision": "venue",
       "retrievedAt": "2026-10-16"
     },
+    "venue|US|suquamish|wa|suquamish-clearwater-casino-resort": {
+      "miss": true,
+      "retrievedAt": "2026-10-18"
+    },
     "venue|US|syracuse|ny|jma-wireless-dome": {
       "lat": 43.03628,
       "lon": -76.13636,
@@ -15064,6 +15314,12 @@
     "venue|US|tampa|fl|the-orpheum": {
       "miss": true,
       "retrievedAt": "2026-10-16"
+    },
+    "venue|US|tarrytown|ny|tarrytown-music-hall": {
+      "lat": 41.07665,
+      "lon": -73.85883,
+      "precision": "venue",
+      "retrievedAt": "2026-10-18"
     },
     "venue|US|tempe|az|marquee-theatre": {
       "lat": 33.43697,
@@ -15106,6 +15362,10 @@
     "venue|US|uncasville|ct|mohegan-sun-arena": {
       "miss": true,
       "retrievedAt": "2026-10-16"
+    },
+    "venue|US|uncasville|ct|wolf-den": {
+      "miss": true,
+      "retrievedAt": "2026-10-18"
     },
     "venue|US|uniondale|ny|nassau-coliseum": {
       "lat": 40.72293,
@@ -15202,6 +15462,10 @@
     "venue|US|wheatland|ca|hard-rock-live": {
       "miss": true,
       "retrievedAt": "2026-10-16"
+    },
+    "venue|US|wheatland|ca|hard-rock-live-sacramento": {
+      "miss": true,
+      "retrievedAt": "2026-10-18"
     },
     "venue|US|wichita|ks|the-center-church": {
       "miss": true,
