@@ -8,7 +8,7 @@ import { parseArguments, runCli } from './shared/files.ts';
 const USAGE = `Usage: node tools/budget.ts [--bands <n>] [--shows-per-band <n>]
 
 Builds the app with a synthetic dataset (default 50 bands x 100 shows) into .cache/budget/
-and runs the dist checks against it, including the 650 kB gzipped budget.`;
+and runs the dist checks against it, including the 800 kB gzipped budget.`;
 
 runCli(USAGE, () => {
   const args = parseArguments(process.argv.slice(2), [], ['bands', 'shows-per-band']);

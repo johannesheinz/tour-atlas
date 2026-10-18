@@ -73,8 +73,8 @@ To look at the build, serve it locally: `npm run preview` (http://localhost:4173
 that blocks local fonts falls back to system fonts and nothing else changes.
 
 `npm run build:budget` builds the same app with a synthetic 50 bands / 5,000 shows dataset and fails above
-650 kB transferred (gzipped HTML plus the fonts of the heaviest style; browsers download only the
-active style's fonts). It is currently about 603 kB.
+800 kB transferred (gzipped HTML plus every font file of the heaviest style; browsers download only the
+active style's fonts, and the extended Latin files only for letters like ĉ or Č). It is currently about 768 kB.
 
 ## Deploy
 

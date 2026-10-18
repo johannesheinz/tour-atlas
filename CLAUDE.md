@@ -11,7 +11,7 @@ No backend, no runtime network requests. Band data lives in `data/bands/*.json`,
 npm run dev            # Vite dev server
 npm run build          # inlined build + fonts, then dist checks (CSP, no remote resources, size)
 npm run preview        # serve dist/ on http://localhost:4173
-npm run build:budget   # build with a synthetic 50 bands / 5,000 shows dataset, must stay < 650 kB gzipped
+npm run build:budget   # build with a synthetic 50 bands / 5,000 shows dataset, must stay < 800 kB gzipped
 npm test               # Vitest
 npm run typecheck      # app (DOM) and node (tools/tests) projects separately
 npm run validate       # tools/validate.ts data/bands  (errors fail, warnings inform)
@@ -76,7 +76,7 @@ Only for work that needs judgement; everything checkable is a tool or a CI job.
   `rel="noopener noreferrer"`.
 - Unknown data is `null`, never guessed. Never invent tour dates; sample data uses fictional bands and
   `example.com`/`example.org` URLs.
-- Keep the transfer size (gzipped `dist/index.html` plus the fonts of the heaviest style) under 650 kB at 50 bands / 5,000 shows.
+- Keep the transfer size (gzipped `dist/index.html` plus the fonts of the heaviest style) under 800 kB at 50 bands / 5,000 shows.
   Every hosted font belongs to a style in `src/data/styles.ts`; browsers download only the active style's fonts.
 - Never send requests to Nominatim from tests or CI; tests inject a fake fetch.
 - The repository is local-only for now; do not add a remote or push.

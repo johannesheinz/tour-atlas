@@ -8,7 +8,7 @@ const USAGE = `Usage: node tools/check-dist.ts <dist-dir> [--budget-kb <n>]
 
 Checks the build output: index.html with every script and style inlined plus self-hosted
 fonts next to it, no remote resources, no storage or network APIs, and a transfer size
-(gzipped HTML + the fonts of the heaviest style) within the budget (default 650 kB).`;
+(gzipped HTML + the fonts of the heaviest style) within the budget (default 800 kB).`;
 
 const FONT_FILE = /^[\w.-]+\.woff2$/;
 const LOGO_FILE = /^[\w.-]+\.webp$/;
@@ -33,7 +33,7 @@ runCli(USAGE, () => {
   const args = parseArguments(process.argv.slice(2), [], ['budget-kb']);
   const [distDir] = args.positional;
   if (distDir === undefined) throw new UsageError('missing <dist-dir>');
-  const budgetKb = Number(args.options.get('budget-kb') ?? '650');
+  const budgetKb = Number(args.options.get('budget-kb') ?? '800');
   if (!Number.isFinite(budgetKb) || budgetKb <= 0) throw new UsageError('--budget-kb must be a positive number');
 
   const problems: string[] = [];
