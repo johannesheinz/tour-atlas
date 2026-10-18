@@ -1148,6 +1148,15 @@ input[type='search']::placeholder {
   stroke-width: 3;
 }
 
+.map-ring.is-hovered-halo {
+  stroke: var(--stock);
+  stroke-width: 7;
+}
+
+.map-ring.is-hovered {
+  stroke-width: 3;
+}
+
 .map-cursor {
   position: absolute;
   left: var(--x, 50%);
@@ -1507,7 +1516,7 @@ input[type='search']::placeholder {
   display: grid;
   grid-template-columns: 36px minmax(0, 1fr);
   gap: 0 12px;
-  padding: 10px 0;
+  padding: 10px 8px;
   border-bottom: 1px solid var(--stock-deep);
 }
 
@@ -1592,6 +1601,11 @@ input[type='search']::placeholder {
   gap: 2px 10px;
   margin-top: 5px !important;
   font-size: 12px;
+}
+
+.gig.is-highlighted {
+  background: var(--stock-deep);
+  box-shadow: inset 4px 0 0 var(--ink);
 }
 
 .gig.is-cancelled .gig-date,

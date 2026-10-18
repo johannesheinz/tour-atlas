@@ -21,6 +21,8 @@ import { createTooltip } from './tooltip.ts';
 import { pinTooltip } from './tooltipContent.ts';
 
 export const MAP_SETTINGS = {
+  /** The pointed-at pin's ring sits outside the selection ring, so it stands out even when every pin is selected. */
+  hoverRingGap: 10,
   padding: 32,
   minSpanKm: 300,
   canvasThreshold: 2000,
@@ -694,21 +696,18 @@ export function createMapView(container: HTMLElement, world: WorldTopology, call
   function drawHighlights() {
     if (props === null) return;
     const current = props;
-    const rings = pins.flatMap((pin) => {
-      const selected = pin.shows.some((ref) => current.selectedShowIds.has(ref.show.id));
-      const highlighted = pin.shows.some((ref) => current.highlightedShowIds.has(ref.show.id));
-      if (!selected && !highlighted) return [];
-      const radius = pinRadius(pin) + (selected ? 5 : 4);
-      return [
-        s('circle', {
-          class: selected ? 'map-ring is-selected' : 'map-ring',
-          cx: transform.applyX(pin.x),
-          cy: transform.applyY(pin.y),
-          r: radius,
-        }),
-      ];
-    });
-    highlightsLayer.replaceChildren(...rings);
+    const rings: SVGCircleElement[] = [];
+    const hovered: SVGCircleElement[] = [];
+    for (const pin of pins) {
+      const cx = transform.applyX(pin.x);
+      const cy = transform.applyY(pin.y);
+      if (pin.shows.some((ref) => current.selectedShowIds.has(ref.show.id))) rings.push(s('circle', { class: 'map-ring is-selected', cx, cy, r: pinRadius(pin) + 5 }));
+      if (pin.shows.some((ref) => current.highlightedShowIds.has(ref.show.id))) {
+        const r = pinRadius(pin) + MAP_SETTINGS.hoverRingGap;
+        hovered.push(s('circle', { class: 'map-ring is-hovered-halo', cx, cy, r }), s('circle', { class: 'map-ring is-hovered', cx, cy, r }));
+      }
+    }
+    highlightsLayer.replaceChildren(...rings, ...hovered);
   }
 
   function describePin(pin: DisplayPin): string {

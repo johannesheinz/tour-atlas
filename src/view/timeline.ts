@@ -31,6 +31,8 @@ export const TIMELINE_SETTINGS = {
   laneFont: '17px "League Gothic", "Arial Narrow", sans-serif',
   /** A range starts this many average lane-label characters in, so its first shows are not under the band names. */
   gutterCharacters: 15,
+  /** The pointed-at dot's ring sits outside the selection ring, so it stands out when every dot is selected. */
+  hoverRingGap: 7,
   maxGutterFraction: 0.25,
   compactLaneFont: '15px "League Gothic", "Arial Narrow", sans-serif',
   tickFont: '600 11px Archivo, system-ui, sans-serif',
@@ -589,22 +591,35 @@ export function createTimeline(container: HTMLElement, callbacks: TimelineCallba
 
     lanesContext.save();
     clipToDots();
+    const ringAround = (index: number, ref: ShowRef, gap: number) => {
+      const [startX, endX] = dotCenter(x, ref);
+      const ring = radius + gap;
+      lanesContext.beginPath();
+      if (endX - startX > 1) lanesContext.roundRect(startX - ring, dotY(index) - ring, endX - startX + 2 * ring, 2 * ring, ring);
+      else lanesContext.arc(startX, dotY(index), ring, 0, Math.PI * 2);
+    };
+    const pointedAt: [number, ShowRef][] = [];
     for (let index = first; index <= last; index++) {
       const lane = current.lanes[index];
       if (lane === undefined) continue;
       for (const ref of lane.shows) {
-        const selected = current.selectedShowIds.has(ref.show.id);
-        if (!selected && !current.highlightedShowIds.has(ref.show.id)) continue;
-        const [startX, endX] = dotCenter(x, ref);
-        if (endX < firstDotCenterX()) continue;
+        if (dotCenter(x, ref)[1] < firstDotCenterX()) continue;
+        if (current.highlightedShowIds.has(ref.show.id)) pointedAt.push([index, ref]);
+        if (!current.selectedShowIds.has(ref.show.id)) continue;
         lanesContext.strokeStyle = theme.ink;
-        lanesContext.lineWidth = selected ? 2.5 : 1.5;
-        lanesContext.beginPath();
-        const ring = radius + (selected ? 4 : 3.5);
-        if (endX - startX > 1) lanesContext.roundRect(startX - ring, dotY(index) - ring, endX - startX + 2 * ring, 2 * ring, ring);
-        else lanesContext.arc(startX, dotY(index), ring, 0, Math.PI * 2);
+        lanesContext.lineWidth = 2.5;
+        ringAround(index, ref, 4);
         lanesContext.stroke();
       }
+    }
+    for (const [index, ref] of pointedAt) {
+      lanesContext.strokeStyle = theme.stock;
+      lanesContext.lineWidth = 6;
+      ringAround(index, ref, TIMELINE_SETTINGS.hoverRingGap);
+      lanesContext.stroke();
+      lanesContext.strokeStyle = theme.ink;
+      lanesContext.lineWidth = 3;
+      lanesContext.stroke();
     }
     lanesContext.restore();
 

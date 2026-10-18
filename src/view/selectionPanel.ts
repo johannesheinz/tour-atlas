@@ -1,6 +1,6 @@
 import { bandColor, type ShowRef, type ThemeMode } from '../model.ts';
 import { bandIdentity } from './bandIdentity.ts';
-import { h, safeExternalLink } from './dom.ts';
+import { h, prefersReducedMotion, safeExternalLink } from './dom.ts';
 import { formats, t } from '../i18n/index.ts';
 import { countryName, formatDate, formatTime, formatWeekday, statusKind } from './format.ts';
 
@@ -24,10 +24,14 @@ export interface SelectionPanelProps {
 
 export interface SelectionPanelCallbacks {
   onBack(): void;
+  /** Hovering or focusing a row points the map and timeline at that show; null when it leaves. */
+  onHover(ref: ShowRef | null): void;
 }
 
 export interface SelectionPanelView {
   render(props: SelectionPanelProps): void;
+  /** Marks the rows of shows hovered on the map or timeline, and scrolls the first into view if needed. */
+  highlight(showIds: ReadonlySet<string>): void;
   focusTitle(): void;
 }
 
@@ -43,6 +47,8 @@ export function createSelectionPanel(container: HTMLElement, callbacks: Selectio
   const announcer = h('div', { class: 'visually-hidden', 'aria-live': 'polite' });
   container.append(back, h('div', { class: 'selection-head' }, title, note), body, announcer);
   let previous: SelectionPanelProps | null = null;
+  let rowsByShowId = new Map<string, HTMLLIElement>();
+  let highlighted: readonly HTMLLIElement[] = [];
 
   return {
     render(props) {
@@ -60,9 +66,22 @@ export function createSelectionPanel(container: HTMLElement, callbacks: Selectio
       } else {
         const listed = props.shows.slice(0, MAX_ROWS);
         const overflow = props.shows.length - listed.length;
+        rowsByShowId = new Map();
+        highlighted = [];
+        const row = (ref: ShowRef) => {
+          const element = gigRow(ref, props);
+          element.addEventListener('mouseenter', () => callbacks.onHover(ref));
+          element.addEventListener('mouseleave', () => callbacks.onHover(null));
+          element.addEventListener('focusin', () => callbacks.onHover(ref));
+          element.addEventListener('focusout', (event) => {
+            if (!(event.relatedTarget instanceof Node) || !element.contains(event.relatedTarget)) callbacks.onHover(null);
+          });
+          rowsByShowId.set(ref.show.id, element);
+          return element;
+        };
         body.replaceChildren(
           ...monthGroups(listed).map(([month, refs]) =>
-            h('section', { class: 'selection-month' }, h('h3', { class: 'selection-month-title' }, month), h('ol', { class: 'gig-list' }, ...refs.map((ref) => gigRow(ref, props)))),
+            h('section', { class: 'selection-month' }, h('h3', { class: 'selection-month-title' }, month), h('ol', { class: 'gig-list' }, ...refs.map(row))),
           ),
           ...(overflow > 0 ? [h('p', { class: 'selection-more' }, t().selection.moreNotListed(overflow))] : []),
         );
@@ -70,6 +89,15 @@ export function createSelectionPanel(container: HTMLElement, callbacks: Selectio
       if (headingChanged) {
         announcer.textContent = t().selection.announce(heading.title, props.shows.length);
       }
+    },
+    highlight(showIds) {
+      const next = [...showIds].flatMap((id) => rowsByShowId.get(id) ?? []);
+      if (next.length === highlighted.length && next.every((element, index) => element === highlighted[index])) return;
+      for (const element of highlighted) element.classList.remove('is-highlighted');
+      for (const element of next) element.classList.add('is-highlighted');
+      highlighted = next;
+      const [first] = next;
+      if (first !== undefined && !isInView(first)) first.scrollIntoView({ block: 'nearest', behavior: prefersReducedMotion() ? 'auto' : 'smooth' });
     },
     focusTitle: () => title.focus(),
   };
@@ -125,4 +153,13 @@ function gigRow(ref: ShowRef, props: SelectionPanelProps): HTMLLIElement {
       ),
     ),
   );
+}
+
+/** Whether the row is fully visible inside the sidebar's scroll area. */
+function isInView(element: HTMLElement): boolean {
+  const scroller = element.closest('.sidebar-body');
+  if (scroller === null) return true;
+  const row = element.getBoundingClientRect();
+  const area = scroller.getBoundingClientRect();
+  return row.top >= area.top && row.bottom <= area.bottom;
 }

@@ -141,6 +141,7 @@ const selectionPanel = createSelectionPanel(requireElement(document, '#selection
     state.set({ selection: NO_SELECTION });
     if (!state.get().previewsOpen) sidebar.focusActiveTab();
   },
+  onHover: (ref) => state.set({ hoverShowIds: ref === null ? new Set() : new Set([ref.show.id]) }),
 });
 
 const previewPanel = createPreviewPanel(requireElement(document, '#preview-panel', HTMLElement), {
@@ -353,6 +354,7 @@ function renderAll() {
       backLabel: previewsShown ? t().selection.back.previews : listsLabel,
       mode: theme.mode,
     });
+    selectionPanel.highlight(current.hoverShowIds);
   }
   placeList.render({ places: select.places(current, derived), selected: current.selection.kind === 'places' ? current.selection.places : NO_PLACES });
   genreList.render({ genres: select.genres(current, derived), checked: current.tagFilter });
