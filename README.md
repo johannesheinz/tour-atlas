@@ -5,6 +5,8 @@ Follow your favourite bands on tour through space and time.
 Every show of the bands you follow on one world map, with a timeline right underneath: see where they play,
 when, and what's coming up near you.
 
+[![Tour Atlas in 50 seconds: click to play the demo video](docs/demo-poster.jpg)](docs/demo.mp4)
+
 ## Features
 
 - **Map and timeline:** every show as a pin on a flat map or a globe, one timeline lane per band; hovering one highlights the other
