@@ -1086,6 +1086,11 @@ input[type='search']::placeholder {
   opacity: 0.9;
 }
 
+.map-route.is-emphasized {
+  stroke-width: 4;
+  opacity: 1;
+}
+
 .map-route.is-dimmed {
   opacity: 0.12;
 }
@@ -1464,7 +1469,7 @@ input[type='search']::placeholder {
 
 .map-tour-head {
   stroke: var(--ink);
-  stroke-width: 2;
+  stroke-width: 2.5;
 }
 
 .selection-title {

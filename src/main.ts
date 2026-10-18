@@ -5,7 +5,7 @@ import { addDays, formatIsoDate, localToday, parseIsoDate } from './data/dates.t
 import type { ShowRef } from './model.ts';
 import { createSelectors } from './selectors.ts';
 import { selectionFromUrl, selectionShows, sidebarPanel } from './selection.ts';
-import { createTourClock } from './view/tourClock.ts';
+import { TOUR_PACING, createTourClock } from './view/tourClock.ts';
 import { HOME_ENTRY, asDrillDownEntry, drillDownEntry, historyStep, isHomeEntry } from './drillDownHistory.ts';
 import { createStore } from './state.ts';
 import { createBundledStore } from './store/bundled.ts';
@@ -83,6 +83,7 @@ let theme: ThemeColors = readThemeColors('auto');
 
 const idsOf = (shows: readonly ShowRef[] | null): ReadonlySet<string> => new Set((shows ?? []).map((ref) => ref.show.id));
 const NO_PLACES: ReadonlySet<PlaceKey> = new Set();
+const NO_BANDS: ReadonlySet<string> = new Set();
 const MAX_NAMED_BANDS = 3;
 
 const map = createMapView(requireElement(document, '#map', HTMLDivElement), world, {
@@ -106,10 +107,7 @@ const timeline = createTimeline(requireElement(document, '#timeline', HTMLDivEle
   onHover: (shows) => state.set({ hoverShowIds: idsOf(shows) }),
   onSelect: (shows) => state.set({ selection: shows === null || shows.length === 0 ? NO_SELECTION : { kind: 'shows', showIds: idsOf(shows) } }),
   onWindowChange(window, byUser) {
-    if (byUser) {
-      stopTour();
-      state.set({ timePreset: null });
-    }
+    if (byUser) state.set({ timePreset: null });
     clearTimeout(windowTimer);
     windowTimer = setTimeout(() => state.set({ timeWindow: window }), WINDOW_DEBOUNCE_MS);
   },
@@ -189,25 +187,12 @@ const genreList = createGenreList(requireElement(document, '#genre-list', HTMLEl
 const search = createSearch(requireElement(document, '#search', HTMLDivElement), { onChoose: focusSearchResult });
 
 const timelineControls = createTimelineControls(requireElement(document, '#timeline-controls', HTMLDivElement), {
-  onPreset(preset) {
-    stopTour();
-    applyPreset(preset, true);
-  },
-  onZoomOut() {
-    stopTour();
-    timeline.zoomOut();
-  },
-  onShift(direction) {
-    stopTour();
-    timeline.shift(direction);
-  },
-  onFollowTimeline(follow) {
-    stopTour();
-    state.set({ followTimeline: follow });
-  },
+  onPreset: (preset) => applyPreset(preset, true),
+  onZoomOut: () => timeline.zoomOut(),
+  onShift: (direction) => timeline.shift(direction),
+  onFollowTimeline: (follow) => state.set({ followTimeline: follow }),
   onHideEmptyLanes: (hide) => state.set({ hideEmptyLanes: hide }),
   onIncludePastMonth(include) {
-    stopTour();
     state.set({ includePastMonth: include });
     const { timePreset } = state.get();
     if (timePreset !== null && usesPastMonth(timePreset)) applyPreset(timePreset, true);
@@ -288,6 +273,7 @@ function renderAll() {
     shows: mapShows,
     fitShows: mapShows.length > 0 ? mapShows : derived.visibleShows,
     routeBandIds: select.routeBandIds(current, derived),
+    emphasizedBandIds: soloBandIds(current.selection) ?? NO_BANDS,
     highlightedShowIds: current.hoverShowIds,
     selectedShowIds: select.selectedIds(current, derived),
     focusBandId: current.focusBandId,
@@ -321,10 +307,11 @@ function renderAll() {
   const solo = soloBandIds(current.selection);
   const soloChanged = solo !== previousSolo;
   previousSolo = solo;
-  if (soloChanged) {
-    if (solo === null) stopTour();
-    else queueMicrotask(playTour);
-  } else if (tourPlaying !== null && mapShows !== tourPlaying.shows) {
+  if (solo === null) {
+    if (soloChanged) stopTour();
+    tourShows = null;
+  } else if (mapShows !== tourShows) {
+    tourShows = mapShows;
     queueMicrotask(playTour);
   }
   if (derived.visibleBands !== previousVisibleBands) {
@@ -470,8 +457,13 @@ function mountDropZone() {
   });
 }
 
-/** The tour animation of a band view: the routes draw themselves on a calendar clock, with a playhead on the timeline. */
-let tourPlaying: { readonly frame: number; readonly shows: readonly ShowRef[] } | null = null;
+/**
+ * The tour animation of a band view: the routes draw themselves leg by leg, with a playhead on the timeline.
+ * It (re)starts whenever the band view's shows change (opening it, a new time range, loading the page) and
+ * stops when the viewer takes over the map.
+ */
+let tourPlaying: { readonly frame: number } | null = null;
+let tourShows: readonly ShowRef[] | null = null;
 
 function playTour() {
   stopTour();
@@ -479,7 +471,7 @@ function playTour() {
   const solo = soloBandIds(current.selection);
   if (solo === null || prefersReducedMotion()) return;
   const shows = select.mapShows(derive(current), select.windowFilter(current));
-  const clock = createTourClock(shows.filter((ref) => solo.has(ref.band.file.band.id) && ref.show.status !== 'cancelled').map((ref) => ref.start));
+  const clock = createTourClock(shows.filter((ref) => solo.has(ref.band.file.band.id) && ref.show.status !== 'cancelled').map((ref) => ref.start), TOUR_PACING);
   if (clock === null) return;
   map.setTour({ bandIds: solo, at: clock.at });
   const started = performance.now();
@@ -491,9 +483,9 @@ function playTour() {
     }
     map.setTourTime(elapsed);
     timeline.setPlayhead(clock.dateAt(elapsed));
-    tourPlaying = { frame: requestAnimationFrame(step), shows };
+    tourPlaying = { frame: requestAnimationFrame(step) };
   };
-  tourPlaying = { frame: requestAnimationFrame(step), shows };
+  tourPlaying = { frame: requestAnimationFrame(step) };
 }
 
 function stopTour() {

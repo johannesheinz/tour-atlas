@@ -50,6 +50,8 @@ export interface MapProps {
   /** The shows the map fits to. */
   readonly fitShows: readonly ShowRef[];
   readonly routeBandIds: ReadonlySet<string>;
+  /** Bands whose view is open: their routes are drawn bold. */
+  readonly emphasizedBandIds: ReadonlySet<string>;
   readonly highlightedShowIds: ReadonlySet<string>;
   readonly selectedShowIds: ReadonlySet<string>;
   readonly focusBandId: string | null;
@@ -305,7 +307,8 @@ export function createMapView(container: HTMLElement, world: WorldTopology, call
       previous.shows !== next.shows ||
       previous.theme !== next.theme ||
       previous.focusBandId !== next.focusBandId ||
-      previous.routeBandIds !== next.routeBandIds;
+      previous.routeBandIds !== next.routeBandIds ||
+      previous.emphasizedBandIds !== next.emphasizedBandIds;
     if (appearanceChanged) {
       renderRoutes();
       drawPins();
@@ -557,7 +560,8 @@ export function createMapView(container: HTMLElement, world: WorldTopology, call
           .filter((ref, index, all) => index === 0 || ref.show.geo.lon !== all[index - 1]?.show.geo.lon || ref.show.geo.lat !== all[index - 1]?.show.geo.lat);
         if (stops.length < 2) return [];
         const dimmed = current.focusBandId !== null && current.focusBandId !== band.file.band.id;
-        const attributes = { class: dimmed ? 'map-route is-dimmed' : 'map-route', stroke: bandColor(band, current.theme.mode) };
+        const emphasized = current.emphasizedBandIds.has(band.file.band.id);
+        const attributes = { class: `map-route${dimmed ? ' is-dimmed' : ''}${emphasized ? ' is-emphasized' : ''}`, stroke: bandColor(band, current.theme.mode) };
         const line = (coordinates: [number, number][]) => path({ type: 'Feature', properties: {}, geometry: { type: 'LineString', coordinates } } satisfies Feature<LineString | MultiLineString>) ?? '';
         const point = (ref: ShowRef): [number, number] => [ref.show.geo.lon, ref.show.geo.lat];
         if (tour === null || !tour.bandIds.has(band.file.band.id)) return [s('path', { ...attributes, d: line(stops.map(point)) })];
@@ -589,7 +593,7 @@ export function createMapView(container: HTMLElement, world: WorldTopology, call
       if (progress > 0 && progress < 1 && !heads.has(leg.bandId)) {
         const tip = leg.element.getPointAtLength(leg.length * progress);
         const stroke = leg.element.getAttribute('stroke') ?? '';
-        heads.set(leg.bandId, s('circle', { class: 'map-tour-head', cx: transform.applyX(tip.x), cy: transform.applyY(tip.y), r: 5, fill: stroke }));
+        heads.set(leg.bandId, s('circle', { class: 'map-tour-head', cx: transform.applyX(tip.x), cy: transform.applyY(tip.y), r: 6.5, fill: stroke }));
       }
     }
     tourHeadsLayer.replaceChildren(...heads.values());
