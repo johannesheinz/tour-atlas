@@ -216,6 +216,7 @@ export const es: Messages = {
     follow: { label: 'Seguir la línea de tiempo', note: 'El mapa muestra solo los conciertos del periodo.' },
     hideEmpty: { label: 'Ocultar bandas sin conciertos', note: 'Las bandas sin conciertos en el periodo se pliegan en la lista y en la línea de tiempo.' },
     pastMonth: { label: 'Incluir el mes pasado', note: 'Los periodos próximos empiezan un mes antes, para seguir una gira en curso.' },
+    calendarPace: { label: 'Reproducir las giras al ritmo del calendario', note: 'La animación de la gira sigue las fechas y acorta las pausas largas. Desactivado: cada tramo dura lo mismo.' },
     help: 'Cómo usar la línea de tiempo',
     helpLines: [
       'Arrastra sobre la línea de tiempo para ampliar ese periodo.',

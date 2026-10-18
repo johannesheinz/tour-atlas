@@ -136,6 +136,7 @@ export interface Messages {
     readonly follow: { readonly label: Text; readonly note: Text };
     readonly hideEmpty: { readonly label: Text; readonly note: Text };
     readonly pastMonth: { readonly label: Text; readonly note: Text };
+    readonly calendarPace: { readonly label: Text; readonly note: Text };
     readonly help: Text;
     readonly helpLines: readonly Text[];
   };

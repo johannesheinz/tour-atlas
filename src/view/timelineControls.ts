@@ -4,6 +4,7 @@ import { attachPopover } from './popover.ts';
 import { createSwitch } from './switch.ts';
 import { t } from '../i18n/index.ts';
 import { PRESET_IDS, type TimePreset } from './timePresets.ts';
+import type { TourPacing } from './tourClock.ts';
 
 export interface TimelineControlsProps {
   /** Null after the user zoomed or panned to a range of their own. */
@@ -12,6 +13,7 @@ export interface TimelineControlsProps {
   readonly followTimeline: boolean;
   readonly hideEmptyLanes: boolean;
   readonly includePastMonth: boolean;
+  readonly tourPacing: TourPacing;
 }
 
 export interface TimelineControlsCallbacks {
@@ -21,6 +23,7 @@ export interface TimelineControlsCallbacks {
   onFollowTimeline(follow: boolean): void;
   onHideEmptyLanes(hide: boolean): void;
   onIncludePastMonth(include: boolean): void;
+  onTourPacing(pacing: TourPacing): void;
 }
 
 export interface TimelineControlsView {
@@ -58,10 +61,13 @@ export function createTimelineControls(container: HTMLElement, callbacks: Timeli
   later.addEventListener('click', () => callbacks.onShift(1));
   zoomOut.addEventListener('click', () => callbacks.onZoomOut());
 
-  const { follow: followText, hideEmpty: hideEmptyText, pastMonth: pastMonthText } = t().timeline;
+  const { follow: followText, hideEmpty: hideEmptyText, pastMonth: pastMonthText, calendarPace: calendarPaceText } = t().timeline;
   const follow = createSwitch('option-follow', followText.label, followText.note, callbacks.onFollowTimeline);
   const hideEmpty = createSwitch('option-hide-empty', hideEmptyText.label, hideEmptyText.note, callbacks.onHideEmptyLanes);
   const pastMonth = createSwitch('option-past-month', pastMonthText.label, pastMonthText.note, callbacks.onIncludePastMonth);
+  const calendarPace = createSwitch('option-calendar-pace', calendarPaceText.label, calendarPaceText.note, (byCalendar) =>
+    callbacks.onTourPacing(byCalendar ? 'calendar' : 'even'),
+  );
   const optionsButton = iconButton('sliders', t().timeline.options);
   const optionsPanel = h(
     'div',
@@ -70,6 +76,7 @@ export function createTimelineControls(container: HTMLElement, callbacks: Timeli
     follow.row,
     hideEmpty.row,
     pastMonth.row,
+    calendarPace.row,
   );
   attachPopover(optionsButton, optionsPanel);
 
@@ -101,6 +108,7 @@ export function createTimelineControls(container: HTMLElement, callbacks: Timeli
       follow.set(props.followTimeline);
       hideEmpty.set(props.hideEmptyLanes);
       pastMonth.set(props.includePastMonth);
+      calendarPace.set(props.tourPacing === 'calendar');
     },
   };
 }

@@ -216,6 +216,7 @@ export const fr: Messages = {
     follow: { label: 'Suivre la frise', note: 'La carte n’affiche que les concerts de la période.' },
     hideEmpty: { label: 'Masquer les groupes sans concert', note: 'Les groupes sans concert sur la période se replient dans la liste et sur la frise.' },
     pastMonth: { label: 'Inclure le mois dernier', note: 'Les périodes à venir commencent un mois plus tôt, pour suivre une tournée en cours.' },
+    calendarPace: { label: 'Rythmer les tournées selon le calendrier', note: 'L’animation de la tournée suit les dates et raccourcit les longues pauses. Désactivé : chaque étape dure le même temps.' },
     help: 'Utiliser la frise',
     helpLines: [
       'Faites glisser sur la frise pour zoomer sur cette période.',

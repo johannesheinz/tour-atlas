@@ -216,6 +216,7 @@ export const de: Messages = {
     follow: { label: 'Zeitleiste folgen', note: 'Die Karte zeigt nur die Konzerte im Zeitraum.' },
     hideEmpty: { label: 'Bands ohne Konzerte ausblenden', note: 'Bands ohne Konzerte im Zeitraum werden in der Bandliste und auf der Zeitleiste eingeklappt.' },
     pastMonth: { label: 'Letzten Monat einbeziehen', note: 'Kommende Zeiträume beginnen einen Monat früher, um einer laufenden Tour zu folgen.' },
+    calendarPace: { label: 'Touren im Kalendertempo abspielen', note: 'Die Touranimation folgt den Terminen und verkürzt lange Pausen. Aus: Jede Etappe dauert gleich lang.' },
     help: 'So funktioniert die Zeitleiste',
     helpLines: [
       'Über die Zeitleiste ziehen, um in diesen Zeitraum zu zoomen.',

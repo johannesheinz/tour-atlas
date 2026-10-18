@@ -5,7 +5,7 @@ import { addDays, formatIsoDate, localToday, parseIsoDate } from './data/dates.t
 import type { ShowRef } from './model.ts';
 import { createSelectors } from './selectors.ts';
 import { selectionFromUrl, selectionShows, sidebarPanel } from './selection.ts';
-import { TOUR_PACING, createTourClock } from './view/tourClock.ts';
+import { createTourClock } from './view/tourClock.ts';
 import { HOME_ENTRY, asDrillDownEntry, drillDownEntry, historyStep, isHomeEntry } from './drillDownHistory.ts';
 import { createStore } from './state.ts';
 import { createBundledStore } from './store/bundled.ts';
@@ -68,6 +68,7 @@ const state = createStore<AppState>({
   timePreset: urlState.preset,
   hideEmptyLanes: !urlState.allLanes,
   includePastMonth: urlState.includePastMonth,
+  tourPacing: urlState.tourPacing,
   mapView: mapViewForRegion(urlState.region),
   mapMode: urlState.globe ? 'globe' : 'flat',
   userPosition: null,
@@ -196,6 +197,10 @@ const timelineControls = createTimelineControls(requireElement(document, '#timel
     state.set({ includePastMonth: include });
     const { timePreset } = state.get();
     if (timePreset !== null && usesPastMonth(timePreset)) applyPreset(timePreset, true);
+  },
+  onTourPacing(pacing) {
+    state.set({ tourPacing: pacing });
+    playTour();
   },
 });
 
@@ -344,6 +349,7 @@ function renderAll() {
     followTimeline: current.followTimeline,
     hideEmptyLanes: current.hideEmptyLanes,
     includePastMonth: current.includePastMonth,
+    tourPacing: current.tourPacing,
   });
   settings.render({ theme: current.theme });
 
@@ -460,8 +466,8 @@ function mountDropZone() {
 
 /**
  * The tour animation of a band view: the routes draw themselves leg by leg, with a playhead on the timeline.
- * It (re)starts whenever the band view's shows change (opening it, a new time range, loading the page) and
- * stops when the viewer takes over the map.
+ * It (re)starts whenever the band view's shows change (opening it, a new time range, loading the page) or the
+ * pacing does, and stops when the viewer takes over the map.
  */
 let tourPlaying: { readonly frame: number } | null = null;
 let tourShows: readonly ShowRef[] | null = null;
@@ -472,7 +478,7 @@ function playTour() {
   const solo = soloBandIds(current.selection);
   if (solo === null || prefersReducedMotion()) return;
   const shows = select.mapShows(derive(current), select.windowFilter(current));
-  const clock = createTourClock(shows.filter((ref) => solo.has(ref.band.file.band.id) && ref.show.status !== 'cancelled').map((ref) => ref.start), TOUR_PACING);
+  const clock = createTourClock(shows.filter((ref) => solo.has(ref.band.file.band.id) && ref.show.status !== 'cancelled').map((ref) => ref.start), current.tourPacing);
   if (clock === null) return;
   map.setTour({ bandIds: solo, at: clock.at });
   const started = performance.now();
@@ -671,6 +677,7 @@ function applyUrlView(url: UrlState) {
     followTimeline: url.follow ?? true,
     hideEmptyLanes: !url.allLanes,
     includePastMonth: url.includePastMonth,
+    tourPacing: url.tourPacing,
     timePreset: preset,
     mapView,
     mapMode,
@@ -778,6 +785,7 @@ function currentHash(): string {
     preset: current.timePreset === null || current.timePreset === defaultPreset(derive(current).visibleShows, parseIsoDate(current.today).getTime()) ? null : current.timePreset,
     allLanes: !current.hideEmptyLanes,
     includePastMonth: current.includePastMonth,
+    tourPacing: current.tourPacing,
     region: current.mapView.kind === 'region' ? current.mapView.region.id : null,
     globe: current.mapMode === 'globe',
     language: localeChoice().language,

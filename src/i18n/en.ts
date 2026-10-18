@@ -140,6 +140,7 @@ export const en: Messages = {
     follow: { label: 'Follow timeline', note: 'The map shows only the shows in the time range.' },
     hideEmpty: { label: 'Hide bands without shows', note: 'Bands without shows in the time range collapse in the band list and on the timeline.' },
     pastMonth: { label: 'Include last month', note: 'Upcoming ranges start a month back, to follow a running tour.' },
+    calendarPace: { label: 'Pace tours by the calendar', note: 'The tour animation follows the dates and shortens long breaks. Off: every leg takes the same time.' },
     help: 'How to use the timeline',
     helpLines: ['Drag across the timeline to zoom into that range.', 'Double-click to zoom out. Scroll to see more bands.', 'Click a dot to list its show; hover to see it on the map.'],
   },

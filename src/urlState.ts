@@ -2,6 +2,7 @@ import { DATE_PATTERN } from './data/ids.ts';
 import { isCalendarDate } from './data/dates.ts';
 import type { BandSort } from './model.ts';
 import { PRESET_IDS, type TimePreset } from './view/timePresets.ts';
+import type { TourPacing } from './view/tourClock.ts';
 import { PLACE_KEY_PATTERN } from './places.ts';
 import { isClock, isLanguage, type Clock, type Language } from './i18n/locale.ts';
 
@@ -20,6 +21,7 @@ export interface UrlState {
   readonly preset: TimePreset | null;
   readonly allLanes: boolean;
   readonly includePastMonth: boolean;
+  readonly tourPacing: TourPacing;
   /** Region id of the map view; "Near me" is never put in the URL. */
   readonly region: string | null;
   readonly globe: boolean;
@@ -57,6 +59,7 @@ export function parseUrlState(hash: string): UrlState {
     preset: PRESET_IDS.find((preset) => preset === params.get('when')) ?? null,
     allLanes: params.get('lanes') === 'all',
     includePastMonth: params.get('recent') === '1',
+    tourPacing: params.get('pace') === 'even' ? 'even' : 'calendar',
     region: ID_PATTERN.test(params.get('view') ?? '') ? params.get('view') : null,
     globe: params.get('globe') === '1',
     language: oneOf(params.get('lang'), isLanguage),
@@ -81,6 +84,7 @@ export function serializeUrlState(state: UrlState): string {
   if (state.preset !== null) params.set('when', state.preset);
   if (state.allLanes) params.set('lanes', 'all');
   if (state.includePastMonth) params.set('recent', '1');
+  if (state.tourPacing === 'even') params.set('pace', 'even');
   if (state.region !== null) params.set('view', state.region);
   if (state.globe) params.set('globe', '1');
   if (state.language !== null) params.set('lang', state.language);

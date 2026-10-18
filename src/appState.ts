@@ -4,6 +4,7 @@ import type { PreviewResult } from './preview.ts';
 import { buildBandEntries, byBandName, isInRange, showRefs, type BandEntry, type BandSort, type ShowRef } from './model.ts';
 import type { ThemePreference } from './model.ts';
 import type { TimePreset } from './view/timePresets.ts';
+import type { TourPacing } from './view/tourClock.ts';
 import type { MapMode, MapViewPreset } from './view/mapRegions.ts';
 import type { PlaceKey } from './places.ts';
 
@@ -44,6 +45,7 @@ export interface AppState {
   readonly hideEmptyLanes: boolean;
   /** Forward-looking presets start a month back, to follow a running tour. */
   readonly includePastMonth: boolean;
+  readonly tourPacing: TourPacing;
   /** Fit to shows (follows the timeline), a region, or the area around the viewer. */
   readonly mapView: MapViewPreset;
   readonly mapMode: MapMode;

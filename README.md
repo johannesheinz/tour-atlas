@@ -12,7 +12,8 @@ self-hosted font files next to it. No backend, no network requests to third part
 - Local preview: drop band files to validate them, see the diff against the published data and download the
   normalized file. Nothing leaves the browser.
 - Light and dark themes that follow the system, switchable in the settings; keyboard navigation with visible focus
-- A band's view draws its tour route on a calendar clock, with a playhead on the timeline (skipped when the system asks for reduced motion)
+- A band's view draws its tour route on a calendar clock, or at an even pace per leg (switch in the map and timeline options),
+  with a playhead on the timeline (skipped when the system asks for reduced motion)
 - English, German, French and Spanish, picked from the browser or in the settings, with local date formats and a 12/24-hour choice
 - The logo returns to the default view; browser Back restores the view before it
 - Hover tooltips, time presets (upcoming, next 3 months, past, all), collapsed empty lanes, band-colour rings on

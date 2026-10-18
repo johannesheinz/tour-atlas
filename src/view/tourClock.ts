@@ -1,9 +1,7 @@
 import { DAY_MS } from './timeScale.ts';
 
-export type TourPacing = 'even' | 'calendar';
-
 /** "even": every step to the next show date takes the same time. "calendar": time follows the dates. */
-export const TOUR_PACING: TourPacing = 'even';
+export type TourPacing = 'even' | 'calendar';
 
 export const TOUR_CLOCK_SETTINGS = {
   msPerStep: 260,

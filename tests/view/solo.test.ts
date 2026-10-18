@@ -23,6 +23,7 @@ function appState(selection: Selection, hiddenBandIds: ReadonlySet<string>): App
     timePreset: 'next-6-months',
     hideEmptyLanes: true,
     includePastMonth: false,
+    tourPacing: 'calendar',
     mapView: { kind: 'shows' },
     mapMode: 'flat',
     userPosition: null,
