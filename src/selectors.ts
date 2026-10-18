@@ -37,7 +37,7 @@ export function createSelectors(maxBandsWithRoutes: number) {
   let rangeKey: [Derived['filteredBands'], Derived['refsByBand'], AppState['timeWindow'], AppState['bandSort']] | null = null;
   let bandsInRange: BandsInRange = { ordered: [], shows: new Map() };
 
-  let lanesKey: [BandsInRange, AppState['hiddenBandIds'], boolean] | null = null;
+  let lanesKey: [BandsInRange, Derived['visibleBands'], boolean] | null = null;
   let lanes: { readonly shown: readonly TimelineLane[]; readonly hiddenCount: number } = { shown: [], hiddenCount: 0 };
 
   let selectionKey: [Selection, AppState['timeWindow'], Derived] | null = null;
@@ -103,10 +103,13 @@ export function createSelectors(maxBandsWithRoutes: number) {
     /** Timeline lanes in band-list order; with hideEmptyLanes, bands without a show in the window collapse. */
     lanes(current: AppState, derived: Derived): { readonly shown: readonly TimelineLane[]; readonly hiddenCount: number } {
       const inRange = this.bandsInRange(current, derived);
-      if (lanesKey === null || lanesKey[0] !== inRange || lanesKey[1] !== current.hiddenBandIds || lanesKey[2] !== current.hideEmptyLanes) {
-        lanesKey = [inRange, current.hiddenBandIds, current.hideEmptyLanes];
-        const visible = inRange.ordered.filter((band) => !current.hiddenBandIds.has(band.file.band.id));
-        const shown = current.hideEmptyLanes && current.timeWindow !== null ? visible.filter((band) => (inRange.shows.get(band) ?? []).length > 0) : visible;
+      if (lanesKey === null || lanesKey[0] !== inRange || lanesKey[1] !== derived.visibleBands || lanesKey[2] !== current.hideEmptyLanes) {
+        lanesKey = [inRange, derived.visibleBands, current.hideEmptyLanes];
+        const position = new Map(inRange.ordered.map((band, index) => [band, index]));
+        const last = position.size;
+        const visible = derived.visibleBands.toSorted((a, b) => (position.get(a) ?? last) - (position.get(b) ?? last));
+        const inWindow = (band: BandEntry) => inRange.shows.get(band) ?? showsInRange(derived.refsByBand.get(band) ?? [], current.timeWindow);
+        const shown = current.hideEmptyLanes && current.timeWindow !== null ? visible.filter((band) => inWindow(band).length > 0) : visible;
         lanes = { shown: shown.map((band) => ({ band, shows: derived.refsByBand.get(band) ?? [] })), hiddenCount: visible.length - shown.length };
       }
       return lanes;

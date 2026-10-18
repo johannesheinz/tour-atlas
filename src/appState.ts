@@ -80,7 +80,7 @@ export function createDeriver(): (state: AppState) => Derived {
   let filterKey: [readonly BandEntry[], ReadonlySet<string>] | null = null;
   let filteredBands: readonly BandEntry[] = [];
 
-  let visibleKey: [readonly BandEntry[], ReadonlySet<string>] | null = null;
+  let visibleKey: [readonly BandEntry[], ReadonlySet<string>, ReadonlySet<string> | null] | null = null;
   let visibleBands: readonly BandEntry[] = [];
   let visibleShows: readonly ShowRef[] = [];
 
@@ -101,13 +101,20 @@ export function createDeriver(): (state: AppState) => Derived {
       filterKey = [orderedBands, state.tagFilter];
       filteredBands = orderedBands.filter((band) => matchesTagFilter(band.file.band.tags, state.tagFilter));
     }
-    if (visibleKey === null || visibleKey[0] !== filteredBands || visibleKey[1] !== state.hiddenBandIds) {
-      visibleKey = [filteredBands, state.hiddenBandIds];
-      visibleBands = filteredBands.filter((band) => !state.hiddenBandIds.has(band.file.band.id));
+    const solo = soloBandIds(state.selection);
+    if (visibleKey === null || visibleKey[0] !== filteredBands || visibleKey[1] !== state.hiddenBandIds || visibleKey[2] !== solo) {
+      visibleKey = [filteredBands, state.hiddenBandIds, solo];
+      visibleBands =
+        solo === null ? filteredBands.filter((band) => !state.hiddenBandIds.has(band.file.band.id)) : orderedBands.filter((band) => solo.has(band.file.band.id));
       visibleShows = visibleBands.flatMap((band) => refsByBand.get(band) ?? []);
     }
     return { bands, orderedBands, filteredBands, visibleBands, visibleShows, showsById, refsByBand };
   };
+}
+
+/** Bands whose dates are open are shown alone, whatever the band list hides; the list itself stays as it was. */
+export function soloBandIds(selection: Selection): ReadonlySet<string> | null {
+  return selection.kind === 'bands' ? selection.bandIds : null;
 }
 
 export function isInWindow(ref: ShowRef, window: TimeWindow): boolean {

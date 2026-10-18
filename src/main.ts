@@ -1,6 +1,6 @@
 import './styles.css';
 import world from 'virtual:world-topology';
-import { NO_SELECTION, createDeriver, type AppState, type Derived, type Selection } from './appState.ts';
+import { NO_SELECTION, createDeriver, soloBandIds, type AppState, type Derived, type Selection } from './appState.ts';
 import { addDays, formatIsoDate, localToday, parseIsoDate } from './data/dates.ts';
 import type { ShowRef } from './model.ts';
 import { createSelectors } from './selectors.ts';
@@ -248,6 +248,7 @@ watchSystemTheme(() => refreshTheme());
 let searchFocus: { readonly shows: readonly ShowRef[]; readonly until: number } | null = null;
 let previousFitShows: readonly ShowRef[] | null = null;
 let previousVisibleBands: readonly unknown[] | null = null;
+let previousSolo: ReadonlySet<string> | null = null;
 let restoreWindow = urlState.from !== null && urlState.to !== null ? { from: urlState.from, to: urlState.to } : null;
 
 function renderAll() {
@@ -291,13 +292,16 @@ function renderAll() {
     today: parseIsoDate(current.today).getTime(),
     clearGutter: current.timePreset !== null && usesPastMonth(current.timePreset),
   });
+  const solo = soloBandIds(current.selection);
+  const soloChanged = solo !== previousSolo;
+  previousSolo = solo;
   if (derived.visibleBands !== previousVisibleBands) {
     const firstRender = previousVisibleBands === null;
     previousVisibleBands = derived.visibleBands;
     if (firstRender && restoreWindow !== null) {
       timeline.fitToData(false, [parseIsoDate(restoreWindow.from).getTime(), parseIsoDate(restoreWindow.to).getTime() + DAY_MS]);
       restoreWindow = null;
-    } else {
+    } else if (firstRender || !soloChanged) {
       const today = parseIsoDate(current.today).getTime();
       const preset = firstRender ? (current.timePreset ?? defaultPreset(derived.visibleShows, today)) : current.timePreset;
       queueMicrotask(() => applyPreset(preset, !firstRender));
@@ -439,8 +443,7 @@ function soloBand(bandId: string) {
 }
 
 function selectBands(bandIds: ReadonlySet<string>) {
-  const { hiddenBandIds, timeWindow } = state.get();
-  if ([...bandIds].some((id) => hiddenBandIds.has(id))) state.set({ hiddenBandIds: new Set([...hiddenBandIds].filter((id) => !bandIds.has(id))) });
+  const { timeWindow } = state.get();
   sidebar.showTab('bands');
   const selection: Selection = { kind: 'bands', bandIds };
   state.set({ selection });
