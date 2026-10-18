@@ -600,7 +600,8 @@ export function createMapView(container: HTMLElement, world: WorldTopology, call
       const dash = leg.length * transform.k;
       leg.element.style.strokeDasharray = `${dash} ${dash}`;
       leg.element.style.strokeDashoffset = `${dash * (1 - progress)}`;
-      if (progress > 0 && progress < 1 && !heads.has(leg.bandId)) {
+      const onFarSide = leg.length === 0;
+      if (progress > 0 && progress < 1 && !onFarSide && !heads.has(leg.bandId)) {
         const tip = leg.element.getPointAtLength(leg.length * progress);
         const stroke = leg.element.getAttribute('stroke') ?? '';
         heads.set(leg.bandId, s('circle', { class: 'map-tour-head', cx: transform.applyX(tip.x), cy: transform.applyY(tip.y), r: 6.5, fill: stroke }));
