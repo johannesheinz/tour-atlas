@@ -32,6 +32,8 @@ export const MAP_SETTINGS = {
   mixedPinRadius: 8.5,
   mixedPinHole: 3.5,
   hitRadiusPx: 12,
+  /** A press that moves further than this is a drag, and the click that follows it is ignored. */
+  clickDistancePx: 5,
   minZoom: 0.5,
   maxZoom: 40,
   fitDurationMs: 300,
@@ -166,7 +168,7 @@ export function createMapView(container: HTMLElement, world: WorldTopology, call
   const zoomBehavior = zoom<SVGSVGElement, unknown>()
     .filter((event: MouseEvent) => mode === 'flat' && (!event.ctrlKey || event.type === 'wheel') && !event.button)
     .scaleExtent([MAP_SETTINGS.minZoom, MAP_SETTINGS.maxZoom])
-    .clickDistance(5)
+    .clickDistance(MAP_SETTINGS.clickDistancePx)
     .on('start', (event: D3ZoomEvent<SVGSVGElement, unknown>) => {
       if (programmaticZoom) return;
       if (event.sourceEvent !== null) callbacks.onUserMove();
@@ -220,6 +222,10 @@ export function createMapView(container: HTMLElement, world: WorldTopology, call
     callbacks.onHover(null);
   });
   surface.addEventListener('click', (event) => {
+    if (globeDragged) {
+      globeDragged = false;
+      return;
+    }
     const pin = pinAt(event.offsetX, event.offsetY);
     callbacks.onSelect(pin === null ? [] : pin.shows);
   });
@@ -413,9 +419,12 @@ export function createMapView(container: HTMLElement, world: WorldTopology, call
   }
 
   let globeDrag: { readonly x: number; readonly y: number; readonly fit: MapFit } | null = null;
+  /** d3-zoom swallows the click after a drag on the flat map; the globe turns by its own handlers, so it does that here. */
+  let globeDragged = false;
   let globeSettle: ReturnType<typeof setTimeout> | undefined;
 
   surface.addEventListener('pointerdown', (event) => {
+    globeDragged = false;
     if (mode !== 'globe' || event.button !== 0 || base === null) return;
     callbacks.onUserMove();
     cancelAnimation();
@@ -425,6 +434,7 @@ export function createMapView(container: HTMLElement, world: WorldTopology, call
   });
   surface.addEventListener('pointermove', (event) => {
     if (mode !== 'globe' || globeDrag === null) return;
+    if (Math.hypot(event.clientX - globeDrag.x, event.clientY - globeDrag.y) > MAP_SETTINGS.clickDistancePx) globeDragged = true;
     const degreesPerPixel = 180 / Math.PI / globeDrag.fit.scale;
     const [lambda, phi] = globeDrag.fit.rotate;
     const nextPhi = Math.max(-90, Math.min(90, phi - (event.clientY - globeDrag.y) * degreesPerPixel));
