@@ -76,9 +76,9 @@
       "sourceUrl": null,
       "notes": null,
       "geo": {
-        "lat": 55.86395,
-        "lon": -4.02846,
-        "precision": "venue",
+        "lat": 52.4949,
+        "lon": -1.85184,
+        "precision": "city",
         "source": "nominatim"
       }
     },
@@ -252,9 +252,9 @@
       "sourceUrl": null,
       "notes": null,
       "geo": {
-        "lat": 55.12665,
-        "lon": -3.35893,
-        "precision": "venue",
+        "lat": 55.86116,
+        "lon": -4.25017,
+        "precision": "city",
         "source": "nominatim"
       }
     },

@@ -1,6 +1,7 @@
 import { GEOMETRY_PARENTS } from './countries.ts';
 import type { CountryLocator } from './countryLocator.ts';
 import { daysBetween } from './dates.ts';
+import { distanceKm } from './distance.ts';
 import { slugify } from './ids.ts';
 import type { BandFileOf, IdentifiedShow } from './types.ts';
 import type { IssueDetail } from './issues.ts';
@@ -19,8 +20,6 @@ export const LINT_THRESHOLDS = {
   /** About 5 km: the 1:50m country outlines are this coarse, so border towns get the benefit of the doubt. */
   borderToleranceDegrees: 0.05,
 } as const;
-
-const EARTH_RADIUS_KM = 6371;
 
 /** Plausibility warnings for a valid file. They never block a merge; they point reviewers at likely mistakes. */
 export function lintBandFile(file: string, data: BandFileOf<IdentifiedShow>, options: LintOptions): ValidationIssue[] {
@@ -61,7 +60,7 @@ export function lintBandFile(file: string, data: BandFileOf<IdentifiedShow>, opt
           warn(current.path, issue('duplicateShow', { earlier: earlier.path }));
           continue;
         }
-        const distance = distanceKm(earlier.show, current.show);
+        const distance = earlier.show.geo === null || current.show.geo === null ? null : distanceKm(earlier.show.geo, current.show.geo);
         const bothHappen = earlier.show.status !== 'cancelled' && current.show.status !== 'cancelled';
         const dayKnown = earlier.show.endDate === null && current.show.endDate === null;
         if (bothHappen && dayKnown && distance !== null && distance > LINT_THRESHOLDS.sameDayDistanceKm) {
@@ -98,12 +97,3 @@ function looksDuplicate(a: IdentifiedShow, b: IdentifiedShow): boolean {
   return !differentStartTimes && slugify(a.city) === slugify(b.city) && (a.venue ?? '') === (b.venue ?? '') && a.countryCode === b.countryCode;
 }
 
-function distanceKm(a: IdentifiedShow, b: IdentifiedShow): number | null {
-  if (a.geo === null || b.geo === null) return null;
-  const toRadians = Math.PI / 180;
-  const dLat = (b.geo.lat - a.geo.lat) * toRadians;
-  const dLon = (b.geo.lon - a.geo.lon) * toRadians;
-  const h =
-    Math.sin(dLat / 2) ** 2 + Math.cos(a.geo.lat * toRadians) * Math.cos(b.geo.lat * toRadians) * Math.sin(dLon / 2) ** 2;
-  return 2 * EARTH_RADIUS_KM * Math.asin(Math.min(1, Math.sqrt(h)));
-}

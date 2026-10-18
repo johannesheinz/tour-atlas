@@ -888,9 +888,9 @@
       "sourceUrl": null,
       "notes": null,
       "geo": {
-        "lat": -11.13228,
-        "lon": -77.60169,
-        "precision": "venue",
+        "lat": -12.04598,
+        "lon": -77.03059,
+        "precision": "city",
         "source": "nominatim"
       }
     },
@@ -1042,9 +1042,9 @@
       "sourceUrl": null,
       "notes": null,
       "geo": {
-        "lat": -21.19218,
-        "lon": -47.7086,
-        "precision": "venue",
+        "lat": -15.79399,
+        "lon": -47.8828,
+        "precision": "city",
         "source": "nominatim"
       }
     },

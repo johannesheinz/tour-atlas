@@ -1,3 +1,4 @@
+import { distanceKm } from '../../src/data/distance.ts';
 import { slugify } from '../../src/data/ids.ts';
 import type { DraftShow, Geo, GeoPrecision } from '../../src/data/types.ts';
 
@@ -5,6 +6,8 @@ export const NOMINATIM_ENDPOINT = 'https://nominatim.openstreetmap.org/search';
 /** Nominatim's usage policy allows at most one request per second; keep a margin. */
 export const MIN_REQUEST_INTERVAL_MS = 1100;
 const COORDINATE_DECIMALS = 5;
+/** A venue result farther than this from the city centre is a namesake elsewhere, not the venue. */
+export const MAX_VENUE_DISTANCE_KM = 50;
 
 export type CacheEntry =
   | { readonly lat: number; readonly lon: number; readonly precision: GeoPrecision; readonly retrievedAt: string }
@@ -27,6 +30,8 @@ export interface GeocoderDependencies {
 export interface Lookup {
   readonly geo: Geo | null;
   readonly fromCache: boolean;
+  /** Set when the venue result lay too far from the city and the city centre was used instead. */
+  readonly rejectedVenueKm: number | null;
 }
 
 interface NominatimResult {
@@ -76,7 +81,10 @@ export function serializeCache(cache: GeoCache): string {
   return `${JSON.stringify({ version: 1, entries: sorted }, null, 2)}\n`;
 }
 
-/** Looks up venue (or event) + city first, then the city alone. Results and misses are cached. */
+/**
+ * Looks up venue (or event) + city and the city alone; the venue wins unless it lies more than
+ * MAX_VENUE_DISTANCE_KM from the city. Results and misses are cached.
+ */
 export function createGeocoder(cache: GeoCache, deps: GeocoderDependencies) {
   let lastRequestAt = Number.NEGATIVE_INFINITY;
 
@@ -100,11 +108,11 @@ export function createGeocoder(cache: GeoCache, deps: GeocoderDependencies) {
 
   async function cached(key: string, query: () => Promise<{ lat: number; lon: number; precision: GeoPrecision } | null>): Promise<Lookup> {
     const entry = cache.entries[key];
-    if (entry !== undefined && !('miss' in entry)) return { geo: toGeo(entry), fromCache: true };
-    if (entry !== undefined && !deps.retryMisses) return { geo: null, fromCache: true };
+    if (entry !== undefined && !('miss' in entry)) return { geo: toGeo(entry), fromCache: true, rejectedVenueKm: null };
+    if (entry !== undefined && !deps.retryMisses) return { geo: null, fromCache: true, rejectedVenueKm: null };
     const found = await query();
     cache.entries[key] = found === null ? { miss: true, retrievedAt: deps.today } : { ...found, retrievedAt: deps.today };
-    return { geo: found === null ? null : toGeo(found), fromCache: false };
+    return { geo: found === null ? null : toGeo(found), fromCache: false, rejectedVenueKm: null };
   }
 
   const accept = (result: NominatimResult | null, countryCode: string, precision: GeoPrecision) => {
@@ -122,18 +130,23 @@ export function createGeocoder(cache: GeoCache, deps: GeocoderDependencies) {
     const placeKey = `${show.countryCode}|${slugify(show.city)}|${slugify(show.region ?? '')}`;
     const venueName = show.venue ?? show.eventName;
 
-    if (venueName !== null) {
-      const venue = await cached(`venue|${placeKey}|${slugify(venueName)}`, async () =>
-        accept(await request({ q: `${venueName}, ${place}`, countrycodes: show.countryCode.toLowerCase() }), show.countryCode, 'venue'),
-      );
-      if (venue.geo !== null) return venue;
-    }
+    const lookUpCity = () =>
+      cached(`city|${placeKey}`, async () => {
+        const params: Record<string, string> = { city: show.city, countrycodes: show.countryCode.toLowerCase() };
+        if (show.region !== null) params['state'] = show.region;
+        return accept(await request(params), show.countryCode, 'city');
+      });
 
-    return cached(`city|${placeKey}`, async () => {
-      const params: Record<string, string> = { city: show.city, countrycodes: show.countryCode.toLowerCase() };
-      if (show.region !== null) params['state'] = show.region;
-      return accept(await request(params), show.countryCode, 'city');
-    });
+    if (venueName === null) return lookUpCity();
+    const venue = await cached(`venue|${placeKey}|${slugify(venueName)}`, async () =>
+      accept(await request({ q: `${venueName}, ${place}`, countrycodes: show.countryCode.toLowerCase() }), show.countryCode, 'venue'),
+    );
+    const city = await lookUpCity();
+    if (venue.geo === null) return city;
+    if (city.geo === null) return venue;
+    const distance = distanceKm(venue.geo, city.geo);
+    if (distance <= MAX_VENUE_DISTANCE_KM) return { ...venue, fromCache: venue.fromCache && city.fromCache };
+    return { geo: city.geo, fromCache: venue.fromCache && city.fromCache, rejectedVenueKm: Math.round(distance) };
   };
 }
 

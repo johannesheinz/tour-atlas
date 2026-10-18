@@ -1130,9 +1130,9 @@
       "sourceUrl": null,
       "notes": null,
       "geo": {
-        "lat": -5.06216,
-        "lon": -42.71307,
-        "precision": "venue",
+        "lat": -15.79399,
+        "lon": -47.8828,
+        "precision": "city",
         "source": "nominatim"
       }
     },

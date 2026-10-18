@@ -1196,9 +1196,9 @@
       "sourceUrl": null,
       "notes": "Supporting Cradle of Filth",
       "geo": {
-        "lat": 34.18415,
-        "lon": -77.85974,
-        "precision": "venue",
+        "lat": 39.73833,
+        "lon": -75.55275,
+        "precision": "city",
         "source": "nominatim"
       }
     },

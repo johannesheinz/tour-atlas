@@ -5,12 +5,13 @@ import { normalizeBandFile, serializeBandFile } from '../src/data/normalize.ts';
 import type { DraftShow } from '../src/data/types.ts';
 import { formatIssue, parseBandJson, validateDraft } from '../src/data/validate.ts';
 import { UsageError, displayPath, expandInputs, parseArguments, readText, runCli } from './shared/files.ts';
-import { createGeocoder, emptyCache, parseCache, serializeCache } from './shared/geocoder.ts';
+import { MAX_VENUE_DISTANCE_KM, createGeocoder, emptyCache, parseCache, serializeCache } from './shared/geocoder.ts';
 
 const USAGE = `Usage: node --env-file-if-exists=.env.local tools/geocode.ts <file|dir>... [--retry-misses] [--cache <path>]
 
 Fills geo for shows that have none, using OpenStreetMap Nominatim: venue and city first,
-then the city alone. Sends at most one request per second with an identifying User-Agent,
+then the city alone. A venue result more than ${MAX_VENUE_DISTANCE_KM} km from the city centre is a namesake
+elsewhere; the city centre is used instead and the run says so. Sends at most one request per second with an identifying User-Agent,
 as the Nominatim usage policy requires, and caches every answer (including misses) in
 tools/geocache.json so repeated runs do not query again. Existing coordinates are never changed.
 
@@ -69,7 +70,8 @@ runCli(USAGE, async () => {
           unresolved.push(`${file} shows[${index}]: ${[show.venue ?? show.eventName, show.city, show.region, show.countryCode].filter((part) => part !== null).join(', ')}`);
         } else {
           filled++;
-          console.log(`  ${show.date} ${show.city}: ${lookup.geo.precision} precision${lookup.fromCache ? ' (cached)' : ''}`);
+          const rejected = lookup.rejectedVenueKm === null ? '' : `, venue result ${lookup.rejectedVenueKm} km away ignored`;
+          console.log(`  ${show.date} ${show.city}: ${lookup.geo.precision} precision${rejected}${lookup.fromCache ? ' (cached)' : ''}`);
         }
         shows.push({ ...show, geo: lookup.geo });
       }

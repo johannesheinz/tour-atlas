@@ -1506,9 +1506,9 @@
       "sourceUrl": null,
       "notes": "Supporting acts: Poppy.",
       "geo": {
-        "lat": -12.6637,
-        "lon": -76.62965,
-        "precision": "venue",
+        "lat": -12.04598,
+        "lon": -77.03059,
+        "precision": "city",
         "source": "nominatim"
       }
     },

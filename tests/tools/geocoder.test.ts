@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
-import { MIN_REQUEST_INTERVAL_MS, createGeocoder, emptyCache, parseCache, serializeCache, type GeoCache } from '../../tools/shared/geocoder.ts';
+import { MAX_VENUE_DISTANCE_KM, MIN_REQUEST_INTERVAL_MS, createGeocoder, emptyCache, parseCache, serializeCache, type GeoCache } from '../../tools/shared/geocoder.ts';
 import { makeDraftShow } from '../helpers.ts';
 
 type Answer = { lat: string; lon: string; category: string; address: { country_code: string } } | null;
@@ -36,13 +36,17 @@ const hit = (lat: number, lon: number, category = 'amenity', countryCode = 'de')
   address: { country_code: countryCode },
 });
 
+const berlin = hit(52.52, 13.405, 'place');
+
 describe('geocoder', () => {
   it('resolves the venue first, rounds coordinates and identifies itself', async () => {
-    const { geocode, requests, headers } = setup([hit(52.5301234567, 13.4012345678)]);
+    const { geocode, requests, headers } = setup([hit(52.5301234567, 13.4012345678), berlin]);
     const result = await geocode(makeDraftShow());
     expect(result.geo).toEqual({ lat: 52.53012, lon: 13.40123, precision: 'venue', source: 'nominatim' });
+    expect(result.rejectedVenueKm).toBeNull();
     expect(requests[0]?.searchParams.get('q')).toBe('Kulturhaus Nord, Berlin');
     expect(requests[0]?.searchParams.get('countrycodes')).toBe('de');
+    expect(requests[1]?.searchParams.get('city')).toBe('Berlin');
     expect(headers[0]?.['User-Agent']).toBe('tour-atlas-geocoder/0.1 (test@example.org)');
   });
 
@@ -54,8 +58,43 @@ describe('geocoder', () => {
   });
 
   it('downgrades a venue query that only matched the town to city precision', async () => {
-    const { geocode } = setup([hit(52.52, 13.405, 'place')]);
+    const { geocode } = setup([hit(52.52, 13.405, 'place'), berlin]);
     expect((await geocode(makeDraftShow())).geo?.precision).toBe('city');
+  });
+
+  it('keeps a venue result within the distance limit of the city centre', async () => {
+    const potsdam = hit(52.39, 13.06);
+    const { geocode } = setup([potsdam, berlin]);
+    expect((await geocode(makeDraftShow())).geo).toEqual({ lat: 52.39, lon: 13.06, precision: 'venue', source: 'nominatim' });
+  });
+
+  it('uses the city centre when the venue result is a namesake far from the city', async () => {
+    const munich = hit(48.14, 11.58, 'place');
+    const { geocode } = setup([munich, berlin]);
+    const result = await geocode(makeDraftShow());
+    expect(result.geo).toEqual({ lat: 52.52, lon: 13.405, precision: 'city', source: 'nominatim' });
+    expect(result.rejectedVenueKm).toBeGreaterThan(MAX_VENUE_DISTANCE_KM);
+    expect(result.rejectedVenueKm).toBe(504);
+  });
+
+  it('checks the distance for cached venue answers too', async () => {
+    const cache: GeoCache = {
+      version: 1,
+      entries: {
+        'venue|DE|berlin||kulturhaus-nord': { lat: 48.14, lon: 11.58, precision: 'city', retrievedAt: '2026-10-16' },
+        'city|DE|berlin|': { lat: 52.52, lon: 13.405, precision: 'city', retrievedAt: '2026-10-16' },
+      },
+    };
+    const { geocode, fetchMock } = setup([], cache);
+    const result = await geocode(makeDraftShow());
+    expect(result.geo?.lat).toBe(52.52);
+    expect(result.fromCache).toBe(true);
+    expect(fetchMock).not.toHaveBeenCalled();
+  });
+
+  it('keeps the venue result when the city itself cannot be found', async () => {
+    const { geocode } = setup([hit(52.53, 13.4), null]);
+    expect((await geocode(makeDraftShow())).geo?.precision).toBe('venue');
   });
 
   it('rejects results from another country', async () => {
@@ -70,7 +109,7 @@ describe('geocoder', () => {
   });
 
   it('answers from the cache, including misses, unless asked to retry', async () => {
-    const first = setup([hit(52.53, 13.4)]);
+    const first = setup([hit(52.53, 13.4), berlin]);
     await first.geocode(makeDraftShow());
     const cache = parseCache(serializeCache(first.cache));
     const second = setup([], cache);
@@ -81,7 +120,7 @@ describe('geocoder', () => {
     await misses.geocode(makeDraftShow());
     const again = setup([], misses.cache);
     expect((await again.geocode(makeDraftShow())).geo).toBeNull();
-    const retry = setup([hit(52.53, 13.4)], misses.cache, true);
+    const retry = setup([hit(52.53, 13.4), berlin], misses.cache, true);
     expect((await retry.geocode(makeDraftShow())).geo?.precision).toBe('venue');
   });
 

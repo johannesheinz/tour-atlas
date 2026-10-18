@@ -1,11 +1,27 @@
 {
   "version": 1,
   "entries": {
+    "city|AE|abu-dhabi|": {
+      "lat": 24.45384,
+      "lon": 54.3774,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
     "city|AR|buenos-aires|": {
       "lat": -34.60956,
       "lon": -58.38879,
       "precision": "city",
       "retrievedAt": "2026-10-16"
+    },
+    "city|AR|comuna-10|": {
+      "miss": true,
+      "retrievedAt": "2026-10-18"
+    },
+    "city|AR|cordoba|": {
+      "lat": -31.41669,
+      "lon": -64.18342,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
     },
     "city|AT|graz|": {
       "lat": 47.07087,
@@ -19,11 +35,29 @@
       "precision": "city",
       "retrievedAt": "2026-10-16"
     },
+    "city|AT|innsbruck|": {
+      "lat": 47.26543,
+      "lon": 11.39277,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|AT|kufstein|": {
+      "lat": 47.583,
+      "lon": 12.16921,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
     "city|AT|leoben|": {
       "lat": 47.38051,
       "lon": 15.09478,
       "precision": "city",
       "retrievedAt": "2026-10-16"
+    },
+    "city|AT|linz|": {
+      "lat": 48.30591,
+      "lon": 14.2862,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
     },
     "city|AT|nickelsdorf|": {
       "lat": 47.9403,
@@ -31,11 +65,23 @@
       "precision": "city",
       "retrievedAt": "2026-10-16"
     },
+    "city|AT|salzburg|": {
+      "lat": 47.79813,
+      "lon": 13.04648,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
     "city|AT|vienna|": {
       "lat": 48.20835,
       "lon": 16.3725,
       "precision": "city",
       "retrievedAt": "2026-10-16"
+    },
+    "city|AT|wels|": {
+      "lat": 48.15655,
+      "lon": 14.02438,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
     },
     "city|AT|wien|": {
       "lat": 48.20835,
@@ -49,11 +95,41 @@
       "precision": "city",
       "retrievedAt": "2026-10-16"
     },
+    "city|AU|adelaide|sa": {
+      "lat": -34.92818,
+      "lon": 138.59993,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
     "city|AU|brisbane|": {
       "lat": -27.46896,
       "lon": 153.0235,
       "precision": "city",
       "retrievedAt": "2026-10-16"
+    },
+    "city|AU|brisbane|qld": {
+      "lat": -27.46896,
+      "lon": 153.0235,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|AU|fortitude-valley|": {
+      "lat": -27.45727,
+      "lon": 153.03627,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|AU|hindmarsh|": {
+      "lat": -34.90662,
+      "lon": 138.56995,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|AU|marrickville|": {
+      "lat": -33.9104,
+      "lon": 151.15608,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
     },
     "city|AU|melbourne|": {
       "lat": -37.81425,
@@ -67,17 +143,53 @@
       "precision": "city",
       "retrievedAt": "2026-10-16"
     },
+    "city|AU|newcastle|nsw": {
+      "lat": -32.9193,
+      "lon": 151.77953,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|AU|newstead|": {
+      "lat": -27.44833,
+      "lon": 153.04615,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
     "city|AU|perth|": {
       "lat": -31.9559,
       "lon": 115.86058,
       "precision": "city",
       "retrievedAt": "2026-10-16"
     },
+    "city|AU|perth|wa": {
+      "lat": -31.9559,
+      "lon": 115.86058,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|AU|st-kilda|": {
+      "lat": -37.86383,
+      "lon": 144.98164,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|AU|sydney-olympic-park|": {
+      "lat": -33.8429,
+      "lon": 151.07253,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
     "city|AU|sydney|": {
       "lat": -33.86984,
       "lon": 151.20828,
       "precision": "city",
       "retrievedAt": "2026-10-16"
+    },
+    "city|AU|sydney|nsw": {
+      "lat": -33.86984,
+      "lon": 151.20828,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
     },
     "city|AU|thornbury|": {
       "lat": -37.75827,
@@ -109,6 +221,12 @@
       "precision": "city",
       "retrievedAt": "2026-10-16"
     },
+    "city|BE|bruxelles|": {
+      "lat": 50.84674,
+      "lon": 4.35249,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
     "city|BE|dessel|": {
       "lat": 51.23908,
       "lon": 5.11282,
@@ -120,6 +238,18 @@
       "lon": 5.05043,
       "precision": "city",
       "retrievedAt": "2026-10-16"
+    },
+    "city|BE|forest|": {
+      "lat": 50.8118,
+      "lon": 4.31812,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|BE|ghent|": {
+      "lat": 51.05383,
+      "lon": 3.72501,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
     },
     "city|BE|kortrijk|": {
       "lat": 50.82764,
@@ -138,6 +268,30 @@
       "lon": 3.12439,
       "precision": "city",
       "retrievedAt": "2026-10-16"
+    },
+    "city|BE|verviers|": {
+      "lat": 50.59324,
+      "lon": 5.86783,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|BE|vorselaar|": {
+      "lat": 51.20234,
+      "lon": 4.76948,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|BE|vosselaar|": {
+      "lat": 51.31292,
+      "lon": 4.8878,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|BE|werchter|": {
+      "lat": 50.97058,
+      "lon": 4.6938,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
     },
     "city|BG|kavarna|": {
       "lat": 43.43328,
@@ -166,6 +320,12 @@
     "city|BH|sakhir|": {
       "miss": true,
       "retrievedAt": "2026-10-16"
+    },
+    "city|BO|la-paz|": {
+      "lat": -16.49555,
+      "lon": -68.13362,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
     },
     "city|BR|belo-horizonte|": {
       "lat": -19.92273,
@@ -227,11 +387,23 @@
       "precision": "city",
       "retrievedAt": "2026-10-16"
     },
+    "city|BR|vila-velha|": {
+      "lat": -20.42775,
+      "lon": -40.37731,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
     "city|BR|vitoria|": {
       "lat": -20.32009,
       "lon": -40.33767,
       "precision": "city",
       "retrievedAt": "2026-10-16"
+    },
+    "city|CA|abbotsford|bc": {
+      "lat": 49.05212,
+      "lon": -122.32948,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
     },
     "city|CA|calgary|": {
       "lat": 51.04561,
@@ -239,11 +411,47 @@
       "precision": "city",
       "retrievedAt": "2026-10-16"
     },
+    "city|CA|calgary|ab": {
+      "lat": 51.04561,
+      "lon": -114.05754,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|CA|edmonton|": {
+      "lat": 53.54621,
+      "lon": -113.49124,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|CA|edmonton|ab": {
+      "lat": 53.54621,
+      "lon": -113.49124,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|CA|halifax|ns": {
+      "lat": 44.64862,
+      "lon": -63.58595,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
     "city|CA|kelowna|bc": {
       "lat": 49.88792,
       "lon": -119.4959,
       "precision": "city",
       "retrievedAt": "2026-10-16"
+    },
+    "city|CA|laval|qc": {
+      "lat": 45.55711,
+      "lon": -73.72118,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|CA|montreal|": {
+      "lat": 45.50318,
+      "lon": -73.56981,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
     },
     "city|CA|montreal|qc": {
       "lat": 45.50318,
@@ -251,17 +459,53 @@
       "precision": "city",
       "retrievedAt": "2026-10-16"
     },
+    "city|CA|niagara-falls|on": {
+      "lat": 43.10656,
+      "lon": -79.0639,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
     "city|CA|ottawa|on": {
       "lat": 45.42088,
       "lon": -75.69011,
       "precision": "city",
       "retrievedAt": "2026-10-16"
     },
+    "city|CA|penticton|bc": {
+      "lat": 49.50033,
+      "lon": -119.59325,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|CA|quebec|": {
+      "lat": 46.81374,
+      "lon": -71.20841,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|CA|toronto|": {
+      "lat": 43.65348,
+      "lon": -79.38393,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
     "city|CA|toronto|on": {
       "lat": 43.65348,
       "lon": -79.38393,
       "precision": "city",
       "retrievedAt": "2026-10-16"
+    },
+    "city|CA|vancouver|": {
+      "lat": 49.26087,
+      "lon": -123.11395,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|CA|vancouver|bc": {
+      "lat": 49.26087,
+      "lon": -123.11395,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
     },
     "city|CA|winnipeg|": {
       "lat": 49.89554,
@@ -286,6 +530,12 @@
       "lon": 7.89936,
       "precision": "city",
       "retrievedAt": "2026-10-16"
+    },
+    "city|CH|basel|": {
+      "lat": 47.55811,
+      "lon": 7.58783,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
     },
     "city|CH|bern|": {
       "lat": 46.94847,
@@ -335,6 +585,18 @@
       "precision": "city",
       "retrievedAt": "2026-10-16"
     },
+    "city|CH|lausanne|": {
+      "lat": 46.52183,
+      "lon": 6.6327,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|CH|monthey|": {
+      "lat": 46.25284,
+      "lon": 6.94783,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
     "city|CH|montreux|": {
       "lat": 46.43108,
       "lon": 6.91299,
@@ -364,6 +626,18 @@
       "lon": 7.04008,
       "precision": "city",
       "retrievedAt": "2026-10-16"
+    },
+    "city|CH|vevey|": {
+      "lat": 46.4603,
+      "lon": 6.84187,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|CH|yverdon-les-bains|": {
+      "lat": 46.77857,
+      "lon": 6.64092,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
     },
     "city|CH|zurich|": {
       "lat": 47.37445,
@@ -395,6 +669,12 @@
       "precision": "city",
       "retrievedAt": "2026-10-16"
     },
+    "city|CN|shanghai|": {
+      "lat": 31.23234,
+      "lon": 121.4691,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
     "city|CO|bogota|": {
       "lat": 4.65338,
       "lon": -74.08363,
@@ -424,6 +704,12 @@
       "lon": -84.41964,
       "precision": "city",
       "retrievedAt": "2026-10-16"
+    },
+    "city|CZ|brno|": {
+      "lat": 49.19224,
+      "lon": 16.61134,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
     },
     "city|CZ|hodonin|": {
       "lat": 48.85639,
@@ -466,6 +752,16 @@
       "lon": 14.42125,
       "precision": "city",
       "retrievedAt": "2026-10-16"
+    },
+    "city|CZ|praha-1|": {
+      "miss": true,
+      "retrievedAt": "2026-10-18"
+    },
+    "city|CZ|praha|": {
+      "lat": 50.08747,
+      "lon": 14.42125,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
     },
     "city|CZ|slavicin|": {
       "lat": 49.08896,
@@ -527,6 +823,12 @@
       "precision": "city",
       "retrievedAt": "2026-10-16"
     },
+    "city|DE|augsburg|": {
+      "lat": 48.36903,
+      "lon": 10.89795,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
     "city|DE|balingen|": {
       "lat": 48.27375,
       "lon": 8.85579,
@@ -569,6 +871,18 @@
       "precision": "city",
       "retrievedAt": "2026-10-16"
     },
+    "city|DE|bonn|": {
+      "lat": 50.73526,
+      "lon": 7.10246,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|DE|bornstedt|": {
+      "lat": 51.48345,
+      "lon": 11.4827,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
     "city|DE|braunschweig|": {
       "lat": 52.26466,
       "lon": 10.52361,
@@ -581,11 +895,29 @@
       "precision": "city",
       "retrievedAt": "2026-10-16"
     },
+    "city|DE|bretten|": {
+      "lat": 49.04349,
+      "lon": 8.70297,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|DE|brilon|": {
+      "lat": 51.39557,
+      "lon": 8.56777,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
     "city|DE|budesheim|": {
       "lat": 50.21626,
       "lon": 6.55283,
       "precision": "city",
       "retrievedAt": "2026-10-16"
+    },
+    "city|DE|bunde|": {
+      "lat": 52.20047,
+      "lon": 8.58289,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
     },
     "city|DE|busdorf|": {
       "lat": 54.49205,
@@ -599,6 +931,24 @@
       "precision": "city",
       "retrievedAt": "2026-10-16"
     },
+    "city|DE|chemnitz|": {
+      "lat": 50.83235,
+      "lon": 12.91891,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|DE|coburg|": {
+      "lat": 50.25822,
+      "lon": 10.96456,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|DE|coesfeld|": {
+      "lat": 51.94589,
+      "lon": 7.16911,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
     "city|DE|cologne|": {
       "lat": 50.93836,
       "lon": 6.95997,
@@ -611,17 +961,41 @@
       "precision": "city",
       "retrievedAt": "2026-10-16"
     },
+    "city|DE|dettelbach|": {
+      "lat": 49.81321,
+      "lon": 10.13318,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
     "city|DE|dietingen|": {
       "lat": 48.20548,
       "lon": 8.64673,
       "precision": "city",
       "retrievedAt": "2026-10-16"
     },
+    "city|DE|dillingen-saar|": {
+      "lat": 49.35527,
+      "lon": 6.72432,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
     "city|DE|dinkelsbuhl|": {
       "lat": 49.06917,
       "lon": 10.3194,
       "precision": "city",
       "retrievedAt": "2026-10-16"
+    },
+    "city|DE|dischingen|": {
+      "lat": 48.70061,
+      "lon": 10.40257,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|DE|dortmund|": {
+      "lat": 51.51423,
+      "lon": 7.46528,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
     },
     "city|DE|dresden|": {
       "lat": 51.04933,
@@ -635,6 +1009,12 @@
       "precision": "city",
       "retrievedAt": "2026-10-16"
     },
+    "city|DE|dusseldorf|": {
+      "lat": 51.2254,
+      "lon": 6.77631,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
     "city|DE|eberbach|": {
       "lat": 49.46353,
       "lon": 8.98552,
@@ -646,6 +1026,12 @@
       "lon": 6.91989,
       "precision": "city",
       "retrievedAt": "2026-10-16"
+    },
+    "city|DE|eisfeld|": {
+      "lat": 50.42699,
+      "lon": 10.9075,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
     },
     "city|DE|ennepetal|": {
       "lat": 51.29672,
@@ -670,6 +1056,30 @@
       "lon": 7.01582,
       "precision": "city",
       "retrievedAt": "2026-10-16"
+    },
+    "city|DE|filderstadt|": {
+      "lat": 48.6664,
+      "lon": 9.21996,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|DE|frankfurt-am-main|": {
+      "lat": 50.11064,
+      "lon": 8.68209,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|DE|frankfurt|": {
+      "lat": 50.11064,
+      "lon": 8.68209,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|DE|freiburg|": {
+      "lat": 47.99609,
+      "lon": 7.8494,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
     },
     "city|DE|friedrichshafen|": {
       "lat": 47.65003,
@@ -713,6 +1123,12 @@
       "precision": "city",
       "retrievedAt": "2026-10-16"
     },
+    "city|DE|hagen|": {
+      "lat": 51.35829,
+      "lon": 7.4733,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
     "city|DE|halle-saale|": {
       "lat": 51.48244,
       "lon": 11.9713,
@@ -724,6 +1140,12 @@
       "lon": 10.00132,
       "precision": "city",
       "retrievedAt": "2026-10-16"
+    },
+    "city|DE|hameln|": {
+      "lat": 52.10399,
+      "lon": 9.35616,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
     },
     "city|DE|handewitt|": {
       "lat": 54.76747,
@@ -749,6 +1171,12 @@
       "precision": "city",
       "retrievedAt": "2026-10-16"
     },
+    "city|DE|herford|": {
+      "lat": 52.11522,
+      "lon": 8.67111,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
     "city|DE|herschweiler-pettersheim|": {
       "lat": 49.47685,
       "lon": 7.34613,
@@ -760,6 +1188,12 @@
       "lon": 7.13681,
       "precision": "city",
       "retrievedAt": "2026-10-16"
+    },
+    "city|DE|hof|": {
+      "lat": 50.31875,
+      "lon": 11.9163,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
     },
     "city|DE|hunfeld|": {
       "lat": 50.65546,
@@ -773,11 +1207,23 @@
       "precision": "city",
       "retrievedAt": "2026-10-16"
     },
+    "city|DE|jena|": {
+      "lat": 50.92817,
+      "lon": 11.58794,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
     "city|DE|karlsruhe|": {
       "lat": 49.00687,
       "lon": 8.40342,
       "precision": "city",
       "retrievedAt": "2026-10-16"
+    },
+    "city|DE|kassel|": {
+      "lat": 51.31578,
+      "lon": 9.49785,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
     },
     "city|DE|kaufbeuren|": {
       "lat": 47.88038,
@@ -790,6 +1236,12 @@
       "lon": 7.82901,
       "precision": "city",
       "retrievedAt": "2026-10-16"
+    },
+    "city|DE|kiel|": {
+      "lat": 54.32271,
+      "lon": 10.13556,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
     },
     "city|DE|kirchdorf|bavaria": {
       "lat": 48.17661,
@@ -807,6 +1259,12 @@
       "miss": true,
       "retrievedAt": "2026-10-16"
     },
+    "city|DE|koblenz|": {
+      "lat": 50.35333,
+      "lon": 7.5944,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
     "city|DE|koln|": {
       "lat": 50.93836,
       "lon": 6.95997,
@@ -818,6 +1276,16 @@
       "lon": 6.56233,
       "precision": "city",
       "retrievedAt": "2026-10-16"
+    },
+    "city|DE|langen|": {
+      "lat": 49.99151,
+      "lon": 8.6667,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|DE|leipzig-engelsdorf|": {
+      "miss": true,
+      "retrievedAt": "2026-10-18"
     },
     "city|DE|leipzig|": {
       "lat": 51.34063,
@@ -834,6 +1302,12 @@
     "city|DE|lindau|": {
       "lat": 47.57287,
       "lon": 9.69619,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|DE|lingen|": {
+      "lat": 52.52247,
+      "lon": 7.31658,
       "precision": "city",
       "retrievedAt": "2026-10-18"
     },
@@ -855,11 +1329,35 @@
       "precision": "city",
       "retrievedAt": "2026-10-16"
     },
+    "city|DE|memmingen|": {
+      "lat": 47.98631,
+      "lon": 10.1808,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
     "city|DE|meppen|": {
       "lat": 52.69475,
       "lon": 7.29098,
       "precision": "city",
       "retrievedAt": "2026-10-16"
+    },
+    "city|DE|mohnesee|": {
+      "lat": 51.47752,
+      "lon": 8.11348,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|DE|monchengladbach|": {
+      "lat": 51.19471,
+      "lon": 6.43538,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|DE|morlenbach|": {
+      "lat": 49.5929,
+      "lon": 8.7435,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
     },
     "city|DE|mossingen-belsen|": {
       "miss": true,
@@ -900,6 +1398,12 @@
       "lon": 10.00052,
       "precision": "city",
       "retrievedAt": "2026-10-16"
+    },
+    "city|DE|neubrandenburg|": {
+      "lat": 53.55745,
+      "lon": 13.26028,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
     },
     "city|DE|neuhausen|": {
       "lat": 50.675,
@@ -949,6 +1453,12 @@
       "precision": "city",
       "retrievedAt": "2026-10-16"
     },
+    "city|DE|nurnberg|": {
+      "lat": 49.45387,
+      "lon": 11.0773,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
     "city|DE|oberhausen|": {
       "lat": 51.46961,
       "lon": 6.85144,
@@ -966,6 +1476,18 @@
       "lon": 12.16713,
       "precision": "city",
       "retrievedAt": "2026-10-16"
+    },
+    "city|DE|oelsnitz-vogtl|": {
+      "lat": 50.41189,
+      "lon": 12.1569,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|DE|offenbach|": {
+      "lat": 50.1055,
+      "lon": 8.76107,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
     },
     "city|DE|oldenburg-in-holstein|": {
       "lat": 54.29226,
@@ -997,11 +1519,35 @@
       "precision": "city",
       "retrievedAt": "2026-10-16"
     },
+    "city|DE|pinache|": {
+      "lat": 48.90929,
+      "lon": 8.84818,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|DE|potsdam|": {
+      "lat": 52.40093,
+      "lon": 13.05914,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|DE|prolsdorf|": {
+      "lat": 49.874,
+      "lon": 10.62517,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
     "city|DE|ravensburg|": {
       "lat": 47.7811,
       "lon": 9.61247,
       "precision": "city",
       "retrievedAt": "2026-10-16"
+    },
+    "city|DE|regensburg|": {
+      "lat": 49.01953,
+      "lon": 12.09749,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
     },
     "city|DE|rengsdorf|": {
       "lat": 50.50299,
@@ -1021,17 +1567,41 @@
       "precision": "city",
       "retrievedAt": "2026-10-16"
     },
+    "city|DE|rothenburg-ob-der-tauber|": {
+      "lat": 49.3658,
+      "lon": 10.16292,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
     "city|DE|saarbrucken|": {
       "lat": 49.23436,
       "lon": 6.99638,
       "precision": "city",
       "retrievedAt": "2026-10-16"
     },
+    "city|DE|saarbruecken|": {
+      "lat": 49.23436,
+      "lon": 6.99638,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|DE|sachsenheim|": {
+      "lat": 48.98772,
+      "lon": 9.04535,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
     "city|DE|sankt-goarshausen|": {
       "lat": 50.15488,
       "lon": 7.7161,
       "precision": "city",
       "retrievedAt": "2026-10-16"
+    },
+    "city|DE|satzvey|": {
+      "lat": 50.62172,
+      "lon": 6.70776,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
     },
     "city|DE|schirnding|": {
       "lat": 50.08124,
@@ -1042,6 +1612,18 @@
     "city|DE|schneeberg|saxony": {
       "lat": 50.59507,
       "lon": 12.6417,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|DE|schockingen|": {
+      "lat": 48.84454,
+      "lon": 9.03008,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|DE|schweinfurt|": {
+      "lat": 50.04515,
+      "lon": 10.23406,
       "precision": "city",
       "retrievedAt": "2026-10-18"
     },
@@ -1060,6 +1642,12 @@
     "city|DE|siegen|": {
       "lat": 50.87512,
       "lon": 8.02561,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|DE|solingen|": {
+      "lat": 51.17216,
+      "lon": 7.08459,
       "precision": "city",
       "retrievedAt": "2026-10-18"
     },
@@ -1111,9 +1699,21 @@
       "precision": "city",
       "retrievedAt": "2026-10-16"
     },
+    "city|DE|trier|": {
+      "lat": 49.75962,
+      "lon": 6.64419,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
     "city|DE|ubach-palenberg|": {
       "lat": 50.92138,
       "lon": 6.11287,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|DE|ulm|": {
+      "lat": 48.3985,
+      "lon": 9.99125,
       "precision": "city",
       "retrievedAt": "2026-10-18"
     },
@@ -1122,6 +1722,22 @@
       "lon": 9.3766,
       "precision": "city",
       "retrievedAt": "2026-10-16"
+    },
+    "city|DE|waghausel|": {
+      "lat": 49.24857,
+      "lon": 8.51628,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|DE|weinheim|": {
+      "lat": 49.54623,
+      "lon": 8.67175,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|DE|weissach-flacht|": {
+      "miss": true,
+      "retrievedAt": "2026-10-18"
     },
     "city|DE|weissenhauser-strand|": {
       "lat": 54.30648,
@@ -1159,11 +1775,65 @@
       "precision": "city",
       "retrievedAt": "2026-10-16"
     },
+    "city|DE|wuppertal|": {
+      "lat": 51.26402,
+      "lon": 7.17804,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|DK|aalborg|": {
+      "lat": 57.04626,
+      "lon": 9.92153,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|DK|aarhus|": {
+      "lat": 56.14963,
+      "lon": 10.2134,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|DK|bjerringbro|": {
+      "lat": 56.37584,
+      "lon": 9.65658,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|DK|bording|": {
+      "lat": 56.14651,
+      "lon": 9.27531,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
     "city|DK|copenhagen|": {
       "lat": 55.68672,
       "lon": 12.57007,
       "precision": "city",
       "retrievedAt": "2026-10-16"
+    },
+    "city|DK|esbjerg|": {
+      "lat": 55.46649,
+      "lon": 8.45208,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|DK|fjellerup|": {
+      "lat": 55.23611,
+      "lon": 10.56255,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|DK|fjellerup|midtjylland": {
+      "lat": 56.50535,
+      "lon": 10.58921,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|DK|glesborg|": {
+      "lat": 56.47751,
+      "lon": 10.72548,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
     },
     "city|DK|herning|": {
       "lat": 56.13798,
@@ -1177,17 +1847,41 @@
       "precision": "city",
       "retrievedAt": "2026-10-18"
     },
+    "city|DK|ikast|": {
+      "lat": 56.13902,
+      "lon": 9.15479,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
     "city|DK|kobenhavn|": {
       "lat": 55.68672,
       "lon": 12.57007,
       "precision": "city",
       "retrievedAt": "2026-10-16"
     },
+    "city|DK|kolding|": {
+      "lat": 55.4895,
+      "lon": 9.47905,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|DK|logumkloster|": {
+      "lat": 55.05955,
+      "lon": 8.95682,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
     "city|DK|naestved|": {
       "lat": 55.23283,
       "lon": 11.76741,
       "precision": "city",
       "retrievedAt": "2026-10-16"
+    },
+    "city|DK|odense|": {
+      "lat": 55.39972,
+      "lon": 10.38521,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
     },
     "city|DK|randers|": {
       "lat": 56.46175,
@@ -1225,11 +1919,27 @@
       "precision": "city",
       "retrievedAt": "2026-10-18"
     },
+    "city|DO|punta-cana|": {
+      "lat": 18.55655,
+      "lon": -68.36916,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
     "city|EC|quito|": {
       "lat": -0.22016,
       "lon": -78.51233,
       "precision": "city",
       "retrievedAt": "2026-10-16"
+    },
+    "city|EE|tallinn|": {
+      "lat": 59.43724,
+      "lon": 24.75727,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|ES|barca-trencada|": {
+      "miss": true,
+      "retrievedAt": "2026-10-18"
     },
     "city|ES|barcelona|": {
       "lat": 41.38258,
@@ -1237,11 +1947,23 @@
       "precision": "city",
       "retrievedAt": "2026-10-16"
     },
+    "city|ES|bilbao|": {
+      "lat": 43.263,
+      "lon": -2.935,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
     "city|ES|burgos|": {
       "lat": 42.34485,
       "lon": -3.68125,
       "precision": "city",
       "retrievedAt": "2026-10-16"
+    },
+    "city|ES|cadiz|": {
+      "lat": 36.52974,
+      "lon": -6.2929,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
     },
     "city|ES|cartagena|": {
       "lat": 37.6155,
@@ -1255,6 +1977,12 @@
       "precision": "city",
       "retrievedAt": "2026-10-16"
     },
+    "city|ES|cordoba|": {
+      "lat": 37.88458,
+      "lon": -4.77601,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
     "city|ES|gineta|": {
       "lat": 39.49591,
       "lon": -6.92792,
@@ -1267,11 +1995,23 @@
       "precision": "city",
       "retrievedAt": "2026-10-16"
     },
+    "city|ES|l-hospitalet-de-llobregat|": {
+      "lat": 41.35951,
+      "lon": 2.09963,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
     "city|ES|madrid|": {
       "lat": 40.41678,
       "lon": -3.70351,
       "precision": "city",
       "retrievedAt": "2026-10-16"
+    },
+    "city|ES|malaga|": {
+      "lat": 36.76479,
+      "lon": -4.4422,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
     },
     "city|ES|mallorca|": {
       "miss": true,
@@ -1288,6 +2028,12 @@
       "lon": 2.65007,
       "precision": "city",
       "retrievedAt": "2026-10-16"
+    },
+    "city|ES|pamplona|": {
+      "lat": 42.81569,
+      "lon": -1.65224,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
     },
     "city|ES|ripollet|": {
       "lat": 41.49934,
@@ -1316,6 +2062,30 @@
       "lon": -8.5193,
       "precision": "city",
       "retrievedAt": "2026-10-16"
+    },
+    "city|ES|seville|": {
+      "lat": 37.38863,
+      "lon": -5.99534,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|ES|valencia|": {
+      "lat": 39.46971,
+      "lon": -0.37634,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|ES|vigo|": {
+      "lat": 42.19864,
+      "lon": -8.72796,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|ES|villava|": {
+      "lat": 42.8319,
+      "lon": -1.60713,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
     },
     "city|ES|villena|": {
       "lat": 38.6361,
@@ -1365,6 +2135,12 @@
       "precision": "city",
       "retrievedAt": "2026-10-16"
     },
+    "city|FI|kauhajoki|": {
+      "lat": 62.43175,
+      "lon": 22.1842,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
     "city|FI|kempele|": {
       "lat": 64.91245,
       "lon": 25.51082,
@@ -1413,11 +2189,23 @@
       "precision": "city",
       "retrievedAt": "2026-10-16"
     },
+    "city|FI|pori|": {
+      "lat": 61.48661,
+      "lon": 21.79721,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
     "city|FI|salo|": {
       "lat": 60.2947,
       "lon": 23.26965,
       "precision": "city",
       "retrievedAt": "2026-10-16"
+    },
+    "city|FI|seinajoki|": {
+      "lat": 62.79067,
+      "lon": 22.83974,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
     },
     "city|FI|tampere|": {
       "lat": 61.4978,
@@ -1449,6 +2237,12 @@
       "precision": "city",
       "retrievedAt": "2026-10-16"
     },
+    "city|FR|annecy|": {
+      "lat": 45.89923,
+      "lon": 6.12888,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
     "city|FR|arles|": {
       "lat": 43.67762,
       "lon": 4.63097,
@@ -1461,11 +2255,23 @@
       "precision": "city",
       "retrievedAt": "2026-10-16"
     },
+    "city|FR|balma|": {
+      "lat": 43.60966,
+      "lon": 1.49801,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
     "city|FR|belfort|": {
       "lat": 47.63796,
       "lon": 6.86289,
       "precision": "city",
       "retrievedAt": "2026-10-16"
+    },
+    "city|FR|bordeaux|": {
+      "lat": 44.84123,
+      "lon": -0.58004,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
     },
     "city|FR|carhaix-plouguer|": {
       "lat": 48.2765,
@@ -1479,11 +2285,23 @@
       "precision": "city",
       "retrievedAt": "2026-10-16"
     },
+    "city|FR|clermont-ferrand|": {
+      "lat": 45.77746,
+      "lon": 3.08194,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
     "city|FR|clisson|": {
       "lat": 47.08772,
       "lon": -1.28174,
       "precision": "city",
       "retrievedAt": "2026-10-16"
+    },
+    "city|FR|colmar|": {
+      "lat": 48.07775,
+      "lon": 7.35796,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
     },
     "city|FR|colombier-saugnieu|": {
       "lat": 45.71138,
@@ -1491,11 +2309,47 @@
       "precision": "city",
       "retrievedAt": "2026-10-16"
     },
+    "city|FR|decines-charpieu|": {
+      "lat": 45.77361,
+      "lon": 4.96333,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
     "city|FR|gisors|": {
       "lat": 49.27895,
       "lon": 1.77783,
       "precision": "city",
       "retrievedAt": "2026-10-16"
+    },
+    "city|FR|grenoble|": {
+      "lat": 45.18756,
+      "lon": 5.73578,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|FR|istres|": {
+      "lat": 43.51391,
+      "lon": 4.98843,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|FR|les-pennes-mirabeau|": {
+      "lat": 43.40988,
+      "lon": 5.30903,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|FR|lille|": {
+      "lat": 50.63657,
+      "lon": 3.06353,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|FR|limoges|": {
+      "lat": 45.83542,
+      "lon": 1.26448,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
     },
     "city|FR|lyon|": {
       "lat": 45.75781,
@@ -1503,17 +2357,83 @@
       "precision": "city",
       "retrievedAt": "2026-10-16"
     },
+    "city|FR|marseille|": {
+      "lat": 43.2964,
+      "lon": 5.37779,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
     "city|FR|metz|": {
       "lat": 49.1197,
       "lon": 6.17636,
       "precision": "city",
       "retrievedAt": "2026-10-16"
     },
+    "city|FR|montauban|": {
+      "lat": 44.01758,
+      "lon": 1.355,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|FR|montpellier|": {
+      "lat": 43.61124,
+      "lon": 3.87673,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|FR|montreuil|seine-saint-denis": {
+      "lat": 48.86234,
+      "lon": 2.44122,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|FR|mulhouse|": {
+      "lat": 47.74672,
+      "lon": 7.33899,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
     "city|FR|murs-erigne|": {
       "lat": 47.3992,
       "lon": -0.53612,
       "precision": "city",
       "retrievedAt": "2026-10-16"
+    },
+    "city|FR|nancy|": {
+      "lat": 48.69372,
+      "lon": 6.18341,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|FR|nanterre|": {
+      "lat": 48.89243,
+      "lon": 2.20713,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|FR|nantes|": {
+      "lat": 47.21864,
+      "lon": -1.55414,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|FR|nimes|": {
+      "lat": 43.83742,
+      "lon": 4.36007,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|FR|orleans|": {
+      "lat": 47.90273,
+      "lon": 1.90861,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|FR|pagney-derriere-barine|": {
+      "lat": 48.6943,
+      "lon": 5.8447,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
     },
     "city|FR|paris|": {
       "lat": 48.8535,
@@ -1531,11 +2451,41 @@
       "precision": "city",
       "retrievedAt": "2026-10-16"
     },
+    "city|FR|ramonville-st-agne|": {
+      "lat": 43.54605,
+      "lon": 1.47491,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|FR|rennes|": {
+      "lat": 48.11134,
+      "lon": -1.68002,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
     "city|FR|riom|": {
       "lat": 45.89301,
       "lon": 3.11406,
       "precision": "city",
       "retrievedAt": "2026-10-16"
+    },
+    "city|FR|rouen|": {
+      "lat": 49.44046,
+      "lon": 1.09397,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|FR|saint-denis|": {
+      "lat": 48.93837,
+      "lon": 2.36275,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|FR|saint-etienne|": {
+      "lat": 45.44015,
+      "lon": 4.38731,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
     },
     "city|FR|saint-hilaire-de-clisson|": {
       "lat": 47.06103,
@@ -1555,6 +2505,12 @@
       "precision": "city",
       "retrievedAt": "2026-10-16"
     },
+    "city|FR|savigny-le-temple|": {
+      "lat": 48.59587,
+      "lon": 2.5799,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
     "city|FR|strasbourg|": {
       "lat": 48.58461,
       "lon": 7.75071,
@@ -1567,11 +2523,23 @@
       "precision": "city",
       "retrievedAt": "2026-10-16"
     },
+    "city|FR|tourcoing|": {
+      "lat": 50.7235,
+      "lon": 3.16057,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
     "city|FR|vallet|": {
       "lat": 47.161,
       "lon": -1.26574,
       "precision": "city",
       "retrievedAt": "2026-10-16"
+    },
+    "city|FR|vaureal|": {
+      "lat": 49.03008,
+      "lon": 2.02058,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
     },
     "city|FR|villeurbanne|": {
       "lat": 45.76606,
@@ -1579,11 +2547,23 @@
       "precision": "city",
       "retrievedAt": "2026-10-16"
     },
+    "city|GB|belfast|": {
+      "lat": 54.59639,
+      "lon": -5.93018,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
     "city|GB|birmingham|": {
       "lat": 52.4949,
       "lon": -1.85184,
       "precision": "city",
       "retrievedAt": "2026-10-16"
+    },
+    "city|GB|bournemouth|": {
+      "lat": 50.72015,
+      "lon": -1.87991,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
     },
     "city|GB|bristol|": {
       "lat": 51.4538,
@@ -1591,11 +2571,29 @@
       "precision": "city",
       "retrievedAt": "2026-10-16"
     },
+    "city|GB|bury-st-edmunds|": {
+      "lat": 52.24604,
+      "lon": 0.71252,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|GB|camden|": {
+      "lat": 51.5428,
+      "lon": -0.16248,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
     "city|GB|cardiff|": {
       "lat": 51.48165,
       "lon": -3.17919,
       "precision": "city",
       "retrievedAt": "2026-10-16"
+    },
+    "city|GB|castle-donington|": {
+      "lat": 52.84117,
+      "lon": -1.34095,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
     },
     "city|GB|chepstow|": {
       "lat": 51.64093,
@@ -1603,17 +2601,53 @@
       "precision": "city",
       "retrievedAt": "2026-10-16"
     },
+    "city|GB|dundee|": {
+      "lat": 56.46059,
+      "lon": -2.97019,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|GB|edinburgh|": {
+      "lat": 55.95335,
+      "lon": -3.18837,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
     "city|GB|glasgow|": {
       "lat": 55.86116,
       "lon": -4.25017,
       "precision": "city",
       "retrievedAt": "2026-10-16"
     },
+    "city|GB|greenwich|": {
+      "lat": 51.48208,
+      "lon": -0.00454,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|GB|halifax|": {
+      "lat": 53.72292,
+      "lon": -1.86049,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
     "city|GB|knebworth|": {
       "lat": 51.86589,
       "lon": -0.18449,
       "precision": "city",
       "retrievedAt": "2026-10-16"
+    },
+    "city|GB|leeds|": {
+      "lat": 53.79742,
+      "lon": -1.54379,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|GB|leicester|": {
+      "lat": 52.6362,
+      "lon": -1.1332,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
     },
     "city|GB|london|": {
       "lat": 51.50745,
@@ -1633,6 +2667,12 @@
       "precision": "city",
       "retrievedAt": "2026-10-16"
     },
+    "city|GB|newcastle|": {
+      "lat": 54.97385,
+      "lon": -1.61316,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
     "city|GB|norwich|": {
       "lat": 52.62856,
       "lon": 1.2924,
@@ -1645,11 +2685,35 @@
       "precision": "city",
       "retrievedAt": "2026-10-16"
     },
+    "city|GB|oxford|": {
+      "lat": 51.75201,
+      "lon": -1.25785,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
     "city|GB|portsmouth|": {
       "lat": 50.80003,
       "lon": -1.0906,
       "precision": "city",
       "retrievedAt": "2026-10-16"
+    },
+    "city|GB|preston|": {
+      "lat": 53.75934,
+      "lon": -2.69927,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|GB|scarborough|": {
+      "lat": 54.282,
+      "lon": -0.40119,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|GB|sheffield|": {
+      "lat": 53.38066,
+      "lon": -1.47023,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
     },
     "city|GB|southampton|": {
       "lat": 50.90253,
@@ -1668,6 +2732,12 @@
       "lon": -4.66391,
       "precision": "city",
       "retrievedAt": "2026-10-16"
+    },
+    "city|GB|whitley-bay|": {
+      "lat": 55.04221,
+      "lon": -1.44544,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
     },
     "city|GB|wolverhampton|": {
       "lat": 52.58477,
@@ -1765,6 +2835,12 @@
       "precision": "city",
       "retrievedAt": "2026-10-16"
     },
+    "city|IE|dublin|": {
+      "lat": 53.34938,
+      "lon": -6.26056,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
     "city|IN|bangalore|": {
       "lat": 12.97679,
       "lon": 77.59008,
@@ -1789,11 +2865,23 @@
       "precision": "city",
       "retrievedAt": "2026-10-16"
     },
+    "city|IT|bologna|": {
+      "lat": 44.49382,
+      "lon": 11.34263,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
     "city|IT|cremona|": {
       "lat": 45.13348,
       "lon": 10.02487,
       "precision": "city",
       "retrievedAt": "2026-10-16"
+    },
+    "city|IT|este|": {
+      "lat": 45.22017,
+      "lon": 11.65891,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
     },
     "city|IT|florence|": {
       "lat": 43.7698,
@@ -1807,9 +2895,21 @@
       "precision": "city",
       "retrievedAt": "2026-10-16"
     },
+    "city|IT|lignano-sabbiadoro|": {
+      "lat": 45.69016,
+      "lon": 13.14077,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
     "city|IT|luppolo|": {
       "miss": true,
       "retrievedAt": "2026-10-16"
+    },
+    "city|IT|milano|": {
+      "lat": 45.46419,
+      "lon": 9.18963,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
     },
     "city|IT|milan|": {
       "lat": 45.46419,
@@ -1823,11 +2923,65 @@
       "precision": "city",
       "retrievedAt": "2026-10-16"
     },
+    "city|IT|paderno-dugnano|": {
+      "lat": 45.57191,
+      "lon": 9.16821,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
     "city|IT|padova|": {
       "lat": 45.39844,
       "lon": 11.89568,
       "precision": "city",
       "retrievedAt": "2026-10-16"
+    },
+    "city|IT|pisa|": {
+      "lat": 43.71594,
+      "lon": 10.40186,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|IT|pompei|": {
+      "lat": 40.74913,
+      "lon": 14.50064,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|IT|rome|": {
+      "lat": 41.89332,
+      "lon": 12.48293,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|IT|roncade|": {
+      "lat": 45.61526,
+      "lon": 12.39442,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|IT|san-dona-di-piave|": {
+      "lat": 45.62644,
+      "lon": 12.60384,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|IT|schio|": {
+      "lat": 45.72336,
+      "lon": 11.35515,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|IT|serravalle-di-chienti|": {
+      "lat": 43.07168,
+      "lon": 12.95239,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|IT|treviso|": {
+      "lat": 45.66585,
+      "lon": 12.24554,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
     },
     "city|IT|trezzo-sull-adda|": {
       "lat": 45.60951,
@@ -1847,11 +3001,21 @@
       "precision": "city",
       "retrievedAt": "2026-10-16"
     },
+    "city|JP|aichi|": {
+      "miss": true,
+      "retrievedAt": "2026-10-18"
+    },
     "city|JP|higashi-osaka|": {
       "lat": 34.67939,
       "lon": 135.6009,
       "precision": "city",
       "retrievedAt": "2026-10-16"
+    },
+    "city|JP|kobe|": {
+      "lat": 34.69324,
+      "lon": 135.19438,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
     },
     "city|JP|minato-city|": {
       "miss": true,
@@ -1875,6 +3039,12 @@
       "precision": "city",
       "retrievedAt": "2026-10-16"
     },
+    "city|JP|saitama|": {
+      "lat": 35.86161,
+      "lon": 139.64557,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
     "city|JP|tokyo|": {
       "lat": 35.67686,
       "lon": 139.76389,
@@ -1887,11 +3057,47 @@
       "precision": "city",
       "retrievedAt": "2026-10-16"
     },
+    "city|KR|incheon|": {
+      "lat": 37.456,
+      "lon": 126.7052,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
     "city|KR|seoul|": {
       "lat": 37.56668,
       "lon": 126.97829,
       "precision": "city",
       "retrievedAt": "2026-10-16"
+    },
+    "city|KZ|almaty|": {
+      "lat": 43.23639,
+      "lon": 76.94573,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|LT|vilnius|": {
+      "lat": 54.68705,
+      "lon": 25.28291,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|LU|esch-alzette|": {
+      "lat": 49.49596,
+      "lon": 5.98503,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|LU|esch-sur-alzette|": {
+      "lat": 49.49596,
+      "lon": 5.98503,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|LU|luxembourg|": {
+      "lat": 49.61128,
+      "lon": 6.1298,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
     },
     "city|LV|riga|": {
       "lat": 56.9494,
@@ -1902,6 +3108,12 @@
     "city|MC|monte-carlo|": {
       "lat": 43.7403,
       "lon": 7.42656,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|MK|skopje|": {
+      "lat": 41.99621,
+      "lon": 21.43189,
       "precision": "city",
       "retrievedAt": "2026-10-18"
     },
@@ -1922,6 +3134,12 @@
       "lon": -106.07674,
       "precision": "city",
       "retrievedAt": "2026-10-16"
+    },
+    "city|MX|ciudad-de-mexico|": {
+      "lat": 19.43263,
+      "lon": -99.13318,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
     },
     "city|MX|guadalajara|": {
       "lat": 20.67204,
@@ -1947,11 +3165,23 @@
       "precision": "city",
       "retrievedAt": "2026-10-16"
     },
+    "city|MX|tijuana|": {
+      "lat": 32.53648,
+      "lon": -117.03712,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
     "city|MX|torreon|": {
       "lat": 25.5427,
       "lon": -103.41051,
       "precision": "city",
       "retrievedAt": "2026-10-16"
+    },
+    "city|MX|zapopan|": {
+      "lat": 20.72112,
+      "lon": -103.39137,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
     },
     "city|NL|amsterdam|": {
       "lat": 52.37308,
@@ -1995,6 +3225,36 @@
       "precision": "city",
       "retrievedAt": "2026-10-18"
     },
+    "city|NL|enschede|": {
+      "lat": 52.22099,
+      "lon": 6.89405,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|NL|groningen|": {
+      "lat": 53.21907,
+      "lon": 6.56801,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|NL|haarlem|": {
+      "lat": 52.38853,
+      "lon": 4.6388,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|NL|harderwijk|": {
+      "lat": 52.34907,
+      "lon": 5.61893,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|NL|heerlen|": {
+      "lat": 50.87752,
+      "lon": 5.98151,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
     "city|NL|helmond|": {
       "lat": 51.4736,
       "lon": 5.66703,
@@ -2035,11 +3295,23 @@
       "miss": true,
       "retrievedAt": "2026-10-18"
     },
+    "city|NL|roermond|": {
+      "lat": 51.19339,
+      "lon": 5.98826,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
     "city|NL|rotterdam|": {
       "lat": 51.92444,
       "lon": 4.47775,
       "precision": "city",
       "retrievedAt": "2026-10-16"
+    },
+    "city|NL|sittard|": {
+      "lat": 50.99742,
+      "lon": 5.86666,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
     },
     "city|NL|tilburg|": {
       "lat": 51.58562,
@@ -2071,6 +3343,18 @@
       "precision": "city",
       "retrievedAt": "2026-10-16"
     },
+    "city|NO|kristiansand|": {
+      "lat": 58.08563,
+      "lon": 7.93186,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|NO|larvik|": {
+      "lat": 59.09673,
+      "lon": 10.02193,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
     "city|NO|oslo|": {
       "lat": 59.91333,
       "lon": 10.73897,
@@ -2094,6 +3378,18 @@
       "lon": 10.39521,
       "precision": "city",
       "retrievedAt": "2026-10-16"
+    },
+    "city|NZ|auckland|": {
+      "lat": -36.85209,
+      "lon": 174.76318,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|NZ|christchurch|": {
+      "lat": -43.53095,
+      "lon": 172.63643,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
     },
     "city|PA|panama-city|": {
       "lat": 8.97145,
@@ -2119,11 +3415,41 @@
       "precision": "city",
       "retrievedAt": "2026-10-18"
     },
+    "city|PL|chorzow|": {
+      "lat": 50.29788,
+      "lon": 18.95445,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|PL|czaplinek|": {
+      "lat": 53.56067,
+      "lon": 16.23194,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|PL|gdansk|": {
+      "lat": 54.34829,
+      "lon": 18.65402,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
     "city|PL|gdynia|": {
       "lat": 54.5165,
       "lon": 18.54027,
       "precision": "city",
       "retrievedAt": "2026-10-16"
+    },
+    "city|PL|gliwice|": {
+      "lat": 50.29411,
+      "lon": 18.66573,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|PL|gniewkowo|": {
+      "lat": 52.89443,
+      "lon": 18.40668,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
     },
     "city|PL|krakow|": {
       "lat": 50.06195,
@@ -2131,9 +3457,39 @@
       "precision": "city",
       "retrievedAt": "2026-10-16"
     },
+    "city|PL|lodz|": {
+      "lat": 51.76873,
+      "lon": 19.45699,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|PL|ostrow-wielkopolski|": {
+      "lat": 51.6495,
+      "lon": 17.81671,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
     "city|PL|ostrzeszow|": {
       "lat": 51.42577,
       "lon": 17.93318,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|PL|poznan|": {
+      "lat": 52.40827,
+      "lon": 16.93352,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|PL|sosnowiec|": {
+      "lat": 50.27808,
+      "lon": 19.13429,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|PL|swiecie|": {
+      "lat": 53.40725,
+      "lon": 18.44553,
       "precision": "city",
       "retrievedAt": "2026-10-18"
     },
@@ -2149,9 +3505,21 @@
       "precision": "city",
       "retrievedAt": "2026-10-16"
     },
+    "city|PL|wroclaw|": {
+      "lat": 51.10898,
+      "lon": 17.03267,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
     "city|PR|san-juan|": {
       "miss": true,
       "retrievedAt": "2026-10-16"
+    },
+    "city|PT|lisboa|": {
+      "lat": 38.70775,
+      "lon": -9.13659,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
     },
     "city|PT|lisbon|": {
       "lat": 38.70775,
@@ -2164,6 +3532,12 @@
       "lon": -7.96296,
       "precision": "city",
       "retrievedAt": "2026-10-16"
+    },
+    "city|PT|porto|": {
+      "lat": 41.15022,
+      "lon": -8.61035,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
     },
     "city|PT|vagos|": {
       "lat": 40.55389,
@@ -2213,11 +3587,29 @@
       "precision": "city",
       "retrievedAt": "2026-10-16"
     },
+    "city|RO|rasnov|": {
+      "lat": 45.59103,
+      "lon": 25.46562,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|RS|belgrade|": {
+      "lat": 44.81781,
+      "lon": 20.4569,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
     "city|RS|beograd|": {
       "lat": 44.81781,
       "lon": 20.4569,
       "precision": "city",
       "retrievedAt": "2026-10-16"
+    },
+    "city|SA|riyadh|": {
+      "lat": 24.63892,
+      "lon": 46.71601,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
     },
     "city|SE|amal|": {
       "lat": 58.98384,
@@ -2291,11 +3683,29 @@
       "precision": "city",
       "retrievedAt": "2026-10-16"
     },
+    "city|SE|hammaro|": {
+      "lat": 59.31667,
+      "lon": 13.55,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|SE|helsingborg|": {
+      "lat": 56.04421,
+      "lon": 12.70371,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
     "city|SE|huskvarna|": {
       "lat": 57.79187,
       "lon": 14.27393,
       "precision": "city",
       "retrievedAt": "2026-10-16"
+    },
+    "city|SE|johanneshov|": {
+      "lat": 59.2947,
+      "lon": 18.0841,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
     },
     "city|SE|jonkoping|": {
       "lat": 57.78256,
@@ -2303,11 +3713,23 @@
       "precision": "city",
       "retrievedAt": "2026-10-16"
     },
+    "city|SE|karlskrona|": {
+      "lat": 56.16211,
+      "lon": 15.58664,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
     "city|SE|karlstad|": {
       "lat": 59.38091,
       "lon": 13.50276,
       "precision": "city",
       "retrievedAt": "2026-10-16"
+    },
+    "city|SE|kiruna|": {
+      "lat": 67.84961,
+      "lon": 20.30625,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
     },
     "city|SE|knislinge|": {
       "lat": 56.1942,
@@ -2333,6 +3755,24 @@
       "precision": "city",
       "retrievedAt": "2026-10-16"
     },
+    "city|SE|leksand|": {
+      "lat": 60.7329,
+      "lon": 14.99682,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|SE|linkoping|": {
+      "lat": 58.40981,
+      "lon": 15.62453,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|SE|lund|": {
+      "lat": 55.70293,
+      "lon": 13.19294,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
     "city|SE|malmo|": {
       "lat": 55.60529,
       "lon": 13.00016,
@@ -2357,6 +3797,12 @@
       "precision": "city",
       "retrievedAt": "2026-10-16"
     },
+    "city|SE|orebro|": {
+      "lat": 59.27473,
+      "lon": 15.21512,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
     "city|SE|ornskoldsvik|": {
       "lat": 63.28886,
       "lon": 18.71602,
@@ -2375,11 +3821,23 @@
       "precision": "city",
       "retrievedAt": "2026-10-16"
     },
+    "city|SE|rattvik|": {
+      "lat": 60.88375,
+      "lon": 15.12268,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
     "city|SE|rejmyre|": {
       "lat": 58.83006,
       "lon": 15.93137,
       "precision": "city",
       "retrievedAt": "2026-10-16"
+    },
+    "city|SE|sandviken|": {
+      "lat": 60.62187,
+      "lon": 16.776,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
     },
     "city|SE|savsjo|": {
       "lat": 57.33333,
@@ -2399,6 +3857,18 @@
       "precision": "city",
       "retrievedAt": "2026-10-16"
     },
+    "city|SE|sodertalje|": {
+      "lat": 59.19643,
+      "lon": 17.62717,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|SE|solvesborg|": {
+      "lat": 56.05065,
+      "lon": 14.58719,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
     "city|SE|stockholm|": {
       "lat": 59.32512,
       "lon": 18.07109,
@@ -2410,6 +3880,12 @@
       "lon": 17.96814,
       "precision": "city",
       "retrievedAt": "2026-10-16"
+    },
+    "city|SE|sundsvall|": {
+      "lat": 62.39076,
+      "lon": 17.3071,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
     },
     "city|SE|svedala|": {
       "lat": 55.55134,
@@ -2513,6 +3989,12 @@
       "precision": "city",
       "retrievedAt": "2026-10-18"
     },
+    "city|SV|san-salvador|": {
+      "lat": 13.69763,
+      "lon": -89.19116,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
     "city|SV|santa-tecla|": {
       "lat": 13.67375,
       "lon": -89.2886,
@@ -2524,6 +4006,12 @@
       "lon": 100.49351,
       "precision": "city",
       "retrievedAt": "2026-10-16"
+    },
+    "city|TN|carthage|": {
+      "lat": 36.85481,
+      "lon": 10.33099,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
     },
     "city|TN|hammamet|": {
       "lat": 36.40066,
@@ -2555,9 +4043,45 @@
       "precision": "city",
       "retrievedAt": "2026-10-18"
     },
+    "city|US|airway-heights|wa": {
+      "lat": 47.64461,
+      "lon": -117.59327,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|US|albany|ny": {
+      "lat": 42.65117,
+      "lon": -73.75497,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|US|albuquerque|": {
+      "lat": 35.0841,
+      "lon": -106.65098,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
     "city|US|albuquerque|nm": {
       "lat": 35.0841,
       "lon": -106.65098,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|US|allentown|pa": {
+      "lat": 40.60226,
+      "lon": -75.47161,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|US|anaheim|ca": {
+      "lat": 33.83475,
+      "lon": -117.91173,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|US|anderson|in": {
+      "lat": 40.10532,
+      "lon": -85.68025,
       "precision": "city",
       "retrievedAt": "2026-10-18"
     },
@@ -2567,9 +4091,27 @@
       "precision": "city",
       "retrievedAt": "2026-10-16"
     },
+    "city|US|arkansas-city|ks": {
+      "lat": 37.06226,
+      "lon": -97.03883,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
     "city|US|arlington|tx": {
       "lat": 32.73558,
       "lon": -97.10712,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|US|asheville|": {
+      "lat": 35.59536,
+      "lon": -82.55084,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|US|atlanta|": {
+      "lat": 33.75447,
+      "lon": -84.38982,
       "precision": "city",
       "retrievedAt": "2026-10-18"
     },
@@ -2578,6 +4120,12 @@
       "lon": -84.38982,
       "precision": "city",
       "retrievedAt": "2026-10-16"
+    },
+    "city|US|attica|in": {
+      "lat": 40.29416,
+      "lon": -87.24881,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
     },
     "city|US|augusta|ks": {
       "lat": 37.68092,
@@ -2597,17 +4145,35 @@
       "precision": "city",
       "retrievedAt": "2026-10-18"
     },
+    "city|US|austin|": {
+      "lat": 30.26493,
+      "lon": -97.74741,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
     "city|US|austin|tx": {
       "lat": 30.26493,
       "lon": -97.74741,
       "precision": "city",
       "retrievedAt": "2026-10-16"
     },
+    "city|US|baltimore|": {
+      "lat": 39.29088,
+      "lon": -76.61076,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
     "city|US|baltimore|md": {
       "lat": 39.29088,
       "lon": -76.61076,
       "precision": "city",
       "retrievedAt": "2026-10-16"
+    },
+    "city|US|barboursville|wv": {
+      "lat": 38.40953,
+      "lon": -82.29459,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
     },
     "city|US|baton-rouge|la": {
       "lat": 30.44942,
@@ -2618,6 +4184,18 @@
     "city|US|bensalem|pa": {
       "lat": 40.10455,
       "lon": -74.95128,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|US|benton|ky": {
+      "lat": 36.85728,
+      "lon": -88.35031,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|US|berkeley|ca": {
+      "lat": 37.87084,
+      "lon": -122.27286,
       "precision": "city",
       "retrievedAt": "2026-10-18"
     },
@@ -2633,6 +4211,12 @@
       "precision": "city",
       "retrievedAt": "2026-10-16"
     },
+    "city|US|blacksburg|va": {
+      "lat": 37.22966,
+      "lon": -80.41368,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
     "city|US|boise|": {
       "lat": 43.61662,
       "lon": -116.20089,
@@ -2645,9 +4229,21 @@
       "precision": "city",
       "retrievedAt": "2026-10-16"
     },
+    "city|US|bonner-springs|ks": {
+      "lat": 39.05971,
+      "lon": -94.88376,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
     "city|US|bossier-city|la": {
       "lat": 32.51589,
       "lon": -93.73365,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|US|boston|": {
+      "lat": 42.35883,
+      "lon": -71.05783,
       "precision": "city",
       "retrievedAt": "2026-10-18"
     },
@@ -2663,9 +4259,21 @@
       "precision": "city",
       "retrievedAt": "2026-10-18"
     },
+    "city|US|bristow|va": {
+      "lat": 38.73116,
+      "lon": -77.54802,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
     "city|US|broken-arrow|ok": {
       "lat": 36.0526,
       "lon": -95.79082,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|US|brooklyn|": {
+      "lat": 40.6526,
+      "lon": -73.94972,
       "precision": "city",
       "retrievedAt": "2026-10-18"
     },
@@ -2675,11 +4283,29 @@
       "precision": "city",
       "retrievedAt": "2026-10-18"
     },
+    "city|US|buffalo|": {
+      "lat": 42.88642,
+      "lon": -78.87815,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
     "city|US|buffalo|ny": {
       "lat": 42.88642,
       "lon": -78.87815,
       "precision": "city",
       "retrievedAt": "2026-10-16"
+    },
+    "city|US|burley|id": {
+      "lat": 42.53574,
+      "lon": -113.79279,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|US|butte|mt": {
+      "lat": 46.01315,
+      "lon": -112.53651,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
     },
     "city|US|cadillac|mi": {
       "lat": 44.25195,
@@ -2699,6 +4325,24 @@
       "precision": "city",
       "retrievedAt": "2026-10-16"
     },
+    "city|US|cape-may|nj": {
+      "lat": 38.93343,
+      "lon": -74.92142,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|US|carson-city|nv": {
+      "lat": 39.16633,
+      "lon": -119.76704,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|US|chandler|az": {
+      "lat": 33.3062,
+      "lon": -111.84118,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
     "city|US|charleston|wv": {
       "lat": 38.3506,
       "lon": -81.63328,
@@ -2710,6 +4354,12 @@
       "lon": -80.84308,
       "precision": "city",
       "retrievedAt": "2026-10-16"
+    },
+    "city|US|chesterfield|mo": {
+      "lat": 38.65818,
+      "lon": -90.56806,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
     },
     "city|US|chicago|": {
       "lat": 41.87556,
@@ -2723,6 +4373,12 @@
       "precision": "city",
       "retrievedAt": "2026-10-16"
     },
+    "city|US|chillicothe|mo": {
+      "lat": 39.79487,
+      "lon": -93.55328,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
     "city|US|chula-vista|ca": {
       "lat": 32.64005,
       "lon": -117.08419,
@@ -2735,11 +4391,41 @@
       "precision": "city",
       "retrievedAt": "2026-10-18"
     },
+    "city|US|clear-lake|ia": {
+      "lat": 43.13708,
+      "lon": -93.38136,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|US|clearwater|fl": {
+      "lat": 27.96585,
+      "lon": -82.8001,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|US|cleveland|": {
+      "lat": 41.49966,
+      "lon": -81.69368,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
     "city|US|cleveland|oh": {
       "lat": 41.49966,
       "lon": -81.69368,
       "precision": "city",
       "retrievedAt": "2026-10-16"
+    },
+    "city|US|clifton|co": {
+      "lat": 39.09193,
+      "lon": -108.44898,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|US|colorado-springs|co": {
+      "lat": 38.83396,
+      "lon": -104.82535,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
     },
     "city|US|columbia|md": {
       "lat": 39.21562,
@@ -2789,6 +4475,12 @@
       "precision": "city",
       "retrievedAt": "2026-10-18"
     },
+    "city|US|dallas|": {
+      "lat": 32.77627,
+      "lon": -96.79686,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
     "city|US|dallas|or": {
       "lat": 44.91892,
       "lon": -123.31587,
@@ -2800,6 +4492,18 @@
       "lon": -96.79686,
       "precision": "city",
       "retrievedAt": "2026-10-16"
+    },
+    "city|US|darien-center|ny": {
+      "lat": 42.90117,
+      "lon": -78.38863,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|US|davenport|ia": {
+      "lat": 41.52247,
+      "lon": -90.57564,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
     },
     "city|US|daytona-beach|fl": {
       "lat": 29.21081,
@@ -2813,6 +4517,12 @@
       "precision": "city",
       "retrievedAt": "2026-10-18"
     },
+    "city|US|denver|": {
+      "lat": 39.73924,
+      "lon": -104.98486,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
     "city|US|denver|co": {
       "lat": 39.73924,
       "lon": -104.98486,
@@ -2822,6 +4532,12 @@
     "city|US|derry|nh": {
       "lat": 42.88087,
       "lon": -71.32645,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|US|des-moines|": {
+      "lat": 41.58687,
+      "lon": -93.62495,
       "precision": "city",
       "retrievedAt": "2026-10-18"
     },
@@ -2855,6 +4571,18 @@
       "precision": "city",
       "retrievedAt": "2026-10-16"
     },
+    "city|US|east-rutherford|nj": {
+      "lat": 40.83399,
+      "lon": -74.09709,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|US|el-cajon|ca": {
+      "lat": 32.79477,
+      "lon": -116.96253,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
     "city|US|el-paso|tx": {
       "lat": 31.7601,
       "lon": -106.48705,
@@ -2873,6 +4601,30 @@
       "precision": "city",
       "retrievedAt": "2026-10-16"
     },
+    "city|US|englewood|co": {
+      "lat": 39.64821,
+      "lon": -104.98796,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|US|erie|pa": {
+      "lat": 42.12947,
+      "lon": -80.08527,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|US|escanaba|mi": {
+      "lat": 45.74557,
+      "lon": -87.06474,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|US|estes-park|co": {
+      "lat": 40.33636,
+      "lon": -105.53107,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
     "city|US|eugene|or": {
       "lat": 44.05051,
       "lon": -123.09505,
@@ -2882,6 +4634,18 @@
     "city|US|evansville|in": {
       "lat": 37.9705,
       "lon": -87.57156,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|US|fayetteville|ar": {
+      "lat": 36.06258,
+      "lon": -94.15743,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|US|fort-lauderdale|fl": {
+      "lat": 26.12231,
+      "lon": -80.14338,
       "precision": "city",
       "retrievedAt": "2026-10-18"
     },
@@ -2897,6 +4661,18 @@
       "precision": "city",
       "retrievedAt": "2026-10-18"
     },
+    "city|US|fort-worth|tx": {
+      "lat": 32.75318,
+      "lon": -97.33275,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|US|foxborough|ma": {
+      "lat": 42.06538,
+      "lon": -71.24783,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
     "city|US|fresno|ca": {
       "lat": 36.73944,
       "lon": -119.78483,
@@ -2908,6 +4684,12 @@
       "lon": -105.50188,
       "precision": "city",
       "retrievedAt": "2026-10-16"
+    },
+    "city|US|glendale|az": {
+      "lat": 33.53869,
+      "lon": -112.18599,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
     },
     "city|US|glenrock|wy": {
       "lat": 42.86148,
@@ -2933,9 +4715,21 @@
       "precision": "city",
       "retrievedAt": "2026-10-18"
     },
+    "city|US|great-bend|ks": {
+      "lat": 38.36251,
+      "lon": -98.78041,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
     "city|US|green-bay|wi": {
       "lat": 44.51264,
       "lon": -88.01258,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|US|greensboro|": {
+      "lat": 36.07264,
+      "lon": -79.79198,
       "precision": "city",
       "retrievedAt": "2026-10-18"
     },
@@ -2957,17 +4751,41 @@
       "precision": "city",
       "retrievedAt": "2026-10-18"
     },
+    "city|US|greycliff|mt": {
+      "lat": 45.75966,
+      "lon": -109.78193,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|US|haltom-city|tx": {
+      "lat": 32.79957,
+      "lon": -97.26918,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
     "city|US|hammond|in": {
       "lat": 41.6174,
       "lon": -87.52201,
       "precision": "city",
       "retrievedAt": "2026-10-16"
     },
+    "city|US|harker-heights|tx": {
+      "lat": 31.07463,
+      "lon": -97.65905,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
     "city|US|harrisburg|pa": {
       "lat": 40.26631,
       "lon": -76.88611,
       "precision": "city",
       "retrievedAt": "2026-10-16"
+    },
+    "city|US|harrison|nj": {
+      "lat": 40.74649,
+      "lon": -74.15626,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
     },
     "city|US|henderson|nv": {
       "lat": 36.03014,
@@ -2987,9 +4805,21 @@
       "precision": "city",
       "retrievedAt": "2026-10-16"
     },
+    "city|US|hershey|pa": {
+      "lat": 40.28549,
+      "lon": -76.6506,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
     "city|US|hickory|nc": {
       "lat": 35.73333,
       "lon": -81.34429,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|US|highland-park|il": {
+      "lat": 42.18367,
+      "lon": -87.79932,
       "precision": "city",
       "retrievedAt": "2026-10-18"
     },
@@ -3011,6 +4841,24 @@
       "precision": "city",
       "retrievedAt": "2026-10-16"
     },
+    "city|US|honolulu|hi": {
+      "lat": 21.30455,
+      "lon": -157.85568,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|US|hopewell|va": {
+      "lat": 37.30432,
+      "lon": -77.2872,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|US|houston|": {
+      "lat": 29.75894,
+      "lon": -95.3677,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
     "city|US|houston|tx": {
       "lat": 29.75894,
       "lon": -95.3677,
@@ -3020,6 +4868,12 @@
     "city|US|huntington|ar": {
       "lat": 35.08215,
       "lon": -94.26327,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|US|idaho-falls|id": {
+      "lat": 43.48879,
+      "lon": -112.03628,
       "precision": "city",
       "retrievedAt": "2026-10-18"
     },
@@ -3040,6 +4894,12 @@
       "lon": -116.21881,
       "precision": "city",
       "retrievedAt": "2026-10-16"
+    },
+    "city|US|inglewood|ca": {
+      "lat": 33.9562,
+      "lon": -118.35313,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
     },
     "city|US|isle|mn": {
       "lat": 46.13801,
@@ -3074,6 +4934,18 @@
     "city|US|johnson-city|ny": {
       "lat": 42.1157,
       "lon": -75.95879,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|US|joliet|il": {
+      "lat": 41.52636,
+      "lon": -88.08402,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|US|kalispell|mt": {
+      "lat": 48.20216,
+      "lon": -114.31532,
       "precision": "city",
       "retrievedAt": "2026-10-18"
     },
@@ -3125,6 +4997,30 @@
       "precision": "city",
       "retrievedAt": "2026-10-18"
     },
+    "city|US|lakewood|oh": {
+      "lat": 41.48199,
+      "lon": -81.79819,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|US|lancaster|pa": {
+      "lat": 40.038,
+      "lon": -76.30567,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|US|landover|md": {
+      "lat": 38.934,
+      "lon": -76.89664,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|US|laramie|wy": {
+      "lat": 41.31164,
+      "lon": -105.59179,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
     "city|US|larchwood|ia": {
       "lat": 43.45388,
       "lon": -96.43406,
@@ -3137,11 +5033,23 @@
       "precision": "city",
       "retrievedAt": "2026-10-16"
     },
+    "city|US|lawrenceburg|in": {
+      "lat": 39.09089,
+      "lon": -84.84995,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
     "city|US|lewiston|id": {
       "lat": 46.41959,
       "lon": -117.02161,
       "precision": "city",
       "retrievedAt": "2026-10-16"
+    },
+    "city|US|liberty|sc": {
+      "lat": 34.78699,
+      "lon": -82.69368,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
     },
     "city|US|lincoln-city|or": {
       "lat": 44.96179,
@@ -3149,9 +5057,33 @@
       "precision": "city",
       "retrievedAt": "2026-10-16"
     },
+    "city|US|lincoln|ca": {
+      "lat": 38.89157,
+      "lon": -121.29318,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|US|lincoln|ne": {
+      "lat": 40.80889,
+      "lon": -96.70778,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
     "city|US|lincoln|ri": {
       "lat": 41.95292,
       "lon": -71.46639,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|US|lisle|il": {
+      "lat": 41.80116,
+      "lon": -88.07477,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|US|logan|wv": {
+      "lat": 37.84878,
+      "lon": -81.99322,
       "precision": "city",
       "retrievedAt": "2026-10-18"
     },
@@ -3160,6 +5092,12 @@
       "lon": -118.1916,
       "precision": "city",
       "retrievedAt": "2026-10-16"
+    },
+    "city|US|los-angeles|": {
+      "lat": 34.05369,
+      "lon": -118.24277,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
     },
     "city|US|los-angeles|ca": {
       "lat": 34.05369,
@@ -3179,6 +5117,12 @@
       "precision": "city",
       "retrievedAt": "2026-10-16"
     },
+    "city|US|lynn|ma": {
+      "lat": 42.46676,
+      "lon": -70.94949,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
     "city|US|macon|mo": {
       "lat": 39.74226,
       "lon": -92.47269,
@@ -3197,9 +5141,27 @@
       "precision": "city",
       "retrievedAt": "2026-10-16"
     },
+    "city|US|manchester|nh": {
+      "lat": 42.99564,
+      "lon": -71.45479,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
     "city|US|manheim|pa": {
       "lat": 40.16374,
       "lon": -76.39524,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|US|mansfield|ma": {
+      "lat": 42.03343,
+      "lon": -71.21894,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|US|marion|il": {
+      "lat": 37.73061,
+      "lon": -88.93313,
       "precision": "city",
       "retrievedAt": "2026-10-18"
     },
@@ -3227,9 +5189,21 @@
       "precision": "city",
       "retrievedAt": "2026-10-18"
     },
+    "city|US|mauldin|sc": {
+      "lat": 34.77873,
+      "lon": -82.31012,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
     "city|US|mchenry|il": {
       "lat": 42.34314,
       "lon": -88.26749,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|US|medford|or": {
+      "lat": 42.32642,
+      "lon": -122.87186,
       "precision": "city",
       "retrievedAt": "2026-10-18"
     },
@@ -3238,6 +5212,18 @@
       "lon": -90.05178,
       "precision": "city",
       "retrievedAt": "2026-10-16"
+    },
+    "city|US|memphis|tn": {
+      "lat": 35.14603,
+      "lon": -90.05178,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|US|mesa|": {
+      "lat": 33.4151,
+      "lon": -111.83145,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
     },
     "city|US|mesa|az": {
       "lat": 33.4151,
@@ -3262,6 +5248,12 @@
       "lon": -81.91792,
       "precision": "city",
       "retrievedAt": "2026-10-16"
+    },
+    "city|US|millersburg|pa": {
+      "lat": 40.54172,
+      "lon": -76.9614,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
     },
     "city|US|millville|pa": {
       "lat": 41.12036,
@@ -3311,15 +5303,57 @@
       "precision": "city",
       "retrievedAt": "2026-10-16"
     },
+    "city|US|missoula|mt": {
+      "lat": 46.8701,
+      "lon": -113.99527,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
     "city|US|mobile|al": {
       "lat": 30.69135,
       "lon": -88.04375,
       "precision": "city",
       "retrievedAt": "2026-10-18"
     },
+    "city|US|montclair|nj": {
+      "lat": 40.81645,
+      "lon": -74.22106,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
     "city|US|morris|mn": {
       "lat": 45.58607,
       "lon": -95.91394,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|US|moses-lake|wa": {
+      "lat": 47.13014,
+      "lon": -119.27808,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|US|mountain-view|ca": {
+      "lat": 37.38939,
+      "lon": -122.08321,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|US|murfreesboro|tn": {
+      "lat": 35.84604,
+      "lon": -86.39211,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|US|murphy|nc": {
+      "lat": 35.08785,
+      "lon": -84.03422,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|US|nampa|id": {
+      "lat": 43.57804,
+      "lon": -116.56169,
       "precision": "city",
       "retrievedAt": "2026-10-18"
     },
@@ -3341,6 +5375,12 @@
       "precision": "city",
       "retrievedAt": "2026-10-16"
     },
+    "city|US|new-haven|ct": {
+      "lat": 41.30821,
+      "lon": -72.92505,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
     "city|US|new-lenox|il": {
       "lat": 41.51198,
       "lon": -87.96561,
@@ -3359,15 +5399,33 @@
       "precision": "city",
       "retrievedAt": "2026-10-16"
     },
+    "city|US|newark|nj": {
+      "lat": 40.73566,
+      "lon": -74.17237,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
     "city|US|newton|nc": {
       "lat": 35.66309,
       "lon": -81.22194,
       "precision": "city",
       "retrievedAt": "2026-10-18"
     },
+    "city|US|newton|nj": {
+      "lat": 41.05831,
+      "lon": -74.75314,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
     "city|US|norfolk|va": {
       "lat": 36.84937,
       "lon": -76.28995,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|US|north-las-vegas|nv": {
+      "lat": 36.20052,
+      "lon": -115.12147,
       "precision": "city",
       "retrievedAt": "2026-10-18"
     },
@@ -3380,6 +5438,30 @@
     "city|US|norwalk|ct": {
       "lat": 41.1176,
       "lon": -73.4079,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|US|oakland|": {
+      "lat": 37.80446,
+      "lon": -122.27136,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|US|oakland|ca": {
+      "lat": 37.80446,
+      "lon": -122.27136,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|US|ocean-city|nj": {
+      "lat": 39.27887,
+      "lon": -74.57625,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|US|oceanside|ca": {
+      "lat": 33.19587,
+      "lon": -117.37948,
       "precision": "city",
       "retrievedAt": "2026-10-18"
     },
@@ -3401,11 +5483,35 @@
       "precision": "city",
       "retrievedAt": "2026-10-16"
     },
+    "city|US|omaha|ne": {
+      "lat": 41.25875,
+      "lon": -95.93838,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|US|onamia|mn": {
+      "lat": 46.07052,
+      "lon": -93.66775,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
     "city|US|ontario|ca": {
       "lat": 34.06585,
       "lon": -117.64843,
       "precision": "city",
       "retrievedAt": "2026-10-16"
+    },
+    "city|US|ontario|or": {
+      "lat": 44.02655,
+      "lon": -116.96294,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|US|orlando|": {
+      "lat": 28.54212,
+      "lon": -81.37905,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
     },
     "city|US|orlando|fl": {
       "lat": 28.54212,
@@ -3425,6 +5531,12 @@
       "precision": "city",
       "retrievedAt": "2026-10-16"
     },
+    "city|US|paso-robles|ca": {
+      "lat": 35.62626,
+      "lon": -120.69013,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
     "city|US|patchogue|ny": {
       "lat": 40.76565,
       "lon": -73.01511,
@@ -3443,9 +5555,27 @@
       "precision": "city",
       "retrievedAt": "2026-10-16"
     },
+    "city|US|pennsburg|pa": {
+      "lat": 40.39093,
+      "lon": -75.49212,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
     "city|US|peoria|il": {
       "lat": 40.69386,
       "lon": -89.5891,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|US|philadelphia|": {
+      "lat": 39.95272,
+      "lon": -75.16353,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|US|philadelphia|pa": {
+      "lat": 39.95272,
+      "lon": -75.16353,
       "precision": "city",
       "retrievedAt": "2026-10-18"
     },
@@ -3461,9 +5591,27 @@
       "precision": "city",
       "retrievedAt": "2026-10-16"
     },
+    "city|US|pittsburgh|": {
+      "lat": 40.4407,
+      "lon": -80.00257,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
     "city|US|pittsburgh|pa": {
       "lat": 40.4407,
       "lon": -80.00257,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|US|plano|tx": {
+      "lat": 33.01368,
+      "lon": -96.69251,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|US|pocatello|id": {
+      "lat": 42.86203,
+      "lon": -112.45063,
       "precision": "city",
       "retrievedAt": "2026-10-18"
     },
@@ -3473,9 +5621,39 @@
       "precision": "city",
       "retrievedAt": "2026-10-18"
     },
+    "city|US|pomona|ca": {
+      "lat": 34.05538,
+      "lon": -117.75175,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|US|portland|or": {
+      "lat": 45.52025,
+      "lon": -122.67419,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|US|prior-lake|mn": {
+      "lat": 44.71333,
+      "lon": -93.42269,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|US|providence|ri": {
+      "lat": 41.82399,
+      "lon": -71.41283,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
     "city|US|raleigh|nc": {
       "lat": 35.7804,
       "lon": -78.6391,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|US|ravenna|oh": {
+      "lat": 41.15756,
+      "lon": -81.24205,
       "precision": "city",
       "retrievedAt": "2026-10-18"
     },
@@ -3497,6 +5675,24 @@
       "precision": "city",
       "retrievedAt": "2026-10-16"
     },
+    "city|US|richmond|va": {
+      "lat": 37.53851,
+      "lon": -77.43428,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|US|ridgecrest|nc": {
+      "lat": 35.62067,
+      "lon": -82.28262,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|US|riverside|ca": {
+      "lat": 33.98249,
+      "lon": -117.37424,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
     "city|US|rives-junction|mi": {
       "lat": 42.38587,
       "lon": -84.46163,
@@ -3506,6 +5702,12 @@
     "city|US|rochester|in": {
       "lat": 41.06488,
       "lon": -86.216,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|US|rochester|ny": {
+      "lat": 43.15729,
+      "lon": -77.61521,
       "precision": "city",
       "retrievedAt": "2026-10-18"
     },
@@ -3527,6 +5729,12 @@
       "precision": "city",
       "retrievedAt": "2026-10-16"
     },
+    "city|US|sacramento|": {
+      "lat": 38.58106,
+      "lon": -121.49389,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
     "city|US|sacramento|ca": {
       "lat": 38.58106,
       "lon": -121.49389,
@@ -3539,11 +5747,53 @@
       "precision": "city",
       "retrievedAt": "2026-10-18"
     },
+    "city|US|saint-paul|mn": {
+      "lat": 44.94975,
+      "lon": -93.0931,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|US|salamanca|ny": {
+      "lat": 42.15792,
+      "lon": -78.71516,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|US|salt-lake-city|": {
+      "lat": 40.75962,
+      "lon": -111.8868,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|US|salt-lake-city|ut": {
+      "lat": 40.75962,
+      "lon": -111.8868,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|US|san-antonio|tx": {
+      "lat": 29.4246,
+      "lon": -98.49514,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
     "city|US|san-diego|": {
       "lat": 32.71571,
       "lon": -117.16383,
       "precision": "city",
       "retrievedAt": "2026-10-16"
+    },
+    "city|US|san-diego|ca": {
+      "lat": 32.71571,
+      "lon": -117.16383,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|US|san-francisco|": {
+      "lat": 37.78794,
+      "lon": -122.40752,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
     },
     "city|US|san-francisco|ca": {
       "lat": 37.78794,
@@ -3551,9 +5801,63 @@
       "precision": "city",
       "retrievedAt": "2026-10-16"
     },
+    "city|US|san-jose|ca": {
+      "lat": 37.33617,
+      "lon": -121.89059,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|US|sand-springs|ok": {
+      "lat": 36.13943,
+      "lon": -96.11,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|US|santa-clara|ca": {
+      "lat": 37.35411,
+      "lon": -121.95517,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|US|santa-fe|nm": {
+      "lat": 35.68761,
+      "lon": -105.93846,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
     "city|US|sayreville|nj": {
       "lat": 40.46354,
       "lon": -74.36185,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|US|schenectady|ny": {
+      "lat": 42.81424,
+      "lon": -73.93957,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|US|seattle|": {
+      "lat": 47.60383,
+      "lon": -122.33006,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|US|seattle|wa": {
+      "lat": 47.60383,
+      "lon": -122.33006,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|US|shakopee|mn": {
+      "lat": 44.79802,
+      "lon": -93.5269,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|US|shelton|wa": {
+      "lat": 47.21509,
+      "lon": -123.10071,
       "precision": "city",
       "retrievedAt": "2026-10-18"
     },
@@ -3569,15 +5873,57 @@
       "precision": "city",
       "retrievedAt": "2026-10-18"
     },
+    "city|US|shipshewana|in": {
+      "lat": 41.67283,
+      "lon": -85.58026,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|US|sidney|oh": {
+      "lat": 40.28424,
+      "lon": -84.15553,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|US|silver-spring|md": {
+      "lat": 38.99595,
+      "lon": -77.02762,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
     "city|US|sioux-falls|sd": {
       "lat": 43.5476,
       "lon": -96.72936,
       "precision": "city",
       "retrievedAt": "2026-10-18"
     },
+    "city|US|snoqualmie|wa": {
+      "lat": 47.52895,
+      "lon": -121.82709,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
     "city|US|southaven|ms": {
       "lat": 34.98738,
       "lon": -90.00349,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|US|sparks|nv": {
+      "lat": 39.53477,
+      "lon": -119.75525,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|US|spartanburg|sc": {
+      "lat": 34.9498,
+      "lon": -81.93202,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|US|spokane|wa": {
+      "lat": 47.65719,
+      "lon": -117.42351,
       "precision": "city",
       "retrievedAt": "2026-10-18"
     },
@@ -3593,15 +5939,57 @@
       "precision": "city",
       "retrievedAt": "2026-10-18"
     },
+    "city|US|st-charles|il": {
+      "lat": 41.91398,
+      "lon": -88.31282,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|US|st-louis|": {
+      "lat": 38.62541,
+      "lon": -90.19001,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
     "city|US|st-louis|mo": {
       "lat": 38.62541,
       "lon": -90.19001,
       "precision": "city",
       "retrievedAt": "2026-10-16"
     },
+    "city|US|st-paul|mn": {
+      "lat": 44.94975,
+      "lon": -93.0931,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|US|st-petersburg|fl": {
+      "lat": 27.77123,
+      "lon": -82.63403,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|US|stroudsburg|pa": {
+      "lat": 40.98643,
+      "lon": -75.19466,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
     "city|US|suquamish|wa": {
       "lat": 47.73011,
       "lon": -122.55299,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|US|syracuse|ny": {
+      "lat": 43.04812,
+      "lon": -76.14742,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|US|tacoma|wa": {
+      "lat": 47.2455,
+      "lon": -122.43833,
       "precision": "city",
       "retrievedAt": "2026-10-18"
     },
@@ -3610,6 +5998,30 @@
       "lon": -82.45831,
       "precision": "city",
       "retrievedAt": "2026-10-16"
+    },
+    "city|US|tarrytown|ny": {
+      "lat": 41.07621,
+      "lon": -73.85875,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|US|tempe|az": {
+      "lat": 33.42551,
+      "lon": -111.94002,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|US|the-woodlands|tx": {
+      "lat": 30.17342,
+      "lon": -95.50469,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|US|toppenish|wa": {
+      "lat": 46.3775,
+      "lon": -120.30894,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
     },
     "city|US|tulsa|ok": {
       "lat": 36.15631,
@@ -3641,9 +6053,21 @@
       "precision": "city",
       "retrievedAt": "2026-10-16"
     },
+    "city|US|uniondale|ny": {
+      "lat": 40.70958,
+      "lon": -73.59234,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
     "city|US|university-park|pa": {
       "lat": 34.74065,
       "lon": -86.62305,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|US|van-wert|oh": {
+      "lat": 40.86965,
+      "lon": -84.58293,
       "precision": "city",
       "retrievedAt": "2026-10-18"
     },
@@ -3653,11 +6077,71 @@
       "precision": "city",
       "retrievedAt": "2026-10-18"
     },
+    "city|US|vidalia|ga": {
+      "lat": 32.21769,
+      "lon": -82.41346,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
     "city|US|virginia-beach|va": {
       "lat": 36.84966,
       "lon": -75.97608,
       "precision": "city",
       "retrievedAt": "2026-10-16"
+    },
+    "city|US|visalia|ca": {
+      "lat": 36.33023,
+      "lon": -119.29206,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|US|walla-walla|wa": {
+      "lat": 46.06673,
+      "lon": -118.33934,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|US|wantagh|ny": {
+      "lat": 40.68371,
+      "lon": -73.51013,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|US|warrendale|pa": {
+      "lat": 40.6534,
+      "lon": -80.0795,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|US|washington|dc": {
+      "lat": 38.8951,
+      "lon": -77.03638,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|US|waukee|ia": {
+      "lat": 41.61185,
+      "lon": -93.88451,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|US|west-chicago|il": {
+      "lat": 41.88475,
+      "lon": -88.20396,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|US|west-des-moines|ia": {
+      "lat": 41.56445,
+      "lon": -93.75941,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|US|west-hollywood|ca": {
+      "lat": 34.0923,
+      "lon": -118.36929,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
     },
     "city|US|wheatland|ca": {
       "lat": 39.00989,
@@ -3677,9 +6161,33 @@
       "precision": "city",
       "retrievedAt": "2026-10-16"
     },
+    "city|US|wilmington|de": {
+      "lat": 39.73833,
+      "lon": -75.55275,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|US|winchester|nv": {
+      "lat": 36.13701,
+      "lon": -115.13688,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
     "city|US|winchester|va": {
       "lat": 39.18522,
       "lon": -78.16524,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|US|wisconsin-dells|wi": {
+      "lat": 43.62562,
+      "lon": -89.77156,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|US|worcester|ma": {
+      "lat": 42.26256,
+      "lon": -71.80189,
       "precision": "city",
       "retrievedAt": "2026-10-18"
     },
@@ -3698,6 +6206,12 @@
     "city|US|zeeland|mi": {
       "lat": 42.81234,
       "lon": -86.01653,
+      "precision": "city",
+      "retrievedAt": "2026-10-18"
+    },
+    "city|UY|montevideo|": {
+      "lat": -34.90589,
+      "lon": -56.19131,
       "precision": "city",
       "retrievedAt": "2026-10-18"
     },
@@ -8036,6 +10550,18 @@
     "venue|DK|esbjerg||tobakken": {
       "lat": 55.46507,
       "lon": 8.46003,
+      "precision": "venue",
+      "retrievedAt": "2026-10-18"
+    },
+    "venue|DK|fjellerup|midtjylland|djurslands-efterskole": {
+      "lat": 56.50489,
+      "lon": 10.57571,
+      "precision": "venue",
+      "retrievedAt": "2026-10-18"
+    },
+    "venue|DK|fjellerup|midtjylland|fjellerup-kirke": {
+      "lat": 56.50465,
+      "lon": 10.59074,
       "precision": "venue",
       "retrievedAt": "2026-10-18"
     },
