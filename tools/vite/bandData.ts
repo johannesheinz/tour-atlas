@@ -3,19 +3,20 @@ import { resolve } from 'node:path';
 import type { Plugin } from 'vite';
 import { localToday } from '../../src/data/dates.ts';
 import { formatIssue } from '../../src/data/validate.ts';
-import { checkBandFiles } from '../shared/bandFiles.ts';
+import { checkBandFiles, type CheckedFile } from '../shared/bandFiles.ts';
 import { expandInputs } from '../shared/files.ts';
+
+/** Checks every band file in the directory the way the build does. */
+export function checkBandDirectory(directory: string): CheckedFile[] {
+  if (!existsSync(directory)) throw new Error(`band data directory ${directory} does not exist`);
+  return checkBandFiles(expandInputs([directory]), { mode: 'repository', today: localToday(new Date()), locateCountry: null });
+}
 
 /** Validates every band file before the bundle is built; invalid data fails the build. */
 export function bandDataPlugin(bandsDir: string): Plugin {
   const directory = resolve(bandsDir);
 
-  const collectErrors = (): string[] => {
-    if (!existsSync(directory)) throw new Error(`band data directory ${directory} does not exist`);
-    const files = expandInputs([directory]);
-    const checked = checkBandFiles(files, { mode: 'repository', today: localToday(new Date()), locateCountry: null });
-    return checked.flatMap((entry) => entry.errors.map(formatIssue));
-  };
+  const collectErrors = (): string[] => checkBandDirectory(directory).flatMap((entry) => entry.errors.map(formatIssue));
 
   return {
     name: 'tour-atlas:band-data',

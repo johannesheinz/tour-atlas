@@ -20,6 +20,7 @@ export interface Messages {
     readonly homeTitle: Text;
     readonly settings: Text;
     readonly sourceCode: Text;
+    readonly share: Text;
     readonly sidebar: Text;
     readonly lists: Text;
     readonly tabBands: Text;
@@ -215,6 +216,18 @@ export interface Messages {
     readonly exportAll: Text;
     readonly exportAllNote: Text;
     readonly reloadLosesPreviews: Text;
+  };
+  readonly share: {
+    readonly title: Text;
+    readonly note: Text;
+    readonly link: Text;
+    readonly copy: Text;
+    readonly copied: Text;
+    readonly copyFailed: Text;
+    readonly share: Text;
+    /** The title a shared link gets when no selection names the view. */
+    readonly siteTitle: Text;
+    readonly titleFor: (heading: string) => string;
   };
   readonly preview: {
     readonly title: Count;

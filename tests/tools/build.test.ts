@@ -4,6 +4,7 @@ import type { BandFile } from '../../src/data/types.ts';
 import { StaticStore } from '../../src/store/StaticStore.ts';
 import { BRAND_MARK_PLACEHOLDER, faviconDataUri, injectBrand } from '../../tools/vite/brand.ts';
 import { injectContentSecurityPolicy } from '../../tools/vite/csp.ts';
+import { SOCIAL_CARD_TAGS, escapeAttribute, injectSocialCard, parseSiteUrl, pngDimensions, socialCardProblems } from '../../tools/vite/socialCard.ts';
 import { slimWorldTopology } from '../../tools/vite/worldTopology.ts';
 import { makeFile, makeShow } from '../helpers.ts';
 
@@ -67,5 +68,104 @@ describe('StaticStore', () => {
     expect(store.listBands().map((file) => file.band.id)).toEqual(['alpha', 'zeta']);
     expect(store.getBand('zeta')?.shows).toHaveLength(1);
     expect(store.getBand('missing')).toBeUndefined();
+  });
+});
+
+describe('parseSiteUrl', () => {
+  it('is null when the variable is unset and the URL when it is the site address', () => {
+    expect(parseSiteUrl(undefined)).toBeNull();
+    expect(parseSiteUrl('https://example.org/tour-atlas/')?.href).toBe('https://example.org/tour-atlas/');
+    expect(parseSiteUrl('https://example.org/')?.href).toBe('https://example.org/');
+  });
+
+  it('refuses anything else that is set', () => {
+    expect(() => parseSiteUrl('')).toThrow(/absolute URL/);
+    expect(() => parseSiteUrl('tour-atlas/')).toThrow(/absolute URL/);
+    expect(() => parseSiteUrl('http://example.org/tour-atlas/')).toThrow(/https:/);
+    expect(() => parseSiteUrl('https://example.org/tour-atlas')).toThrow(/end with "\/"/);
+    expect(() => parseSiteUrl('https://example.org/tour-atlas/?ref=1')).toThrow(/query or hash/);
+    expect(() => parseSiteUrl('https://example.org/tour-atlas/?')).toThrow(/query or hash/);
+    expect(() => parseSiteUrl('https://example.org/tour-atlas/#top')).toThrow(/query or hash/);
+    expect(() => parseSiteUrl('https://user:secret@example.org/')).toThrow(/credentials/);
+  });
+});
+
+describe('injectSocialCard', () => {
+  const template = (description: string) =>
+    `<head>\n    <title>T</title>\n    <!-- social-card\n      og:site_name = Tour Atlas\n      og:title = Tour Atlas\n      og:description = ${description}\n      og:image:alt = The globe\n    -->\n  </head>`;
+  const siteUrl = new URL('https://example.org/tour-atlas/');
+  const counts = () => ({ bands: 12, shows: 3456 });
+
+  it('writes every tag with absolute addresses and the counts filled in', () => {
+    const html = injectSocialCard(template('{bands} bands, {shows} shows'), siteUrl, counts);
+    for (const tag of SOCIAL_CARD_TAGS) expect(html).toMatch(new RegExp(`<meta (property|name)="${tag}" content="[^"]+" />`));
+    expect(html).toContain('<meta property="og:description" content="12 bands, 3,456 shows" />');
+    expect(html).toContain('<meta property="og:url" content="https://example.org/tour-atlas/" />');
+    expect(html).toContain('<meta property="og:image" content="https://example.org/tour-atlas/og-card.png" />');
+    expect(html).toContain('<meta name="twitter:card" content="summary_large_image" />');
+    expect(html).toContain('    <title>T</title>\n    <meta property="og:type" content="website" />\n');
+    expect(html).not.toContain('social-card');
+  });
+
+  it('removes the block and reads no band data when there is no site URL', () => {
+    const html = injectSocialCard(template('{bands} bands'), null, () => {
+      throw new Error('counted without a site URL');
+    });
+    expect(html).toBe('<head>\n    <title>T</title>\n  </head>');
+  });
+
+  it('escapes the texts so they cannot break out of the attribute', () => {
+    expect(escapeAttribute(`"<b>" & 'x'`)).toBe('&quot;&lt;b&gt;&quot; &amp; &#39;x&#39;');
+    const html = injectSocialCard(template('Rock & "roll" <live>'), siteUrl, counts);
+    expect(html).toContain('content="Rock &amp; &quot;roll&quot; &lt;live&gt;"');
+  });
+
+  it('refuses a template it cannot fill completely', () => {
+    expect(() => injectSocialCard('<head></head>', siteUrl, counts)).toThrow(/needs a <!-- social-card/);
+    expect(() => injectSocialCard(template('{venues} venues'), siteUrl, counts)).toThrow(/unknown placeholder \{venues\}/);
+    expect(() => injectSocialCard(template('ok').replace('      og:image:alt = The globe\n', ''), siteUrl, counts)).toThrow(/no og:image:alt/);
+    expect(() => injectSocialCard(template('ok').replace('og:title =', 'og:locale ='), siteUrl, counts)).toThrow(/unknown property og:locale/);
+  });
+
+  it('works with the real index.html, and check-dist accepts the result with the real card image', () => {
+    const indexHtml = readFileSync('index.html', 'utf8');
+    const html = injectSocialCard(indexHtml, siteUrl, counts);
+    expect(html).toMatch(/<meta property="og:description" content="Tour dates of 12 bands, 3,456 shows[^"]*" \/>/);
+    const card = readFileSync('src/brand/og-card.png');
+    expect(pngDimensions(card)).toEqual({ width: 1200, height: 630 });
+    expect(socialCardProblems(html, card, true)).toEqual([]);
+    expect(injectSocialCard(indexHtml, null, counts)).not.toMatch(/og:|social-card/);
+  });
+});
+
+describe('socialCardProblems', () => {
+  const html = injectSocialCard(readFileSync('index.html', 'utf8'), new URL('https://example.org/tour-atlas/'), () => ({ bands: 1, shows: 2 }));
+  const card = readFileSync('src/brand/og-card.png');
+  const pngHeader = (width: number, height: number) => {
+    const png = Buffer.from(card.subarray(0, 33));
+    png.writeUInt32BE(width, 16);
+    png.writeUInt32BE(height, 20);
+    return png;
+  };
+
+  it('accepts a build without the card unless it is required', () => {
+    expect(socialCardProblems('<head></head>', null, false)).toEqual([]);
+    expect(socialCardProblems('<head></head>', null, true)).toEqual([
+      'og-card.png is missing; build with TOUR_ATLAS_SITE_URL set',
+      `social card tags missing: ${SOCIAL_CARD_TAGS.join(', ')}`,
+    ]);
+  });
+
+  it('wants the image and the tags together', () => {
+    expect(socialCardProblems('<head></head>', card, false)).toContain('og-card.png is not referenced by og:image');
+    expect(socialCardProblems(html, null, false)).toEqual(['og:image names og-card.png, but dist does not have it']);
+  });
+
+  it('checks the image size and that og:image points at it', () => {
+    expect(socialCardProblems(html, pngHeader(1200, 600), false)).toEqual(['og-card.png is 1200x600; it must be 1200x630']);
+    expect(socialCardProblems(html, Buffer.from('not a png at all, really not one'), false)).toEqual(['og-card.png is not a PNG']);
+    expect(socialCardProblems(html, Buffer.concat([card, Buffer.alloc(300_000)]), false)).toEqual([expect.stringMatching(/kB; it must stay under 300 kB/)]);
+    const elsewhere = html.replace('https://example.org/tour-atlas/og-card.png', 'https://example.org/other.png');
+    expect(socialCardProblems(elsewhere, card, false)).toEqual(['og:image must be the absolute https: address of og-card.png, found "https://example.org/other.png"']);
   });
 });

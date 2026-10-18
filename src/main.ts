@@ -26,6 +26,8 @@ import { FRAME_LAYOUT_QUERY, MAP_SHARE } from './view/layout.ts';
 import { createTimelineControls } from './view/timelineControls.ts';
 import { createMapControls } from './view/mapControls.ts';
 import { createSettings } from './view/settings.ts';
+import { createSharePanel } from './view/sharePanel.ts';
+import { shareCapabilities, shareLink, shareText } from './share.ts';
 import { icon } from './view/icons.ts';
 import { createPlaceList } from './view/placeList.ts';
 import { createGenreList } from './view/genreList.ts';
@@ -270,6 +272,17 @@ fileInput.addEventListener('change', () => {
   fileInput.value = '';
 });
 mountDropZone();
+
+const shareButton = requireElement(document, '#share-button', HTMLButtonElement);
+shareButton.append(icon('share'));
+createSharePanel(shareButton, requireElement(document, '#share-panel', HTMLDivElement), {
+  currentView() {
+    const current = state.get();
+    const derived = derive(current);
+    const heading = current.selection.kind === 'none' ? null : selectionHeading(current, derived, select.selection(current, derived)).title;
+    return { url: shareLink(location.href, currentHash()), title: shareText(heading) };
+  },
+}, shareCapabilities(navigator));
 
 requireElement(document, '#source-link', HTMLAnchorElement).append(icon('github'));
 const settingsButton = requireElement(document, '#settings-button', HTMLButtonElement);

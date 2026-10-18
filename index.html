@@ -7,6 +7,12 @@
     <meta name="color-scheme" content="light dark" />
     <meta name="description" content="Tour dates of many bands on one map and timeline." />
     <title>Tour Atlas</title>
+    <!-- social-card
+      og:site_name = Tour Atlas
+      og:title = Tour Atlas
+      og:description = Tour dates of {bands} bands, {shows} shows in all, on one world map with a zoomable timeline.
+      og:image:alt = The Tour Atlas globe with a tour route and a map pin, next to the words Tour Atlas.
+    -->
   </head>
   <body>
     <a class="skip-link" href="#atlas" data-i18n="skipLink">Skip to map and timeline</a>
@@ -15,6 +21,8 @@
         <h1 class="wordmark"><a class="wordmark-link" id="home-link" href="./" title="Back to the default view" data-i18n-title="homeTitle"><!-- brand-mark -->Tour Atlas</a></h1>
         <div class="search-slot" id="search"></div>
         <div class="masthead-actions">
+          <button type="button" class="icon-button" id="share-button" aria-label="Share this view" title="Share this view" data-i18n-label="share" data-i18n-title="share"></button>
+          <div class="popover share-panel" id="share-panel" role="dialog" aria-label="Share this view" data-i18n-label="share" hidden></div>
           <a class="icon-button" id="source-link" href="https://github.com/" rel="noopener noreferrer" aria-label="Source code on GitHub" title="Source code on GitHub" data-i18n-label="sourceCode" data-i18n-title="sourceCode"></a>
           <button type="button" class="icon-button" id="settings-button" aria-label="Settings" title="Settings" data-i18n-label="settings" data-i18n-title="settings"></button>
           <div class="popover settings-panel" id="settings-panel" role="dialog" aria-label="Settings" data-i18n-label="settings" hidden></div>
