@@ -231,6 +231,7 @@ fileInput.addEventListener('change', () => {
 });
 mountDropZone();
 
+requireElement(document, '#source-link', HTMLAnchorElement).append(icon('github'));
 const settingsButton = requireElement(document, '#settings-button', HTMLButtonElement);
 settingsButton.append(icon('gear'));
 const settings = createSettings(settingsButton, requireElement(document, '#settings-panel', HTMLDivElement), {

@@ -12,6 +12,7 @@ export const en: Messages = {
     skipLink: 'Skip to map and timeline',
     homeTitle: 'Back to the default view',
     settings: 'Settings',
+    sourceCode: 'Source code on GitHub',
     sidebar: 'Bands, places and genres',
     lists: 'Lists',
     tabBands: 'Bands',

@@ -17,6 +17,7 @@ export interface Messages {
     readonly skipLink: Text;
     readonly homeTitle: Text;
     readonly settings: Text;
+    readonly sourceCode: Text;
     readonly sidebar: Text;
     readonly lists: Text;
     readonly tabBands: Text;

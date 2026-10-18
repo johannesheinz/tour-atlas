@@ -86,6 +86,7 @@ export const de: Messages = {
     skipLink: 'Zu Karte und Zeitleiste springen',
     homeTitle: 'Zurück zur Startansicht',
     settings: 'Einstellungen',
+    sourceCode: 'Quellcode auf GitHub',
     sidebar: 'Bands, Orte und Genres',
     lists: 'Listen',
     tabBands: 'Bands',

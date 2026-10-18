@@ -115,4 +115,5 @@ Dependabot keeps npm packages and the SHA-pinned GitHub Actions up to date.
 Projection: Equal Earth (Šavrič, Patterson, Jenny). Coastlines and borders: Natural Earth via
 [world-atlas](https://github.com/topojson/world-atlas). Geocoding: Nominatim, © OpenStreetMap contributors
 (ODbL). Fonts: League Gothic and Archivo (SIL Open Font License), self-hosted via Fontsource.
+GitHub mark: [Octicons](https://github.com/primer/octicons) (MIT).
 All bands in `samples/` are fictional. Tour dates in `data/bands/` come from each band's `source.url`.

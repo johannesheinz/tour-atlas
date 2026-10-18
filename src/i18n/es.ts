@@ -86,6 +86,7 @@ export const es: Messages = {
     skipLink: 'Ir al mapa y la línea de tiempo',
     homeTitle: 'Volver a la vista inicial',
     settings: 'Ajustes',
+    sourceCode: 'Código fuente en GitHub',
     sidebar: 'Bandas, lugares y géneros',
     lists: 'Listas',
     tabBands: 'Bandas',

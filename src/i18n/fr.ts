@@ -86,6 +86,7 @@ export const fr: Messages = {
     skipLink: 'Aller à la carte et à la frise',
     homeTitle: 'Revenir à la vue par défaut',
     settings: 'Réglages',
+    sourceCode: 'Code source sur GitHub',
     sidebar: 'Groupes, lieux et genres',
     lists: 'Listes',
     tabBands: 'Groupes',

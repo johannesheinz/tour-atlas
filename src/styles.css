@@ -292,6 +292,11 @@ a {
   stroke-linejoin: round;
 }
 
+.icon-filled {
+  fill: currentColor;
+  stroke: none;
+}
+
 .icon-button {
   display: grid;
   place-items: center;
