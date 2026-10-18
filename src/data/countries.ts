@@ -3,7 +3,7 @@
  * Numeric codes match the feature ids in world-atlas, which the linter uses to check
  * that coordinates fall inside the stated country. XK (Kosovo) is user-assigned and widely used.
  */
-export const NUMERIC_BY_ALPHA2: Readonly<Record<string, string>> = {
+export const NUMERIC_BY_ALPHA2 = {
   AD: '020', AE: '784', AF: '004', AG: '028', AI: '660', AL: '008', AM: '051', AO: '024',
   AQ: '010', AR: '032', AS: '016', AT: '040', AU: '036', AW: '533', AX: '248', AZ: '031',
   BA: '070', BB: '052', BD: '050', BE: '056', BF: '854', BG: '100', BH: '048', BI: '108',
@@ -36,7 +36,9 @@ export const NUMERIC_BY_ALPHA2: Readonly<Record<string, string>> = {
   US: '840', UY: '858', UZ: '860', VA: '336', VC: '670', VE: '862', VG: '092', VI: '850',
   VN: '704', VU: '548', WF: '876', WS: '882', XK: '983', YE: '887', YT: '175', ZA: '710',
   ZM: '894', ZW: '716',
-};
+} as const satisfies Readonly<Record<string, string>>;
+
+export type CountryCode = keyof typeof NUMERIC_BY_ALPHA2;
 
 /** Territories that world-atlas draws as part of another country's geometry. */
 export const GEOMETRY_PARENTS: Readonly<Record<string, readonly string[]>> = {
@@ -47,7 +49,7 @@ const ALPHA2_BY_NUMERIC: ReadonlyMap<string, string> = new Map(
   Object.entries(NUMERIC_BY_ALPHA2).map(([alpha2, numeric]) => [numeric, alpha2]),
 );
 
-export function isCountryCode(code: string): boolean {
+export function isCountryCode(code: string): code is CountryCode {
   return Object.hasOwn(NUMERIC_BY_ALPHA2, code);
 }
 

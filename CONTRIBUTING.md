@@ -83,18 +83,23 @@ in the pull request that first uses the tag.
 
 ## Translations
 
-The interface speaks English, German, French and Spanish. Every text lives in one file per language in
-`src/i18n/` (`en.ts`, `de.ts`, `fr.ts`, `es.ts`), shaped by the `Messages` interface in `src/i18n/messages.ts`.
+The interface speaks English, German, French, Spanish, Swedish, Finnish, Latin and Esperanto. Every text lives in
+one file per language in `src/i18n/` (`en.ts`, `de.ts`, `fr.ts`, `es.ts`, `sv.ts`, `fi.ts`, `la.ts`, `eo.ts`),
+shaped by the `Messages` interface in `src/i18n/messages.ts`.
 
-- **New text:** add a key to `Messages`, then to every language file. The typecheck fails until all four have
+- **New text:** add a key to `Messages`, then to every language file. The typecheck fails until all of them have
   it. Counts use `n(count, { one: '# show', other: '# shows' })`, which follows each language's plural rules.
 - **Dates, times, month and weekday names, countries and regions** come from the browser (`Intl`) in the active
-  locale; never write them into a catalog. Format through `src/view/format.ts`.
+  locale; never write them into a catalog. Format through `src/view/format.ts`. The exception is Latin and
+  Esperanto, which browsers do not know: `la.ts` and `eo.ts` carry their own month, weekday and day-period
+  names, list conjunction and a name for every country code (`FormatWords` in `src/i18n/formats.ts`), set in
+  en-GB's day-month-year shape, and count with English plural rules.
 - **Validation messages** have English texts in `src/data/issues.ts` (the command-line tools print those) and
   translations in each catalog's `issues` section.
 - **Static markup** in `index.html` names its text with `data-i18n`, `data-i18n-label` or `data-i18n-title`.
 - **New language:** add it to `LANGUAGES`, `LANGUAGE_NAMES` and the default regions in `src/i18n/locale.ts`, add
-  a catalog, and register it in `src/i18n/index.ts`.
+  a catalog, and register it in `src/i18n/index.ts`. Check that browsers have `Intl` data for it; if not, give
+  it `FormatWords` like Latin and Esperanto.
 
 Band data (names, venues, tours, notes) and genre names are not translated.
 

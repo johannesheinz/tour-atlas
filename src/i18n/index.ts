@@ -1,30 +1,31 @@
 import { de } from './de.ts';
 import { en } from './en.ts';
+import { eo, eoFormatWords } from './eo.ts';
 import { es } from './es.ts';
+import { fi } from './fi.ts';
+import { intlFormats, ownWordFormats, type Formats } from './formats.ts';
 import { fr } from './fr.ts';
+import { la, laFormatWords } from './la.ts';
 import { AUTOMATIC, resolveLocale, type Language, type LocaleChoice, type ResolvedLocale } from './locale.ts';
 import type { Messages } from './messages.ts';
+import { sv } from './sv.ts';
 
-const CATALOGS: Readonly<Record<Language, Messages>> = { en, de, fr, es };
-
-/** Date, time and name formats of the active locale. Band dates are calendar days, so everything formats in UTC. */
-export interface Formats {
-  /** 17 Oct 2026 / Oct 17, 2026 / 17. Okt. 2026 */
-  readonly date: Intl.DateTimeFormat;
-  readonly weekday: Intl.DateTimeFormat;
-  /** Month headings of a show list: October 2026 */
-  readonly month: Intl.DateTimeFormat;
-  /** A start time; follows the 12/24-hour choice. */
-  readonly time: Intl.DateTimeFormat;
-  readonly axisDay: Intl.DateTimeFormat;
-  readonly axisDayMonth: Intl.DateTimeFormat;
-  readonly axisMonth: Intl.DateTimeFormat;
-  readonly axisMonthYear: Intl.DateTimeFormat;
-  readonly axisYear: Intl.DateTimeFormat;
-  readonly list: Intl.ListFormat;
-  /** Country names by ISO code. */
-  readonly regions: Intl.DisplayNames;
+interface Catalog {
+  readonly messages: Messages;
+  readonly formats: (locale: ResolvedLocale) => Formats;
 }
+
+/** Browsers have no Latin or Esperanto data, so those two bring their own calendar words and country names. */
+const CATALOGS: Readonly<Record<Language, Catalog>> = {
+  en: { messages: en, formats: intlFormats },
+  de: { messages: de, formats: intlFormats },
+  fr: { messages: fr, formats: intlFormats },
+  es: { messages: es, formats: intlFormats },
+  sv: { messages: sv, formats: intlFormats },
+  fi: { messages: fi, formats: intlFormats },
+  la: { messages: la, formats: (locale) => ownWordFormats(locale, laFormatWords) },
+  eo: { messages: eo, formats: (locale) => ownWordFormats(locale, eoFormatWords) },
+};
 
 interface Active {
   readonly choice: LocaleChoice;
@@ -46,24 +47,6 @@ export const currentLocale = (): ResolvedLocale => active.locale;
 export const localeChoice = (): LocaleChoice => active.choice;
 
 function activate(choice: LocaleChoice, locale: ResolvedLocale): Active {
-  const tag = locale.tag;
-  const utc = (options: Intl.DateTimeFormatOptions) => new Intl.DateTimeFormat(tag, { ...options, timeZone: 'UTC' });
-  return {
-    choice,
-    locale,
-    messages: CATALOGS[locale.language],
-    formats: {
-      date: utc({ day: 'numeric', month: 'short', year: 'numeric' }),
-      weekday: utc({ weekday: 'short' }),
-      month: utc({ month: 'long', year: 'numeric' }),
-      time: utc({ hour: 'numeric', minute: '2-digit', ...(locale.hourCycle === undefined ? {} : { hourCycle: locale.hourCycle }) }),
-      axisDay: utc({ weekday: 'short', day: 'numeric' }),
-      axisDayMonth: utc({ day: 'numeric', month: 'short' }),
-      axisMonth: utc({ month: 'short' }),
-      axisMonthYear: utc({ month: 'short', year: 'numeric' }),
-      axisYear: utc({ year: 'numeric' }),
-      list: new Intl.ListFormat(tag, { style: 'long', type: 'conjunction' }),
-      regions: new Intl.DisplayNames([tag], { type: 'region' }),
-    },
-  };
+  const catalog = CATALOGS[locale.language];
+  return { choice, locale, messages: catalog.messages, formats: catalog.formats(locale) };
 }

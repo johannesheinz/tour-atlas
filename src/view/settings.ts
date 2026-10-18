@@ -1,5 +1,5 @@
-import { currentLocale, t } from '../i18n/index.ts';
-import { AUTOMATIC, CLOCKS, LANGUAGES, LANGUAGE_NAMES, isClock, isLanguage, resolveLocale, type Clock, type Language, type LocaleChoice } from '../i18n/locale.ts';
+import { formats, t } from '../i18n/index.ts';
+import { AUTOMATIC, CLOCKS, LANGUAGES, LANGUAGE_NAMES, isClock, isLanguage, resolveLocale, type Clock, type HourCycle, type Language, type LocaleChoice } from '../i18n/locale.ts';
 import type { ThemePreference } from '../model.ts';
 import { h } from './dom.ts';
 import { attachPopover } from './popover.ts';
@@ -48,8 +48,7 @@ export function createSettings(trigger: HTMLButtonElement, panel: HTMLElement, c
   language.value = choice.language ?? AUTOMATIC_VALUE;
   language.addEventListener('change', () => callbacks.onLanguage(isLanguage(language.value) ? language.value : null));
 
-  const example = (hourCycle: 'h12' | 'h23' | undefined) =>
-    new Intl.DateTimeFormat(currentLocale().tag, { hour: 'numeric', minute: '2-digit', timeZone: 'UTC', ...(hourCycle === undefined ? {} : { hourCycle }) }).format(EIGHT_PM);
+  const example = (hourCycle: HourCycle | undefined) => formats().timeOnClock(hourCycle).format(EIGHT_PM);
   const clock = h(
     'select',
     { class: 'settings-select', id: 'settings-clock' },
