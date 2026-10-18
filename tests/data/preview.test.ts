@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import type { BandFile } from '../../src/data/types.ts';
 import { exportAll, mergePreviews, normalizedFileText, processPreviewFile } from '../../src/preview.ts';
-import { readJson, readText } from '../helpers.ts';
+import { makeDraftShow, makeFile, readJson, readText } from '../helpers.ts';
 
 const options = { today: '2026-10-16', locateCountry: null };
 const glassHarbor = readJson('samples/glass-harbor.json') as BandFile;
@@ -34,6 +34,22 @@ describe('processPreviewFile', () => {
       'will be downloaded as "ashen-choir.json" to match band.id',
       '6 shows have no coordinates yet and are not drawn; run "npm run geocode" before committing',
     ]);
+  });
+
+  it('names rows in warnings as the dropped file numbers them, not as the normalized file sorts them', () => {
+    const file = makeFile([
+      makeDraftShow({ date: '2026-12-01', city: 'Oslo', countryCode: 'NO', geo: { lat: 59.91, lon: 10.75, precision: 'city', source: 'manual' } }),
+      makeDraftShow({ date: '2026-12-32' }),
+      makeDraftShow({ date: '2026-12-08', city: 'Riga', countryCode: 'LV', geo: { lat: 56.95, lon: 24.11, precision: 'city', source: 'manual' } }),
+      makeDraftShow({ date: '2026-12-08', city: 'Lisbon', countryCode: 'PT', geo: { lat: 38.72, lon: -9.14, precision: 'city', source: 'manual' } }),
+    ]);
+    const preview = processPreviewFile('test-band.json', JSON.stringify(file), undefined, options);
+    expect(preview.normalized?.shows.map((show) => show.city)).toEqual(['Oslo', 'Lisbon', 'Riga']);
+    expect(preview.errors.map((error) => error.path)).toEqual(['shows[1].date']);
+    const [farApart] = preview.warnings.filter((warning) => warning.code === 'sameDayFarApart');
+    expect(farApart?.path).toBe('shows[3].date');
+    expect(farApart?.params).toMatchObject({ earlier: 'shows[2]', city: 'Riga' });
+    expect(farApart?.message).toBe('same day as shows[2] (Riga) but 3151 km away; check the date');
   });
 
   it('diffs a changed show by id', () => {

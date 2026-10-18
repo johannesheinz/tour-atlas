@@ -1,10 +1,10 @@
 import type { CountryLocator } from './data/countryLocator.ts';
 import { diffBand, type BandDiff } from './data/diff.ts';
 import { IdError } from './data/ids.ts';
-import { lintBandFile } from './data/lint.ts';
-import { normalizeBandFile, serializeBandFile } from './data/normalize.ts';
+import { lintBandFile, renumberShowRows } from './data/lint.ts';
+import { identifyShows, normalizeBandFile, serializeBandFile } from './data/normalize.ts';
 import type { BandFile, IdentifiedBandFile } from './data/types.ts';
-import { isCompleteShow, issue, makeIssue, parseBandJson, validateDraft, validateFileName, type ValidationIssue } from './data/validate.ts';
+import { acceptedRowIndexes, isCompleteShow, issue, makeIssue, parseBandJson, validateDraft, validateFileName, type ValidationIssue } from './data/validate.ts';
 
 export const MAX_PREVIEW_BYTES = 5_000_000;
 
@@ -70,7 +70,8 @@ export function processPreviewFile(fileName: string, text: string, published: Ba
   if (missingGeoCount > 0) {
     warnings.push(makeIssue(fileName, 'shows', issue('previewMissingCoordinates', { count: missingGeoCount })));
   }
-  warnings.push(...lintBandFile(fileName, normalized, options));
+  const inFileOrder = { ...normalized, shows: identifyShows(result.value) };
+  warnings.push(...renumberShowRows(lintBandFile(fileName, inFileOrder, options), acceptedRowIndexes(result)));
 
   return {
     fileName,

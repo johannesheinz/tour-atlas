@@ -1,7 +1,8 @@
 import type { CountryLocator } from '../../src/data/countryLocator.ts';
-import { lintBandFile } from '../../src/data/lint.ts';
+import { lintBandFile, renumberShowRows } from '../../src/data/lint.ts';
 import type { BandFileOf, IdentifiedShow } from '../../src/data/types.ts';
 import {
+  acceptedRowIndexes,
   parseBandJson,
   validateCollection,
   validateDraft,
@@ -60,29 +61,13 @@ function checkBandFile(path: string, options: CheckOptions): CheckedFile {
 
   if (result.value === null) return { file, text, errors, warnings: [], showCount: result.totalShows, value: null };
 
-  const rejected = new Set(result.rejectedShowIndexes);
-  const acceptedIndexes = Array.from({ length: result.totalShows }, (_, index) => index).filter((index) => !rejected.has(index));
+  const acceptedIndexes = acceptedRowIndexes(result);
   const rows = result.value.shows.flatMap((show, position) => {
     const fileIndex = acceptedIndexes[position];
     if (fileIndex === undefined) throw new Error(`${file}: accepted show ${position} has no row in the file`);
     return show.id === null ? [] : [{ show: { ...show, id: show.id }, fileIndex }];
   });
   const identified: BandFileOf<IdentifiedShow> = { ...result.value, shows: rows.map((row) => row.show) };
-  const warnings = remapShowPaths(lintBandFile(file, identified, options), rows.map((row) => row.fileIndex));
+  const warnings = renumberShowRows(lintBandFile(file, identified, options), rows.map((row) => row.fileIndex));
   return { file, text, errors, warnings, showCount: result.totalShows, value: identified };
-}
-
-/** Lint runs on the accepted rows only; point its paths back at the rows as they are numbered in the file. */
-export function remapShowPaths(issues: readonly ValidationIssue[], fileIndexes: readonly number[]): ValidationIssue[] {
-  return issues.map((issue) => ({
-    ...issue,
-    path: issue.path.replace(/^shows\[(\d+)\]/, (match, position: string) => {
-      const fileIndex = fileIndexes[Number(position)];
-      return fileIndex === undefined ? match : `shows[${fileIndex}]`;
-    }),
-    message: issue.message.replace(/shows\[(\d+)\]/g, (match, position: string) => {
-      const fileIndex = fileIndexes[Number(position)];
-      return fileIndex === undefined ? match : `shows[${fileIndex}]`;
-    }),
-  }));
 }

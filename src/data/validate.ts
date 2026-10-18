@@ -42,6 +42,12 @@ export function makeIssue(file: string, path: string, detail: IssueDetail): Vali
   return { file, path, ...detail, message: issueText(ENGLISH_ISSUES, detail) };
 }
 
+/** The row each kept show has in the file, in the order validation kept them. */
+export function acceptedRowIndexes(result: Pick<ValidationResult<unknown>, 'totalShows' | 'rejectedShowIndexes'>): number[] {
+  const rejected = new Set(result.rejectedShowIndexes);
+  return Array.from({ length: result.totalShows }, (_, index) => index).filter((index) => !rejected.has(index));
+}
+
 export interface ValidationResult<T> {
   readonly file: string;
   /** The file with only its valid shows, or null when the file-level fields are unusable. */

@@ -74,6 +74,25 @@ export function lintBandFile(file: string, data: BandFileOf<IdentifiedShow>, opt
   return warnings;
 }
 
+const SHOW_ROW = /^shows\[(\d+)\]/;
+
+/**
+ * Lint sees only the rows validation kept, numbered from 0. Points its warnings, and the rows they name,
+ * back at the rows as the file numbers them, so a reader finds them in the file they dropped or committed.
+ */
+export function renumberShowRows(issues: readonly ValidationIssue[], fileRows: readonly number[]): ValidationIssue[] {
+  const renumber = (text: string) =>
+    text.replace(SHOW_ROW, (_, position: string) => {
+      const fileRow = fileRows[Number(position)];
+      if (fileRow === undefined) throw new Error(`lint named shows[${position}], but only ${fileRows.length} rows were linted`);
+      return `shows[${fileRow}]`;
+    });
+  return issues.map((found) => {
+    const params = Object.fromEntries(Object.entries(found.params).map(([key, value]) => [key, typeof value === 'string' ? renumber(value) : value]));
+    return makeIssue(found.file, renumber(found.path), { code: found.code, params } as IssueDetail);
+  });
+}
+
 function looksDuplicate(a: IdentifiedShow, b: IdentifiedShow): boolean {
   const differentStartTimes = a.startTime !== null && b.startTime !== null && a.startTime !== b.startTime;
   return !differentStartTimes && slugify(a.city) === slugify(b.city) && (a.venue ?? '') === (b.venue ?? '') && a.countryCode === b.countryCode;

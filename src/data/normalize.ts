@@ -7,14 +7,18 @@ import type { BandFileOf, DraftBandFile, DraftShow, Geo, IdentifiedBandFile, Ide
  * shows sorted by date then id. Key order is fixed by construction and matches the schema.
  */
 export function normalizeBandFile(file: DraftBandFile): IdentifiedBandFile {
-  const trimmed = file.shows.map(trimShow);
-  const shows = assignShowIds(file.band.id, trimmed).toSorted(compareShows).map(orderShowKeys);
+  const shows = identifyShows(file).toSorted(compareShows).map(orderShowKeys);
   return {
     schemaVersion: file.schemaVersion,
     band: { id: file.band.id, name: file.band.name.trim(), color: file.band.color, tags: sortTags(file.band.tags), logoUrl: file.band.logoUrl },
     source: { url: file.source.url, retrievedAt: file.source.retrievedAt },
     shows,
   };
+}
+
+/** The shows trimmed and given ids, still in the file's order. */
+export function identifyShows(file: DraftBandFile): IdentifiedShow[] {
+  return assignShowIds(file.band.id, file.shows.map(trimShow));
 }
 
 export function serializeBandFile(file: BandFileOf<IdentifiedShow | DraftShow>): string {
