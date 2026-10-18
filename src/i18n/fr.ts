@@ -138,8 +138,6 @@ export const fr: Messages = {
     previewBadge: 'Aperçu',
     showOnMap: (band) => `Afficher ${band} sur la carte et la frise`,
     listDates: (band) => `Lister les dates de ${band}`,
-    only: 'Seulement',
-    onlyLabel: (band) => `Afficher seulement ${band}`,
   },
   placeList: {
     filter: 'Filtrer villes et pays',

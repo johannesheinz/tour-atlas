@@ -818,7 +818,7 @@ input[type='search']::placeholder {
 
 .band-row {
   display: grid;
-  grid-template-columns: auto 1fr auto auto;
+  grid-template-columns: auto 1fr auto;
   align-items: center;
   gap: 0 10px;
   padding: 7px 6px 7px 0;
@@ -955,29 +955,6 @@ input[type='search']::placeholder {
   border-radius: 999px;
   font-size: 11px;
   font-weight: 600;
-}
-
-.band-solo {
-  visibility: hidden;
-  padding: 2px 6px;
-  border: 0;
-  background: none;
-  font-size: 12px;
-  font-weight: 600;
-  text-decoration: underline;
-  text-underline-offset: 3px;
-  cursor: pointer;
-}
-
-.band-row:hover .band-solo,
-.band-row:focus-within .band-solo {
-  visibility: visible;
-}
-
-@media (hover: none) {
-  .band-solo {
-    visibility: visible;
-  }
 }
 
 .band-empty {

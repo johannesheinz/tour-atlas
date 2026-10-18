@@ -68,8 +68,6 @@ export interface Messages {
     readonly previewBadge: Text;
     readonly showOnMap: (band: string) => string;
     readonly listDates: (band: string) => string;
-    readonly only: Text;
-    readonly onlyLabel: (band: string) => string;
   };
   readonly placeList: {
     readonly filter: Text;

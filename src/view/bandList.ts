@@ -28,7 +28,6 @@ export interface BandListCallbacks {
   /** Opens the band's dates in the sidebar. */
   onSelect(bandId: string): void;
   onToggle(bandId: string, visible: boolean): void;
-  onSolo(bandId: string): void;
   /** Lists the dates of every shown band; offered for a handful of bands. */
   onListShown(): void;
   onOpenPreviews(): void;
@@ -117,18 +116,11 @@ export function createBandList(container: HTMLElement, callbacks: BandListCallba
     const badge = h('span', { class: 'preview-badge' }, t().bandList.previewBadge);
     const meta = h('span', { class: 'band-meta' });
     const identity = createBandIdentity('is-band-row');
-    const solo = h('button', { type: 'button', class: 'band-solo', 'aria-label': t().bandList.onlyLabel(band.file.band.name) }, t().bandList.only);
     const select = h('button', { type: 'button', class: 'band-select', 'aria-label': t().bandList.listDates(band.file.band.name) }, identity.element, meta);
-    const element = h('li', { class: 'band-row' }, checkbox, select, badge, solo);
+    const element = h('li', { class: 'band-row' }, checkbox, select, badge);
 
     select.addEventListener('click', () => callbacks.onSelect(bandId));
     checkbox.addEventListener('change', () => callbacks.onToggle(bandId, checkbox.checked));
-    checkbox.addEventListener('click', (event) => {
-      if (!event.altKey) return;
-      event.preventDefault();
-      callbacks.onSolo(bandId);
-    });
-    solo.addEventListener('click', () => callbacks.onSolo(bandId));
     element.addEventListener('mouseenter', () => callbacks.onFocusBand(bandId));
     element.addEventListener('focusin', () => callbacks.onFocusBand(bandId));
     return { element, checkbox, select, identity, meta, badge };

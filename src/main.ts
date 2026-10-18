@@ -122,7 +122,6 @@ const bandList = createBandList(requireElement(document, '#band-list', HTMLEleme
     else hidden.add(bandId);
     state.set({ hiddenBandIds: hidden });
   },
-  onSolo: (bandId) => soloBand(bandId),
   onOpenPreviews: () => state.set({ previewsOpen: true, selection: NO_SELECTION }),
   onListShown() {
     selectBands(new Set(derive(state.get()).visibleBands.map((band) => band.file.band.id)));
@@ -439,11 +438,6 @@ function mountDropZone() {
   });
 }
 
-function soloBand(bandId: string) {
-  const { bands } = derive(state.get());
-  state.set({ hiddenBandIds: new Set(bands.map((band) => band.file.band.id).filter((id) => id !== bandId)) });
-}
-
 function selectBands(bandIds: ReadonlySet<string>) {
   const { timeWindow } = state.get();
   sidebar.showTab('bands');
@@ -491,19 +485,14 @@ function focusSearchResult(entry: SearchEntry) {
   const shows = entry.showIds.flatMap((id) => derived.showsById.get(id) ?? []);
   if (shows.length === 0) return;
   const placeKey = entry.kind === 'place' ? searchPlaceKey(entry.ref) : null;
-  if (entry.kind === 'tour') {
-    const [bandId] = entry.bandIds;
-    if (bandId !== undefined) soloBand(bandId);
-  } else {
-    searchFocus = { shows, until: performance.now() + SEARCH_FOCUS_TIMEOUT_MS };
-    const { hiddenBandIds } = state.get();
-    if (entry.bandIds.some((bandId) => hiddenBandIds.has(bandId))) {
-      state.set({ hiddenBandIds: new Set([...hiddenBandIds].filter((bandId) => !entry.bandIds.includes(bandId))) });
-    }
-    state.set({ mapView: { kind: 'shows' } });
-    map.setUserLocation(null);
-    map.fitToShows(shows, true);
+  searchFocus = { shows, until: performance.now() + SEARCH_FOCUS_TIMEOUT_MS };
+  const { hiddenBandIds } = state.get();
+  if (entry.bandIds.some((bandId) => hiddenBandIds.has(bandId))) {
+    state.set({ hiddenBandIds: new Set([...hiddenBandIds].filter((bandId) => !entry.bandIds.includes(bandId))) });
   }
+  state.set({ mapView: { kind: 'shows' } });
+  map.setUserLocation(null);
+  map.fitToShows(shows, true);
   state.set({ selection: placeKey === null ? { kind: 'shows', showIds: new Set(entry.showIds) } : { kind: 'places', places: new Set([placeKey]) }, timePreset: null });
   const start = Math.min(...shows.map((ref) => ref.start));
   const end = Math.max(...shows.map((ref) => ref.end)) + DAY_MS;

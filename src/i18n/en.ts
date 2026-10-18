@@ -64,8 +64,6 @@ export const en: Messages = {
     previewBadge: 'Preview',
     showOnMap: (band) => `Show ${band} on the map and timeline`,
     listDates: (band) => `List the dates of ${band}`,
-    only: 'Only',
-    onlyLabel: (band) => `Show only ${band}`,
   },
   placeList: {
     filter: 'Filter cities and countries',

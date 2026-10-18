@@ -138,8 +138,6 @@ export const de: Messages = {
     previewBadge: 'Vorschau',
     showOnMap: (band) => `${band} auf Karte und Zeitleiste zeigen`,
     listDates: (band) => `Termine von ${band} auflisten`,
-    only: 'Nur diese',
-    onlyLabel: (band) => `Nur ${band} zeigen`,
   },
   placeList: {
     filter: 'Städte und Länder filtern',
