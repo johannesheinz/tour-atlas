@@ -1,6 +1,7 @@
 import { isInWindow, type AppState, type Derived, type Selection } from './appState.ts';
 import { selectionShows } from './selection.ts';
 import { NO_GENRE, TAG_VOCABULARY, hasGenre } from './data/tags.ts';
+import { t } from './i18n/index.ts';
 import { showsInRange, sortBands, type BandEntry, type ShowRef } from './model.ts';
 import { countryName } from './view/format.ts';
 import { buildPlaces, type CountryPlace } from './places.ts';
@@ -151,7 +152,7 @@ export function createSelectors(maxBandsWithRoutes: number) {
             totals.set(id, { bandCount: total.bandCount + (shows > 0 ? 1 : 0), showCount: total.showCount + shows });
           }
         }
-        const label = (id: string) => (id === NO_GENRE ? 'No genre' : (TAG_VOCABULARY.byId.get(id)?.label ?? id));
+        const label = (id: string) => (id === NO_GENRE ? t().genreList.noGenre : (TAG_VOCABULARY.byId.get(id)?.label ?? id));
         genres = [...totals]
           .map(([id, total]) => ({ id, label: label(id), ...total }))
           .toSorted((a, b) => Number(a.id === NO_GENRE) - Number(b.id === NO_GENRE) || a.label.localeCompare(b.label));

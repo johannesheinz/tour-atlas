@@ -29,7 +29,7 @@ export function createSearch(container: HTMLElement, callbacks: SearchCallbacks)
     placeholder: t().search.placeholder,
   });
   const label = h('label', { class: 'visually-hidden', for: 'search-input' }, t().search.label);
-  const listbox = h('ul', { class: 'search-results', id: 'search-results', role: 'listbox', 'aria-label': 'Search results', hidden: true });
+  const listbox = h('ul', { class: 'search-results', id: 'search-results', role: 'listbox', 'aria-label': t().search.resultsLabel, hidden: true });
   const status = h('div', { class: 'visually-hidden', 'aria-live': 'polite' });
   container.append(label, withClearButton(input, t().search.clear), listbox, status);
 

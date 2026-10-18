@@ -22,7 +22,7 @@ export interface Formats {
   readonly axisMonthYear: Intl.DateTimeFormat;
   readonly axisYear: Intl.DateTimeFormat;
   readonly list: Intl.ListFormat;
-  /** Countries by ISO code and world regions by UN M49 code. */
+  /** Country names by ISO code. */
   readonly regions: Intl.DisplayNames;
 }
 

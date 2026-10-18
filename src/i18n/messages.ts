@@ -1,5 +1,6 @@
 import type { IssueTexts } from '../data/issues.ts';
 import type { BandSort, ThemePreference } from '../model.ts';
+import type { RegionId } from '../view/mapRegions.ts';
 import type { TimePreset } from '../view/timePresets.ts';
 
 type Text = string;
@@ -40,6 +41,7 @@ export interface Messages {
     readonly label: Text;
     readonly clear: Text;
     readonly results: Count;
+    readonly resultsLabel: Text;
     readonly nothingMatches: (query: string) => string;
     readonly groups: Readonly<Record<SearchGroup, string>>;
     readonly showsAndBands: (shows: number, bands: number) => string;
@@ -147,6 +149,7 @@ export interface Messages {
     readonly areaMenu: Text;
     readonly nearMe: Text;
     readonly regions: Text;
+    readonly regionNames: Readonly<Record<RegionId, string>>;
     readonly km: Count;
     readonly asGlobe: Text;
     readonly asFlat: Text;

@@ -8,6 +8,7 @@ import { fr } from '../../src/i18n/fr.ts';
 import { t, useLocale } from '../../src/i18n/index.ts';
 import { AUTOMATIC, resolveLocale } from '../../src/i18n/locale.ts';
 import { counter } from '../../src/i18n/plural.ts';
+import { MAP_REGIONS } from '../../src/view/mapRegions.ts';
 import { countryName, formatDate, formatDateSpan, formatTime } from '../../src/view/format.ts';
 import { readText } from '../helpers.ts';
 
@@ -68,6 +69,13 @@ describe('catalogs', () => {
     expect(issueText(de.issues, issue)).toBe('muss 1 sein (gefunden: 2)');
     expect(issueText(fr.issues, issue)).toBe('doit valoir 1 (reçu : 2)');
     expect(issueText(es.issues, issue)).toBe('debe ser 1 (se encontró 2)');
+  });
+
+  it('names every map region in every language, since browsers do not reliably know continent names', () => {
+    for (const catalog of [en, de, fr, es]) {
+      for (const region of MAP_REGIONS) expect(catalog.map.regionNames[region.id].trim(), region.id).not.toBe('');
+    }
+    expect(de.map.regionNames['north-america']).toBe('Nordamerika');
   });
 
   it('has every text index.html asks for', () => {
