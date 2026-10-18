@@ -1,0 +1,417 @@
+{
+  "schemaVersion": 1,
+  "band": {
+    "id": "in-vain",
+    "name": "In Vain",
+    "color": null,
+    "tags": [
+      "melodic-death-metal",
+      "death-metal",
+      "black-metal",
+      "progressive-metal"
+    ],
+    "logoUrl": "https://www.metal-archives.com/images/3/3/0/8/33086_logo.jpg"
+  },
+  "source": {
+    "url": "https://www.metalblade.com/us/news/iotunn-announce-kinship-european-headliner-tour-2026/",
+    "retrievedAt": "2026-10-18"
+  },
+  "shows": [
+    {
+      "id": "in-vain-2026-04-08-aschaffenburg",
+      "date": "2026-04-08",
+      "endDate": null,
+      "startTime": null,
+      "tourName": "Kinship European Tour 2026",
+      "eventName": null,
+      "venue": "Colos-Saal",
+      "city": "Aschaffenburg",
+      "region": null,
+      "countryCode": "DE",
+      "status": null,
+      "ticketUrl": null,
+      "sourceUrl": null,
+      "notes": "Special guests on Iotunn's headline tour",
+      "geo": {
+        "lat": 49.97583,
+        "lon": 9.14917,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "in-vain-2026-04-09-lichtenfels",
+      "date": "2026-04-09",
+      "endDate": null,
+      "startTime": null,
+      "tourName": "Kinship European Tour 2026",
+      "eventName": "Ragnarök Festival",
+      "venue": null,
+      "city": "Lichtenfels",
+      "region": null,
+      "countryCode": "DE",
+      "status": null,
+      "ticketUrl": null,
+      "sourceUrl": null,
+      "notes": "Special guests on Iotunn's headline tour",
+      "geo": {
+        "lat": 50.13153,
+        "lon": 11.08393,
+        "precision": "city",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "in-vain-2026-04-10-dortmund",
+      "date": "2026-04-10",
+      "endDate": null,
+      "startTime": null,
+      "tourName": "Kinship European Tour 2026",
+      "eventName": null,
+      "venue": "Junkyard",
+      "city": "Dortmund",
+      "region": null,
+      "countryCode": "DE",
+      "status": null,
+      "ticketUrl": null,
+      "sourceUrl": null,
+      "notes": "Special guests on Iotunn's headline tour",
+      "geo": {
+        "lat": 51.53285,
+        "lon": 7.47267,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "in-vain-2026-04-11-sittard",
+      "date": "2026-04-11",
+      "endDate": null,
+      "startTime": null,
+      "tourName": "Kinship European Tour 2026",
+      "eventName": null,
+      "venue": "Volt",
+      "city": "Sittard",
+      "region": null,
+      "countryCode": "NL",
+      "status": null,
+      "ticketUrl": null,
+      "sourceUrl": null,
+      "notes": "Special guests on Iotunn's headline tour",
+      "geo": {
+        "lat": 51.00128,
+        "lon": 5.87259,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "in-vain-2026-04-13-paris",
+      "date": "2026-04-13",
+      "endDate": null,
+      "startTime": null,
+      "tourName": "Kinship European Tour 2026",
+      "eventName": null,
+      "venue": "Backstage By The Mill",
+      "city": "Paris",
+      "region": null,
+      "countryCode": "FR",
+      "status": null,
+      "ticketUrl": null,
+      "sourceUrl": null,
+      "notes": "Special guests on Iotunn's headline tour",
+      "geo": {
+        "lat": 48.88424,
+        "lon": 2.3321,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "in-vain-2026-04-14-nantes",
+      "date": "2026-04-14",
+      "endDate": null,
+      "startTime": null,
+      "tourName": "Kinship European Tour 2026",
+      "eventName": null,
+      "venue": "Ferrailleur",
+      "city": "Nantes",
+      "region": null,
+      "countryCode": "FR",
+      "status": null,
+      "ticketUrl": null,
+      "sourceUrl": null,
+      "notes": "Special guests on Iotunn's headline tour",
+      "geo": {
+        "lat": 47.20058,
+        "lon": -1.57365,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "in-vain-2026-04-15-colmar",
+      "date": "2026-04-15",
+      "endDate": null,
+      "startTime": null,
+      "tourName": "Kinship European Tour 2026",
+      "eventName": null,
+      "venue": "Le Grillen",
+      "city": "Colmar",
+      "region": null,
+      "countryCode": "FR",
+      "status": null,
+      "ticketUrl": null,
+      "sourceUrl": null,
+      "notes": "Special guests on Iotunn's headline tour",
+      "geo": {
+        "lat": 48.07567,
+        "lon": 7.37103,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "in-vain-2026-04-16-aarau",
+      "date": "2026-04-16",
+      "endDate": null,
+      "startTime": null,
+      "tourName": "Kinship European Tour 2026",
+      "eventName": null,
+      "venue": "KiFF",
+      "city": "Aarau",
+      "region": null,
+      "countryCode": "CH",
+      "status": null,
+      "ticketUrl": null,
+      "sourceUrl": null,
+      "notes": "Special guests on Iotunn's headline tour",
+      "geo": {
+        "lat": 47.39873,
+        "lon": 8.06383,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "in-vain-2026-04-17-munich",
+      "date": "2026-04-17",
+      "endDate": null,
+      "startTime": null,
+      "tourName": "Kinship European Tour 2026",
+      "eventName": null,
+      "venue": "Backstage (Club)",
+      "city": "Munich",
+      "region": null,
+      "countryCode": "DE",
+      "status": null,
+      "ticketUrl": null,
+      "sourceUrl": null,
+      "notes": "Special guests on Iotunn's headline tour",
+      "geo": {
+        "lat": 48.13711,
+        "lon": 11.57538,
+        "precision": "city",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "in-vain-2026-04-18-budapest",
+      "date": "2026-04-18",
+      "endDate": null,
+      "startTime": null,
+      "tourName": "Kinship European Tour 2026",
+      "eventName": null,
+      "venue": "Analog Music Hall",
+      "city": "Budapest",
+      "region": null,
+      "countryCode": "HU",
+      "status": null,
+      "ticketUrl": null,
+      "sourceUrl": null,
+      "notes": "Special guests on Iotunn's headline tour",
+      "geo": {
+        "lat": 47.45438,
+        "lon": 19.04383,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "in-vain-2026-04-19-ljubljana",
+      "date": "2026-04-19",
+      "endDate": null,
+      "startTime": null,
+      "tourName": "Kinship European Tour 2026",
+      "eventName": null,
+      "venue": "Orto Bar",
+      "city": "Ljubljana",
+      "region": null,
+      "countryCode": "SI",
+      "status": null,
+      "ticketUrl": null,
+      "sourceUrl": null,
+      "notes": "Special guests on Iotunn's headline tour",
+      "geo": {
+        "lat": 46.0579,
+        "lon": 14.52146,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "in-vain-2026-04-20-vienna",
+      "date": "2026-04-20",
+      "endDate": null,
+      "startTime": null,
+      "tourName": "Kinship European Tour 2026",
+      "eventName": null,
+      "venue": "Viper Room",
+      "city": "Vienna",
+      "region": null,
+      "countryCode": "AT",
+      "status": null,
+      "ticketUrl": null,
+      "sourceUrl": null,
+      "notes": "Special guests on Iotunn's headline tour",
+      "geo": {
+        "lat": 48.20336,
+        "lon": 16.38946,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "in-vain-2026-04-21-prague",
+      "date": "2026-04-21",
+      "endDate": null,
+      "startTime": null,
+      "tourName": "Kinship European Tour 2026",
+      "eventName": null,
+      "venue": "Modra Vopice",
+      "city": "Prague",
+      "region": null,
+      "countryCode": "CZ",
+      "status": null,
+      "ticketUrl": null,
+      "sourceUrl": null,
+      "notes": "Special guests on Iotunn's headline tour",
+      "geo": {
+        "lat": 50.09947,
+        "lon": 14.49388,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "in-vain-2026-04-22-poznan",
+      "date": "2026-04-22",
+      "endDate": null,
+      "startTime": null,
+      "tourName": "Kinship European Tour 2026",
+      "eventName": null,
+      "venue": "Pod Minoga",
+      "city": "Poznań",
+      "region": null,
+      "countryCode": "PL",
+      "status": null,
+      "ticketUrl": null,
+      "sourceUrl": null,
+      "notes": "Special guests on Iotunn's headline tour",
+      "geo": {
+        "lat": 52.40934,
+        "lon": 16.9269,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "in-vain-2026-04-23-kassel",
+      "date": "2026-04-23",
+      "endDate": null,
+      "startTime": null,
+      "tourName": "Kinship European Tour 2026",
+      "eventName": null,
+      "venue": "Goldgrube",
+      "city": "Kassel",
+      "region": null,
+      "countryCode": "DE",
+      "status": null,
+      "ticketUrl": null,
+      "sourceUrl": null,
+      "notes": "Special guests on Iotunn's headline tour",
+      "geo": {
+        "lat": 51.33075,
+        "lon": 9.49919,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "in-vain-2026-04-24-utrecht",
+      "date": "2026-04-24",
+      "endDate": null,
+      "startTime": null,
+      "tourName": "Kinship European Tour 2026",
+      "eventName": null,
+      "venue": "De Helling",
+      "city": "Utrecht",
+      "region": null,
+      "countryCode": "NL",
+      "status": null,
+      "ticketUrl": null,
+      "sourceUrl": null,
+      "notes": "Special guests on Iotunn's headline tour",
+      "geo": {
+        "lat": 52.251,
+        "lon": 5.31121,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "in-vain-2026-04-25-hamburg",
+      "date": "2026-04-25",
+      "endDate": null,
+      "startTime": null,
+      "tourName": "Kinship European Tour 2026",
+      "eventName": null,
+      "venue": "Bambi Galore",
+      "city": "Hamburg",
+      "region": null,
+      "countryCode": "DE",
+      "status": null,
+      "ticketUrl": null,
+      "sourceUrl": null,
+      "notes": "Special guests on Iotunn's headline tour",
+      "geo": {
+        "lat": 53.542,
+        "lon": 10.11076,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "in-vain-2026-04-26-copenhagen",
+      "date": "2026-04-26",
+      "endDate": null,
+      "startTime": null,
+      "tourName": "Kinship European Tour 2026",
+      "eventName": null,
+      "venue": "Amager Bio",
+      "city": "Copenhagen",
+      "region": null,
+      "countryCode": "DK",
+      "status": null,
+      "ticketUrl": null,
+      "sourceUrl": null,
+      "notes": "Special guests on Iotunn's headline tour",
+      "geo": {
+        "lat": 55.6577,
+        "lon": 12.60946,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    }
+  ]
+}

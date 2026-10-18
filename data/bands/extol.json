@@ -1,0 +1,65 @@
+{
+  "schemaVersion": 1,
+  "band": {
+    "id": "extol",
+    "name": "Extol",
+    "color": null,
+    "tags": [
+      "death-metal",
+      "progressive-metal",
+      "thrash-metal",
+      "christian-metal"
+    ],
+    "logoUrl": "https://www.metal-archives.com/images/1/1/6/4/1164_logo.jpg"
+  },
+  "source": {
+    "url": "https://www.lightthedark.se/bands/extol",
+    "retrievedAt": "2026-10-18"
+  },
+  "shows": [
+    {
+      "id": "extol-2026-03-14-uster",
+      "date": "2026-03-14",
+      "endDate": null,
+      "startTime": "22:40",
+      "tourName": null,
+      "eventName": "Elements of Rock",
+      "venue": "Stadthofsaal",
+      "city": "Uster",
+      "region": null,
+      "countryCode": "CH",
+      "status": null,
+      "ticketUrl": null,
+      "sourceUrl": "https://www.elementsofrock.com/running-order",
+      "notes": null,
+      "geo": {
+        "lat": 47.34886,
+        "lon": 8.71542,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "extol-2027-03-19-norrkoping",
+      "date": "2027-03-19",
+      "endDate": "2027-03-20",
+      "startTime": null,
+      "tourName": null,
+      "eventName": "Light The Dark",
+      "venue": "Arbis",
+      "city": "Norrköping",
+      "region": null,
+      "countryCode": "SE",
+      "status": null,
+      "ticketUrl": "https://secure.tickster.com/sv/2jxp0k7n5twwarl/products",
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 58.59003,
+        "lon": 16.17492,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "band": {
+    "id": "vardoger",
+    "name": "Vardøger",
+    "color": null,
+    "tags": [
+      "folk-metal",
+      "melodic-death-metal",
+      "black-metal",
+      "progressive-metal",
+      "christian-metal"
+    ],
+    "logoUrl": "https://www.metal-archives.com/images/1/6/1/1/16110_logo.png"
+  },
+  "source": {
+    "url": "https://www.metal-archives.com/bands/Vard%C3%B8ger/16110",
+    "retrievedAt": "2026-10-18"
+  },
+  "shows": []
+}

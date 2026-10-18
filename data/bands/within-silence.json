@@ -1,0 +1,195 @@
+{
+  "schemaVersion": 1,
+  "band": {
+    "id": "within-silence",
+    "name": "Within Silence",
+    "color": null,
+    "tags": [
+      "power-metal",
+      "christian-metal"
+    ],
+    "logoUrl": "https://within-silence.com/wp-content/uploads/2024/09/WS-logo-silver-2-shadow-scaled.png"
+  },
+  "source": {
+    "url": "https://within-silence.com/tour/",
+    "retrievedAt": "2026-10-18"
+  },
+  "shows": [
+    {
+      "id": "within-silence-2026-02-13-bratislava",
+      "date": "2026-02-13",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "Randal Club",
+      "city": "Bratislava",
+      "region": null,
+      "countryCode": "SK",
+      "status": null,
+      "ticketUrl": null,
+      "sourceUrl": null,
+      "notes": "With Friday Whiskey, Signature",
+      "geo": {
+        "lat": 48.1435,
+        "lon": 17.10829,
+        "precision": "city",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "within-silence-2026-04-25-zilina",
+      "date": "2026-04-25",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": "Metal Meltdown pt.2",
+      "venue": null,
+      "city": "Žilina",
+      "region": null,
+      "countryCode": "SK",
+      "status": null,
+      "ticketUrl": null,
+      "sourceUrl": null,
+      "notes": "With Signum Regis, Ozark Howler",
+      "geo": {
+        "lat": 49.22347,
+        "lon": 18.73931,
+        "precision": "city",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "within-silence-2026-06-18-glasgow",
+      "date": "2026-06-18",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "Ivory Blacks",
+      "city": "Glasgow",
+      "region": null,
+      "countryCode": "GB",
+      "status": null,
+      "ticketUrl": "https://www.eventim-light.com/uk/a/64f31a8ea474ff19ea6b5829",
+      "sourceUrl": "https://within-silence.com/uk-debut-announcement/",
+      "notes": "Supporting Fellowship",
+      "geo": {
+        "lat": 55.85792,
+        "lon": -4.25949,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "within-silence-2026-06-19-manchester",
+      "date": "2026-06-19",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "Rebellion",
+      "city": "Manchester",
+      "region": null,
+      "countryCode": "GB",
+      "status": null,
+      "ticketUrl": "https://www.eventim-light.com/uk/a/64f31a8ea474ff19ea6b5829",
+      "sourceUrl": null,
+      "notes": "Supporting Fellowship",
+      "geo": {
+        "lat": 53.47427,
+        "lon": -2.2505,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "within-silence-2026-06-20-london",
+      "date": "2026-06-20",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "229",
+      "city": "London",
+      "region": null,
+      "countryCode": "GB",
+      "status": null,
+      "ticketUrl": "https://www.eventim-light.com/uk/a/64f31a8ea474ff19ea6b5829",
+      "sourceUrl": null,
+      "notes": "Supporting Fellowship",
+      "geo": {
+        "lat": 51.43672,
+        "lon": 0.08904,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "within-silence-2026-10-16-kirchheim-unter-teck",
+      "date": "2026-10-16",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": "Teck Rock",
+      "venue": null,
+      "city": "Kirchheim unter Teck",
+      "region": null,
+      "countryCode": "DE",
+      "status": null,
+      "ticketUrl": null,
+      "sourceUrl": null,
+      "notes": "With A Life Aligned",
+      "geo": {
+        "lat": 48.64805,
+        "lon": 9.45102,
+        "precision": "city",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "within-silence-2027-02-12-prague",
+      "date": "2027-02-12",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "Modrá Vopice",
+      "city": "Prague",
+      "region": null,
+      "countryCode": "CZ",
+      "status": null,
+      "ticketUrl": null,
+      "sourceUrl": null,
+      "notes": "With Rosa Nocturna",
+      "geo": {
+        "lat": 50.09947,
+        "lon": 14.49388,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "within-silence-2027-02-13-brno",
+      "date": "2027-02-13",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "Melodka",
+      "city": "Brno",
+      "region": null,
+      "countryCode": "CZ",
+      "status": null,
+      "ticketUrl": null,
+      "sourceUrl": null,
+      "notes": "With Rosa Nocturna",
+      "geo": {
+        "lat": 49.2298,
+        "lon": 16.59181,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    }
+  ]
+}

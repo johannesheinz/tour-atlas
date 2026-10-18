@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "band": {
+    "id": "deuteronomium",
+    "name": "Deuteronomium",
+    "color": null,
+    "tags": [
+      "melodic-death-metal",
+      "death-metal",
+      "christian-metal"
+    ],
+    "logoUrl": "https://www.metal-archives.com/images/7/3/7/6/7376_logo.jpg"
+  },
+  "source": {
+    "url": "https://www.metal-archives.com/bands/Deuteronomium/7376",
+    "retrievedAt": "2026-10-18"
+  },
+  "shows": []
+}

@@ -1,0 +1,85 @@
+{
+  "schemaVersion": 1,
+  "band": {
+    "id": "slechtvalk",
+    "name": "Slechtvalk",
+    "color": null,
+    "tags": [
+      "black-metal",
+      "christian-metal"
+    ],
+    "logoUrl": "https://www.metal-archives.com/images/5/9/5/7/5957_logo.jpg"
+  },
+  "source": {
+    "url": "https://www.setlist.fm/setlists/slechtvalk-73d61a01.html",
+    "retrievedAt": "2026-10-18"
+  },
+  "shows": [
+    {
+      "id": "slechtvalk-2026-01-24-roermond",
+      "date": "2026-01-24",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "Azijnfabriek",
+      "city": "Roermond",
+      "region": null,
+      "countryCode": "NL",
+      "status": null,
+      "ticketUrl": null,
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 51.19045,
+        "lon": 5.98749,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "slechtvalk-2026-03-06-niederaula",
+      "date": "2026-03-06",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": "FullMetal Osthessen",
+      "venue": "Dorfgemeinschaftshaus Niederjossa",
+      "city": "Niederaula",
+      "region": null,
+      "countryCode": "DE",
+      "status": null,
+      "ticketUrl": null,
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 50.77384,
+        "lon": 9.56557,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "slechtvalk-2027-02-13-apeldoorn",
+      "date": "2027-02-13",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": "March Into Walhalla",
+      "venue": "Gigant",
+      "city": "Apeldoorn",
+      "region": null,
+      "countryCode": "NL",
+      "status": "scheduled",
+      "ticketUrl": "https://tickets.gigant.nl/mtTicket/performance/10359033",
+      "sourceUrl": "https://www.gigant.nl/concert/march-into-walhalla/",
+      "notes": null,
+      "geo": {
+        "lat": 52.21575,
+        "lon": 5.95863,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    }
+  ]
+}

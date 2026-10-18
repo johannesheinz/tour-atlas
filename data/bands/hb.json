@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "band": {
+    "id": "hb",
+    "name": "HB",
+    "color": null,
+    "tags": [
+      "power-metal",
+      "symphonic-metal",
+      "christian-metal"
+    ],
+    "logoUrl": "https://www.metal-archives.com/images/3/5/4/0/3540399304_logo.jpg"
+  },
+  "source": {
+    "url": "https://www.metal-archives.com/bands/HB/3540399304",
+    "retrievedAt": "2026-10-18"
+  },
+  "shows": []
+}

@@ -1,0 +1,239 @@
+{
+  "schemaVersion": 1,
+  "band": {
+    "id": "innerwish",
+    "name": "InnerWish",
+    "color": null,
+    "tags": [
+      "heavy-metal",
+      "power-metal"
+    ],
+    "logoUrl": "https://static.wixstatic.com/media/73d6a5_cd1cd5953eec410cbf4005f8e055af92~mv2.png/v1/fit/w_1200,h_300,al_c/InnerWish-logo.png"
+  },
+  "source": {
+    "url": "https://www.innerwish.gr/copy-of-bio",
+    "retrievedAt": "2026-10-18"
+  },
+  "shows": [
+    {
+      "id": "innerwish-2026-01-09-ioannina",
+      "date": "2026-01-09",
+      "endDate": null,
+      "startTime": null,
+      "tourName": "Ash Of Eternal Flame headline tour",
+      "eventName": null,
+      "venue": "Studio 203",
+      "city": "Ioannina",
+      "region": null,
+      "countryCode": "GR",
+      "status": null,
+      "ticketUrl": null,
+      "sourceUrl": null,
+      "notes": "With Dark Nightmare",
+      "geo": {
+        "lat": 39.66398,
+        "lon": 20.85228,
+        "precision": "city",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "innerwish-2026-01-10-thessaloniki",
+      "date": "2026-01-10",
+      "endDate": null,
+      "startTime": null,
+      "tourName": "Ash Of Eternal Flame headline tour",
+      "eventName": null,
+      "venue": "Eightball Club",
+      "city": "Thessaloniki",
+      "region": null,
+      "countryCode": "GR",
+      "status": null,
+      "ticketUrl": null,
+      "sourceUrl": null,
+      "notes": "With Remnant",
+      "geo": {
+        "lat": 40.64032,
+        "lon": 22.93527,
+        "precision": "city",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "innerwish-2026-02-06-larissa",
+      "date": "2026-02-06",
+      "endDate": null,
+      "startTime": null,
+      "tourName": "Ash Of Eternal Flame headline tour",
+      "eventName": null,
+      "venue": "Skyland",
+      "city": "Larissa",
+      "region": null,
+      "countryCode": "GR",
+      "status": null,
+      "ticketUrl": null,
+      "sourceUrl": null,
+      "notes": "With Dark Nightmare",
+      "geo": {
+        "lat": 39.63831,
+        "lon": 22.41607,
+        "precision": "city",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "innerwish-2026-02-07-agrinio",
+      "date": "2026-02-07",
+      "endDate": null,
+      "startTime": null,
+      "tourName": "Ash Of Eternal Flame headline tour",
+      "eventName": null,
+      "venue": "Metal Union",
+      "city": "Agrinio",
+      "region": null,
+      "countryCode": "GR",
+      "status": null,
+      "ticketUrl": null,
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 38.62483,
+        "lon": 21.40942,
+        "precision": "city",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "innerwish-2026-04-11-roskilde",
+      "date": "2026-04-11",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": "Epic Fest 2026",
+      "venue": "Gimle Hall",
+      "city": "Roskilde",
+      "region": null,
+      "countryCode": "DK",
+      "status": null,
+      "ticketUrl": null,
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 55.64335,
+        "lon": 12.08192,
+        "precision": "city",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "innerwish-2026-04-17-kalamata",
+      "date": "2026-04-17",
+      "endDate": null,
+      "startTime": null,
+      "tourName": "Ash Of Eternal Flame headline tour",
+      "eventName": null,
+      "venue": "Brooklyn Live Stage",
+      "city": "Kalamata",
+      "region": null,
+      "countryCode": "GR",
+      "status": null,
+      "ticketUrl": null,
+      "sourceUrl": null,
+      "notes": "With Insomnia",
+      "geo": {
+        "lat": 37.03727,
+        "lon": 22.11071,
+        "precision": "city",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "innerwish-2026-04-18-patras",
+      "date": "2026-04-18",
+      "endDate": null,
+      "startTime": null,
+      "tourName": "Ash Of Eternal Flame headline tour",
+      "eventName": null,
+      "venue": "Frida Stage",
+      "city": "Patras",
+      "region": null,
+      "countryCode": "GR",
+      "status": null,
+      "ticketUrl": null,
+      "sourceUrl": null,
+      "notes": "With This Leads Nowhere",
+      "geo": {
+        "lat": 38.24624,
+        "lon": 21.73508,
+        "precision": "city",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "innerwish-2026-09-18-wissen",
+      "date": "2026-09-18",
+      "endDate": null,
+      "startTime": "20:00",
+      "tourName": null,
+      "eventName": "Loud and Proud Festival",
+      "venue": "kulturWERK Wissen",
+      "city": "Wissen",
+      "region": null,
+      "countryCode": "DE",
+      "status": null,
+      "ticketUrl": null,
+      "sourceUrl": "https://www.lap-festival.de/",
+      "notes": "Side stage",
+      "geo": {
+        "lat": 50.78284,
+        "lon": 7.74126,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "innerwish-2026-09-19-wissen",
+      "date": "2026-09-19",
+      "endDate": null,
+      "startTime": "16:25",
+      "tourName": null,
+      "eventName": "Loud and Proud Festival",
+      "venue": "kulturWERK Wissen",
+      "city": "Wissen",
+      "region": null,
+      "countryCode": "DE",
+      "status": null,
+      "ticketUrl": null,
+      "sourceUrl": "https://www.lap-festival.de/",
+      "notes": "Main stage",
+      "geo": {
+        "lat": 50.78284,
+        "lon": 7.74126,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "innerwish-2026-11-28-athens",
+      "date": "2026-11-28",
+      "endDate": null,
+      "startTime": "21:00",
+      "tourName": null,
+      "eventName": null,
+      "venue": "Fuzz Club",
+      "city": "Athens",
+      "region": null,
+      "countryCode": "GR",
+      "status": null,
+      "ticketUrl": "https://www.more.com/gr-el/tickets/music/innerwish",
+      "sourceUrl": "https://rockoverdose.gr/innerwish-gr-28-11-2026-fuzz-club-athina/",
+      "notes": "10th anniversary of the album InnerWish; with Wardrum",
+      "geo": {
+        "lat": 37.97556,
+        "lon": 23.73483,
+        "precision": "city",
+        "source": "nominatim"
+      }
+    }
+  ]
+}

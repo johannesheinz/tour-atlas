@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "band": {
+    "id": "darkwater",
+    "name": "Darkwater",
+    "color": null,
+    "tags": [
+      "power-metal",
+      "progressive-metal"
+    ],
+    "logoUrl": "https://www.metal-archives.com/images/9/2/9/1/92910_logo.jpg"
+  },
+  "source": {
+    "url": "https://www.darkwater.se",
+    "retrievedAt": "2026-10-18"
+  },
+  "shows": []
+}

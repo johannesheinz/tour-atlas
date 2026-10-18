@@ -1,0 +1,261 @@
+{
+  "schemaVersion": 1,
+  "band": {
+    "id": "signum-regis",
+    "name": "Signum Regis",
+    "color": null,
+    "tags": [
+      "power-metal",
+      "christian-metal"
+    ],
+    "logoUrl": "https://www.signum-regis.com/wp-content/uploads/2018/10/2010-Logo.png"
+  },
+  "source": {
+    "url": "https://www.signum-regis.com/events/",
+    "retrievedAt": "2026-10-18"
+  },
+  "shows": [
+    {
+      "id": "signum-regis-2026-04-25-zilina",
+      "date": "2026-04-25",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": "Metal Meltdown pt.2",
+      "venue": null,
+      "city": "Žilina",
+      "region": null,
+      "countryCode": "SK",
+      "status": null,
+      "ticketUrl": null,
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 49.22347,
+        "lon": 18.73931,
+        "precision": "city",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "signum-regis-2026-10-17-nitra",
+      "date": "2026-10-17",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": "MoonFest",
+      "venue": null,
+      "city": "Nitra",
+      "region": null,
+      "countryCode": "SK",
+      "status": null,
+      "ticketUrl": null,
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 48.31295,
+        "lon": 18.08946,
+        "precision": "city",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "signum-regis-2026-11-06-heilbronn",
+      "date": "2026-11-06",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": "Blast Of Eternity",
+      "venue": "Maschinenfabrik",
+      "city": "Heilbronn",
+      "region": null,
+      "countryCode": "DE",
+      "status": null,
+      "ticketUrl": null,
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 49.13849,
+        "lon": 9.21031,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "signum-regis-2026-11-07-apeldoorn",
+      "date": "2026-11-07",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": "Brainstorm Fest",
+      "venue": "Gigant",
+      "city": "Apeldoorn",
+      "region": null,
+      "countryCode": "NL",
+      "status": null,
+      "ticketUrl": null,
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 52.21575,
+        "lon": 5.95863,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "signum-regis-2026-11-08-helmond",
+      "date": "2026-11-08",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "De Cacaofabriek",
+      "city": "Helmond",
+      "region": null,
+      "countryCode": "NL",
+      "status": null,
+      "ticketUrl": null,
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 51.4736,
+        "lon": 5.66703,
+        "precision": "city",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "signum-regis-2027-03-05-heerlen",
+      "date": "2027-03-05",
+      "endDate": null,
+      "startTime": null,
+      "tourName": "Grand Mosaic Tour 2027",
+      "eventName": null,
+      "venue": "Nieuwe Nor",
+      "city": "Heerlen",
+      "region": null,
+      "countryCode": "NL",
+      "status": null,
+      "ticketUrl": "https://nieuwenor.stager.co/shop/default/events/111666933",
+      "sourceUrl": null,
+      "notes": "Supporting Theocracy, with special guest Sunburst",
+      "geo": {
+        "lat": 50.88801,
+        "lon": 5.98118,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "signum-regis-2027-03-06-harderwijk",
+      "date": "2027-03-06",
+      "endDate": null,
+      "startTime": null,
+      "tourName": "Grand Mosaic Tour 2027",
+      "eventName": null,
+      "venue": "Estrado",
+      "city": "Harderwijk",
+      "region": null,
+      "countryCode": "NL",
+      "status": null,
+      "ticketUrl": "https://secure.ticketunie.com/widgets/408/940/OrderActvity/292272",
+      "sourceUrl": null,
+      "notes": "Supporting Theocracy, with special guest Sunburst",
+      "geo": {
+        "lat": 52.34321,
+        "lon": 5.62856,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "signum-regis-2027-03-07-kortrijk",
+      "date": "2027-03-07",
+      "endDate": null,
+      "startTime": null,
+      "tourName": "Grand Mosaic Tour 2027",
+      "eventName": null,
+      "venue": "DVG Club",
+      "city": "Kortrijk",
+      "region": null,
+      "countryCode": "BE",
+      "status": null,
+      "ticketUrl": "https://theocracy-kortrijk.eventsquare.store/",
+      "sourceUrl": null,
+      "notes": "Supporting Theocracy, with special guest Sunburst",
+      "geo": {
+        "lat": 50.81835,
+        "lon": 3.25252,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "signum-regis-2027-03-09-montreuil",
+      "date": "2027-03-09",
+      "endDate": null,
+      "startTime": null,
+      "tourName": "Grand Mosaic Tour 2027",
+      "eventName": null,
+      "venue": "Le Chinois",
+      "city": "Montreuil",
+      "region": "Seine-Saint-Denis",
+      "countryCode": "FR",
+      "status": null,
+      "ticketUrl": "https://billetterie.seetickets.fr/theocracy-sunburst-signum-regis-le-chinois-montreuil-09-mars-2027-css5-billetterie3ctour-pg101-ri11967417.html",
+      "sourceUrl": null,
+      "notes": "Supporting Theocracy, with special guest Sunburst",
+      "geo": {
+        "lat": 48.85823,
+        "lon": 2.43418,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "signum-regis-2027-03-11-kirchheim-unter-teck",
+      "date": "2027-03-11",
+      "endDate": null,
+      "startTime": null,
+      "tourName": "Grand Mosaic Tour 2027",
+      "eventName": "Teck Rock",
+      "venue": "Steingau-Zentrum",
+      "city": "Kirchheim unter Teck",
+      "region": null,
+      "countryCode": "DE",
+      "status": null,
+      "ticketUrl": "https://www.teckrock.org/grand-mosaic-tour-2027",
+      "sourceUrl": null,
+      "notes": "Supporting Theocracy, with special guest Sunburst",
+      "geo": {
+        "lat": 48.64805,
+        "lon": 9.45102,
+        "precision": "city",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "signum-regis-2027-03-12-uster",
+      "date": "2027-03-12",
+      "endDate": null,
+      "startTime": null,
+      "tourName": "Grand Mosaic Tour 2027",
+      "eventName": "Elements of Rock",
+      "venue": "Stadthofsaal",
+      "city": "Uster",
+      "region": null,
+      "countryCode": "CH",
+      "status": null,
+      "ticketUrl": "https://www.elementsofrock.com/tickets",
+      "sourceUrl": null,
+      "notes": "Supporting Theocracy, with special guest Sunburst",
+      "geo": {
+        "lat": 47.34886,
+        "lon": 8.71542,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    }
+  ]
+}

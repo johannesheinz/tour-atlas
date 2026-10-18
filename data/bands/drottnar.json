@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "band": {
+    "id": "drottnar",
+    "name": "Drottnar",
+    "color": null,
+    "tags": [
+      "folk-metal",
+      "black-metal",
+      "christian-metal"
+    ],
+    "logoUrl": "https://www.metal-archives.com/images/5/2/5/2/5252_logo.png"
+  },
+  "source": {
+    "url": "https://www.drottnar.com/",
+    "retrievedAt": "2026-10-18"
+  },
+  "shows": []
+}

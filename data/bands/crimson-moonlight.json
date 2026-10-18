@@ -1,0 +1,63 @@
+{
+  "schemaVersion": 1,
+  "band": {
+    "id": "crimson-moonlight",
+    "name": "Crimson Moonlight",
+    "color": null,
+    "tags": [
+      "black-metal",
+      "christian-metal"
+    ],
+    "logoUrl": "https://www.metal-archives.com/images/2/0/5/3/2053_logo.png"
+  },
+  "source": {
+    "url": "https://www.lightthedark.se/bands/crimson-moonlight",
+    "retrievedAt": "2026-10-18"
+  },
+  "shows": [
+    {
+      "id": "crimson-moonlight-2027-03-13-uster",
+      "date": "2027-03-13",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": "Elements of Rock",
+      "venue": "Stadthofsaal",
+      "city": "Uster",
+      "region": null,
+      "countryCode": "CH",
+      "status": null,
+      "ticketUrl": "https://eventfrog.ch/de/p/festivals/pop-rock/elements-of-rock-2027-uster-7511696637145694526.html",
+      "sourceUrl": "https://eventfrog.ch/de/p/festivals/pop-rock/elements-of-rock-2027-uster-7511696637145694526.html",
+      "notes": null,
+      "geo": {
+        "lat": 47.34886,
+        "lon": 8.71542,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "crimson-moonlight-2027-03-19-norrkoping",
+      "date": "2027-03-19",
+      "endDate": "2027-03-20",
+      "startTime": null,
+      "tourName": null,
+      "eventName": "Light The Dark",
+      "venue": "Arbis",
+      "city": "Norrköping",
+      "region": null,
+      "countryCode": "SE",
+      "status": null,
+      "ticketUrl": "https://secure.tickster.com/sv/2jxp0k7n5twwarl/products",
+      "sourceUrl": null,
+      "notes": "30-year anniversary celebration",
+      "geo": {
+        "lat": 58.59003,
+        "lon": 16.17492,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    }
+  ]
+}

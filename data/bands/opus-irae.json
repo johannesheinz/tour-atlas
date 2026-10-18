@@ -1,0 +1,460 @@
+{
+  "schemaVersion": 1,
+  "band": {
+    "id": "opus-irae",
+    "name": "Opus Iræ",
+    "color": null,
+    "tags": [
+      "symphonic-metal",
+      "black-metal",
+      "christian-metal"
+    ],
+    "logoUrl": "https://www.metal-archives.com/images/3/5/4/0/3540405662_logo.jpg"
+  },
+  "source": {
+    "url": "https://opus-irae.com/live",
+    "retrievedAt": "2026-10-18"
+  },
+  "shows": [
+    {
+      "id": "opus-irae-2018-05-12-heilbronn",
+      "date": "2018-05-12",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "Nikolaikirche",
+      "city": "Heilbronn",
+      "region": null,
+      "countryCode": "DE",
+      "status": null,
+      "ticketUrl": null,
+      "sourceUrl": null,
+      "notes": "Support for Dornenreich; acoustic",
+      "geo": {
+        "lat": 49.14492,
+        "lon": 9.22119,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "opus-irae-2018-06-06-karlsruhe",
+      "date": "2018-06-06",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "P8",
+      "city": "Karlsruhe",
+      "region": null,
+      "countryCode": "DE",
+      "status": null,
+      "ticketUrl": null,
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 49.01937,
+        "lon": 8.40948,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "opus-irae-2018-11-03-neckarsulm",
+      "date": "2018-11-03",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": "Blast of Eternity",
+      "venue": "Gleis 3",
+      "city": "Neckarsulm",
+      "region": null,
+      "countryCode": "DE",
+      "status": null,
+      "ticketUrl": null,
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 49.19172,
+        "lon": 9.22493,
+        "precision": "city",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "opus-irae-2018-11-10-apeldoorn",
+      "date": "2018-11-10",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": "Brainstorm Festival",
+      "venue": "Gigant",
+      "city": "Apeldoorn",
+      "region": null,
+      "countryCode": "NL",
+      "status": null,
+      "ticketUrl": null,
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 52.21575,
+        "lon": 5.95863,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "opus-irae-2019-11-01-oslo",
+      "date": "2019-11-01",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": "Nordic Fest",
+      "venue": "Sub Scene",
+      "city": "Oslo",
+      "region": null,
+      "countryCode": "NO",
+      "status": null,
+      "ticketUrl": null,
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 59.91215,
+        "lon": 10.73644,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "opus-irae-2020-02-07-pfaffenhofen-an-der-ilm",
+      "date": "2020-02-07",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": "Metal Armageddon",
+      "venue": "Musikclub 14/1",
+      "city": "Pfaffenhofen an der Ilm",
+      "region": null,
+      "countryCode": "DE",
+      "status": null,
+      "ticketUrl": null,
+      "sourceUrl": null,
+      "notes": "With Welicoruss",
+      "geo": {
+        "lat": 48.52967,
+        "lon": 11.5085,
+        "precision": "city",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "opus-irae-2021-08-28-neckarsulm",
+      "date": "2021-08-28",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": "Blast of Eternity",
+      "venue": "Kultursommer Openair",
+      "city": "Neckarsulm",
+      "region": null,
+      "countryCode": "DE",
+      "status": null,
+      "ticketUrl": null,
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 49.19172,
+        "lon": 9.22493,
+        "precision": "city",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "opus-irae-2024-02-23-pfaffenhofen-an-der-ilm",
+      "date": "2024-02-23",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "Atlantis",
+      "city": "Pfaffenhofen an der Ilm",
+      "region": null,
+      "countryCode": "DE",
+      "status": null,
+      "ticketUrl": null,
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 48.53696,
+        "lon": 11.50917,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "opus-irae-2024-04-20-neckarsulm",
+      "date": "2024-04-20",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "Kreatief",
+      "city": "Neckarsulm",
+      "region": null,
+      "countryCode": "DE",
+      "status": null,
+      "ticketUrl": "https://www.kreatief-neckarsulm.de/#/events/326",
+      "sourceUrl": null,
+      "notes": "Acoustic",
+      "geo": {
+        "lat": 49.19298,
+        "lon": 9.22601,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "opus-irae-2024-11-08-heilbronn",
+      "date": "2024-11-08",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": "Blast of Eternity",
+      "venue": "Maschinenfabrik",
+      "city": "Heilbronn",
+      "region": null,
+      "countryCode": "DE",
+      "status": null,
+      "ticketUrl": "https://www.eventim-light.com/de/a/5b2552d4bb0a4d04c778b31f/e/66a7a9241fd77c62ddc03d5d",
+      "sourceUrl": null,
+      "notes": "Album release show",
+      "geo": {
+        "lat": 49.13849,
+        "lon": 9.21031,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "opus-irae-2025-01-19-weinheim",
+      "date": "2025-01-19",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "Café Central",
+      "city": "Weinheim",
+      "region": null,
+      "countryCode": "DE",
+      "status": null,
+      "ticketUrl": "https://cafecentral.de/konzert/morgarten/",
+      "sourceUrl": null,
+      "notes": "With Morgarten",
+      "geo": {
+        "lat": 49.55136,
+        "lon": 8.66832,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "opus-irae-2025-02-22-apeldoorn",
+      "date": "2025-02-22",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": "March Into Walhalla",
+      "venue": "Gigant",
+      "city": "Apeldoorn",
+      "region": null,
+      "countryCode": "NL",
+      "status": null,
+      "ticketUrl": "https://www.gigant.nl/concert/march-into-walhalla-2025",
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 52.21575,
+        "lon": 5.95863,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "opus-irae-2025-03-21-uster",
+      "date": "2025-03-21",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": "Elements of Rock",
+      "venue": "Stadthofsaal",
+      "city": "Uster",
+      "region": null,
+      "countryCode": "CH",
+      "status": null,
+      "ticketUrl": "https://elementsofrock.com",
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 47.34886,
+        "lon": 8.71542,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "opus-irae-2025-04-11-helmond",
+      "date": "2025-04-11",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "De Cacaofabriek",
+      "city": "Helmond",
+      "region": null,
+      "countryCode": "NL",
+      "status": null,
+      "ticketUrl": "https://cacaofabriek.nl/agenda/winterfylleth",
+      "sourceUrl": null,
+      "notes": "Support for Winterfylleth",
+      "geo": {
+        "lat": 51.4736,
+        "lon": 5.66703,
+        "precision": "city",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "opus-irae-2025-08-22-schneeberg",
+      "date": "2025-08-22",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": "Haldenbeben Festival",
+      "venue": "CVJM Huthausgelände",
+      "city": "Schneeberg",
+      "region": "Saxony",
+      "countryCode": "DE",
+      "status": null,
+      "ticketUrl": "https://goldnesonne.tickets.io/fful7vhy/",
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 50.59507,
+        "lon": 12.6417,
+        "precision": "city",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "opus-irae-2026-03-14-pinache",
+      "date": "2026-03-14",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": "Krachnacht",
+      "venue": "Waldenserhalle",
+      "city": "Pinache",
+      "region": null,
+      "countryCode": "DE",
+      "status": null,
+      "ticketUrl": "https://pretix.eu/riedler-ev/krachnacht/",
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 48.90468,
+        "lon": 8.84878,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "opus-irae-2026-03-20-norrkoping",
+      "date": "2026-03-20",
+      "endDate": "2026-03-21",
+      "startTime": null,
+      "tourName": null,
+      "eventName": "Light The Dark",
+      "venue": "Arbis",
+      "city": "Norrköping",
+      "region": null,
+      "countryCode": "SE",
+      "status": "cancelled",
+      "ticketUrl": null,
+      "sourceUrl": "https://www.lightthedark.se/historia",
+      "notes": "Cancelled for health reasons; replaced by Sáwol",
+      "geo": {
+        "lat": 58.59003,
+        "lon": 16.17492,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "opus-irae-2026-10-10-heilbronn",
+      "date": "2026-10-10",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": "Lange Nacht der Kultur",
+      "venue": "Nikolaikirche",
+      "city": "Heilbronn",
+      "region": null,
+      "countryCode": "DE",
+      "status": null,
+      "ticketUrl": null,
+      "sourceUrl": null,
+      "notes": "Acoustic",
+      "geo": {
+        "lat": 49.14492,
+        "lon": 9.22119,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "opus-irae-2026-11-01-mossingen-belsen",
+      "date": "2026-11-01",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "Kapelle Belsen",
+      "city": "Mössingen",
+      "region": null,
+      "countryCode": "DE",
+      "status": null,
+      "ticketUrl": null,
+      "sourceUrl": null,
+      "notes": "Acoustic",
+      "geo": {
+        "lat": 48.40691,
+        "lon": 9.06029,
+        "precision": "city",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "opus-irae-2026-12-19-pfaffenhofen-an-der-ilm",
+      "date": "2026-12-19",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "Spitalkirche",
+      "city": "Pfaffenhofen an der Ilm",
+      "region": null,
+      "countryCode": "DE",
+      "status": null,
+      "ticketUrl": null,
+      "sourceUrl": null,
+      "notes": "Acoustic",
+      "geo": {
+        "lat": 48.5304,
+        "lon": 11.50531,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    }
+  ]
+}

@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "band": {
+    "id": "immortal-souls",
+    "name": "Immortal Souls",
+    "color": null,
+    "tags": [
+      "melodic-death-metal",
+      "christian-metal"
+    ],
+    "logoUrl": "https://www.immortalsouls.com/images/ISlogo.jpg"
+  },
+  "source": {
+    "url": "https://www.lightthedark.se/bands/immortalsouls",
+    "retrievedAt": "2026-10-18"
+  },
+  "shows": [
+    {
+      "id": "immortal-souls-2027-03-19-norrkoping",
+      "date": "2027-03-19",
+      "endDate": "2027-03-20",
+      "startTime": null,
+      "tourName": null,
+      "eventName": "Light The Dark",
+      "venue": "Arbis",
+      "city": "Norrköping",
+      "region": null,
+      "countryCode": "SE",
+      "status": null,
+      "ticketUrl": "https://secure.tickster.com/sv/2jxp0k7n5twwarl/products",
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 58.59003,
+        "lon": 16.17492,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "band": {
+    "id": "atlas-pain",
+    "name": "Atlas Pain",
+    "color": null,
+    "tags": [
+      "folk-metal"
+    ],
+    "logoUrl": "https://www.atlaspainofficial.com/wp-content/uploads/2026/07/Logo-Atlas-Pain-scaled.png"
+  },
+  "source": {
+    "url": "https://www.atlaspainofficial.com/",
+    "retrievedAt": "2026-10-18"
+  },
+  "shows": []
+}

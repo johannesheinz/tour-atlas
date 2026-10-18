@@ -1,0 +1,284 @@
+{
+  "schemaVersion": 1,
+  "band": {
+    "id": "whitecross",
+    "name": "Whitecross",
+    "color": null,
+    "tags": [
+      "heavy-metal",
+      "christian-metal",
+      "hard-rock"
+    ],
+    "logoUrl": "https://whitecrossband.com/wp-content/uploads/2024/03/Logo-Transparent.png"
+  },
+  "source": {
+    "url": "https://www.bandsintown.com/a/54253-whitecross",
+    "retrievedAt": "2026-10-18"
+  },
+  "shows": [
+    {
+      "id": "whitecross-2026-05-08-lisle",
+      "date": "2026-05-08",
+      "endDate": null,
+      "startTime": "17:00",
+      "tourName": null,
+      "eventName": null,
+      "venue": "BaseCamp Pub",
+      "city": "Lisle",
+      "region": "IL",
+      "countryCode": "US",
+      "status": null,
+      "ticketUrl": null,
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 41.78238,
+        "lon": -88.0835,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "whitecross-2026-08-15-murfreesboro",
+      "date": "2026-08-15",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": "Fear Not Album Release Concert",
+      "venue": "Hop Springs Beer Park",
+      "city": "Murfreesboro",
+      "region": "TN",
+      "countryCode": "US",
+      "status": null,
+      "ticketUrl": "https://anchormerchandising.com/store/fearnotconcert7/",
+      "sourceUrl": "https://heavensmetalmagazine.com/index.php/2026/08/22/review-fear-not-album-release-concert-a-night-of-christian-metal-legends/",
+      "notes": "With Fear Not, Applehead and Devin Williams",
+      "geo": {
+        "lat": 35.82069,
+        "lon": -86.26668,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "whitecross-2027-05-02-curitiba",
+      "date": "2027-05-02",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "Teatro Regina Vogue",
+      "city": "Curitiba",
+      "region": null,
+      "countryCode": "BR",
+      "status": null,
+      "ticketUrl": null,
+      "sourceUrl": "https://roadiecrew.com/petra-bride-e-whitecross-fazem-turne-conjunta-pelo-brasil-em-2027/",
+      "notes": "With Petra and Bride",
+      "geo": {
+        "lat": -25.43874,
+        "lon": -49.26788,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "whitecross-2027-05-03-porto-alegre",
+      "date": "2027-05-03",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "Teatro CIEE",
+      "city": "Porto Alegre",
+      "region": null,
+      "countryCode": "BR",
+      "status": "scheduled",
+      "ticketUrl": "https://www.clubedoingresso.com/evento/petrawhitecrossbride-portoalegre",
+      "sourceUrl": "https://roadiecrew.com/petra-bride-e-whitecross-fazem-turne-conjunta-pelo-brasil-em-2027/",
+      "notes": "With Petra and Bride",
+      "geo": {
+        "lat": -30.01468,
+        "lon": -51.18799,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "whitecross-2027-05-05-rio-de-janeiro",
+      "date": "2027-05-05",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "Teatro Vannucci",
+      "city": "Rio de Janeiro",
+      "region": null,
+      "countryCode": "BR",
+      "status": "scheduled",
+      "ticketUrl": "https://www.clubedoingresso.com/evento/petrawhitecrossbride-riodejaneiro",
+      "sourceUrl": "https://roadiecrew.com/petra-bride-e-whitecross-fazem-turne-conjunta-pelo-brasil-em-2027/",
+      "notes": "With Petra and Bride",
+      "geo": {
+        "lat": -22.91101,
+        "lon": -43.20937,
+        "precision": "city",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "whitecross-2027-05-06-vila-velha",
+      "date": "2027-05-06",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "Correria Music Bar",
+      "city": "Vila Velha",
+      "region": null,
+      "countryCode": "BR",
+      "status": "scheduled",
+      "ticketUrl": "https://www.clubedoingresso.com/evento/petrawhitecrossbride-vilavelha",
+      "sourceUrl": "https://roadiecrew.com/petra-bride-e-whitecross-fazem-turne-conjunta-pelo-brasil-em-2027/",
+      "notes": "With Petra and Bride",
+      "geo": {
+        "lat": -20.38571,
+        "lon": -40.31172,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "whitecross-2027-05-08-sao-paulo",
+      "date": "2027-05-08",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "Carioca Club",
+      "city": "São Paulo",
+      "region": null,
+      "countryCode": "BR",
+      "status": null,
+      "ticketUrl": null,
+      "sourceUrl": "https://roadiecrew.com/petra-bride-e-whitecross-fazem-turne-conjunta-pelo-brasil-em-2027/",
+      "notes": "With Petra and Bride",
+      "geo": {
+        "lat": -23.56934,
+        "lon": -46.69477,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "whitecross-2027-05-09-belo-horizonte",
+      "date": "2027-05-09",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "Mister Rock",
+      "city": "Belo Horizonte",
+      "region": null,
+      "countryCode": "BR",
+      "status": "scheduled",
+      "ticketUrl": "https://www.clubedoingresso.com/evento/petrawhitecrossbride-belohorizonte",
+      "sourceUrl": "https://roadiecrew.com/petra-bride-e-whitecross-fazem-turne-conjunta-pelo-brasil-em-2027/",
+      "notes": "With Petra and Bride",
+      "geo": {
+        "lat": -19.92273,
+        "lon": -43.94509,
+        "precision": "city",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "whitecross-2027-05-11-brasilia",
+      "date": "2027-05-11",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": null,
+      "city": "Brasília",
+      "region": null,
+      "countryCode": "BR",
+      "status": "scheduled",
+      "ticketUrl": "https://www.clubedoingresso.com/evento/petrawhitecrossbride-brasilia",
+      "sourceUrl": "https://roadiecrew.com/petra-bride-e-whitecross-fazem-turne-conjunta-pelo-brasil-em-2027/",
+      "notes": "With Petra and Bride; venue to be announced",
+      "geo": {
+        "lat": -15.79399,
+        "lon": -47.8828,
+        "precision": "city",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "whitecross-2027-05-13-recife",
+      "date": "2027-05-13",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": null,
+      "city": "Recife",
+      "region": null,
+      "countryCode": "BR",
+      "status": "scheduled",
+      "ticketUrl": "https://www.clubedoingresso.com/evento/petrawhitecrossbride-recife",
+      "sourceUrl": "https://roadiecrew.com/petra-bride-e-whitecross-fazem-turne-conjunta-pelo-brasil-em-2027/",
+      "notes": "With Petra and Bride; venue to be announced",
+      "geo": {
+        "lat": -8.05849,
+        "lon": -34.88482,
+        "precision": "city",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "whitecross-2027-05-14-fortaleza",
+      "date": "2027-05-14",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "Dragão Hall",
+      "city": "Fortaleza",
+      "region": null,
+      "countryCode": "BR",
+      "status": "scheduled",
+      "ticketUrl": "https://www.clubedoingresso.com/evento/petrawhitecrossbride-fortaleza",
+      "sourceUrl": "https://roadiecrew.com/petra-bride-e-whitecross-fazem-turne-conjunta-pelo-brasil-em-2027/",
+      "notes": "With Petra and Bride",
+      "geo": {
+        "lat": -3.79322,
+        "lon": -38.52804,
+        "precision": "city",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "whitecross-2027-05-16-manaus",
+      "date": "2027-05-16",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": null,
+      "city": "Manaus",
+      "region": null,
+      "countryCode": "BR",
+      "status": null,
+      "ticketUrl": null,
+      "sourceUrl": "https://roadiecrew.com/petra-bride-e-whitecross-fazem-turne-conjunta-pelo-brasil-em-2027/",
+      "notes": "With Petra and Bride; venue to be announced",
+      "geo": {
+        "lat": -3.13163,
+        "lon": -59.9825,
+        "precision": "city",
+        "source": "nominatim"
+      }
+    }
+  ]
+}

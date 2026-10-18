@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "band": {
+    "id": "saviour-machine",
+    "name": "Saviour Machine",
+    "color": null,
+    "tags": [
+      "symphonic-metal",
+      "gothic-metal",
+      "progressive-metal",
+      "christian-metal"
+    ],
+    "logoUrl": "https://www.metal-archives.com/images/5/0/1/0/5010_logo.jpg"
+  },
+  "source": {
+    "url": "https://www.metal-archives.com/bands/Saviour_Machine/5010",
+    "retrievedAt": "2026-10-18"
+  },
+  "shows": []
+}

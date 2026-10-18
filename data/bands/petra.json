@@ -1,0 +1,503 @@
+{
+  "schemaVersion": 1,
+  "band": {
+    "id": "petra",
+    "name": "Petra",
+    "color": null,
+    "tags": [
+      "hard-rock",
+      "christian-rock"
+    ],
+    "logoUrl": null
+  },
+  "source": {
+    "url": "https://petraband.com/",
+    "retrievedAt": "2026-10-18"
+  },
+  "shows": [
+    {
+      "id": "petra-2026-04-24-oshkosh",
+      "date": "2026-04-24",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "Calvery Sonrise Church",
+      "city": "Oshkosh",
+      "region": "WI",
+      "countryCode": "US",
+      "status": null,
+      "ticketUrl": null,
+      "sourceUrl": "https://www.setlist.fm/setlist/petra/2026/calvery-sonrise-church-oshkosh-wi-2b77c40a.html",
+      "notes": null,
+      "geo": {
+        "lat": 44.02069,
+        "lon": -88.54086,
+        "precision": "city",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "petra-2026-04-25-zeeland",
+      "date": "2026-04-25",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "Community Reformed Church",
+      "city": "Zeeland",
+      "region": "MI",
+      "countryCode": "US",
+      "status": null,
+      "ticketUrl": null,
+      "sourceUrl": "https://www.setlist.fm/setlist/petra/2026/community-reformed-church-holland-mi-b77c516.html",
+      "notes": null,
+      "geo": {
+        "lat": 42.81234,
+        "lon": -86.01653,
+        "precision": "city",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "petra-2026-07-03-gullbranna",
+      "date": "2026-07-03",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": "Gullbrannafestivalen",
+      "venue": "Parken",
+      "city": "Gullbranna",
+      "region": null,
+      "countryCode": "SE",
+      "status": null,
+      "ticketUrl": null,
+      "sourceUrl": "https://www.setlist.fm/setlist/petra/2026/parken-gullbranna-sweden-2b725022.html",
+      "notes": null,
+      "geo": {
+        "lat": 56.58906,
+        "lon": 12.9476,
+        "precision": "city",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "petra-2026-08-01-mexico-city",
+      "date": "2026-08-01",
+      "endDate": null,
+      "startTime": null,
+      "tourName": "Hope Tour",
+      "eventName": null,
+      "venue": "Auditorio Nuevos Comienzos",
+      "city": "Mexico City",
+      "region": null,
+      "countryCode": "MX",
+      "status": null,
+      "ticketUrl": null,
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 19.43263,
+        "lon": -99.13318,
+        "precision": "city",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "petra-2026-09-11-shippensburg",
+      "date": "2026-09-11",
+      "endDate": null,
+      "startTime": null,
+      "tourName": "Hope Tour",
+      "eventName": "Uprise Festival",
+      "venue": null,
+      "city": "Shippensburg",
+      "region": "PA",
+      "countryCode": "US",
+      "status": null,
+      "ticketUrl": null,
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 40.05072,
+        "lon": -77.52055,
+        "precision": "city",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "petra-2026-09-12-versailles",
+      "date": "2026-09-12",
+      "endDate": null,
+      "startTime": null,
+      "tourName": "Hope Tour",
+      "eventName": "Immortal Fest",
+      "venue": "BMI Event Center",
+      "city": "Versailles",
+      "region": "OH",
+      "countryCode": "US",
+      "status": null,
+      "ticketUrl": null,
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 40.22257,
+        "lon": -84.48444,
+        "precision": "city",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "petra-2026-09-18-wissen",
+      "date": "2026-09-18",
+      "endDate": null,
+      "startTime": "21:55",
+      "tourName": "Hope Tour",
+      "eventName": "Loud and Proud Festival",
+      "venue": "kulturWERK Wissen",
+      "city": "Wissen",
+      "region": null,
+      "countryCode": "DE",
+      "status": null,
+      "ticketUrl": null,
+      "sourceUrl": "https://www.lap-festival.de/",
+      "notes": "Main stage",
+      "geo": {
+        "lat": 50.78284,
+        "lon": 7.74126,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "petra-2026-09-19-wissen",
+      "date": "2026-09-19",
+      "endDate": null,
+      "startTime": "17:00",
+      "tourName": "Hope Tour",
+      "eventName": "Loud and Proud Festival",
+      "venue": "kulturWERK Wissen",
+      "city": "Wissen",
+      "region": null,
+      "countryCode": "DE",
+      "status": null,
+      "ticketUrl": null,
+      "sourceUrl": "https://www.lap-festival.de/",
+      "notes": "Side stage",
+      "geo": {
+        "lat": 50.78284,
+        "lon": 7.74126,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "petra-2026-09-26-arlington",
+      "date": "2026-09-26",
+      "endDate": null,
+      "startTime": null,
+      "tourName": "Hope Tour",
+      "eventName": null,
+      "venue": "Arlington Music Hall",
+      "city": "Arlington",
+      "region": "TX",
+      "countryCode": "US",
+      "status": null,
+      "ticketUrl": "http://www.arlingtonmusichall.org",
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 32.73558,
+        "lon": -97.10712,
+        "precision": "city",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "petra-2026-09-27-the-woodlands",
+      "date": "2026-09-27",
+      "endDate": null,
+      "startTime": null,
+      "tourName": "Hope Tour",
+      "eventName": null,
+      "venue": "Dosey Doe",
+      "city": "The Woodlands",
+      "region": "TX",
+      "countryCode": "US",
+      "status": null,
+      "ticketUrl": "https://www.doseydoetickets.com/",
+      "sourceUrl": null,
+      "notes": "Listed under Houston",
+      "geo": {
+        "lat": 30.13839,
+        "lon": -95.44661,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "petra-2026-10-09-milford",
+      "date": "2026-10-09",
+      "endDate": null,
+      "startTime": null,
+      "tourName": "Hope Tour",
+      "eventName": null,
+      "venue": "House of Restoration",
+      "city": "Milford",
+      "region": "OH",
+      "countryCode": "US",
+      "status": null,
+      "ticketUrl": "http://www.hofr.org/petra",
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 39.17463,
+        "lon": -84.2959,
+        "precision": "city",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "petra-2026-10-23-milton",
+      "date": "2026-10-23",
+      "endDate": null,
+      "startTime": "19:00",
+      "tourName": "Hope Tour",
+      "eventName": null,
+      "venue": "Crossroads Church of the Nazarene",
+      "city": "Milton",
+      "region": "PA",
+      "countryCode": "US",
+      "status": null,
+      "ticketUrl": "http://www.eventbrite.com/e/1988110151983?aff=oddtdtcreator",
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 41.01773,
+        "lon": -76.85308,
+        "precision": "city",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "petra-2027-05-02-curitiba",
+      "date": "2027-05-02",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "Teatro Regina Vogue",
+      "city": "Curitiba",
+      "region": null,
+      "countryCode": "BR",
+      "status": null,
+      "ticketUrl": "https://www.clubedoingresso.com/evento/petraewhitecrossebride-curitiba",
+      "sourceUrl": "https://www.clubedoingresso.com/evento/petraewhitecrossebride-curitiba",
+      "notes": "With Whitecross and Bride",
+      "geo": {
+        "lat": -25.43874,
+        "lon": -49.26788,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "petra-2027-05-03-porto-alegre",
+      "date": "2027-05-03",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "Teatro CIEE",
+      "city": "Porto Alegre",
+      "region": null,
+      "countryCode": "BR",
+      "status": "scheduled",
+      "ticketUrl": "https://www.clubedoingresso.com/evento/petrawhitecrossbride-portoalegre",
+      "sourceUrl": "https://www.clubedoingresso.com/evento/petrawhitecrossbride-portoalegre",
+      "notes": "With Whitecross and Bride",
+      "geo": {
+        "lat": -30.01468,
+        "lon": -51.18799,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "petra-2027-05-05-rio-de-janeiro",
+      "date": "2027-05-05",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "Teatro Vannucci",
+      "city": "Rio de Janeiro",
+      "region": null,
+      "countryCode": "BR",
+      "status": "scheduled",
+      "ticketUrl": "https://www.clubedoingresso.com/evento/petrawhitecrossbride-riodejaneiro",
+      "sourceUrl": "https://www.clubedoingresso.com/evento/petrawhitecrossbride-riodejaneiro",
+      "notes": "With Whitecross and Bride",
+      "geo": {
+        "lat": -22.91101,
+        "lon": -43.20937,
+        "precision": "city",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "petra-2027-05-06-vila-velha",
+      "date": "2027-05-06",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "Correria Music Bar",
+      "city": "Vila Velha",
+      "region": null,
+      "countryCode": "BR",
+      "status": "scheduled",
+      "ticketUrl": "https://www.clubedoingresso.com/evento/petrawhitecrossbride-vilavelha",
+      "sourceUrl": "https://www.clubedoingresso.com/evento/petrawhitecrossbride-vilavelha",
+      "notes": "With Whitecross and Bride",
+      "geo": {
+        "lat": -20.38571,
+        "lon": -40.31172,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "petra-2027-05-08-sao-paulo",
+      "date": "2027-05-08",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "Carioca Club",
+      "city": "São Paulo",
+      "region": null,
+      "countryCode": "BR",
+      "status": null,
+      "ticketUrl": "https://www.clubedoingresso.com/evento/petraewhitecrossebride-saopaulo",
+      "sourceUrl": "https://www.clubedoingresso.com/evento/petraewhitecrossebride-saopaulo",
+      "notes": "With Whitecross and Bride",
+      "geo": {
+        "lat": -23.56934,
+        "lon": -46.69477,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "petra-2027-05-09-belo-horizonte",
+      "date": "2027-05-09",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "Mister Rock",
+      "city": "Belo Horizonte",
+      "region": null,
+      "countryCode": "BR",
+      "status": "scheduled",
+      "ticketUrl": "https://www.clubedoingresso.com/evento/petrawhitecrossbride-belohorizonte",
+      "sourceUrl": "https://www.clubedoingresso.com/evento/petrawhitecrossbride-belohorizonte",
+      "notes": "With Whitecross and Bride",
+      "geo": {
+        "lat": -19.92273,
+        "lon": -43.94509,
+        "precision": "city",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "petra-2027-05-11-brasilia",
+      "date": "2027-05-11",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": null,
+      "city": "Brasília",
+      "region": null,
+      "countryCode": "BR",
+      "status": "scheduled",
+      "ticketUrl": "https://www.clubedoingresso.com/evento/petrawhitecrossbride-brasilia",
+      "sourceUrl": "https://www.clubedoingresso.com/evento/petrawhitecrossbride-brasilia",
+      "notes": "With Whitecross and Bride",
+      "geo": {
+        "lat": -15.79399,
+        "lon": -47.8828,
+        "precision": "city",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "petra-2027-05-13-recife",
+      "date": "2027-05-13",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": null,
+      "city": "Recife",
+      "region": null,
+      "countryCode": "BR",
+      "status": "scheduled",
+      "ticketUrl": "https://www.clubedoingresso.com/evento/petrawhitecrossbride-recife",
+      "sourceUrl": "https://www.clubedoingresso.com/evento/petrawhitecrossbride-recife",
+      "notes": "With Whitecross and Bride",
+      "geo": {
+        "lat": -8.05849,
+        "lon": -34.88482,
+        "precision": "city",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "petra-2027-05-14-fortaleza",
+      "date": "2027-05-14",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "Dragão Hall",
+      "city": "Fortaleza",
+      "region": null,
+      "countryCode": "BR",
+      "status": "scheduled",
+      "ticketUrl": "https://www.clubedoingresso.com/evento/petrawhitecrossbride-fortaleza",
+      "sourceUrl": "https://www.clubedoingresso.com/evento/petrawhitecrossbride-fortaleza",
+      "notes": "With Whitecross and Bride",
+      "geo": {
+        "lat": -3.79322,
+        "lon": -38.52804,
+        "precision": "city",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "petra-2027-05-16-manaus",
+      "date": "2027-05-16",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": null,
+      "city": "Manaus",
+      "region": null,
+      "countryCode": "BR",
+      "status": null,
+      "ticketUrl": "https://www.clubedoingresso.com/evento/petrawhitercrossbride-manaus",
+      "sourceUrl": "https://www.clubedoingresso.com/evento/petrawhitercrossbride-manaus",
+      "notes": "With Whitecross and Bride",
+      "geo": {
+        "lat": -3.13163,
+        "lon": -59.9825,
+        "precision": "city",
+        "source": "nominatim"
+      }
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "band": {
+    "id": "nightwish",
+    "name": "Nightwish",
+    "color": null,
+    "tags": [
+      "power-metal",
+      "symphonic-metal",
+      "gothic-metal",
+      "progressive-metal"
+    ],
+    "logoUrl": "https://upload.wikimedia.org/wikipedia/commons/c/c1/Nightwish_wordmark.svg"
+  },
+  "source": {
+    "url": "https://www.nightwish.com/tour/upcoming",
+    "retrievedAt": "2026-10-18"
+  },
+  "shows": []
+}

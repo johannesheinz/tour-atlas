@@ -1,0 +1,196 @@
+{
+  "schemaVersion": 1,
+  "band": {
+    "id": "theocracy",
+    "name": "Theocracy",
+    "color": null,
+    "tags": [
+      "power-metal",
+      "progressive-metal",
+      "christian-metal"
+    ],
+    "logoUrl": "https://www.metal-archives.com/images/1/4/5/0/14509_logo.png"
+  },
+  "source": {
+    "url": "https://theocracymusic.com/tour/",
+    "retrievedAt": "2026-10-18"
+  },
+  "shows": [
+    {
+      "id": "theocracy-2027-03-05-heerlen",
+      "date": "2027-03-05",
+      "endDate": null,
+      "startTime": null,
+      "tourName": "Grand Mosaic Tour 2027",
+      "eventName": null,
+      "venue": "Nieuwe Nor",
+      "city": "Heerlen",
+      "region": null,
+      "countryCode": "NL",
+      "status": null,
+      "ticketUrl": null,
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 50.88801,
+        "lon": 5.98118,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "theocracy-2027-03-06-harderwijk",
+      "date": "2027-03-06",
+      "endDate": null,
+      "startTime": null,
+      "tourName": "Grand Mosaic Tour 2027",
+      "eventName": null,
+      "venue": "Estrado",
+      "city": "Harderwijk",
+      "region": null,
+      "countryCode": "NL",
+      "status": null,
+      "ticketUrl": null,
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 52.34321,
+        "lon": 5.62856,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "theocracy-2027-03-07-kortrijk",
+      "date": "2027-03-07",
+      "endDate": null,
+      "startTime": null,
+      "tourName": "Grand Mosaic Tour 2027",
+      "eventName": null,
+      "venue": "DVG Club",
+      "city": "Kortrijk",
+      "region": null,
+      "countryCode": "BE",
+      "status": null,
+      "ticketUrl": null,
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 50.81835,
+        "lon": 3.25252,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "theocracy-2027-03-09-montreuil",
+      "date": "2027-03-09",
+      "endDate": null,
+      "startTime": null,
+      "tourName": "Grand Mosaic Tour 2027",
+      "eventName": null,
+      "venue": "Le Chinois",
+      "city": "Montreuil",
+      "region": "Seine-Saint-Denis",
+      "countryCode": "FR",
+      "status": null,
+      "ticketUrl": null,
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 48.85823,
+        "lon": 2.43418,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "theocracy-2027-03-11-kirchheim-unter-teck",
+      "date": "2027-03-11",
+      "endDate": null,
+      "startTime": null,
+      "tourName": "Grand Mosaic Tour 2027",
+      "eventName": "Teck Rock",
+      "venue": "Steingau-Zentrum",
+      "city": "Kirchheim unter Teck",
+      "region": null,
+      "countryCode": "DE",
+      "status": null,
+      "ticketUrl": "https://www.teckrock.org/grand-mosaic-tour-2027",
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 48.64805,
+        "lon": 9.45102,
+        "precision": "city",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "theocracy-2027-03-12-uster",
+      "date": "2027-03-12",
+      "endDate": null,
+      "startTime": null,
+      "tourName": "Grand Mosaic Tour 2027",
+      "eventName": "Elements of Rock",
+      "venue": "Stadthofsaal",
+      "city": "Uster",
+      "region": null,
+      "countryCode": "CH",
+      "status": null,
+      "ticketUrl": "https://eventfrog.ch/de/p/festivals/pop-rock/elements-of-rock-2027-uster-7511696637145694526.html",
+      "sourceUrl": "https://eventfrog.ch/de/p/festivals/pop-rock/elements-of-rock-2027-uster-7511696637145694526.html",
+      "notes": null,
+      "geo": {
+        "lat": 47.34886,
+        "lon": 8.71542,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "theocracy-2027-03-13-niederaula",
+      "date": "2027-03-13",
+      "endDate": null,
+      "startTime": null,
+      "tourName": "Grand Mosaic Tour 2027",
+      "eventName": "Fullmetal Osthessen",
+      "venue": null,
+      "city": "Niederaula",
+      "region": null,
+      "countryCode": "DE",
+      "status": null,
+      "ticketUrl": null,
+      "sourceUrl": null,
+      "notes": "Without Signum Regis",
+      "geo": {
+        "lat": 50.79612,
+        "lon": 9.58917,
+        "precision": "city",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "theocracy-2027-03-14-hagen",
+      "date": "2027-03-14",
+      "endDate": null,
+      "startTime": null,
+      "tourName": "Grand Mosaic Tour 2027",
+      "eventName": null,
+      "venue": "Werkhof",
+      "city": "Hagen",
+      "region": null,
+      "countryCode": "DE",
+      "status": null,
+      "ticketUrl": null,
+      "sourceUrl": null,
+      "notes": "Without Signum Regis",
+      "geo": {
+        "lat": 51.3347,
+        "lon": 7.57438,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    }
+  ]
+}

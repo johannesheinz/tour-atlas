@@ -1,0 +1,65 @@
+{
+  "schemaVersion": 1,
+  "band": {
+    "id": "pantokrator",
+    "name": "Pantokrator",
+    "color": null,
+    "tags": [
+      "melodic-death-metal",
+      "death-metal",
+      "progressive-metal",
+      "christian-metal"
+    ],
+    "logoUrl": "https://www.metal-archives.com/images/6/9/6/3/6963_logo.jpg"
+  },
+  "source": {
+    "url": "https://www.setlist.fm/setlists/pantokrator-7bd61a2c.html",
+    "retrievedAt": "2026-10-18"
+  },
+  "shows": [
+    {
+      "id": "pantokrator-2026-03-14-uster",
+      "date": "2026-03-14",
+      "endDate": null,
+      "startTime": "19:30",
+      "tourName": null,
+      "eventName": "Elements of Rock",
+      "venue": "Stadthofsaal",
+      "city": "Uster",
+      "region": null,
+      "countryCode": "CH",
+      "status": null,
+      "ticketUrl": null,
+      "sourceUrl": "https://www.elementsofrock.com/running-order",
+      "notes": null,
+      "geo": {
+        "lat": 47.34886,
+        "lon": 8.71542,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "pantokrator-2026-11-13-larvik",
+      "date": "2026-11-13",
+      "endDate": "2026-11-14",
+      "startTime": null,
+      "tourName": null,
+      "eventName": "Spetakkelfestivalen",
+      "venue": "Jotron Arena",
+      "city": "Larvik",
+      "region": null,
+      "countryCode": "NO",
+      "status": null,
+      "ticketUrl": "https://spetakkel.hoopla.no/event/762591642",
+      "sourceUrl": "https://spetakkelfestivalen.no/",
+      "notes": null,
+      "geo": {
+        "lat": 59.0497,
+        "lon": 10.05312,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    }
+  ]
+}
