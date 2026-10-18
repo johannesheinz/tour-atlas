@@ -106,6 +106,7 @@ export interface Messages {
     readonly pickedInCities: (shows: number, cities: number, band: string | null) => string;
     readonly moreNotListed: Count;
     readonly announce: (title: string, shows: number) => string;
+    readonly replayTour: Text;
     readonly venueUnknown: Text;
     readonly starts: (time: string) => string;
     readonly until: (date: string) => string;

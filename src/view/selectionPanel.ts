@@ -1,5 +1,6 @@
 import { bandColor, type ShowRef, type ThemeMode } from '../model.ts';
 import { bandIdentity } from './bandIdentity.ts';
+import { iconButton } from './icons.ts';
 import { h, prefersReducedMotion, safeExternalLink } from './dom.ts';
 import { formats, t } from '../i18n/index.ts';
 import { countryName, formatDate, formatTime, formatWeekday, statusKind } from './format.ts';
@@ -10,6 +11,8 @@ export interface SelectionHeading {
   readonly bandId: string | null;
   readonly note: string | null;
   readonly emptyMessage: string;
+  /** Band views can play their tour again. */
+  readonly canReplayTour: boolean;
 }
 
 export interface SelectionPanelProps {
@@ -26,6 +29,7 @@ export interface SelectionPanelCallbacks {
   onBack(): void;
   /** Hovering or focusing a row points the map and timeline at that show; null when it leaves. */
   onHover(ref: ShowRef | null): void;
+  onReplayTour(): void;
 }
 
 export interface SelectionPanelView {
@@ -42,10 +46,13 @@ export function createSelectionPanel(container: HTMLElement, callbacks: Selectio
   const back = h('button', { type: 'button', class: 'selection-back' });
   back.addEventListener('click', () => callbacks.onBack());
   const title = h('h2', { class: 'selection-title', tabindex: '-1' });
+  const replay = iconButton('play', t().selection.replayTour);
+  replay.classList.add('selection-replay');
+  replay.addEventListener('click', () => callbacks.onReplayTour());
   const note = h('p', { class: 'selection-note' });
   const body = h('div', { class: 'selection-body' });
   const announcer = h('div', { class: 'visually-hidden', 'aria-live': 'polite' });
-  container.append(back, h('div', { class: 'selection-head' }, title, note), body, announcer);
+  container.append(back, h('div', { class: 'selection-head' }, h('div', { class: 'selection-title-row' }, title, replay), note), body, announcer);
   let previous: SelectionPanelProps | null = null;
   let rowsByShowId = new Map<string, HTMLLIElement>();
   let highlighted: readonly HTMLLIElement[] = [];
@@ -58,6 +65,7 @@ export function createSelectionPanel(container: HTMLElement, callbacks: Selectio
       back.textContent = props.backLabel;
       const { heading } = props;
       title.replaceChildren(heading.bandId === null ? heading.title : bandIdentity(heading.bandId, heading.title, 'is-heading'));
+      replay.hidden = !heading.canReplayTour;
       note.textContent = heading.note ?? '';
       note.hidden = heading.note === null;
 
@@ -104,7 +112,7 @@ export function createSelectionPanel(container: HTMLElement, callbacks: Selectio
 }
 
 function sameHeading(a: SelectionHeading, b: SelectionHeading): boolean {
-  return a.title === b.title && a.bandId === b.bandId && a.note === b.note && a.emptyMessage === b.emptyMessage;
+  return a.title === b.title && a.bandId === b.bandId && a.note === b.note && a.emptyMessage === b.emptyMessage && a.canReplayTour === b.canReplayTour;
 }
 
 function monthGroups(shows: readonly ShowRef[]): [string, ShowRef[]][] {

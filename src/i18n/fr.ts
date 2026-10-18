@@ -178,6 +178,7 @@ export const fr: Messages = {
     moreNotListed: (count) =>
       n(count, { one: '# autre concert non listé. Réduisez la période sur la frise.', other: '# autres concerts non listés. Réduisez la période sur la frise.' }),
     announce: (title, count) => `${title} : ${shows(count)}`,
+    replayTour: 'Rejouer la tournée',
     venueUnknown: 'Salle pas encore annoncée',
     starts: (time) => `Début à ${time}`,
     until: (date) => `Jusqu’au ${date}, jour du passage pas encore annoncé`,

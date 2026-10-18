@@ -178,6 +178,7 @@ export const es: Messages = {
     moreNotListed: (count) =>
       n(count, { one: '# concierto más sin listar. Acota el periodo en la línea de tiempo.', other: '# conciertos más sin listar. Acota el periodo en la línea de tiempo.' }),
     announce: (title, count) => `${title}: ${shows(count)}`,
+    replayTour: 'Repetir la gira',
     venueUnknown: 'Sala aún sin anunciar',
     starts: (time) => `Empieza a las ${time}`,
     until: (date) => `Hasta el ${date}, día de la actuación aún sin anunciar`,

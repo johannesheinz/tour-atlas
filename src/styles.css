@@ -1451,6 +1451,22 @@ input[type='search']::placeholder {
   border-bottom: var(--rule-heavy) solid var(--ink);
 }
 
+.selection-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.selection-replay {
+  flex: none;
+}
+
+.map-tour-head {
+  stroke: var(--ink);
+  stroke-width: 2;
+}
+
 .selection-title {
   margin: 0;
   font-family: var(--font-display);

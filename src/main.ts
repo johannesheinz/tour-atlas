@@ -5,6 +5,7 @@ import { addDays, formatIsoDate, localToday, parseIsoDate } from './data/dates.t
 import type { ShowRef } from './model.ts';
 import { createSelectors } from './selectors.ts';
 import { selectionFromUrl, selectionShows, sidebarPanel } from './selection.ts';
+import { createTourClock } from './view/tourClock.ts';
 import { HOME_ENTRY, asDrillDownEntry, drillDownEntry, historyStep, isHomeEntry } from './drillDownHistory.ts';
 import { createStore } from './state.ts';
 import { createBundledStore } from './store/bundled.ts';
@@ -14,7 +15,7 @@ import { NO_GENRE, TAG_VOCABULARY } from './data/tags.ts';
 import { exportAll, mergePreviews, normalizedFileText, processPreviewFile, type PreviewResult } from './preview.ts';
 import { createBandList } from './view/bandList.ts';
 import { createPreviewPanel } from './view/previewPanel.ts';
-import { h, requireElement } from './view/dom.ts';
+import { h, prefersReducedMotion, requireElement } from './view/dom.ts';
 import { MAP_SETTINGS, createMapView } from './view/map.ts';
 import { createSearch } from './view/search.ts';
 import type { SearchEntry } from './view/searchIndex.ts';
@@ -87,6 +88,7 @@ const MAX_NAMED_BANDS = 3;
 const map = createMapView(requireElement(document, '#map', HTMLDivElement), world, {
   onHover: (shows) => state.set({ hoverShowIds: idsOf(shows) }),
   onSelect: (shows) => selectPlaces(new Set(shows.map(cityKey))),
+  onUserMove: () => stopTour(),
 });
 
 const frameLayout = window.matchMedia(FRAME_LAYOUT_QUERY);
@@ -104,7 +106,10 @@ const timeline = createTimeline(requireElement(document, '#timeline', HTMLDivEle
   onHover: (shows) => state.set({ hoverShowIds: idsOf(shows) }),
   onSelect: (shows) => state.set({ selection: shows === null || shows.length === 0 ? NO_SELECTION : { kind: 'shows', showIds: idsOf(shows) } }),
   onWindowChange(window, byUser) {
-    if (byUser) state.set({ timePreset: null });
+    if (byUser) {
+      stopTour();
+      state.set({ timePreset: null });
+    }
     clearTimeout(windowTimer);
     windowTimer = setTimeout(() => state.set({ timeWindow: window }), WINDOW_DEBOUNCE_MS);
   },
@@ -141,6 +146,7 @@ const selectionPanel = createSelectionPanel(requireElement(document, '#selection
     if (!state.get().previewsOpen) sidebar.focusActiveTab();
   },
   onHover: (ref) => state.set({ hoverShowIds: ref === null ? new Set() : new Set([ref.show.id]) }),
+  onReplayTour: () => playTour(),
 });
 
 const previewPanel = createPreviewPanel(requireElement(document, '#preview-panel', HTMLElement), {
@@ -183,12 +189,25 @@ const genreList = createGenreList(requireElement(document, '#genre-list', HTMLEl
 const search = createSearch(requireElement(document, '#search', HTMLDivElement), { onChoose: focusSearchResult });
 
 const timelineControls = createTimelineControls(requireElement(document, '#timeline-controls', HTMLDivElement), {
-  onPreset: (preset) => applyPreset(preset, true),
-  onZoomOut: () => timeline.zoomOut(),
-  onShift: (direction) => timeline.shift(direction),
-  onFollowTimeline: (follow) => state.set({ followTimeline: follow }),
+  onPreset(preset) {
+    stopTour();
+    applyPreset(preset, true);
+  },
+  onZoomOut() {
+    stopTour();
+    timeline.zoomOut();
+  },
+  onShift(direction) {
+    stopTour();
+    timeline.shift(direction);
+  },
+  onFollowTimeline(follow) {
+    stopTour();
+    state.set({ followTimeline: follow });
+  },
   onHideEmptyLanes: (hide) => state.set({ hideEmptyLanes: hide }),
   onIncludePastMonth(include) {
+    stopTour();
     state.set({ includePastMonth: include });
     const { timePreset } = state.get();
     if (timePreset !== null && usesPastMonth(timePreset)) applyPreset(timePreset, true);
@@ -196,9 +215,16 @@ const timelineControls = createTimelineControls(requireElement(document, '#timel
 });
 
 const mapControls = createMapControls(requireElement(document, '#map-controls', HTMLDivElement), requireElement(document, '#map-status', HTMLDivElement), {
-  onZoom: (factor) => map.zoomBy(factor),
-  onView: (view) => setMapView(view),
+  onZoom(factor) {
+    stopTour();
+    map.zoomBy(factor);
+  },
+  onView(view) {
+    stopTour();
+    setMapView(view);
+  },
   onMode(mode) {
+    stopTour();
     state.set({ mapMode: mode });
     map.setMode(mode);
     applyMapView(state.get().mapView, false);
@@ -295,6 +321,12 @@ function renderAll() {
   const solo = soloBandIds(current.selection);
   const soloChanged = solo !== previousSolo;
   previousSolo = solo;
+  if (soloChanged) {
+    if (solo === null) stopTour();
+    else queueMicrotask(playTour);
+  } else if (tourPlaying !== null && mapShows !== tourPlaying.shows) {
+    queueMicrotask(playTour);
+  }
   if (derived.visibleBands !== previousVisibleBands) {
     const firstRender = previousVisibleBands === null;
     previousVisibleBands = derived.visibleBands;
@@ -438,6 +470,40 @@ function mountDropZone() {
   });
 }
 
+/** The tour animation of a band view: the routes draw themselves on a calendar clock, with a playhead on the timeline. */
+let tourPlaying: { readonly frame: number; readonly shows: readonly ShowRef[] } | null = null;
+
+function playTour() {
+  stopTour();
+  const current = state.get();
+  const solo = soloBandIds(current.selection);
+  if (solo === null || prefersReducedMotion()) return;
+  const shows = select.mapShows(derive(current), select.windowFilter(current));
+  const clock = createTourClock(shows.filter((ref) => solo.has(ref.band.file.band.id) && ref.show.status !== 'cancelled').map((ref) => ref.start));
+  if (clock === null) return;
+  map.setTour({ bandIds: solo, at: clock.at });
+  const started = performance.now();
+  const step = (now: number) => {
+    const elapsed = now - started;
+    if (elapsed >= clock.durationMs) {
+      stopTour();
+      return;
+    }
+    map.setTourTime(elapsed);
+    timeline.setPlayhead(clock.dateAt(elapsed));
+    tourPlaying = { frame: requestAnimationFrame(step), shows };
+  };
+  tourPlaying = { frame: requestAnimationFrame(step), shows };
+}
+
+function stopTour() {
+  if (tourPlaying === null) return;
+  cancelAnimationFrame(tourPlaying.frame);
+  tourPlaying = null;
+  map.setTour(null);
+  timeline.setPlayhead(null);
+}
+
 function selectBands(bandIds: ReadonlySet<string>) {
   const { timeWindow } = state.get();
   sidebar.showTab('bands');
@@ -558,20 +624,21 @@ function selectionHeading(current: AppState, derived: Derived, shows: readonly S
       return {
         title,
         bandId: names.length === 1 && onlyBandId !== undefined ? onlyBandId : null,
+        canReplayTour: !prefersReducedMotion(),
         note: live,
         emptyMessage: names.length === 1 ? text.emptyNamed(title, range) : text.emptyBands(range),
       };
     }
     case 'genres': {
       const title = formatList([...selection.genreIds].map(genreLabel));
-      return { title, bandId: null, note: live, emptyMessage: text.emptyNamed(title, range) };
+      return { title, bandId: null, canReplayTour: false, note: live, emptyMessage: text.emptyNamed(title, range) };
     }
     case 'places': {
       const name = describePlaces(selection.places, derived.visibleShows, countryName, t().placeList.andMore);
-      return { title: name, bandId: null, note: live, emptyMessage: text.emptyPlace(name, range) };
+      return { title: name, bandId: null, canReplayTour: false, note: live, emptyMessage: text.emptyPlace(name, range) };
     }
     case 'shows':
-      return { title: pickedShowsTitle(shows), bandId: null, note: null, emptyMessage: text.hiddenPicked };
+      return { title: pickedShowsTitle(shows), bandId: null, canReplayTour: false, note: null, emptyMessage: text.hiddenPicked };
   }
 }
 

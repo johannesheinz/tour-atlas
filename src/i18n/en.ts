@@ -103,6 +103,7 @@ export const en: Messages = {
     pickedInCities: (count, cities, band) => `${band === null ? '' : `${band}: `}${shows(count)} in ${n(cities, { one: '# city', other: '# cities' })}`,
     moreNotListed: (count) => n(count, { one: '# more show not listed. Narrow the time range on the timeline.', other: '# more shows not listed. Narrow the time range on the timeline.' }),
     announce: (title, count) => `${title}: ${shows(count)}`,
+    replayTour: 'Replay the tour',
     venueUnknown: 'Venue not announced',
     starts: (time) => `Starts ${time}`,
     until: (date) => `Until ${date}, day of the set not announced`,

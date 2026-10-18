@@ -83,6 +83,8 @@ export interface TimelineView {
   /** Moves the window by half its width; -1 earlier, 1 later. */
   shift(direction: -1 | 1): void;
   isAtFit(): boolean;
+  /** A marker at the date a tour animation has reached; null removes it. */
+  setPlayhead(date: number | null): void;
   readonly lanesOverflow: () => boolean;
 }
 
@@ -121,6 +123,7 @@ export function createTimeline(container: HTMLElement, callbacks: TimelineCallba
   let fitTransform: ZoomTransform = zoomIdentity;
   /** Pixels at the left kept for the band names before a range starts. */
   let gutter = 0;
+  let playhead: number | null = null;
   let cursorPosition: CursorPosition | null = null;
   let hoveredShowId: string | null = null;
   let drawScheduled = false;
@@ -589,6 +592,16 @@ export function createTimeline(container: HTMLElement, callbacks: TimelineCallba
       lanesContext.setLineDash([]);
     }
 
+    if (playhead !== null) {
+      const playheadX = Math.round(x(playhead + DAY_MS / 2)) + 0.5;
+      lanesContext.strokeStyle = theme.ink;
+      lanesContext.lineWidth = 2;
+      lanesContext.beginPath();
+      lanesContext.moveTo(playheadX, 0);
+      lanesContext.lineTo(playheadX, viewportHeight);
+      lanesContext.stroke();
+    }
+
     lanesContext.save();
     clipToDots();
     const ringAround = (index: number, ref: ShowRef, gap: number) => {
@@ -732,6 +745,10 @@ export function createTimeline(container: HTMLElement, callbacks: TimelineCallba
     zoomOut: () => zoomOutAround(width / 2),
     shift,
     isAtFit: () => Math.abs(transform.k - fitTransform.k) < 1e-6 && Math.abs(transform.x - fitTransform.x) < 0.5,
+    setPlayhead(date) {
+      playhead = date;
+      scheduleDraw();
+    },
     lanesOverflow: () => container.classList.contains('has-overflow'),
   };
 }

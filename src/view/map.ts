@@ -59,6 +59,22 @@ export interface MapProps {
 export interface MapCallbacks {
   onHover(shows: readonly ShowRef[] | null): void;
   onSelect(shows: readonly ShowRef[]): void;
+  /** The viewer started panning, zooming or turning the map. */
+  onUserMove(): void;
+}
+
+/** The routes of these bands draw themselves leg by leg; `at` gives the animation time a show's date is reached. */
+export interface MapTour {
+  readonly bandIds: ReadonlySet<string>;
+  readonly at: (date: number) => number;
+}
+
+interface TourLeg {
+  readonly bandId: string;
+  readonly element: SVGPathElement;
+  readonly start: number;
+  readonly end: number;
+  readonly length: number;
 }
 
 export interface MapView {
@@ -69,6 +85,9 @@ export interface MapView {
   zoomBy(factor: number): void;
   setMode(mode: MapMode): void;
   setUserLocation(location: UserLocation | null): void;
+  /** Null draws the routes whole again. */
+  setTour(tour: MapTour | null): void;
+  setTourTime(ms: number): void;
 }
 
 interface PinStyle {
@@ -112,7 +131,8 @@ export function createMapView(container: HTMLElement, world: WorldTopology, call
   const highlightsLayer = s('g', { class: 'map-highlights' });
   const labelsLayer = s('g', { class: 'map-labels' });
   const meMarker = s('circle', { class: 'map-me', r: 6, hidden: true });
-  const overlay = s('svg', { class: 'map-overlay', 'aria-hidden': 'true' }, labelsLayer, highlightsLayer, meMarker);
+  const tourHeadsLayer = s('g', { class: 'map-tour-heads' });
+  const overlay = s('svg', { class: 'map-overlay', 'aria-hidden': 'true' }, labelsLayer, highlightsLayer, tourHeadsLayer, meMarker);
   const cursor = h('button', { type: 'button', class: 'map-cursor', 'aria-label': t().map.cursor });
   const announcer = h('div', { class: 'visually-hidden', 'aria-live': 'polite' });
   container.append(surface, canvas, overlay, cursor, announcer);
@@ -134,6 +154,9 @@ export function createMapView(container: HTMLElement, world: WorldTopology, call
   let cursorPinId: string | null = null;
   let animationFrame: number | null = null;
   let programmaticZoom = false;
+  let tour: MapTour | null = null;
+  let tourTime = 0;
+  let tourLegs: readonly TourLeg[] = [];
   let pendingFit = false;
   const svgPins = new Map<string, SVGGElement>();
   const labelWidths = new Map<string, number>();
@@ -142,8 +165,9 @@ export function createMapView(container: HTMLElement, world: WorldTopology, call
     .filter((event: MouseEvent) => mode === 'flat' && (!event.ctrlKey || event.type === 'wheel') && !event.button)
     .scaleExtent([MAP_SETTINGS.minZoom, MAP_SETTINGS.maxZoom])
     .clickDistance(5)
-    .on('start', () => {
+    .on('start', (event: D3ZoomEvent<SVGSVGElement, unknown>) => {
       if (programmaticZoom) return;
+      if (event.sourceEvent !== null) callbacks.onUserMove();
       cancelAnimation();
       tooltip.hide();
       labelsLayer.replaceChildren();
@@ -390,6 +414,7 @@ export function createMapView(container: HTMLElement, world: WorldTopology, call
 
   surface.addEventListener('pointerdown', (event) => {
     if (mode !== 'globe' || event.button !== 0 || base === null) return;
+    callbacks.onUserMove();
     cancelAnimation();
     tooltip.hide();
     globeDrag = { x: event.clientX, y: event.clientY, fit: base };
@@ -414,6 +439,7 @@ export function createMapView(container: HTMLElement, world: WorldTopology, call
     (event) => {
       if (mode !== 'globe' || base === null) return;
       event.preventDefault();
+      callbacks.onUserMove();
       applyBase(scaleGlobe(base, Math.exp(-event.deltaY * 0.002)), true);
       clearTimeout(globeSettle);
       globeSettle = setTimeout(() => {
@@ -508,6 +534,7 @@ export function createMapView(container: HTMLElement, world: WorldTopology, call
     drawHighlights();
     positionCursor();
     positionMeMarker();
+    drawTour();
   }
 
   function cancelAnimation() {
@@ -522,18 +549,50 @@ export function createMapView(container: HTMLElement, world: WorldTopology, call
       current.shows.filter((ref) => current.routeBandIds.has(ref.band.file.band.id) && ref.show.status !== 'cancelled'),
       (ref) => ref.band,
     );
+    const legs: Omit<TourLeg, 'length'>[] = [];
     routesLayer.replaceChildren(
       ...[...routes.entries()].flatMap(([band, refs]) => {
-        const coordinates = refs
+        const stops = refs
           .toSorted((a, b) => a.start - b.start)
-          .map((ref): [number, number] => [ref.show.geo.lon, ref.show.geo.lat])
-          .filter((point, index, all) => index === 0 || point[0] !== all[index - 1]?.[0] || point[1] !== all[index - 1]?.[1]);
-        if (coordinates.length < 2) return [];
-        const route: Feature<LineString | MultiLineString> = { type: 'Feature', properties: {}, geometry: { type: 'LineString', coordinates } };
+          .filter((ref, index, all) => index === 0 || ref.show.geo.lon !== all[index - 1]?.show.geo.lon || ref.show.geo.lat !== all[index - 1]?.show.geo.lat);
+        if (stops.length < 2) return [];
         const dimmed = current.focusBandId !== null && current.focusBandId !== band.file.band.id;
-        return [s('path', { class: dimmed ? 'map-route is-dimmed' : 'map-route', d: path(route) ?? '', stroke: bandColor(band, current.theme.mode) })];
+        const attributes = { class: dimmed ? 'map-route is-dimmed' : 'map-route', stroke: bandColor(band, current.theme.mode) };
+        const line = (coordinates: [number, number][]) => path({ type: 'Feature', properties: {}, geometry: { type: 'LineString', coordinates } } satisfies Feature<LineString | MultiLineString>) ?? '';
+        const point = (ref: ShowRef): [number, number] => [ref.show.geo.lon, ref.show.geo.lat];
+        if (tour === null || !tour.bandIds.has(band.file.band.id)) return [s('path', { ...attributes, d: line(stops.map(point)) })];
+        const at = tour.at;
+        return stops.slice(1).map((to, index) => {
+          const from = stops[index] ?? to;
+          const element = s('path', { ...attributes, d: line([point(from), point(to)]) });
+          legs.push({ bandId: band.file.band.id, element, start: at(from.start), end: at(to.start) });
+          return element;
+        });
       }),
     );
+    tourLegs = legs.map((leg) => ({ ...leg, length: leg.element.getTotalLength() }));
+    drawTour();
+  }
+
+  /** Each leg grows from its first show to the next while the tour time passes their dates; a dot leads each band. */
+  function drawTour() {
+    if (tour === null) {
+      tourHeadsLayer.replaceChildren();
+      return;
+    }
+    const heads = new Map<string, SVGCircleElement>();
+    for (const leg of tourLegs) {
+      const progress = Math.min(1, Math.max(0, (tourTime - leg.start) / Math.max(1, leg.end - leg.start)));
+      const dash = leg.length * transform.k;
+      leg.element.style.strokeDasharray = `${dash} ${dash}`;
+      leg.element.style.strokeDashoffset = `${dash * (1 - progress)}`;
+      if (progress > 0 && progress < 1 && !heads.has(leg.bandId)) {
+        const tip = leg.element.getPointAtLength(leg.length * progress);
+        const stroke = leg.element.getAttribute('stroke') ?? '';
+        heads.set(leg.bandId, s('circle', { class: 'map-tour-head', cx: transform.applyX(tip.x), cy: transform.applyY(tip.y), r: 5, fill: stroke }));
+      }
+    }
+    tourHeadsLayer.replaceChildren(...heads.values());
   }
 
   function pinStyle(pin: DisplayPin, current: MapProps): PinStyle {
@@ -726,6 +785,15 @@ export function createMapView(container: HTMLElement, world: WorldTopology, call
     zoomBy,
     setMode,
     setUserLocation,
+    setTour(next) {
+      tour = next;
+      tourTime = 0;
+      renderRoutes();
+    },
+    setTourTime(ms) {
+      tourTime = ms;
+      drawTour();
+    },
   };
 }
 

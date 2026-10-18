@@ -178,6 +178,7 @@ export const de: Messages = {
     moreNotListed: (count) =>
       n(count, { one: '# weiteres Konzert nicht aufgeführt. Den Zeitraum auf der Zeitleiste eingrenzen.', other: '# weitere Konzerte nicht aufgeführt. Den Zeitraum auf der Zeitleiste eingrenzen.' }),
     announce: (title, count) => `${title}: ${shows(count)}`,
+    replayTour: 'Tour erneut abspielen',
     venueUnknown: 'Spielort noch nicht bekannt',
     starts: (time) => `Beginn ${time}`,
     until: (date) => `Bis ${date}, Tag des Auftritts noch nicht bekannt`,
