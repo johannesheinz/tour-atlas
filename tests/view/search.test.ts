@@ -61,14 +61,15 @@ describe('url state', () => {
       style: 'atlas' as const,
       language: 'de' as const,
       clock: '12' as const,
+      distance: 'mil' as const,
     };
     const hash = serializeUrlState(state);
-    expect(hash).toBe('#hide=glass-harbor,velvet-meridian&tags=doom-metal&sort=next-show&from=2026-10-01&to=2026-12-31&show=iron-lantern-2026-10-17-belo-horizonte&at=br.belo-horizonte&band=glass-harbor,iron-lantern&genre=doom-metal&follow=0&lanes=all&recent=1&pace=even&view=europe&globe=1&style=atlas&lang=de&clock=12');
+    expect(hash).toBe('#hide=glass-harbor,velvet-meridian&tags=doom-metal&sort=next-show&from=2026-10-01&to=2026-12-31&show=iron-lantern-2026-10-17-belo-horizonte&at=br.belo-horizonte&band=glass-harbor,iron-lantern&genre=doom-metal&follow=0&lanes=all&recent=1&pace=even&view=europe&globe=1&style=atlas&lang=de&clock=12&units=mil');
     expect(parseUrlState(hash)).toEqual({ ...state, hiddenBandIds: ['glass-harbor', 'velvet-meridian'], selectedBandIds: ['glass-harbor', 'iron-lantern'] });
   });
 
   it('ignores malformed values', () => {
-    expect(parseUrlState('#hide=ok,Not%20Ok&sort=random&from=2026-02-30&to=2026-03-01&follow=maybe&band=Not%20Ok&pace=fast&style=neon&lang=xx&clock=13')).toEqual({
+    expect(parseUrlState('#hide=ok,Not%20Ok&sort=random&from=2026-02-30&to=2026-03-01&follow=maybe&band=Not%20Ok&pace=fast&style=neon&lang=xx&clock=13&units=furlong')).toEqual({
       hiddenBandIds: ['ok'],
       tags: [],
       sort: null,
@@ -88,6 +89,7 @@ describe('url state', () => {
       style: 'stage',
       language: null,
       clock: null,
+      distance: null,
     });
   });
 
@@ -112,6 +114,6 @@ describe('url state', () => {
   });
 
   it('serializes the default view to an empty hash', () => {
-    expect(serializeUrlState({ hiddenBandIds: [], tags: [], sort: null, from: null, to: null, selectedShowIds: [], selectedPlaces: [], selectedBandIds: [], selectedGenres: [], follow: null, preset: null, allLanes: false, includePastMonth: false, tourPacing: 'calendar', region: null, globe: false, style: 'stage', language: null, clock: null })).toBe('');
+    expect(serializeUrlState({ hiddenBandIds: [], tags: [], sort: null, from: null, to: null, selectedShowIds: [], selectedPlaces: [], selectedBandIds: [], selectedGenres: [], follow: null, preset: null, allLanes: false, includePastMonth: false, tourPacing: 'calendar', region: null, globe: false, style: 'stage', language: null, clock: null, distance: null })).toBe('');
   });
 });

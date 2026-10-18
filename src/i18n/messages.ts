@@ -1,5 +1,6 @@
 import type { IssueTexts } from '../data/issues.ts';
 import type { Style } from '../data/styles.ts';
+import type { DistanceUnit } from './locale.ts';
 import type { BandSort, ThemePreference } from '../model.ts';
 import type { RegionId } from '../view/mapRegions.ts';
 import type { TimePreset } from '../view/timePresets.ts';
@@ -152,11 +153,11 @@ export interface Messages {
     readonly nearMe: Text;
     readonly regions: Text;
     readonly regionNames: Readonly<Record<RegionId, string>>;
-    readonly km: Count;
     readonly asGlobe: Text;
     readonly asFlat: Text;
     readonly listNearby: Text;
-    readonly nearby: (shows: number, km: number) => string;
+    /** The distance comes formatted in the viewer's unit. */
+    readonly nearby: (shows: number, distance: string) => string;
     readonly locating: Text;
     readonly locationUnsupported: Text;
     readonly locationDenied: Text;
@@ -178,6 +179,8 @@ export interface Messages {
     readonly language: Text;
     readonly automatic: Text;
     readonly timeFormat: Text;
+    readonly distance: Text;
+    readonly units: Readonly<Record<DistanceUnit, string>>;
     readonly clock12: Text;
     readonly clock24: Text;
     readonly files: Text;

@@ -1,4 +1,5 @@
 import { geoDistance } from 'd3-geo';
+import type { DistanceUnit } from '../i18n/locale.ts';
 import type { ShowRef } from '../model.ts';
 import type { LonLat } from './geoFit.ts';
 
@@ -31,13 +32,28 @@ export interface UserLocation {
   readonly radiusKm: number;
 }
 
-export const NEAR_ME_RADII_KM = [25, 50, 100, 250, 500, 1000] as const;
-export type NearMeRadius = (typeof NEAR_ME_RADII_KM)[number];
+export interface Distance {
+  readonly value: number;
+  readonly unit: DistanceUnit;
+}
+
+export const KM_PER_UNIT: Readonly<Record<DistanceUnit, number>> = { km: 1, mi: 1.609344, mil: 10 };
+
+/** Round numbers in each unit; the search converts them exactly. */
+export const NEAR_ME_RADII: Readonly<Record<DistanceUnit, readonly number[]>> = {
+  km: [25, 50, 100, 250, 500, 1000],
+  mi: [15, 30, 60, 150, 300, 600],
+  mil: [2.5, 5, 10, 25, 50, 100],
+};
+
+export function kilometres(distance: Distance): number {
+  return distance.value * KM_PER_UNIT[distance.unit];
+}
 
 export type MapViewPreset =
   | { readonly kind: 'shows' }
   | { readonly kind: 'region'; readonly region: MapRegion }
-  | { readonly kind: 'near'; readonly radiusKm: NearMeRadius };
+  | { readonly kind: 'near'; readonly radius: Distance };
 
 const EARTH_RADIUS_KM = 6371;
 const EDGE_STEP_DEGREES = 10;

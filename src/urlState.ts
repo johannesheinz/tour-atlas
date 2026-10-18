@@ -4,7 +4,7 @@ import type { BandSort } from './model.ts';
 import { PRESET_IDS, type TimePreset } from './view/timePresets.ts';
 import type { TourPacing } from './view/tourClock.ts';
 import { PLACE_KEY_PATTERN } from './places.ts';
-import { isClock, isLanguage, type Clock, type Language } from './i18n/locale.ts';
+import { isClock, isDistanceUnit, isLanguage, type Clock, type DistanceUnit, type Language } from './i18n/locale.ts';
 import { DEFAULT_STYLE, isStyle, type Style } from './data/styles.ts';
 
 /** View state kept in the URL hash: shareable, never stored, never sent to a server. */
@@ -30,6 +30,7 @@ export interface UrlState {
   /** Set only when picked in the settings; otherwise the browser decides. */
   readonly language: Language | null;
   readonly clock: Clock | null;
+  readonly distance: DistanceUnit | null;
 }
 
 const SORTS: readonly BandSort[] = ['name', 'next-show', 'show-count'];
@@ -67,6 +68,7 @@ export function parseUrlState(hash: string): UrlState {
     style: oneOf(params.get('style'), isStyle) ?? DEFAULT_STYLE,
     language: oneOf(params.get('lang'), isLanguage),
     clock: oneOf(params.get('clock'), isClock),
+    distance: oneOf(params.get('units'), isDistanceUnit),
   };
 }
 
@@ -93,6 +95,7 @@ export function serializeUrlState(state: UrlState): string {
   if (state.style !== DEFAULT_STYLE) params.set('style', state.style);
   if (state.language !== null) params.set('lang', state.language);
   if (state.clock !== null) params.set('clock', state.clock);
+  if (state.distance !== null) params.set('units', state.distance);
   const text = params.toString().replaceAll('%2C', ',');
   return text === '' ? '' : `#${text}`;
 }

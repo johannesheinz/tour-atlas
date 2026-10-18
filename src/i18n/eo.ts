@@ -4,12 +4,14 @@ import type { Messages } from './messages.ts';
 import { countLike } from './plural.ts';
 
 // Browsers know no Esperanto: English has the same plural categories (one, other), Swedish groups digits with spaces.
-const n = countLike({ pluralRules: 'en', numbers: 'sv' });
+const NUMBERS = 'sv';
+const n = countLike({ pluralRules: 'en', numbers: NUMBERS });
 const shows = (count: number) => n(count, { one: '# koncerto', other: '# koncertoj' });
 const bands = (count: number) => n(count, { one: '# bando', other: '# bandoj' });
 const zoomOutHint = 'Malzomu la templinion aŭ elektu pli longan periodon.';
 
 export const eoFormatWords: FormatWords = {
+  numbers: NUMBERS,
   monthsLong: ['januaro', 'februaro', 'marto', 'aprilo', 'majo', 'junio', 'julio', 'aŭgusto', 'septembro', 'oktobro', 'novembro', 'decembro'],
   monthsShort: ['jan.', 'feb.', 'mar.', 'apr.', 'maj.', 'jun.', 'jul.', 'aŭg.', 'sep.', 'okt.', 'nov.', 'dec.'],
   weekdaysShort: ['di', 'lu', 'ma', 'me', 'ĵa', 've', 'sa'],
@@ -291,11 +293,10 @@ export const eo: Messages = {
     nearMe: 'Proksime de mi',
     regions: 'Regionoj',
     regionNames: { europe: 'Eŭropo', 'north-america': 'Nordameriko', 'south-america': 'Sudameriko', asia: 'Azio', africa: 'Afriko', oceania: 'Oceanio', world: 'Mondo' },
-    km: (count) => `${count} km`,
     asGlobe: 'Montri kiel globon',
     asFlat: 'Montri kiel ebenan mapon',
     listNearby: 'Listigi ĉi tiujn koncertojn',
-    nearby: (count, km) => `${shows(count)} ene de ${km} km`,
+    nearby: (count, distance) => `${shows(count)} ene de ${distance}`,
     locating: 'La retumilo estas petata pri via loko…',
     locationUnsupported: 'Ĉi tiu retumilo ne povas sciigi vian lokon ĉi tie. Elektu regionon anstataŭe.',
     locationDenied: 'Aliro al via loko estis rifuzita. Permesu ĝin en la retumilo aŭ elektu regionon.',
@@ -317,6 +318,8 @@ export const eo: Messages = {
     language: 'Lingvo',
     automatic: 'Aŭtomata',
     timeFormat: 'Formato de la horo',
+    distance: 'Distancoj',
+    units: { km: 'Kilometroj', mi: 'Mejloj', mil: 'Svedaj mejloj (10 km)' },
     clock12: '12-hora',
     clock24: '24-hora',
     files: 'Dosieroj de bandoj',

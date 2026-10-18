@@ -1,8 +1,8 @@
 import { h } from './dom.ts';
 import { icon, iconButton } from './icons.ts';
-import { MAP_REGIONS, NEAR_ME_RADII_KM, type MapMode, type MapViewPreset } from './mapRegions.ts';
+import { MAP_REGIONS, NEAR_ME_RADII, type MapMode, type MapViewPreset } from './mapRegions.ts';
 import { attachPopover } from './popover.ts';
-import { t } from '../i18n/index.ts';
+import { currentLocale, formats, t } from '../i18n/index.ts';
 
 export interface MapControlsProps {
   readonly view: MapViewPreset;
@@ -32,7 +32,7 @@ export function viewKey(view: MapViewPreset): string {
     case 'region':
       return `region:${view.region.id}`;
     case 'near':
-      return `near:${view.radiusKm}`;
+      return `near:${view.radius.value}${view.radius.unit}`;
   }
 }
 
@@ -47,6 +47,7 @@ export function createMapControls(controls: HTMLElement, statusBar: HTMLElement,
   zoomOut.addEventListener('click', () => callbacks.onZoom(1 / ZOOM_STEP));
   fit.addEventListener('click', () => callbacks.onView({ kind: 'shows' }));
 
+  const unit = currentLocale().distance;
   const viewMenu = h('div', { class: 'popover map-view-menu', id: 'map-view-menu', role: 'group', 'aria-label': t().map.areaMenu });
   const popover = attachPopover(viewButton, viewMenu);
   const choices: [string, HTMLButtonElement][] = [];
@@ -62,7 +63,7 @@ export function createMapControls(controls: HTMLElement, statusBar: HTMLElement,
   viewMenu.append(
     choice({ kind: 'shows' }, t().map.fit),
     h('p', { class: 'menu-heading' }, t().map.nearMe),
-    h('div', { class: 'menu-chips' }, ...NEAR_ME_RADII_KM.map((radiusKm) => choice({ kind: 'near', radiusKm }, t().map.km(radiusKm)))),
+    h('div', { class: 'menu-chips' }, ...NEAR_ME_RADII[unit].map((value) => choice({ kind: 'near', radius: { value, unit } }, formats().distance(value, unit)))),
     h('p', { class: 'menu-heading' }, t().map.regions),
     ...MAP_REGIONS.map((region) => choice({ kind: 'region', region }, t().map.regionNames[region.id])),
   );

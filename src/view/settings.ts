@@ -1,6 +1,21 @@
 import { STYLES, isStyle, type Style } from '../data/styles.ts';
 import { formats, t } from '../i18n/index.ts';
-import { AUTOMATIC, CLOCKS, LANGUAGES, LANGUAGE_NAMES, isClock, isLanguage, resolveLocale, type Clock, type HourCycle, type Language, type LocaleChoice } from '../i18n/locale.ts';
+import {
+  AUTOMATIC,
+  CLOCKS,
+  DISTANCE_UNITS,
+  LANGUAGES,
+  LANGUAGE_NAMES,
+  isClock,
+  isDistanceUnit,
+  isLanguage,
+  resolveLocale,
+  type Clock,
+  type DistanceUnit,
+  type HourCycle,
+  type Language,
+  type LocaleChoice,
+} from '../i18n/locale.ts';
 import type { ThemePreference } from '../model.ts';
 import { h } from './dom.ts';
 import { attachPopover } from './popover.ts';
@@ -16,6 +31,7 @@ export interface SettingsCallbacks {
   /** Null follows the browser. */
   onLanguage(language: Language | null): void;
   onClock(clock: Clock | null): void;
+  onDistance(distance: DistanceUnit | null): void;
   onPreviewFiles(): void;
   onExportAll(): void;
 }
@@ -28,7 +44,7 @@ const THEMES: readonly ThemePreference[] = ['auto', 'light', 'dark'];
 const AUTOMATIC_VALUE = 'auto';
 const EIGHT_PM = Date.UTC(1970, 0, 1, 20, 0);
 
-/** The settings pop-up behind the masthead's gear: style, theme, language, time format and the band file actions. */
+/** The settings pop-up behind the masthead's gear: style, theme, language, time format, distances and the band file actions. */
 export function createSettings(trigger: HTMLButtonElement, panel: HTMLElement, callbacks: SettingsCallbacks, choice: LocaleChoice, browserLanguages: readonly string[]): SettingsView {
   const popover = attachPopover(trigger, panel);
   const text = t().settings;
@@ -67,6 +83,16 @@ export function createSettings(trigger: HTMLButtonElement, panel: HTMLElement, c
   clock.value = choice.clock ?? AUTOMATIC_VALUE;
   clock.addEventListener('change', () => callbacks.onClock(isClock(clock.value) ? clock.value : null));
 
+  const habitualDistance = resolveLocale({ ...choice, distance: null }, browserLanguages).distance;
+  const distance = h(
+    'select',
+    { class: 'settings-select', id: 'settings-distance' },
+    h('option', { value: AUTOMATIC_VALUE }, `${text.automatic} (${text.units[habitualDistance]})`),
+    ...DISTANCE_UNITS.map((value) => h('option', { value }, text.units[value])),
+  );
+  distance.value = choice.distance ?? AUTOMATIC_VALUE;
+  distance.addEventListener('change', () => callbacks.onDistance(isDistanceUnit(distance.value) ? distance.value : null));
+
   const preview = h('button', { type: 'button', class: 'button button-small' }, text.previewFiles);
   const exportAll = h('button', { type: 'button', class: 'button button-small' }, text.exportAll);
   preview.addEventListener('click', () => {
@@ -90,6 +116,8 @@ export function createSettings(trigger: HTMLButtonElement, panel: HTMLElement, c
       language,
       h('label', { for: 'settings-clock' }, text.timeFormat),
       clock,
+      h('label', { for: 'settings-distance' }, text.distance),
+      distance,
     ),
     h('div', { class: 'settings-section', role: 'group', 'aria-labelledby': 'settings-files' }, h('h3', { id: 'settings-files' }, text.files), h('div', { class: 'settings-actions' }, preview, exportAll)),
   );

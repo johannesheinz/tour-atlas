@@ -33,11 +33,11 @@ import { createSelectionPanel, type SelectionHeading } from './view/selectionPan
 import { createSidebar } from './view/sidebar.ts';
 import { cityKey, describePlaces, showsAtPlaces, type PlaceKey } from './places.ts';
 import { countryName, formatDate, formatList } from './view/format.ts';
-import { localeChoice, t, useLocale } from './i18n/index.ts';
+import { formats, localeChoice, t, useLocale } from './i18n/index.ts';
 import { localizePage } from './i18n/page.ts';
-import type { Clock, Language } from './i18n/locale.ts';
+import type { LocaleChoice } from './i18n/locale.ts';
 import { slugify } from './data/ids.ts';
-import { findRegion, regionPoints, showsWithin, type MapViewPreset } from './view/mapRegions.ts';
+import { findRegion, kilometres, regionPoints, showsWithin, type MapViewPreset } from './view/mapRegions.ts';
 import { PRESET_IDS, defaultPreset, isPresetAvailable, presetRange, usesPastMonth, type TimePreset } from './view/timePresets.ts';
 
 const WINDOW_DEBOUNCE_MS = 150;
@@ -45,7 +45,7 @@ const URL_DEBOUNCE_MS = 300;
 const SEARCH_FOCUS_TIMEOUT_MS = 1500;
 
 const urlState = parseUrlState(location.hash);
-useLocale({ language: urlState.language, clock: urlState.clock }, navigator.languages);
+useLocale({ language: urlState.language, clock: urlState.clock, distance: urlState.distance }, navigator.languages);
 localizePage(document);
 applyStyle(urlState.style);
 
@@ -224,7 +224,7 @@ const mapControls = createMapControls(requireElement(document, '#map-controls', 
   onListNearby() {
     const current = state.get();
     if (current.mapView.kind !== 'near' || current.userPosition === null) return;
-    const nearby = showsWithin(select.mapShows(derive(current), select.windowFilter(current)), current.userPosition, current.mapView.radiusKm);
+    const nearby = showsWithin(select.mapShows(derive(current), select.windowFilter(current)), current.userPosition, kilometres(current.mapView.radius));
     state.set({ selection: { kind: 'shows', showIds: idsOf(nearby) } });
   },
 });
@@ -252,8 +252,9 @@ const settings = createSettings(settingsButton, requireElement(document, '#setti
     state.set({ theme: preference });
     refreshTheme();
   },
-  onLanguage: (language) => reloadWithLocale(language, localeChoice().clock),
-  onClock: (clock) => reloadWithLocale(localeChoice().language, clock),
+  onLanguage: (language) => reloadWithLocale({ ...localeChoice(), language }),
+  onClock: (clock) => reloadWithLocale({ ...localeChoice(), clock }),
+  onDistance: (distance) => reloadWithLocale({ ...localeChoice(), distance }),
   onPreviewFiles: () => fileInput.click(),
   onExportAll() {
     const current = state.get();
@@ -344,11 +345,11 @@ function renderAll() {
 
   const today = parseIsoDate(current.today).getTime();
   const nearby =
-    current.mapView.kind === 'near' && current.userPosition !== null ? showsWithin(mapShows, current.userPosition, current.mapView.radiusKm) : null;
+    current.mapView.kind === 'near' && current.userPosition !== null ? showsWithin(mapShows, current.userPosition, kilometres(current.mapView.radius)) : null;
   mapControls.render({
     view: current.mapView,
     mode: current.mapMode,
-    status: current.locationStatus ?? (nearby === null || current.mapView.kind !== 'near' ? null : t().map.nearby(nearby.length, current.mapView.radiusKm)),
+    status: current.locationStatus ?? (nearby === null || current.mapView.kind !== 'near' ? null : t().map.nearby(nearby.length, formats().distance(current.mapView.radius.value, current.mapView.radius.unit))),
     canListNearby: nearby !== null && nearby.length > 0,
   });
 
@@ -740,8 +741,9 @@ function setMapView(view: MapViewPreset) {
 function applyMapView(view: MapViewPreset, animate: boolean) {
   const { userPosition } = state.get();
   if (view.kind === 'near' && userPosition !== null) {
-    map.setUserLocation({ lon: userPosition[0], lat: userPosition[1], radiusKm: view.radiusKm });
-    map.fitToPoints([userPosition], view.radiusKm * 2, animate);
+    const radiusKm = kilometres(view.radius);
+    map.setUserLocation({ lon: userPosition[0], lat: userPosition[1], radiusKm });
+    map.fitToPoints([userPosition], radiusKm * 2, animate);
     return;
   }
   map.setUserLocation(null);
@@ -798,15 +800,14 @@ function currentHash(): string {
     region: current.mapView.kind === 'region' ? current.mapView.region.id : null,
     globe: current.mapMode === 'globe',
     style: current.style,
-    language: localeChoice().language,
-    clock: localeChoice().clock,
+    ...localeChoice(),
   });
 }
 
-/** The language and clock apply at start-up, so changing them reloads the page with the choice in the URL. */
-function reloadWithLocale(language: Language | null, clock: Clock | null) {
+/** The language, clock and distance unit apply at start-up, so changing them reloads the page with the choice in the URL. */
+function reloadWithLocale(choice: LocaleChoice) {
   if (state.get().previewResults.length > 0 && !window.confirm(t().settings.reloadLosesPreviews)) return;
-  const hash = serializeUrlState({ ...parseUrlState(currentHash()), language, clock });
+  const hash = serializeUrlState({ ...parseUrlState(currentHash()), ...choice });
   history.replaceState(history.state, '', `${location.pathname}${location.search}${hash}`);
   location.reload();
 }
@@ -875,7 +876,7 @@ function createNavigation() {
       clearTimeout(urlTimer);
       writeUrlState();
       const leaving = location.hash;
-      const home = serializeUrlState({ ...parseUrlState(''), style: state.get().style, language: localeChoice().language, clock: localeChoice().clock });
+      const home = serializeUrlState({ ...parseUrlState(''), style: state.get().style, ...localeChoice() });
       search.clear();
       placeList.clearFilter();
       sidebar.showTab('bands');

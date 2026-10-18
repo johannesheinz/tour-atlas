@@ -4,12 +4,14 @@ import type { Messages } from './messages.ts';
 import { countLike } from './plural.ts';
 
 // Intl knows no Latin: English has the same plural categories (one, other), Swedish groups digits with spaces.
-const n = countLike({ pluralRules: 'en', numbers: 'sv' });
+const NUMBERS = 'sv';
+const n = countLike({ pluralRules: 'en', numbers: NUMBERS });
 const shows = (count: number) => n(count, { one: '# concentus', other: '# concentus' });
 const bands = (count: number) => n(count, { one: '# grex', other: '# greges' });
 const zoomOutHint = 'Contrahe lineam temporis aut spatium latius elige.';
 
 export const laFormatWords: FormatWords = {
+  numbers: NUMBERS,
   monthsLong: ['Ianuarius', 'Februarius', 'Martius', 'Aprilis', 'Maius', 'Iunius', 'Iulius', 'Augustus', 'September', 'October', 'November', 'December'],
   monthsShort: ['Ian.', 'Feb.', 'Mart.', 'Apr.', 'Mai.', 'Iun.', 'Iul.', 'Aug.', 'Sept.', 'Oct.', 'Nov.', 'Dec.'],
   weekdaysShort: ['Sol.', 'Lun.', 'Mart.', 'Merc.', 'Iov.', 'Ven.', 'Sat.'],
@@ -292,11 +294,10 @@ export const la: Messages = {
     nearMe: 'Prope me',
     regions: 'Regiones',
     regionNames: { europe: 'Europa', 'north-america': 'America Septentrionalis', 'south-america': 'America Meridionalis', asia: 'Asia', africa: 'Africa', oceania: 'Oceania', world: 'Orbis terrarum' },
-    km: (count) => `${count} km`,
     asGlobe: 'Ut globum monstra',
     asFlat: 'Ut chartam planam monstra',
     listNearby: 'Hos concentus enumera',
-    nearby: (count, km) => `${shows(count)} intra ${km} km`,
+    nearby: (count, distance) => `${shows(count)} intra ${distance}`,
     locating: 'Situs tuus a navigatro petitur…',
     locationUnsupported: 'Hoc navigatrum situm tuum hic communicare non potest. Regionem potius elige.',
     locationDenied: 'Aditus ad situm negatus est. Eum in navigatro permitte aut regionem elige.',
@@ -319,6 +320,8 @@ export const la: Messages = {
     language: 'Lingua',
     automatic: 'Sponte',
     timeFormat: 'Horologium',
+    distance: 'Intervalla',
+    units: { km: 'Chiliometra', mi: 'Milia Anglica', mil: 'Milia Suecica (10 km)' },
     clock12: '12 horarum',
     clock24: '24 horarum',
     files: 'Fasciculi gregum',

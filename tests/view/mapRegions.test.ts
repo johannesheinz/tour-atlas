@@ -2,7 +2,8 @@ import { describe, expect, it } from 'vitest';
 import type { BandFile } from '../../src/data/types.ts';
 import { buildBandEntries, showRefs } from '../../src/model.ts';
 import { computeMapFit } from '../../src/view/geoFit.ts';
-import { MAP_REGIONS, distanceKm, findRegion, radiusDegrees, regionPoints, showsWithin } from '../../src/view/mapRegions.ts';
+import { DISTANCE_UNITS } from '../../src/i18n/locale.ts';
+import { MAP_REGIONS, NEAR_ME_RADII, distanceKm, findRegion, kilometres, radiusDegrees, regionPoints, showsWithin } from '../../src/view/mapRegions.ts';
 import { makeFile, makeShow } from '../helpers.ts';
 
 describe('map regions', () => {
@@ -35,5 +36,12 @@ describe('map regions', () => {
     expect(showsWithin(refs, berlin, 50).map((ref) => ref.show.city)).toEqual(['Berlin', 'Potsdam']);
     expect(distanceKm(berlin, [9.9937, 53.5511])).toBeCloseTo(255, -1);
     expect(radiusDegrees(111.19)).toBeCloseTo(1, 2);
+  });
+
+  it('offers round near-me radii in every unit and searches them exactly', () => {
+    expect(kilometres({ value: 15, unit: 'mi' })).toBeCloseTo(24.14016, 5);
+    expect(kilometres({ value: 2.5, unit: 'mil' })).toBe(25);
+    expect(kilometres({ value: 25, unit: 'km' })).toBe(25);
+    for (const unit of DISTANCE_UNITS) expect(NEAR_ME_RADII[unit], unit).toHaveLength(6);
   });
 });

@@ -41,7 +41,8 @@ npm run check          # everything CI runs, in order
 - `src/view/`: render functions of state + callbacks. Pure math (fits, scales) lives in DOM-free modules so it is testable in Node.
 - `src/preview.ts`: in-browser preview of dropped files (validate, normalize, lint, diff, export). Held in memory only.
 - `src/i18n/`: interface texts per language (`en`, `de`, `fr`, `es`, `sv`, `fi`, `la`, `eo`) against the typed `Messages`; the locale is
-  picked once at start-up from `lang=`/`clock=` in the URL or the browser, and changing it reloads the page.
+  picked once at start-up from `lang=`/`clock=`/`units=` in the URL or the browser, and changing it reloads the page.
+  Distances show in km, miles (US region) or Swedish mil (Swedish), via `formats().distance`.
   Validation issues carry a code (`src/data/issues.ts`) so the app can translate them; tools print English.
   Browsers have no Latin or Esperanto data, so `la.ts`/`eo.ts` carry their own month, weekday and country names
   (`FormatWords`), formatted in en-GB's shape by `src/i18n/formats.ts`.

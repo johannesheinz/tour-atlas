@@ -1,5 +1,5 @@
 import { isCountryCode, type CountryCode } from '../data/countries.ts';
-import type { HourCycle, ResolvedLocale } from './locale.ts';
+import type { DistanceUnit, HourCycle, ResolvedLocale } from './locale.ts';
 
 export interface DateFormat {
   format(date: Date | number): string;
@@ -37,6 +37,8 @@ export interface Formats {
   readonly list: ListFormat;
   /** Country names by ISO code. */
   readonly regions: RegionNames;
+  /** "25 km", "15 mi", "2,5 mil": the unit's symbol is the same in every language. */
+  readonly distance: (value: number, unit: DistanceUnit) => string;
 }
 
 type Months = readonly [string, string, string, string, string, string, string, string, string, string, string, string];
@@ -55,6 +57,8 @@ export interface FormatWords {
   /** Joins the last item of a list: "a, b et c". */
   readonly listConjunction: string;
   readonly countryNames: Readonly<Record<CountryCode, string>>;
+  /** A locale to borrow the number format from. */
+  readonly numbers: string;
 }
 
 /** The only options the formats use, so own words exist for every month and weekday width asked for. */
@@ -74,6 +78,7 @@ export function intlFormats(locale: ResolvedLocale): Formats {
     (options) => new Intl.DateTimeFormat(locale.tag, { ...options, timeZone: 'UTC' }),
     new Intl.ListFormat(locale.tag, { style: 'long', type: 'conjunction' }),
     new Intl.DisplayNames([locale.tag], { type: 'region' }),
+    locale.tag,
   );
 }
 
@@ -87,10 +92,12 @@ export function ownWordFormats(locale: ResolvedLocale, words: FormatWords): Form
     (options) => withOwnWords(new Intl.DateTimeFormat(SHAPE_LOCALE, { ...options, timeZone: 'UTC' }), options, words),
     conjunctionList(words.listConjunction),
     { of: (countryCode) => (isCountryCode(countryCode) ? words.countryNames[countryCode] : undefined) },
+    words.numbers,
   );
 }
 
-function buildFormats(hourCycle: HourCycle | undefined, dateFormat: (options: DateOptions) => DateRangeFormat, list: ListFormat, regions: RegionNames): Formats {
+function buildFormats(hourCycle: HourCycle | undefined, dateFormat: (options: DateOptions) => DateRangeFormat, list: ListFormat, regions: RegionNames, numberLocale: string): Formats {
+  const distanceNumber = new Intl.NumberFormat(numberLocale, { maximumFractionDigits: 1, useGrouping: false });
   const timeOnClock = (clock: HourCycle | undefined) => dateFormat({ hour: 'numeric', minute: '2-digit', ...(clock === undefined ? {} : { hourCycle: clock }) });
   return {
     date: dateFormat({ day: 'numeric', month: 'short', year: 'numeric' }),
@@ -105,6 +112,7 @@ function buildFormats(hourCycle: HourCycle | undefined, dateFormat: (options: Da
     axisYear: dateFormat({ year: 'numeric' }),
     list,
     regions,
+    distance: (value, unit) => `${distanceNumber.format(value)}\u00a0${unit}`,
   };
 }
 
