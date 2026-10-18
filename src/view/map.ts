@@ -16,7 +16,7 @@ import { placeLabels } from './labels.ts';
 import { clusterGroups, groupByCoordinates, pinLabel, type DisplayPin, type PinGroup } from './pins.ts';
 import { annularSectorPath, pinSegments, type PinSegment } from './pinSegments.ts';
 import { bandColor } from '../model.ts';
-import type { ThemeColors } from './theme.ts';
+import type { ThemeTokens } from './theme.ts';
 import { createTooltip } from './tooltip.ts';
 import { pinTooltip } from './tooltipContent.ts';
 
@@ -55,7 +55,7 @@ export interface MapProps {
   readonly highlightedShowIds: ReadonlySet<string>;
   readonly selectedShowIds: ReadonlySet<string>;
   readonly focusBandId: string | null;
-  readonly theme: ThemeColors;
+  readonly theme: ThemeTokens;
 }
 
 export interface MapCallbacks {
@@ -121,7 +121,7 @@ export function createMapView(container: HTMLElement, world: WorldTopology, call
   );
   const spherePath = s('path', { class: 'map-sphere' });
   const graticulePath = s('path', { class: 'map-graticule' });
-  const landPath = s('path', { class: 'map-land', fill: 'url(#halftone)' });
+  const landPath = s('path', { class: 'map-land' });
   const bordersPath = s('path', { class: 'map-borders' });
   const shadePath = s('path', { class: 'map-globe-shade', fill: 'url(#globe-shade)' });
   const radiusPath = s('path', { class: 'map-radius' });

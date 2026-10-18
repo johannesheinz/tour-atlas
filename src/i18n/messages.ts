@@ -1,4 +1,5 @@
 import type { IssueTexts } from '../data/issues.ts';
+import type { Style } from '../data/styles.ts';
 import type { BandSort, ThemePreference } from '../model.ts';
 import type { RegionId } from '../view/mapRegions.ts';
 import type { TimePreset } from '../view/timePresets.ts';
@@ -170,6 +171,8 @@ export interface Messages {
   };
   readonly settings: {
     readonly title: Text;
+    readonly style: Text;
+    readonly styles: Readonly<Record<Style, string>>;
     readonly theme: Text;
     readonly themes: Readonly<Record<ThemePreference, string>>;
     readonly language: Text;

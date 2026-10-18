@@ -112,7 +112,7 @@ Band data (names, venues, tours, notes) and genre names are not translated.
 | Schema tag list matches `data/tags.json` (`tags --check`) | yes |
 | Data review: shows added, removed and changed per band, plus plausibility warnings, in the job summary | no |
 | Typecheck, unit tests, build | yes |
-| Size budget: build with 50 bands and 5,000 synthetic shows must stay under 600 kB gzipped | yes |
+| Size budget: build with 50 bands and 5,000 synthetic shows must stay under 650 kB gzipped (HTML plus the fonts of the heaviest style) | yes |
 
 ## Code changes
 

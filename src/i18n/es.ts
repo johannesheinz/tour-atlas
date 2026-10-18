@@ -254,6 +254,8 @@ export const es: Messages = {
   },
   settings: {
     title: 'Ajustes',
+    style: 'Estilo',
+    styles: { stage: 'Luces de escenario', bold: 'Contraste marcado', soft: 'Impresión suave', atlas: 'Atlas de carreteras' },
     theme: 'Tema',
     themes: { auto: 'Auto', light: 'Claro', dark: 'Oscuro' },
     language: 'Idioma',

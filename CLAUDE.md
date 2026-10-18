@@ -11,7 +11,7 @@ No backend, no runtime network requests. Band data lives in `data/bands/*.json`,
 npm run dev            # Vite dev server
 npm run build          # inlined build + fonts, then dist checks (CSP, no remote resources, size)
 npm run preview        # serve dist/ on http://localhost:4173
-npm run build:budget   # build with a synthetic 50 bands / 5,000 shows dataset, must stay < 600 kB gzipped
+npm run build:budget   # build with a synthetic 50 bands / 5,000 shows dataset, must stay < 650 kB gzipped
 npm test               # Vitest
 npm run typecheck      # app (DOM) and node (tools/tests) projects separately
 npm run validate       # tools/validate.ts data/bands  (errors fail, warnings inform)
@@ -45,6 +45,9 @@ npm run check          # everything CI runs, in order
   Validation issues carry a code (`src/data/issues.ts`) so the app can translate them; tools print English.
   Browsers have no Latin or Esperanto data, so `la.ts`/`eo.ts` carry their own month, weekday and country names
   (`FormatWords`), formatted in en-GB's shape by `src/i18n/formats.ts`.
+- Styles: `src/data/styles.ts` lists the four styles (Stage lights is the default) and the fonts each downloads;
+  `src/styles.css` sets every token per style, light and dark, and `tests/view/styles.test.ts` checks that each
+  style sets them all and meets WCAG AA contrast. Components use tokens only, never a style's colours directly.
 - `src/main.ts` wires views to `src/state.ts`; `src/appState.ts` and `src/selectors.ts` memoise derived data.
 - `tools/`: Node CLIs (TypeScript run directly by Node's type stripping, so use `.ts` import specifiers and
   erasable syntax only); never shipped. `tools/vite/` holds the build plugins (data validation, CSP, slim topology,
@@ -62,7 +65,8 @@ Only for work that needs judgement; everything checkable is a tool or a CI job.
 ## Hard rules
 
 - Runtime dependencies are an allowlist: d3-geo, d3-scale, d3-time, d3-zoom, d3-selection,
-  d3-transition, d3-quadtree, topojson-client, world-atlas, @fontsource/league-gothic, @fontsource/archivo.
+  d3-transition, d3-quadtree, topojson-client, world-atlas, @fontsource/league-gothic, @fontsource/archivo,
+  @fontsource/jost, @fontsource/charis-sil.
   Justify any addition in the PR. `sharp` is a dev dependency for tools/logos.ts only; it never reaches the bundle.
 - No network at runtime, no CDNs, no cookies, no localStorage/sessionStorage/IndexedDB. View state lives in
   the URL hash only. `tools/check-dist.ts` fails the build otherwise; the CSP sets `connect-src 'none'` and
@@ -71,7 +75,8 @@ Only for work that needs judgement; everything checkable is a tool or a CI job.
   `rel="noopener noreferrer"`.
 - Unknown data is `null`, never guessed. Never invent tour dates; sample data uses fictional bands and
   `example.com`/`example.org` URLs.
-- Keep the transfer size (gzipped `dist/index.html` plus fonts) under 600 kB at 50 bands / 5,000 shows.
+- Keep the transfer size (gzipped `dist/index.html` plus the fonts of the heaviest style) under 650 kB at 50 bands / 5,000 shows.
+  Every hosted font belongs to a style in `src/data/styles.ts`; browsers download only the active style's fonts.
 - Never send requests to Nominatim from tests or CI; tests inject a fake fetch.
 - The repository is local-only for now; do not add a remote or push.
 - Comments only where the code cannot say it; prefer descriptive names.

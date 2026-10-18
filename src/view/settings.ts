@@ -1,3 +1,4 @@
+import { STYLES, isStyle, type Style } from '../data/styles.ts';
 import { formats, t } from '../i18n/index.ts';
 import { AUTOMATIC, CLOCKS, LANGUAGES, LANGUAGE_NAMES, isClock, isLanguage, resolveLocale, type Clock, type HourCycle, type Language, type LocaleChoice } from '../i18n/locale.ts';
 import type { ThemePreference } from '../model.ts';
@@ -5,10 +6,12 @@ import { h } from './dom.ts';
 import { attachPopover } from './popover.ts';
 
 export interface SettingsProps {
+  readonly style: Style;
   readonly theme: ThemePreference;
 }
 
 export interface SettingsCallbacks {
+  onStyle(style: Style): void;
   onTheme(theme: ThemePreference): void;
   /** Null follows the browser. */
   onLanguage(language: Language | null): void;
@@ -25,10 +28,16 @@ const THEMES: readonly ThemePreference[] = ['auto', 'light', 'dark'];
 const AUTOMATIC_VALUE = 'auto';
 const EIGHT_PM = Date.UTC(1970, 0, 1, 20, 0);
 
-/** The settings pop-up behind the masthead's gear: theme, language, time format and the band file actions. */
+/** The settings pop-up behind the masthead's gear: style, theme, language, time format and the band file actions. */
 export function createSettings(trigger: HTMLButtonElement, panel: HTMLElement, callbacks: SettingsCallbacks, choice: LocaleChoice, browserLanguages: readonly string[]): SettingsView {
   const popover = attachPopover(trigger, panel);
   const text = t().settings;
+
+  const style = h('select', { class: 'settings-select', id: 'settings-style' }, ...STYLES.map((value) => h('option', { value }, text.styles[value])));
+  style.addEventListener('change', () => {
+    if (!isStyle(style.value)) throw new Error(`The style menu offers an unknown style "${style.value}"`);
+    callbacks.onStyle(style.value);
+  });
 
   const themeInputs = THEMES.map((value) => {
     const input = h('input', { type: 'radio', name: 'theme', value });
@@ -75,6 +84,8 @@ export function createSettings(trigger: HTMLButtonElement, panel: HTMLElement, c
     h(
       'div',
       { class: 'settings-section settings-fields' },
+      h('label', { for: 'settings-style' }, text.style),
+      style,
       h('label', { for: 'settings-language' }, text.language),
       language,
       h('label', { for: 'settings-clock' }, text.timeFormat),
@@ -85,6 +96,7 @@ export function createSettings(trigger: HTMLButtonElement, panel: HTMLElement, c
 
   return {
     render(props) {
+      style.value = props.style;
       for (const [value, input] of themeInputs) input.checked = props.theme === value;
     },
   };

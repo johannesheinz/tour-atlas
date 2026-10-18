@@ -312,6 +312,8 @@ export const la: Messages = {
   },
   settings: {
     title: 'Optiones',
+    style: 'Stilus',
+    styles: { stage: 'Lumina scaenae', bold: 'Discrimen acre', soft: 'Impressio mollis', atlas: 'Atlas viarum' },
     theme: 'Species',
     themes: { auto: 'Sponte', light: 'Clara', dark: 'Obscura' },
     language: 'Lingua',

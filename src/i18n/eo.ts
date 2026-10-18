@@ -310,6 +310,8 @@ export const eo: Messages = {
   },
   settings: {
     title: 'Agordoj',
+    style: 'Stilo',
+    styles: { stage: 'Scenlumoj', bold: 'Forta kontrasto', soft: 'Mola presaĵo', atlas: 'Voja atlaso' },
     theme: 'Etoso',
     themes: { auto: 'Aŭtomata', light: 'Hela', dark: 'Malhela' },
     language: 'Lingvo',

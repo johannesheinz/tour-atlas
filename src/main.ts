@@ -19,7 +19,7 @@ import { h, prefersReducedMotion, requireElement } from './view/dom.ts';
 import { MAP_SETTINGS, createMapView } from './view/map.ts';
 import { createSearch } from './view/search.ts';
 import type { SearchEntry } from './view/searchIndex.ts';
-import { applyThemePreference, readThemeColors, watchSystemTheme, type ThemeColors } from './view/theme.ts';
+import { applyStyle, applyThemePreference, readThemeTokens, watchSystemTheme, type ThemeTokens } from './view/theme.ts';
 import { DAY_MS } from './view/timeScale.ts';
 import { TIMELINE_SETTINGS, createTimeline } from './view/timeline.ts';
 import { FRAME_LAYOUT_QUERY, MAP_SHARE } from './view/layout.ts';
@@ -47,6 +47,7 @@ const SEARCH_FOCUS_TIMEOUT_MS = 1500;
 const urlState = parseUrlState(location.hash);
 useLocale({ language: urlState.language, clock: urlState.clock }, navigator.languages);
 localizePage(document);
+applyStyle(urlState.style);
 
 const dataStore = createBundledStore();
 const knownBandIds = new Set(dataStore.listBands().map((file) => file.band.id));
@@ -73,6 +74,7 @@ const state = createStore<AppState>({
   mapMode: urlState.globe ? 'globe' : 'flat',
   userPosition: null,
   locationStatus: null,
+  style: urlState.style,
   theme: 'auto',
   today: localToday(new Date()),
 });
@@ -80,7 +82,7 @@ dataStore.subscribe(() => state.set({ bundled: dataStore.listBands() }));
 
 const derive = createDeriver();
 const select = createSelectors(MAP_SETTINGS.maxBandsWithRoutes);
-let theme: ThemeColors = readThemeColors('auto');
+let theme: ThemeTokens = readThemeTokens('auto');
 
 const idsOf = (shows: readonly ShowRef[] | null): ReadonlySet<string> => new Set((shows ?? []).map((ref) => ref.show.id));
 const NO_PLACES: ReadonlySet<PlaceKey> = new Set();
@@ -240,6 +242,11 @@ requireElement(document, '#source-link', HTMLAnchorElement).append(icon('github'
 const settingsButton = requireElement(document, '#settings-button', HTMLButtonElement);
 settingsButton.append(icon('gear'));
 const settings = createSettings(settingsButton, requireElement(document, '#settings-panel', HTMLDivElement), {
+  onStyle(style) {
+    applyStyle(style);
+    state.set({ style });
+    refreshTheme();
+  },
   onTheme(preference) {
     applyThemePreference(preference);
     state.set({ theme: preference });
@@ -260,6 +267,8 @@ document.addEventListener('keydown', (event) => {
 });
 
 watchSystemTheme(() => refreshTheme());
+// Canvas text is drawn once; redraw when a style's font arrives.
+document.fonts.addEventListener('loadingdone', () => refreshTheme());
 
 /** After a search, the next follow-timeline refit goes to the chosen shows instead of the whole window. */
 let searchFocus: { readonly shows: readonly ShowRef[]; readonly until: number } | null = null;
@@ -351,7 +360,7 @@ function renderAll() {
     includePastMonth: current.includePastMonth,
     tourPacing: current.tourPacing,
   });
-  settings.render({ theme: current.theme });
+  settings.render({ style: current.style, theme: current.theme });
 
   const inRange = select.bandsInRange(current, derived);
   bandList.render({
@@ -788,6 +797,7 @@ function currentHash(): string {
     tourPacing: current.tourPacing,
     region: current.mapView.kind === 'region' ? current.mapView.region.id : null,
     globe: current.mapMode === 'globe',
+    style: current.style,
     language: localeChoice().language,
     clock: localeChoice().clock,
   });
@@ -865,7 +875,7 @@ function createNavigation() {
       clearTimeout(urlTimer);
       writeUrlState();
       const leaving = location.hash;
-      const home = serializeUrlState({ ...parseUrlState(''), language: localeChoice().language, clock: localeChoice().clock });
+      const home = serializeUrlState({ ...parseUrlState(''), style: state.get().style, language: localeChoice().language, clock: localeChoice().clock });
       search.clear();
       placeList.clearFilter();
       sidebar.showTab('bands');
@@ -881,7 +891,7 @@ function createNavigation() {
 }
 
 function refreshTheme() {
-  theme = readThemeColors(state.get().theme);
+  theme = readThemeTokens(state.get().theme);
   renderAll();
 }
 

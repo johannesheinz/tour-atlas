@@ -1,15 +1,19 @@
+import { DEFAULT_STYLE, type Style } from '../data/styles.ts';
 import type { ThemeMode, ThemePreference } from '../model.ts';
 
 export type { ThemeMode, ThemePreference } from '../model.ts';
 
-export interface ThemeColors {
+/** The active style's tokens that canvas drawing and SVG attributes need as concrete values. */
+export interface ThemeTokens {
   readonly mode: ThemeMode;
   readonly stock: string;
   readonly ink: string;
   readonly inkSoft: string;
   readonly inkMuted: string;
   readonly past: string;
-  readonly border: string;
+  /** Canvas font shorthands for the timeline's lane labels. */
+  readonly laneFont: string;
+  readonly compactLaneFont: string;
 }
 
 const DARK_QUERY = '(prefers-color-scheme: dark)';
@@ -20,13 +24,20 @@ export function applyThemePreference(preference: ThemePreference): void {
   else root.dataset['theme'] = preference;
 }
 
+/** Stage lights, the default, is the stylesheet's :root; the others select their tokens by data-style. */
+export function applyStyle(style: Style): void {
+  const root = document.documentElement;
+  if (style === DEFAULT_STYLE) delete root.dataset['style'];
+  else root.dataset['style'] = style;
+}
+
 export function resolveThemeMode(preference: ThemePreference): ThemeMode {
   if (preference !== 'auto') return preference;
   return window.matchMedia(DARK_QUERY).matches ? 'dark' : 'light';
 }
 
-/** Canvas and SVG attributes need concrete colours; read them from the CSS custom properties. */
-export function readThemeColors(preference: ThemePreference): ThemeColors {
+/** Canvas and SVG attributes need concrete values; read them from the CSS custom properties. */
+export function readThemeTokens(preference: ThemePreference): ThemeTokens {
   const style = getComputedStyle(document.documentElement);
   const token = (name: string) => {
     const value = style.getPropertyValue(name).trim();
@@ -40,7 +51,8 @@ export function readThemeColors(preference: ThemePreference): ThemeColors {
     inkSoft: token('--ink-soft'),
     inkMuted: token('--ink-muted'),
     past: token('--past'),
-    border: token('--border-line'),
+    laneFont: token('--lane-font'),
+    compactLaneFont: token('--lane-font-compact'),
   };
 }
 

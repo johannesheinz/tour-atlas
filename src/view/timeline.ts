@@ -9,7 +9,7 @@ import { t } from '../i18n/index.ts';
 import { formatDateSpan, statusLabel } from './format.ts';
 import { DAY_MS, fitDateDomain, timeTicks } from './timeScale.ts';
 import { bandColor } from '../model.ts';
-import type { ThemeColors } from './theme.ts';
+import type { ThemeTokens } from './theme.ts';
 import { createTooltip } from './tooltip.ts';
 import { showTooltip } from './tooltipContent.ts';
 
@@ -28,13 +28,11 @@ export const TIMELINE_SETTINGS = {
   fitDurationMs: 300,
   /** A drag shorter than this is a click. */
   brushThresholdPx: 5,
-  laneFont: '17px "League Gothic", "Arial Narrow", sans-serif',
   /** A range starts this many average lane-label characters in, so its first shows are not under the band names. */
   gutterCharacters: 15,
   /** The pointed-at dot's ring sits outside the selection ring, so it stands out when every dot is selected. */
   hoverRingGap: 7,
   maxGutterFraction: 0.25,
-  compactLaneFont: '15px "League Gothic", "Arial Narrow", sans-serif',
   tickFont: '600 11px Archivo, system-ui, sans-serif',
 } as const;
 
@@ -53,7 +51,7 @@ export interface TimelineProps {
   readonly highlightedShowIds: ReadonlySet<string>;
   readonly selectedShowIds: ReadonlySet<string>;
   readonly focusBandId: string | null;
-  readonly theme: ThemeColors;
+  readonly theme: ThemeTokens;
   readonly today: number;
   /** Forward-looking ranges keep the gutter under the band names free of dots, and of clicks on them. */
   readonly clearGutter: boolean;
@@ -283,7 +281,7 @@ export function createTimeline(container: HTMLElement, callbacks: TimelineCallba
     const nextWidth = Math.round(entry.contentRect.width);
     if (nextWidth === width) return;
     width = nextWidth;
-    measureGutter();
+    if (props !== null) measureGutter(props.theme.laneFont);
     layout();
     fitToData(false, null);
     if (pendingRange !== null) {
@@ -321,6 +319,7 @@ export function createTimeline(container: HTMLElement, callbacks: TimelineCallba
   function render(next: TimelineProps) {
     const previous = props;
     props = next;
+    if (previous?.theme !== next.theme) measureGutter(next.theme.laneFont);
     empty.hidden = next.lanes.length > 0;
     empty.textContent = next.emptyMessage;
     note.hidden = next.hiddenLaneCount === 0;
@@ -387,11 +386,16 @@ export function createTimeline(container: HTMLElement, callbacks: TimelineCallba
     lanesContext.clip();
   }
 
-  function measureGutter() {
-    lanesContext.font = TIMELINE_SETTINGS.laneFont;
+  /** A new lane font (another style, or the font finished loading) moves the gutter; the visible range stays. */
+  function measureGutter(laneFont: string) {
+    lanesContext.font = laneFont;
     const alphabet = 'abcdefghijklmnopqrstuvwxyz';
     const averageCharacter = lanesContext.measureText(alphabet).width / alphabet.length;
-    gutter = Math.round(Math.min(width * TIMELINE_SETTINGS.maxGutterFraction, averageCharacter * TIMELINE_SETTINGS.gutterCharacters + 12));
+    const measured = Math.round(Math.min(width * TIMELINE_SETTINGS.maxGutterFraction, averageCharacter * TIMELINE_SETTINGS.gutterCharacters + 12));
+    if (measured === gutter) return;
+    const range = hasFitted && width > gutter ? visibleRange() : null;
+    gutter = measured;
+    if (range !== null) zoomToRange(range[0], range[1], false);
   }
 
   function zoomToRange(start: number, end: number, animate: boolean) {
@@ -636,7 +640,7 @@ export function createTimeline(container: HTMLElement, callbacks: TimelineCallba
     }
     lanesContext.restore();
 
-    lanesContext.font = compact ? TIMELINE_SETTINGS.compactLaneFont : TIMELINE_SETTINGS.laneFont;
+    lanesContext.font = compact ? theme.compactLaneFont : theme.laneFont;
     lanesContext.textBaseline = 'alphabetic';
     for (let index = first; index <= last; index++) {
       const lane = current.lanes[index];

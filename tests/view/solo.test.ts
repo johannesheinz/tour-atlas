@@ -28,6 +28,7 @@ function appState(selection: Selection, hiddenBandIds: ReadonlySet<string>): App
     mapMode: 'flat',
     userPosition: null,
     locationStatus: null,
+    style: 'stage',
     theme: 'auto',
     today: '2026-10-16',
   };

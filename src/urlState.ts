@@ -5,6 +5,7 @@ import { PRESET_IDS, type TimePreset } from './view/timePresets.ts';
 import type { TourPacing } from './view/tourClock.ts';
 import { PLACE_KEY_PATTERN } from './places.ts';
 import { isClock, isLanguage, type Clock, type Language } from './i18n/locale.ts';
+import { DEFAULT_STYLE, isStyle, type Style } from './data/styles.ts';
 
 /** View state kept in the URL hash: shareable, never stored, never sent to a server. */
 export interface UrlState {
@@ -25,6 +26,7 @@ export interface UrlState {
   /** Region id of the map view; "Near me" is never put in the URL. */
   readonly region: string | null;
   readonly globe: boolean;
+  readonly style: Style;
   /** Set only when picked in the settings; otherwise the browser decides. */
   readonly language: Language | null;
   readonly clock: Clock | null;
@@ -62,6 +64,7 @@ export function parseUrlState(hash: string): UrlState {
     tourPacing: params.get('pace') === 'even' ? 'even' : 'calendar',
     region: ID_PATTERN.test(params.get('view') ?? '') ? params.get('view') : null,
     globe: params.get('globe') === '1',
+    style: oneOf(params.get('style'), isStyle) ?? DEFAULT_STYLE,
     language: oneOf(params.get('lang'), isLanguage),
     clock: oneOf(params.get('clock'), isClock),
   };
@@ -87,6 +90,7 @@ export function serializeUrlState(state: UrlState): string {
   if (state.tourPacing === 'even') params.set('pace', 'even');
   if (state.region !== null) params.set('view', state.region);
   if (state.globe) params.set('globe', '1');
+  if (state.style !== DEFAULT_STYLE) params.set('style', state.style);
   if (state.language !== null) params.set('lang', state.language);
   if (state.clock !== null) params.set('clock', state.clock);
   const text = params.toString().replaceAll('%2C', ',');

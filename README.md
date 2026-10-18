@@ -11,7 +11,8 @@ self-hosted font files next to it. No backend, no network requests to third part
 - Search across bands, cities, venues, tours and festivals; band list with filter, sort, solo, show/hide all
 - Local preview: drop band files to validate them, see the diff against the published data and download the
   normalized file. Nothing leaves the browser.
-- Light and dark themes that follow the system, switchable in the settings; keyboard navigation with visible focus
+- Four styles (Stage lights, Bold contrast, Soft print, Road atlas), each light and dark following the system,
+  switchable in the settings; keyboard navigation with visible focus
 - A band's view draws its tour route on a calendar clock, or at an even pace per leg (switch in the map and timeline options),
   with a playhead on the timeline (skipped when the system asks for reduced motion)
 - English, German, French, Spanish, Swedish, Finnish, Latin and Esperanto, picked from the browser or in the settings, with local date formats and a 12/24-hour choice
@@ -72,7 +73,8 @@ To look at the build, serve it locally: `npm run preview` (http://localhost:4173
 that blocks local fonts falls back to system fonts and nothing else changes.
 
 `npm run build:budget` builds the same app with a synthetic 50 bands / 5,000 shows dataset and fails above
-600 kB transferred (gzipped HTML plus fonts). It is currently about 510 kB.
+650 kB transferred (gzipped HTML plus the fonts of the heaviest style; browsers download only the
+active style's fonts). It is currently about 603 kB.
 
 ## Deploy
 
@@ -115,6 +117,6 @@ Dependabot keeps npm packages and the SHA-pinned GitHub Actions up to date.
 
 Projection: Equal Earth (Šavrič, Patterson, Jenny). Coastlines and borders: Natural Earth via
 [world-atlas](https://github.com/topojson/world-atlas). Geocoding: Nominatim, © OpenStreetMap contributors
-(ODbL). Fonts: League Gothic and Archivo (SIL Open Font License), self-hosted via Fontsource.
+(ODbL). Fonts: League Gothic, Archivo, Jost and Charis SIL (SIL Open Font License), self-hosted via Fontsource.
 GitHub mark: [Octicons](https://github.com/primer/octicons) (MIT).
 All bands in `samples/` are fictional. Tour dates in `data/bands/` come from each band's `source.url`.

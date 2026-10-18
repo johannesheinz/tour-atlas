@@ -3,6 +3,7 @@ import type { BandFile } from './data/types.ts';
 import type { PreviewResult } from './preview.ts';
 import { buildBandEntries, byBandName, isInRange, showRefs, type BandEntry, type BandSort, type ShowRef } from './model.ts';
 import type { ThemePreference } from './model.ts';
+import type { Style } from './data/styles.ts';
 import type { TimePreset } from './view/timePresets.ts';
 import type { TourPacing } from './view/tourClock.ts';
 import type { MapMode, MapViewPreset } from './view/mapRegions.ts';
@@ -52,6 +53,7 @@ export interface AppState {
   /** The viewer's position, only after they asked for "Near me". Held in memory, never stored or sent. */
   readonly userPosition: readonly [lon: number, lat: number] | null;
   readonly locationStatus: string | null;
+  readonly style: Style;
   readonly theme: ThemePreference;
   readonly today: string;
 }

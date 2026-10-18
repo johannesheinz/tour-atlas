@@ -254,6 +254,8 @@ export const de: Messages = {
   },
   settings: {
     title: 'Einstellungen',
+    style: 'Stil',
+    styles: { stage: 'Bühnenlicht', bold: 'Starker Kontrast', soft: 'Sanfter Druck', atlas: 'Straßenatlas' },
     theme: 'Darstellung',
     themes: { auto: 'Automatisch', light: 'Hell', dark: 'Dunkel' },
     language: 'Sprache',

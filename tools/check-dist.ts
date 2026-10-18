@@ -2,12 +2,13 @@ import { readdirSync, readFileSync, statSync } from 'node:fs';
 import { join, relative } from 'node:path';
 import { gzipSync } from 'node:zlib';
 import { parseArguments, runCli, UsageError } from './shared/files.ts';
+import { STYLES, STYLE_FONT_FAMILIES, type Style } from '../src/data/styles.ts';
 
 const USAGE = `Usage: node tools/check-dist.ts <dist-dir> [--budget-kb <n>]
 
 Checks the build output: index.html with every script and style inlined plus self-hosted
 fonts next to it, no remote resources, no storage or network APIs, and a transfer size
-(gzipped HTML + fonts) within the budget (default 600 kB).`;
+(gzipped HTML + the fonts of the heaviest style) within the budget (default 650 kB).`;
 
 const FONT_FILE = /^[\w.-]+\.woff2$/;
 const LOGO_FILE = /^[\w.-]+\.webp$/;
@@ -32,7 +33,7 @@ runCli(USAGE, () => {
   const args = parseArguments(process.argv.slice(2), [], ['budget-kb']);
   const [distDir] = args.positional;
   if (distDir === undefined) throw new UsageError('missing <dist-dir>');
-  const budgetKb = Number(args.options.get('budget-kb') ?? '600');
+  const budgetKb = Number(args.options.get('budget-kb') ?? '650');
   if (!Number.isFinite(budgetKb) || budgetKb <= 0) throw new UsageError('--budget-kb must be a positive number');
 
   const problems: string[] = [];
@@ -59,12 +60,19 @@ runCli(USAGE, () => {
     if (!html.includes(font)) problems.push(`${font} is not referenced by index.html`);
   }
 
+  const styleless = fonts.filter((font) => !STYLES.some((style) => STYLE_FONT_FAMILIES[style].some((family) => font.startsWith(`${family}-`))));
+  if (styleless.length > 0) problems.push(`${styleless.join(', ')} belong to no style in src/data/styles.ts, so the budget cannot count them`);
+  const fontKbOf = (style: Style) =>
+    fonts.filter((font) => STYLE_FONT_FAMILIES[style].some((family) => font.startsWith(`${family}-`))).reduce((sum, font) => sum + statSync(join(distDir, font)).size, 0) / 1000;
+  const [heaviest] = STYLES.toSorted((a, b) => fontKbOf(b) - fontKbOf(a));
+  if (heaviest === undefined) throw new Error('src/data/styles.ts lists no styles');
+
   const htmlGzipKb = gzipSync(html, { level: 9 }).byteLength / 1000;
-  const fontKb = fonts.reduce((sum, font) => sum + statSync(join(distDir, font)).size, 0) / 1000;
+  const fontKb = fontKbOf(heaviest);
   const totalKb = htmlGzipKb + fontKb;
   console.log(
     `index.html: ${(Buffer.byteLength(html) / 1000).toFixed(1)} kB raw, ${htmlGzipKb.toFixed(1)} kB gzipped; ` +
-      `${fonts.length} fonts: ${fontKb.toFixed(1)} kB; total ${totalKb.toFixed(1)} kB (budget ${budgetKb} kB)` +
+      `${fonts.length} fonts, ${fontKb.toFixed(1)} kB for the heaviest style (${heaviest}); total ${totalKb.toFixed(1)} kB (budget ${budgetKb} kB)` +
       (logos.length > 0 ? `; ${logos.length} logos load when shown` : ''),
   );
   if (totalKb > budgetKb) problems.push(`transfer size ${totalKb.toFixed(1)} kB exceeds the budget of ${budgetKb} kB`);

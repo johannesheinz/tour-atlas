@@ -254,6 +254,8 @@ export const fi: Messages = {
   },
   settings: {
     title: 'Asetukset',
+    style: 'Tyyli',
+    styles: { stage: 'Lavavalot', bold: 'Vahva kontrasti', soft: 'Pehmeä painatus', atlas: 'Tiekartasto' },
     theme: 'Teema',
     themes: { auto: 'Automaattinen', light: 'Vaalea', dark: 'Tumma' },
     language: 'Kieli',
