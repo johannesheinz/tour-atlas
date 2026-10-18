@@ -857,6 +857,9 @@ a {
   top: calc(100% + 10px);
   right: 0;
   width: min(320px, calc(100vw - 2 * var(--gutter)));
+  max-height: calc(100dvh - 90px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
 }
 
 .settings-title {
@@ -912,11 +915,9 @@ a {
   min-height: 34px;
 }
 
-.settings-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
+.settings-intro {
   clear: both;
+  margin: 0 0 6px;
 }
 
 .setting {
@@ -2377,11 +2378,19 @@ input[type='search']::placeholder {
 
 .drop-overlay p {
   margin: 0;
+  text-align: center;
   font-family: var(--font-display);
   font-weight: var(--display-weight);
   font-size: calc(56px * var(--display-scale));
   line-height: 1;
   letter-spacing: var(--display-tracking);
+}
+
+.drop-overlay .drop-overlay-note {
+  margin-top: 14px;
+  font: 600 16px/1.4 var(--font-text);
+  letter-spacing: 0;
+  color: var(--ink-soft);
 }
 
 /* Tooltip: an ink stamp */

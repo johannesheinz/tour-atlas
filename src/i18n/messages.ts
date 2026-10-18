@@ -33,6 +33,7 @@ export interface Messages {
     readonly footerSources: Text;
     readonly footerPrivacy: Text;
     readonly dropFiles: Text;
+    readonly dropFilesNote: Text;
     readonly sidebarToggle: (visible: number, total: number) => string;
   };
   readonly shows: Count;
@@ -184,8 +185,11 @@ export interface Messages {
     readonly clock12: Text;
     readonly clock24: Text;
     readonly files: Text;
+    readonly filesIntro: Text;
     readonly previewFiles: Text;
+    readonly previewFilesNote: Text;
     readonly exportAll: Text;
+    readonly exportAllNote: Text;
     readonly reloadLosesPreviews: Text;
   };
   readonly preview: {
@@ -194,6 +198,7 @@ export interface Messages {
     readonly removeAll: Text;
     readonly remove: Text;
     readonly download: Text;
+    readonly downloadNote: Text;
     readonly geocodeHint: (file: string) => string;
     readonly commitHint: (file: string) => string;
     readonly unusable: Text;

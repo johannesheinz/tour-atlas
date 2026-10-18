@@ -93,8 +93,8 @@ export function createSettings(trigger: HTMLButtonElement, panel: HTMLElement, c
   distance.value = choice.distance ?? AUTOMATIC_VALUE;
   distance.addEventListener('change', () => callbacks.onDistance(isDistanceUnit(distance.value) ? distance.value : null));
 
-  const preview = h('button', { type: 'button', class: 'button button-small' }, text.previewFiles);
-  const exportAll = h('button', { type: 'button', class: 'button button-small' }, text.exportAll);
+  const preview = h('button', { type: 'button', class: 'button button-small', 'aria-describedby': 'settings-preview-note' }, text.previewFiles);
+  const exportAll = h('button', { type: 'button', class: 'button button-small', 'aria-describedby': 'settings-export-note' }, text.exportAll);
   preview.addEventListener('click', () => {
     popover.close(false);
     callbacks.onPreviewFiles();
@@ -119,7 +119,14 @@ export function createSettings(trigger: HTMLButtonElement, panel: HTMLElement, c
       h('label', { for: 'settings-distance' }, text.distance),
       distance,
     ),
-    h('div', { class: 'settings-section', role: 'group', 'aria-labelledby': 'settings-files' }, h('h3', { id: 'settings-files' }, text.files), h('div', { class: 'settings-actions' }, preview, exportAll)),
+    h(
+      'div',
+      { class: 'settings-section', role: 'group', 'aria-labelledby': 'settings-files' },
+      h('h3', { id: 'settings-files' }, text.files),
+      h('p', { class: 'setting-note settings-intro' }, text.filesIntro),
+      h('div', { class: 'setting' }, preview, h('p', { class: 'setting-note', id: 'settings-preview-note' }, text.previewFilesNote)),
+      h('div', { class: 'setting' }, exportAll, h('p', { class: 'setting-note', id: 'settings-export-note' }, text.exportAllNote)),
+    ),
   );
 
   return {

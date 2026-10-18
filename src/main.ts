@@ -447,7 +447,11 @@ function downloadText(fileName: string, text: string) {
 }
 
 function mountDropZone() {
-  const overlay = h('div', { class: 'drop-overlay', hidden: true, 'aria-hidden': 'true' }, h('p', {}, t().page.dropFiles));
+  const overlay = h(
+    'div',
+    { class: 'drop-overlay', hidden: true, 'aria-hidden': 'true' },
+    h('div', {}, h('p', {}, t().page.dropFiles), h('p', { class: 'drop-overlay-note' }, t().page.dropFilesNote)),
+  );
   document.body.append(overlay);
   let depth = 0;
   const hasFiles = (event: DragEvent) => event.dataTransfer?.types.includes('Files') ?? false;

@@ -9,8 +9,8 @@ self-hosted font files next to it. No backend, no network requests to third part
 - Timeline with one lane per band, x-axis zoom, adaptive ticks, a today marker and virtualised lanes
 - Hover links map and timeline; clicking a band, place, pin or date lists its shows in the sidebar; the map can follow the timeline window
 - Search across bands, cities, venues, tours and festivals; band list with filter, sort, solo, show/hide all
-- Local preview: drop band files to validate them, see the diff against the published data and download the
-  normalized file. Nothing leaves the browser.
+- Checking band files: pick or drop band files to validate them, see the diff against the published data and
+  download the normalized file, or download all bands as one file. Nothing leaves the browser.
 - Four styles (Stage lights, Bold contrast, Soft print, Road atlas), each light and dark following the system,
   switchable in the settings; keyboard navigation with visible focus
 - A band's view draws its tour route on a calendar clock, or at an even pace per leg (switch in the map and timeline options),

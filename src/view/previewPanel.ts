@@ -57,11 +57,12 @@ function previewCard(preview: PreviewResult, callbacks: PreviewPanelCallbacks): 
 
   const actions: HTMLElement[] = [];
   if (preview.normalized !== null) {
-    const download = h('button', { type: 'button', class: 'button' }, t().preview.download);
+    const noteId = `preview-download-note-${preview.normalized.band.id}`;
+    const download = h('button', { type: 'button', class: 'button', 'aria-describedby': noteId }, t().preview.download);
     download.addEventListener('click', () => callbacks.onDownload(preview));
     const file = `${preview.normalized.band.id}.json`;
     const hint = preview.missingGeoCount > 0 ? t().preview.geocodeHint(file) : t().preview.commitHint(file);
-    actions.push(download, h('p', { class: 'preview-hint' }, hint));
+    actions.push(download, h('p', { class: 'preview-hint', id: noteId }, t().preview.downloadNote), h('p', { class: 'preview-hint' }, hint));
   }
 
   const usable = preview.normalized?.shows.length ?? 0;
