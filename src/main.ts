@@ -31,7 +31,10 @@ import { createGenreList } from './view/genreList.ts';
 import { createSelectionPanel, type SelectionHeading } from './view/selectionPanel.ts';
 import { createSidebar } from './view/sidebar.ts';
 import { cityKey, describePlaces, showsAtPlaces, type PlaceKey } from './places.ts';
-import { countryName, formatDate, plural } from './view/format.ts';
+import { countryName, formatDate, formatList } from './view/format.ts';
+import { localeChoice, t, useLocale } from './i18n/index.ts';
+import { localizePage } from './i18n/page.ts';
+import type { Clock, Language } from './i18n/locale.ts';
 import { slugify } from './data/ids.ts';
 import { findRegion, regionPoints, showsWithin, type MapViewPreset } from './view/mapRegions.ts';
 import { PRESET_IDS, defaultPreset, isPresetAvailable, presetRange, usesPastMonth, type TimePreset } from './view/timePresets.ts';
@@ -40,8 +43,11 @@ const WINDOW_DEBOUNCE_MS = 150;
 const URL_DEBOUNCE_MS = 300;
 const SEARCH_FOCUS_TIMEOUT_MS = 1500;
 
-const dataStore = createBundledStore();
 const urlState = parseUrlState(location.hash);
+useLocale({ language: urlState.language, clock: urlState.clock }, navigator.languages);
+localizePage(document);
+
+const dataStore = createBundledStore();
 const knownBandIds = new Set(dataStore.listBands().map((file) => file.band.id));
 
 const state = createStore<AppState>({
@@ -76,7 +82,6 @@ let theme: ThemeColors = readThemeColors('auto');
 
 const idsOf = (shows: readonly ShowRef[] | null): ReadonlySet<string> => new Set((shows ?? []).map((ref) => ref.show.id));
 const NO_PLACES: ReadonlySet<PlaceKey> = new Set();
-const listFormat = new Intl.ListFormat('en-GB', { style: 'long', type: 'conjunction' });
 const MAX_NAMED_BANDS = 3;
 
 const map = createMapView(requireElement(document, '#map', HTMLDivElement), world, {
@@ -223,12 +228,14 @@ const settings = createSettings(settingsButton, requireElement(document, '#setti
     state.set({ theme: preference });
     refreshTheme();
   },
+  onLanguage: (language) => reloadWithLocale(language, localeChoice().clock),
+  onClock: (clock) => reloadWithLocale(localeChoice().language, clock),
   onPreviewFiles: () => fileInput.click(),
   onExportAll() {
     const current = state.get();
     downloadText(`tour-atlas-export-${current.today}.json`, exportAll(current.bundled, current.previewResults));
   },
-});
+}, localeChoice(), navigator.languages);
 
 document.addEventListener('keydown', (event) => {
   if (event.key !== 'Escape' || event.defaultPrevented) return;
@@ -275,8 +282,8 @@ function renderAll() {
     hiddenLaneCount: lanes.hiddenCount,
     emptyMessage:
       derived.visibleBands.length === 0
-        ? 'No bands are shown. Turn bands on in the list to see their dates.'
-        : 'No shows in this window. Pick another time window or zoom out.',
+        ? t().timeline.noBandsShown
+        : t().timeline.noShowsInWindow,
     highlightedShowIds: current.hoverShowIds,
     selectedShowIds: select.selectedIds(current, derived),
     focusBandId: current.focusBandId,
@@ -303,7 +310,7 @@ function renderAll() {
   mapControls.render({
     view: current.mapView,
     mode: current.mapMode,
-    status: current.locationStatus ?? (nearby === null || current.mapView.kind !== 'near' ? null : `${nearby.length === 1 ? '1 show' : `${nearby.length} shows`} within ${current.mapView.radiusKm} km`),
+    status: current.locationStatus ?? (nearby === null || current.mapView.kind !== 'near' ? null : t().map.nearby(nearby.length, current.mapView.radiusKm)),
     canListNearby: nearby !== null && nearby.length > 0,
   });
 
@@ -333,19 +340,19 @@ function renderAll() {
   const panel = sidebarPanel(current);
   const previewsShown = current.previewsOpen && current.previewResults.length > 0;
   sidebar.show(panel, panel === 'selection' ? selectionKey(current.selection) : panel);
-  const listsLabel = `Back to ${sidebar.activeTab()}`;
+  const listsLabel = t().selection.back[sidebar.activeTab()];
   if (current.selection.kind !== 'none') {
     selectionPanel.render({
       heading: selectionHeading(current, derived, selected),
       shows: selected,
       showBand: current.selection.kind !== 'bands' || current.selection.bandIds.size > 1,
-      backLabel: previewsShown ? 'Back to previewed files' : listsLabel,
+      backLabel: previewsShown ? t().selection.back.previews : listsLabel,
       mode: theme.mode,
     });
   }
   placeList.render({ places: select.places(current, derived), selected: current.selection.kind === 'places' ? current.selection.places : NO_PLACES });
   genreList.render({ genres: select.genres(current, derived), checked: current.tagFilter });
-  sidebar.setToggleLabel(`Bands, places and genres (${derived.visibleBands.length} of ${derived.bands.length} bands shown)`);
+  sidebar.setToggleLabel(t().page.sidebarToggle(derived.visibleBands.length, derived.bands.length));
   search.setIndex(select.searchIndex(derived));
   previewPanel.render(current.previewResults, listsLabel);
   scheduleUrlUpdate();
@@ -399,7 +406,7 @@ function downloadText(fileName: string, text: string) {
 }
 
 function mountDropZone() {
-  const overlay = h('div', { class: 'drop-overlay', hidden: true, 'aria-hidden': 'true' }, h('p', {}, 'Drop band files to preview them'));
+  const overlay = h('div', { class: 'drop-overlay', hidden: true, 'aria-hidden': 'true' }, h('p', {}, t().page.dropFiles));
   document.body.append(overlay);
   let depth = 0;
   const hasFiles = (event: DragEvent) => event.dataTransfer?.types.includes('Files') ?? false;
@@ -452,7 +459,7 @@ function isGenreId(id: string): boolean {
 }
 
 function genreLabel(id: string): string {
-  if (id === NO_GENRE) return 'No genre';
+  if (id === NO_GENRE) return t().genreList.noGenre;
   const tag = TAG_VOCABULARY.byId.get(id);
   if (tag === undefined) throw new Error(`unknown genre ${id}`);
   return tag.label;
@@ -542,8 +549,9 @@ function searchPlaceKey(ref: string): PlaceKey {
 
 function selectionHeading(current: AppState, derived: Derived, shows: readonly ShowRef[]): SelectionHeading {
   const window = current.timeWindow;
-  const range = window === null ? 'on all dates' : `between ${formatDate(formatIsoDate(new Date(window.start)))} and ${formatDate(formatIsoDate(new Date(window.end)))}`;
-  const live = `${plural(shows.length, 'show')} ${range}. The list follows the timeline.`;
+  const text = t().selection;
+  const range = window === null ? text.allDates : text.between(formatDate(formatIsoDate(new Date(window.start))), formatDate(formatIsoDate(new Date(window.end))));
+  const live = text.live(shows.length, range);
   const { selection } = current;
   switch (selection.kind) {
     case 'none':
@@ -552,25 +560,24 @@ function selectionHeading(current: AppState, derived: Derived, shows: readonly S
       const names = derived.bands.filter((entry) => selection.bandIds.has(entry.file.band.id)).map((entry) => entry.file.band.name);
       if (names.length !== selection.bandIds.size) throw new Error(`unknown band in ${[...selection.bandIds].join(', ')}`);
       const [onlyBandId] = selection.bandIds;
-      const title = names.length <= MAX_NAMED_BANDS ? listFormat.format(names) : plural(names.length, 'band');
-      const subject = names.length === 1 ? `${title} shows` : 'shows of these bands';
+      const title = names.length <= MAX_NAMED_BANDS ? formatList(names) : t().bands(names.length);
       return {
         title,
         bandId: names.length === 1 && onlyBandId !== undefined ? onlyBandId : null,
         note: live,
-        emptyMessage: `No ${subject} ${range}. Zoom the timeline out or pick a wider time range.`,
+        emptyMessage: names.length === 1 ? text.emptyNamed(title, range) : text.emptyBands(range),
       };
     }
     case 'genres': {
-      const title = listFormat.format([...selection.genreIds].map(genreLabel));
-      return { title, bandId: null, note: live, emptyMessage: `No ${title} shows ${range}. Zoom the timeline out or pick a wider time range.` };
+      const title = formatList([...selection.genreIds].map(genreLabel));
+      return { title, bandId: null, note: live, emptyMessage: text.emptyNamed(title, range) };
     }
     case 'places': {
-      const name = describePlaces(selection.places, derived.visibleShows, countryName);
-      return { title: name, bandId: null, note: live, emptyMessage: `No shows in ${name} ${range}. Zoom the timeline out or pick a wider time range.` };
+      const name = describePlaces(selection.places, derived.visibleShows, countryName, t().placeList.andMore);
+      return { title: name, bandId: null, note: live, emptyMessage: text.emptyPlace(name, range) };
     }
     case 'shows':
-      return { title: pickedShowsTitle(shows), bandId: null, note: null, emptyMessage: 'These shows are hidden. Turn their bands on in the band list.' };
+      return { title: pickedShowsTitle(shows), bandId: null, note: null, emptyMessage: text.hiddenPicked };
   }
 }
 
@@ -579,9 +586,10 @@ function pickedShowsTitle(shows: readonly ShowRef[]): string {
   const bands = new Set(shows.map((ref) => ref.band.file.band.name));
   const [onlyCity] = cities;
   const [onlyBand] = bands;
-  if (shows.length === 1 && onlyBand !== undefined && onlyCity !== undefined) return `${onlyBand} in ${onlyCity}`;
-  const where = cities.size === 1 && onlyCity !== undefined ? `in ${onlyCity}` : `in ${plural(cities.size, 'city', 'cities')}`;
-  return `${bands.size === 1 && onlyBand !== undefined ? `${onlyBand}: ` : ''}${plural(shows.length, 'show')} ${where}`;
+  const text = t().selection;
+  if (shows.length === 1 && onlyBand !== undefined && onlyCity !== undefined) return text.pickedOne(onlyBand, onlyCity);
+  const band = bands.size === 1 && onlyBand !== undefined ? onlyBand : null;
+  return cities.size === 1 && onlyCity !== undefined ? text.pickedInCity(shows.length, onlyCity, band) : text.pickedInCities(shows.length, cities.size, band);
 }
 
 function mapViewForRegion(regionId: string | null): MapViewPreset {
@@ -633,7 +641,7 @@ function setMapView(view: MapViewPreset) {
     return;
   }
   if (!('geolocation' in navigator)) {
-    state.set({ mapView: previous, locationStatus: "This browser can't share its location here. Pick a region instead." });
+    state.set({ mapView: previous, locationStatus: t().map.locationUnsupported });
     return;
   }
   const known = state.get().userPosition;
@@ -641,7 +649,7 @@ function setMapView(view: MapViewPreset) {
     applyMapView(view, true);
     return;
   }
-  state.set({ locationStatus: 'Asking the browser for your location…' });
+  state.set({ locationStatus: t().map.locating });
   navigator.geolocation.getCurrentPosition(
     (position) => {
       state.set({ userPosition: [position.coords.longitude, position.coords.latitude], locationStatus: null });
@@ -650,8 +658,8 @@ function setMapView(view: MapViewPreset) {
     (error) => {
       const message =
         error.code === error.PERMISSION_DENIED
-          ? 'Location access was denied. Allow it in the browser or pick a region.'
-          : 'Your location could not be determined. Pick a region instead.';
+          ? t().map.locationDenied
+          : t().map.locationFailed;
       state.set({ mapView: previous, locationStatus: message });
       applyMapView(previous, true);
     },
@@ -718,7 +726,17 @@ function currentHash(): string {
     includePastMonth: current.includePastMonth,
     region: current.mapView.kind === 'region' ? current.mapView.region.id : null,
     globe: current.mapMode === 'globe',
+    language: localeChoice().language,
+    clock: localeChoice().clock,
   });
+}
+
+/** The language and clock apply at start-up, so changing them reloads the page with the choice in the URL. */
+function reloadWithLocale(language: Language | null, clock: Clock | null) {
+  if (state.get().previewResults.length > 0 && !window.confirm(t().settings.reloadLosesPreviews)) return;
+  const hash = serializeUrlState({ ...parseUrlState(currentHash()), language, clock });
+  history.replaceState(history.state, '', `${location.pathname}${location.search}${hash}`);
+  location.reload();
 }
 
 /**
@@ -785,15 +803,16 @@ function createNavigation() {
       clearTimeout(urlTimer);
       writeUrlState();
       const leaving = location.hash;
+      const home = serializeUrlState({ ...parseUrlState(''), language: localeChoice().language, clock: localeChoice().clock });
       search.clear();
       placeList.clearFilter();
       sidebar.showTab('bands');
       quietly(() => {
         state.set({ previewsOpen: false });
-        applyUrlView(parseUrlState(''));
+        applyUrlView(parseUrlState(home));
       });
-      if (leaving === '') return;
-      writeEntry('pushState', HOME_ENTRY, '');
+      if (leaving === home) return;
+      writeEntry('pushState', HOME_ENTRY, home);
       onHomeEntry = true;
     },
   };

@@ -364,6 +364,24 @@ a {
   clear: both;
 }
 
+.settings-fields {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: 8px 14px;
+}
+
+.settings-fields label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ink-muted);
+}
+
+.settings-select {
+  width: 100%;
+  min-height: 34px;
+}
+
 .settings-actions {
   display: flex;
   flex-wrap: wrap;

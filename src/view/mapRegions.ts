@@ -4,7 +4,8 @@ import type { LonLat } from './geoFit.ts';
 
 export interface MapRegion {
   readonly id: string;
-  readonly label: string;
+  /** UN M49 area code; the browser names it in the viewer's language. */
+  readonly m49: string;
   readonly west: number;
   readonly south: number;
   readonly east: number;
@@ -12,13 +13,13 @@ export interface MapRegion {
 }
 
 export const MAP_REGIONS: readonly MapRegion[] = [
-  { id: 'europe', label: 'Europe', west: -25, south: 34, east: 45, north: 71 },
-  { id: 'north-america', label: 'North America', west: -168, south: 7, east: -52, north: 72 },
-  { id: 'south-america', label: 'South America', west: -82, south: -56, east: -34, north: 13 },
-  { id: 'asia', label: 'Asia', west: 60, south: -11, east: 150, north: 56 },
-  { id: 'africa', label: 'Africa', west: -18, south: -35, east: 52, north: 37 },
-  { id: 'oceania', label: 'Oceania', west: 112, south: -48, east: 180, north: -9 },
-  { id: 'world', label: 'World', west: -180, south: -60, east: 180, north: 80 },
+  { id: 'europe', m49: '150', west: -25, south: 34, east: 45, north: 71 },
+  { id: 'north-america', m49: '003', west: -168, south: 7, east: -52, north: 72 },
+  { id: 'south-america', m49: '005', west: -82, south: -56, east: -34, north: 13 },
+  { id: 'asia', m49: '142', west: 60, south: -11, east: 150, north: 56 },
+  { id: 'africa', m49: '002', west: -18, south: -35, east: 52, north: 37 },
+  { id: 'oceania', m49: '009', west: 112, south: -48, east: 180, north: -9 },
+  { id: 'world', m49: '001', west: -180, south: -60, east: 180, north: 80 },
 ];
 
 export type MapMode = 'flat' | 'globe';

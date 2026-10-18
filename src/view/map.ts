@@ -7,7 +7,8 @@ import { feature, mesh } from 'topojson-client';
 import type { WorldTopology } from '../data/countryLocator.ts';
 import type { ShowRef } from '../model.ts';
 import { context2d, h, prefersReducedMotion, s } from './dom.ts';
-import { formatDate, plural } from './format.ts';
+import { t } from '../i18n/index.ts';
+import { formatDate } from './format.ts';
 import { computeGlobeFit, computeMapFit, interpolateFit, type LonLat, type MapFit } from './geoFit.ts';
 import { radiusDegrees, type MapMode, type UserLocation } from './mapRegions.ts';
 export type { MapMode, UserLocation } from './mapRegions.ts';
@@ -104,13 +105,13 @@ export function createMapView(container: HTMLElement, world: WorldTopology, call
   const routesLayer = s('g', { class: 'map-routes' });
   const zoomLayer = s('g', { class: 'map-zoom-layer' }, spherePath, graticulePath, landPath, bordersPath, shadePath, radiusPath, routesLayer);
   const pinsLayer = s('g', { class: 'map-pins' });
-  const surface = s('svg', { class: 'map-surface', role: 'img', 'aria-label': 'World map of tour dates' }, s('defs', {}, halftone, globeShade), zoomLayer, pinsLayer);
+  const surface = s('svg', { class: 'map-surface', role: 'img', 'aria-label': t().map.surface }, s('defs', {}, halftone, globeShade), zoomLayer, pinsLayer);
   const canvas = h('canvas', { class: 'map-canvas', 'aria-hidden': 'true' });
   const highlightsLayer = s('g', { class: 'map-highlights' });
   const labelsLayer = s('g', { class: 'map-labels' });
   const meMarker = s('circle', { class: 'map-me', r: 6, hidden: true });
   const overlay = s('svg', { class: 'map-overlay', 'aria-hidden': 'true' }, labelsLayer, highlightsLayer, meMarker);
-  const cursor = h('button', { type: 'button', class: 'map-cursor', 'aria-label': 'Map pins. Use the arrow keys to move between shows.' });
+  const cursor = h('button', { type: 'button', class: 'map-cursor', 'aria-label': t().map.cursor });
   const announcer = h('div', { class: 'visually-hidden', 'aria-live': 'polite' });
   container.append(surface, canvas, overlay, cursor, announcer);
   const tooltip = createTooltip(container);
@@ -712,8 +713,7 @@ export function createMapView(container: HTMLElement, world: WorldTopology, call
 
   function describePin(pin: DisplayPin): string {
     const listed = pin.shows.slice(0, 3).map((ref) => `${ref.band.file.band.name}, ${formatDate(ref.show.date)}`);
-    const more = pin.shows.length > 3 ? `, and ${pin.shows.length - 3} more` : '';
-    return `${plural(pin.shows.length, 'show')} in ${pinLabel(pin)}: ${listed.join('; ')}${more}. Press Enter for details.`;
+    return t().map.pin(pin.shows.length, pinLabel(pin), listed, Math.max(0, pin.shows.length - 3));
   }
 
   return {

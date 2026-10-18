@@ -61,7 +61,12 @@ export function buildPlaces(shows: readonly ShowRef[], window: TimeWindow | null
 }
 
 /** Readable name of a set of places, for headings: "Berlin", "Germany", "Berlin and 2 more". */
-export function describePlaces(keys: ReadonlySet<PlaceKey>, shows: readonly ShowRef[], countryName: (code: string) => string): string {
+export function describePlaces(
+  keys: ReadonlySet<PlaceKey>,
+  shows: readonly ShowRef[],
+  countryName: (code: string) => string,
+  andMore: (first: string, more: number) => string,
+): string {
   const names = [...keys].map((key) => {
     const [code, city] = key.split('.');
     if (city === undefined) return countryName((code ?? '').toUpperCase());
@@ -69,5 +74,5 @@ export function describePlaces(keys: ReadonlySet<PlaceKey>, shows: readonly Show
   });
   const [first, ...rest] = names;
   if (first === undefined) return '';
-  return rest.length === 0 ? first : `${first} and ${rest.length} more`;
+  return rest.length === 0 ? first : andMore(first, rest.length);
 }

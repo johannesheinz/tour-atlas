@@ -3,6 +3,7 @@ import { isCalendarDate } from './data/dates.ts';
 import type { BandSort } from './model.ts';
 import { PRESET_IDS, type TimePreset } from './view/timePresets.ts';
 import { PLACE_KEY_PATTERN } from './places.ts';
+import { isClock, isLanguage, type Clock, type Language } from './i18n/locale.ts';
 
 /** View state kept in the URL hash: shareable, never stored, never sent to a server. */
 export interface UrlState {
@@ -22,6 +23,9 @@ export interface UrlState {
   /** Region id of the map view; "Near me" is never put in the URL. */
   readonly region: string | null;
   readonly globe: boolean;
+  /** Set only when picked in the settings; otherwise the browser decides. */
+  readonly language: Language | null;
+  readonly clock: Clock | null;
 }
 
 const SORTS: readonly BandSort[] = ['name', 'next-show', 'show-count'];
@@ -55,6 +59,8 @@ export function parseUrlState(hash: string): UrlState {
     includePastMonth: params.get('recent') === '1',
     region: ID_PATTERN.test(params.get('view') ?? '') ? params.get('view') : null,
     globe: params.get('globe') === '1',
+    language: oneOf(params.get('lang'), isLanguage),
+    clock: oneOf(params.get('clock'), isClock),
   };
 }
 
@@ -77,6 +83,12 @@ export function serializeUrlState(state: UrlState): string {
   if (state.includePastMonth) params.set('recent', '1');
   if (state.region !== null) params.set('view', state.region);
   if (state.globe) params.set('globe', '1');
+  if (state.language !== null) params.set('lang', state.language);
+  if (state.clock !== null) params.set('clock', state.clock);
   const text = params.toString().replaceAll('%2C', ',');
   return text === '' ? '' : `#${text}`;
+}
+
+function oneOf<T extends string>(value: string | null, is: (candidate: string) => candidate is T): T | null {
+  return value !== null && is(value) ? value : null;
 }

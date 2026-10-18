@@ -12,6 +12,7 @@ self-hosted font files next to it. No backend, no network requests to third part
 - Local preview: drop band files to validate them, see the diff against the published data and download the
   normalized file. Nothing leaves the browser.
 - Light and dark themes that follow the system, switchable in the settings; keyboard navigation with visible focus
+- English, German, French and Spanish, picked from the browser or in the settings, with local date formats and a 12/24-hour choice
 - The logo returns to the default view; browser Back restores the view before it
 - Hover tooltips, time presets (upcoming, next 3 months, past, all), collapsed empty lanes, band-colour rings on
   shared pins, and genre filters from the fixed tag list in `data/tags.json`

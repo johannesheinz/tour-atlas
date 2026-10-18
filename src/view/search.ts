@@ -1,6 +1,7 @@
 import { h } from './dom.ts';
 import { withClearButton } from './searchField.ts';
-import { SEARCH_KIND_LABELS, searchEntries, type SearchEntry } from './searchIndex.ts';
+import { t } from '../i18n/index.ts';
+import { searchEntries, type SearchEntry } from './searchIndex.ts';
 
 export interface SearchCallbacks {
   onChoose(entry: SearchEntry): void;
@@ -25,12 +26,12 @@ export function createSearch(container: HTMLElement, callbacks: SearchCallbacks)
     'aria-autocomplete': 'list',
     autocomplete: 'off',
     spellcheck: 'false',
-    placeholder: 'Search bands, cities, venues, tours',
+    placeholder: t().search.placeholder,
   });
-  const label = h('label', { class: 'visually-hidden', for: 'search-input' }, 'Search bands, cities, venues and tours');
+  const label = h('label', { class: 'visually-hidden', for: 'search-input' }, t().search.label);
   const listbox = h('ul', { class: 'search-results', id: 'search-results', role: 'listbox', 'aria-label': 'Search results', hidden: true });
   const status = h('div', { class: 'visually-hidden', 'aria-live': 'polite' });
-  container.append(label, withClearButton(input, 'Clear search'), listbox, status);
+  container.append(label, withClearButton(input, t().search.clear), listbox, status);
 
   let index: readonly SearchEntry[] = [];
   let results: SearchEntry[] = [];
@@ -53,7 +54,7 @@ export function createSearch(container: HTMLElement, callbacks: SearchCallbacks)
     let previousKind: SearchEntry['kind'] | null = null;
     results.forEach((entry, position) => {
       if (entry.kind !== previousKind) {
-        items.push(h('li', { class: 'search-group', role: 'presentation' }, SEARCH_KIND_LABELS[entry.kind]));
+        items.push(h('li', { class: 'search-group', role: 'presentation' }, t().search.groups[entry.kind]));
         previousKind = entry.kind;
       }
       const option = h(
@@ -67,10 +68,10 @@ export function createSearch(container: HTMLElement, callbacks: SearchCallbacks)
       items.push(option);
     });
     if (results.length === 0 && input.value.trim() !== '') {
-      items.push(h('li', { class: 'search-empty', role: 'presentation' }, `Nothing matches “${input.value.trim()}”.`));
+      items.push(h('li', { class: 'search-empty', role: 'presentation' }, t().search.nothingMatches(input.value.trim())));
     }
     listbox.replaceChildren(...items);
-    status.textContent = input.value.trim() === '' ? '' : `${results.length} results`;
+    status.textContent = input.value.trim() === '' ? '' : t().search.results(results.length);
     open(input.value.trim() !== '');
   };
 

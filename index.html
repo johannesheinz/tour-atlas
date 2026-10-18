@@ -9,48 +9,48 @@
     <title>Tour Atlas</title>
   </head>
   <body>
-    <a class="skip-link" href="#atlas">Skip to map and timeline</a>
+    <a class="skip-link" href="#atlas" data-i18n="skipLink">Skip to map and timeline</a>
     <div class="app">
       <header class="masthead">
-        <h1 class="wordmark"><a class="wordmark-link" id="home-link" href="./" title="Back to the default view"><!-- brand-mark -->Tour Atlas</a></h1>
+        <h1 class="wordmark"><a class="wordmark-link" id="home-link" href="./" title="Back to the default view" data-i18n-title="homeTitle"><!-- brand-mark -->Tour Atlas</a></h1>
         <div class="search-slot" id="search"></div>
         <div class="masthead-actions">
-          <button type="button" class="icon-button" id="settings-button" aria-label="Settings" title="Settings"></button>
-          <div class="popover settings-panel" id="settings-panel" role="dialog" aria-label="Settings" hidden></div>
+          <button type="button" class="icon-button" id="settings-button" aria-label="Settings" title="Settings" data-i18n-label="settings" data-i18n-title="settings"></button>
+          <div class="popover settings-panel" id="settings-panel" role="dialog" aria-label="Settings" data-i18n-label="settings" hidden></div>
         </div>
       </header>
 
-      <aside class="sidebar" id="sidebar" aria-label="Bands, places and genres">
+      <aside class="sidebar" id="sidebar" aria-label="Bands, places and genres" data-i18n-label="sidebar">
         <button type="button" class="sidebar-toggle" id="sidebar-toggle" aria-expanded="false" aria-controls="sidebar-body"></button>
         <div class="sidebar-body" id="sidebar-body">
-          <div class="sidebar-tabs" role="tablist" aria-label="Lists">
-            <button type="button" role="tab" class="sidebar-tab" id="tab-bands" aria-selected="true" aria-controls="band-list">Bands</button>
-            <button type="button" role="tab" class="sidebar-tab" id="tab-places" aria-selected="false" aria-controls="place-list" tabindex="-1">Places</button>
-            <button type="button" role="tab" class="sidebar-tab" id="tab-genres" aria-selected="false" aria-controls="genre-list" tabindex="-1">Genres</button>
+          <div class="sidebar-tabs" role="tablist" aria-label="Lists" data-i18n-label="lists">
+            <button type="button" role="tab" class="sidebar-tab" id="tab-bands" aria-selected="true" aria-controls="band-list" data-i18n="tabBands">Bands</button>
+            <button type="button" role="tab" class="sidebar-tab" id="tab-places" aria-selected="false" aria-controls="place-list" tabindex="-1" data-i18n="tabPlaces">Places</button>
+            <button type="button" role="tab" class="sidebar-tab" id="tab-genres" aria-selected="false" aria-controls="genre-list" tabindex="-1" data-i18n="tabGenres">Genres</button>
           </div>
           <div id="band-list" role="tabpanel" aria-labelledby="tab-bands"></div>
           <div id="place-list" class="place-list" role="tabpanel" aria-labelledby="tab-places" hidden></div>
           <div id="genre-list" class="genre-list" role="tabpanel" aria-labelledby="tab-genres" hidden></div>
-          <section id="selection-panel" class="selection-panel" aria-label="Selected shows" hidden></section>
-          <section id="preview-panel" class="preview-panel" aria-label="Previewed files" hidden></section>
+          <section id="selection-panel" class="selection-panel" aria-label="Selected shows" data-i18n-label="selectedShows" hidden></section>
+          <section id="preview-panel" class="preview-panel" aria-label="Previewed files" data-i18n-label="previewedFiles" hidden></section>
         </div>
       </aside>
 
       <main class="stage">
-        <section class="atlas" id="atlas" aria-label="Map and timeline" tabindex="-1">
+        <section class="atlas" id="atlas" aria-label="Map and timeline" data-i18n-label="mapAndTimeline" tabindex="-1">
           <div class="map-frame">
             <div class="map" id="map"></div>
-            <div class="map-controls" id="map-controls" role="toolbar" aria-label="Map controls" aria-orientation="vertical"></div>
+            <div class="map-controls" id="map-controls" role="toolbar" aria-label="Map controls" data-i18n-label="mapControls" aria-orientation="vertical"></div>
             <div class="map-status-bar" id="map-status" hidden></div>
           </div>
-          <div class="timeline-bar" id="timeline-controls" role="toolbar" aria-label="Timeline controls"></div>
+          <div class="timeline-bar" id="timeline-controls" role="toolbar" aria-label="Timeline controls" data-i18n-label="timelineControls"></div>
           <div class="timeline" id="timeline"></div>
         </section>
       </main>
 
       <footer class="colophon">
-        <p>Projection: Equal Earth. Coastlines: Natural Earth via world-atlas. Geocoded venues: © OpenStreetMap contributors (ODbL).</p>
-        <p>No cookies, no tracking, no network requests. Everything you preview stays in this tab.</p>
+        <p data-i18n="footerSources">Projection: Equal Earth. Coastlines: Natural Earth via world-atlas. Geocoded venues: © OpenStreetMap contributors (ODbL).</p>
+        <p data-i18n="footerPrivacy">No cookies, no tracking, no network requests. Everything you preview stays in this tab.</p>
       </footer>
     </div>
     <script type="module" src="/src/main.ts"></script>

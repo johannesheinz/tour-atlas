@@ -5,6 +5,7 @@ import { zoom, zoomIdentity, ZoomTransform, type D3ZoomEvent } from 'd3-zoom';
 import type { TimeWindow } from '../appState.ts';
 import type { BandEntry, ShowRef } from '../model.ts';
 import { context2d, h, prefersReducedMotion } from './dom.ts';
+import { t } from '../i18n/index.ts';
 import { formatDateSpan, statusLabel } from './format.ts';
 import { DAY_MS, fitDateDomain, timeTicks } from './timeScale.ts';
 import { bandColor } from '../model.ts';
@@ -94,11 +95,11 @@ export function createTimeline(container: HTMLElement, callbacks: TimelineCallba
   const spacer = h('div', { class: 'timeline-spacer' });
   const scroller = h('div', { class: 'timeline-scroll' }, lanesCanvas, spacer);
   const brush = h('div', { class: 'timeline-brush', hidden: true, 'aria-hidden': 'true' });
-  const cursor = h('button', { type: 'button', class: 'timeline-cursor', 'aria-label': 'Timeline. Use the arrow keys to move between shows.' });
+  const cursor = h('button', { type: 'button', class: 'timeline-cursor', 'aria-label': t().timeline.cursor });
   const announcer = h('div', { class: 'visually-hidden', 'aria-live': 'polite' });
   const empty = h('p', { class: 'timeline-empty', hidden: true });
   const noteText = h('span');
-  const showAllLanes = h('button', { type: 'button', class: 'text-button' }, 'Show all lanes');
+  const showAllLanes = h('button', { type: 'button', class: 'text-button' }, t().timeline.showAllLanes);
   const note = h('p', { class: 'timeline-note', hidden: true }, noteText, showAllLanes);
   showAllLanes.addEventListener('click', () => callbacks.onShowAllLanes());
   container.append(axisCanvas, scroller, brush, cursor, announcer, empty, note);
@@ -318,7 +319,7 @@ export function createTimeline(container: HTMLElement, callbacks: TimelineCallba
     empty.hidden = next.lanes.length > 0;
     empty.textContent = next.emptyMessage;
     note.hidden = next.hiddenLaneCount === 0;
-    noteText.textContent = `${next.hiddenLaneCount === 1 ? '1 band has' : `${next.hiddenLaneCount} bands have`} no shows in this window and ${next.hiddenLaneCount === 1 ? 'is' : 'are'} hidden. `;
+    noteText.textContent = `${t().timeline.hiddenLanes(next.hiddenLaneCount)} `;
     if (previous === null || previous.lanes.length !== next.lanes.length) layout();
     if (cursorPosition !== null && next.lanes[cursorPosition.lane]?.shows[cursorPosition.show] === undefined) cursorPosition = null;
     scheduleDraw();
@@ -494,7 +495,7 @@ export function createTimeline(container: HTMLElement, callbacks: TimelineCallba
     const [start, end] = x.domain();
     if (start === undefined || end === undefined) return;
     const todayX = x(current.today + DAY_MS / 2);
-    const todayLabel = 'Today';
+    const todayLabel = t().timeline.today;
     const todayWidth = axisContext.measureText(todayLabel).width + 10;
     const todayVisible = todayX >= 0 && todayX <= width;
     for (const tick of timeTicks([start.getTime(), end.getTime()], width).ticks) {
@@ -690,9 +691,7 @@ export function createTimeline(container: HTMLElement, callbacks: TimelineCallba
     const [centerX] = dotCenter(currentScale(), ref);
     if (centerX < 0 || centerX > width) scrollerSelection.call(zoomBehavior.translateBy, (width / 2 - centerX) / transform.k, 0);
     positionCursor();
-    const label = statusLabel(ref);
-    const status = label === null ? '' : `, ${label}`;
-    const description = `${ref.band.file.band.name}: ${formatDateSpan(ref.show.date, ref.show.endDate)}, ${ref.show.city}${status}. Press Enter for details.`;
+    const description = t().timeline.dot(ref.band.file.band.name, formatDateSpan(ref.show.date, ref.show.endDate), ref.show.city, statusLabel(ref));
     cursor.setAttribute('aria-label', description);
     announcer.textContent = description;
     showDotTooltip(ref, position.lane);

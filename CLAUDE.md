@@ -40,6 +40,9 @@ npm run check          # everything CI runs, in order
 - `src/store/`: `DataStore` interface (`listBands`, `getBand`, `subscribe`); only `StaticStore` exists.
 - `src/view/`: render functions of state + callbacks. Pure math (fits, scales) lives in DOM-free modules so it is testable in Node.
 - `src/preview.ts`: in-browser preview of dropped files (validate, normalize, lint, diff, export). Held in memory only.
+- `src/i18n/`: interface texts per language (`en`, `de`, `fr`, `es`) against the typed `Messages`; the locale is
+  picked once at start-up from `lang=`/`clock=` in the URL or the browser, and changing it reloads the page.
+  Validation issues carry a code (`src/data/issues.ts`) so the app can translate them; tools print English.
 - `src/main.ts` wires views to `src/state.ts`; `src/appState.ts` and `src/selectors.ts` memoise derived data.
 - `tools/`: Node CLIs (TypeScript run directly by Node's type stripping, so use `.ts` import specifiers and
   erasable syntax only); never shipped. `tools/vite/` holds the build plugins (data validation, CSP, slim topology,
@@ -56,7 +59,7 @@ Only for work that needs judgement; everything checkable is a tool or a CI job.
 
 ## Hard rules
 
-- Runtime dependencies are an allowlist: d3-geo, d3-scale, d3-time, d3-time-format, d3-zoom, d3-selection,
+- Runtime dependencies are an allowlist: d3-geo, d3-scale, d3-time, d3-zoom, d3-selection,
   d3-transition, d3-quadtree, topojson-client, world-atlas, @fontsource/league-gothic, @fontsource/archivo.
   Justify any addition in the PR. `sharp` is a dev dependency for tools/logos.ts only; it never reaches the bundle.
 - No network at runtime, no CDNs, no cookies, no localStorage/sessionStorage/IndexedDB. View state lives in
@@ -70,3 +73,5 @@ Only for work that needs judgement; everything checkable is a tool or a CI job.
 - Never send requests to Nominatim from tests or CI; tests inject a fake fetch.
 - The repository is local-only for now; do not add a remote or push.
 - Comments only where the code cannot say it; prefer descriptive names.
+- No interface text in code: add it to `src/i18n/messages.ts` and all four catalogs. Dates, times and place
+  names go through `src/view/format.ts` (Intl in the active locale), never hand-built.

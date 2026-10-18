@@ -2,17 +2,8 @@ import { DAY_MS } from './timeScale.ts';
 
 export type TimePreset = 'next-3-months' | 'next-6-months' | 'next-12-months' | 'upcoming' | 'past' | 'all';
 
-/** `short` labels the pills on wide screens; `label` is the full name for menus, tooltips and screen readers. */
-export const TIME_PRESETS: readonly { readonly id: TimePreset; readonly label: string; readonly short: string; readonly title: string }[] = [
-  { id: 'next-3-months', label: 'Next 3 months', short: '3M', title: 'From today to three months ahead' },
-  { id: 'next-6-months', label: 'Next 6 months', short: '6M', title: 'From today to six months ahead' },
-  { id: 'next-12-months', label: 'Next 12 months', short: '12M', title: 'From today to a year ahead' },
-  { id: 'upcoming', label: 'All upcoming', short: 'Upcoming', title: 'From today to the last announced show' },
-  { id: 'past', label: 'Past', short: 'Past', title: 'From the first show to today' },
-  { id: 'all', label: 'All dates', short: 'All', title: 'Fit the timeline to every show' },
-];
-
-export const PRESET_IDS: readonly TimePreset[] = TIME_PRESETS.map((preset) => preset.id);
+/** In the order the controls offer them; their names live in the message catalogs. */
+export const PRESET_IDS: readonly TimePreset[] = ['next-3-months', 'next-6-months', 'next-12-months', 'upcoming', 'past', 'all'];
 
 const MONTHS_AHEAD_DAYS: Partial<Record<TimePreset, number>> = { 'next-3-months': 92, 'next-6-months': 183, 'next-12-months': 365 };
 const DEFAULT_LEAD_DAYS = 3;

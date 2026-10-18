@@ -39,7 +39,8 @@ describe('places', () => {
   });
 
   it('names a selection', () => {
-    expect(describePlaces(new Set(['br.sao-paulo']), refs, countryName)).toBe('São Paulo');
-    expect(describePlaces(new Set(['de', 'br.sao-paulo']), refs, countryName)).toBe('Germany and 1 more');
+    const andMore = (first: string, more: number) => `${first} and ${more} more`;
+    expect(describePlaces(new Set(['br.sao-paulo']), refs, countryName, andMore)).toBe('São Paulo');
+    expect(describePlaces(new Set(['de', 'br.sao-paulo']), refs, countryName, andMore)).toBe('Germany and 1 more');
   });
 });

@@ -1,5 +1,6 @@
 import { bandColor, type ShowRef, type ThemeMode } from '../model.ts';
-import { countryName, formatDateSpan, plural, statusLabel } from './format.ts';
+import { t } from '../i18n/index.ts';
+import { countryName, formatDateSpan, formatTime, statusKind } from './format.ts';
 
 export interface TooltipLine {
   /** Band colour for the swatch; null for lines that are not about one band. */
@@ -24,13 +25,13 @@ function where(ref: ShowRef): string {
 }
 
 function when(ref: ShowRef): string {
-  const time = ref.show.startTime === null ? '' : `, ${ref.show.startTime}`;
+  const time = ref.show.startTime === null ? '' : `, ${formatTime(ref.show.startTime)}`;
   return `${formatDateSpan(ref.show.date, ref.show.endDate)}${time}`;
 }
 
 function withStatus(ref: ShowRef, text: string): string {
-  const status = statusLabel(ref);
-  return status === null || status === 'Scheduled' ? text : `${text} (${status.toLowerCase()})`;
+  const kind = statusKind(ref);
+  return kind === null || kind === 'scheduled' ? text : `${text} (${t().status[kind].toLocaleLowerCase()})`;
 }
 
 /** One timeline dot. */
@@ -55,13 +56,13 @@ export function pinTooltip(shows: readonly ShowRef[], place: string, mode: Theme
   if (shows.length === 1) return showTooltip(first, mode);
 
   const byBand = Map.groupBy(shows, (ref) => ref.band);
-  const title = `${plural(shows.length, 'show')} in ${place}`;
+  const title = t().tooltip.showsIn(shows.length, place);
   if (byBand.size === 1) {
     return {
       band: { id: first.band.file.band.id, name: first.band.file.band.name },
       title,
       lines: shows.slice(0, MAX_LINES).map((ref) => ({ color: bandColor(ref.band, mode), text: withStatus(ref, when(ref)), detail: where(ref) })),
-      more: shows.length > MAX_LINES ? `and ${plural(shows.length - MAX_LINES, 'more show')}` : null,
+      more: shows.length > MAX_LINES ? t().tooltip.moreShows(shows.length - MAX_LINES) : null,
     };
   }
 
@@ -73,9 +74,8 @@ export function pinTooltip(shows: readonly ShowRef[], place: string, mode: Theme
     title,
     lines: bands.slice(0, MAX_LINES).map(([band, bandShows]) => {
       const next = bandShows.find((ref) => !ref.isPast) ?? bandShows.at(-1) ?? first;
-      const label = next.isPast ? 'last' : 'next';
-      return { color: bandColor(band, mode), text: band.file.band.name, detail: `${plural(bandShows.length, 'show')}, ${label} ${formatDateSpan(next.show.date, null)}` };
+      return { color: bandColor(band, mode), text: band.file.band.name, detail: t().tooltip.bandSummary(bandShows.length, !next.isPast, formatDateSpan(next.show.date, null)) };
     }),
-    more: bands.length > MAX_LINES ? `and ${plural(bands.length - MAX_LINES, 'more band')}` : null,
+    more: bands.length > MAX_LINES ? t().tooltip.moreBands(bands.length - MAX_LINES) : null,
   };
 }

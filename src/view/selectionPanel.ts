@@ -1,7 +1,8 @@
 import { bandColor, type ShowRef, type ThemeMode } from '../model.ts';
 import { bandIdentity } from './bandIdentity.ts';
 import { h, safeExternalLink } from './dom.ts';
-import { countryName, formatDate, formatWeekday, plural, statusLabel } from './format.ts';
+import { formats, t } from '../i18n/index.ts';
+import { countryName, formatDate, formatTime, formatWeekday, statusKind } from './format.ts';
 
 export interface SelectionHeading {
   readonly title: string;
@@ -31,7 +32,6 @@ export interface SelectionPanelView {
 }
 
 const MAX_ROWS = 100;
-const monthFormat = new Intl.DateTimeFormat('en-GB', { month: 'long', year: 'numeric', timeZone: 'UTC' });
 
 /** The shows of the current selection, listed in the sidebar in place of the band and place lists. */
 export function createSelectionPanel(container: HTMLElement, callbacks: SelectionPanelCallbacks): SelectionPanelView {
@@ -64,11 +64,11 @@ export function createSelectionPanel(container: HTMLElement, callbacks: Selectio
           ...monthGroups(listed).map(([month, refs]) =>
             h('section', { class: 'selection-month' }, h('h3', { class: 'selection-month-title' }, month), h('ol', { class: 'gig-list' }, ...refs.map((ref) => gigRow(ref, props)))),
           ),
-          ...(overflow > 0 ? [h('p', { class: 'selection-more' }, `${plural(overflow, 'more show')} not listed. Narrow the time range on the timeline.`)] : []),
+          ...(overflow > 0 ? [h('p', { class: 'selection-more' }, t().selection.moreNotListed(overflow))] : []),
         );
       }
       if (headingChanged) {
-        announcer.textContent = `${heading.title}: ${plural(props.shows.length, 'show')}`;
+        announcer.textContent = t().selection.announce(heading.title, props.shows.length);
       }
     },
     focusTitle: () => title.focus(),
@@ -82,7 +82,7 @@ function sameHeading(a: SelectionHeading, b: SelectionHeading): boolean {
 function monthGroups(shows: readonly ShowRef[]): [string, ShowRef[]][] {
   const groups = new Map<string, ShowRef[]>();
   for (const ref of shows) {
-    const month = monthFormat.format(new Date(ref.start));
+    const month = formats().month.format(new Date(ref.start));
     groups.set(month, [...(groups.get(month) ?? []), ref]);
   }
   return [...groups];
@@ -95,14 +95,14 @@ function gigRow(ref: ShowRef, props: SelectionPanelProps): HTMLLIElement {
 
   const facts = [
     show.eventName === null ? null : h('span', {}, show.eventName),
-    show.venue === null ? h('span', { class: 'is-unknown' }, 'Venue not announced') : h('span', {}, show.venue),
-    show.startTime === null ? null : h('span', {}, `Starts ${show.startTime}`),
-    show.endDate === null ? null : h('span', {}, `Until ${formatDate(show.endDate)}, day of the set not announced`),
+    show.venue === null ? h('span', { class: 'is-unknown' }, t().selection.venueUnknown) : h('span', {}, show.venue),
+    show.startTime === null ? null : h('span', {}, t().selection.starts(formatTime(show.startTime))),
+    show.endDate === null ? null : h('span', {}, t().selection.until(formatDate(show.endDate))),
   ].filter((fact) => fact !== null);
-  const links = [show.ticketUrl === null ? null : safeExternalLink(show.ticketUrl, 'Tickets'), safeExternalLink(show.sourceUrl ?? band.file.source.url, 'Source')].filter(
+  const links = [show.ticketUrl === null ? null : safeExternalLink(show.ticketUrl, t().selection.tickets), safeExternalLink(show.sourceUrl ?? band.file.source.url, t().selection.source)].filter(
     (link) => link !== null,
   );
-  const status = statusLabel(ref);
+  const status = statusKind(ref);
 
   return h(
     'li',
@@ -119,9 +119,9 @@ function gigRow(ref: ShowRef, props: SelectionPanelProps): HTMLLIElement {
       h(
         'p',
         { class: 'gig-meta' },
-        status === null ? null : h('span', { class: `status-tag status-${status === 'Played' ? 'past' : (show.status ?? 'unknown')}` }, status),
+        status === null ? null : h('span', { class: `status-tag status-${status === 'played' ? 'past' : status}` }, t().status[status]),
         ...links,
-        h('span', { class: 'gig-precision' }, show.geo.precision === 'venue' ? 'Pin at the venue' : 'Pin at the city centre'),
+        h('span', { class: 'gig-precision' }, show.geo.precision === 'venue' ? t().selection.pinVenue : t().selection.pinCity),
       ),
     ),
   );

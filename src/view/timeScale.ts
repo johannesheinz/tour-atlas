@@ -1,5 +1,5 @@
 import { utcDay, utcMonday, utcMonth, utcYear, type TimeInterval } from 'd3-time';
-import { utcFormat } from 'd3-time-format';
+import { formats } from '../i18n/index.ts';
 
 export const DAY_MS = 86_400_000;
 
@@ -45,11 +45,11 @@ export function chooseTickUnit(domain: readonly [number, number], widthPx: numbe
   return UNITS_FINE_TO_COARSE.find((unit) => pxPerDay * APPROX_DAYS[unit] >= MIN_LABEL_SPACING_PX[unit]) ?? 'year';
 }
 
-const formatDay = utcFormat('%a %-d');
-const formatWeek = utcFormat('%-d %b');
-const formatMonth = utcFormat('%b');
-const formatMonthYear = utcFormat('%b %Y');
-const formatYear = utcFormat('%Y');
+const formatDay = (date: Date) => formats().axisDay.format(date);
+const formatWeek = (date: Date) => formats().axisDayMonth.format(date);
+const formatMonth = (date: Date) => formats().axisMonth.format(date);
+const formatMonthYear = (date: Date) => formats().axisMonthYear.format(date);
+const formatYear = (date: Date) => formats().axisYear.format(date);
 
 const quarter: TimeInterval = utcMonth.every(3) ?? utcMonth;
 

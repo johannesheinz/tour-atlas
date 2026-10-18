@@ -1,8 +1,10 @@
 import { slugify } from '../data/ids.ts';
 import { TAG_VOCABULARY } from '../data/tags.ts';
+import { t } from '../i18n/index.ts';
+import type { SearchGroup } from '../i18n/messages.ts';
 import type { BandEntry } from '../model.ts';
 
-export type SearchKind = 'band' | 'tag' | 'place' | 'venue' | 'tour' | 'event';
+export type SearchKind = SearchGroup;
 
 export interface SearchEntry {
   readonly kind: SearchKind;
@@ -15,15 +17,6 @@ export interface SearchEntry {
   readonly showIds: readonly string[];
   readonly folded: string;
 }
-
-export const SEARCH_KIND_LABELS: Record<SearchKind, string> = {
-  band: 'Bands',
-  tag: 'Tags',
-  place: 'Cities',
-  venue: 'Venues',
-  tour: 'Tours',
-  event: 'Festivals and events',
-};
 
 const KIND_ORDER: readonly SearchKind[] = ['band', 'tag', 'place', 'tour', 'event', 'venue'];
 
@@ -51,17 +44,15 @@ export function buildSearchIndex(bands: readonly BandEntry[], countryName: (code
     group.bandIds.add(bandId);
     if (showId !== null) group.showIds.push(showId);
   };
-  const shows = (bandCount: number, showCount: number) =>
-    `${showCount} ${showCount === 1 ? 'show' : 'shows'}${bandCount > 1 ? `, ${bandCount} bands` : ''}`;
+  const shows = (bandCount: number, showCount: number) => t().search.showsAndBands(showCount, bandCount);
 
   for (const band of bands) {
     const bandId = band.file.band.id;
     add('band', bandId, band.file.band.name, (_bands, count) => shows(1, count), bandId, null);
     for (const tagId of band.file.band.tags) {
       const tag = TAG_VOCABULARY.byId.get(tagId);
-      const group = TAG_VOCABULARY.groups.find((candidate) => candidate.id === tag?.group);
-      if (tag === undefined || group === undefined) throw new Error(`band ${bandId} has unknown tag ${tagId}`);
-      add('tag', tag.id, tag.label, (bandCount) => `${group.label}, ${bandCount} ${bandCount === 1 ? 'band' : 'bands'}`, bandId, null);
+      if (tag === undefined) throw new Error(`band ${bandId} has unknown tag ${tagId}`);
+      add('tag', tag.id, tag.label, (bandCount) => t().search.genreBands(bandCount), bandId, null);
     }
     for (const show of band.file.shows) {
       add('band', bandId, band.file.band.name, (_bands, count) => shows(1, count), bandId, show.id);

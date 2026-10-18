@@ -1,6 +1,6 @@
+import { t } from '../i18n/index.ts';
 import type { GenreSummary } from '../selectors.ts';
 import { h } from './dom.ts';
-import { plural } from './format.ts';
 import { withClearButton } from './searchField.ts';
 import { foldForSearch } from './searchIndex.ts';
 
@@ -23,13 +23,13 @@ export interface GenreListView {
 
 /** The Genres tab: like the band list, a checkbox shows or hides a genre's bands and the name lists its dates. */
 export function createGenreList(container: HTMLElement, callbacks: GenreListCallbacks): GenreListView {
-  const filter = h('input', { type: 'search', class: 'genre-filter', placeholder: 'Filter genres', 'aria-label': 'Filter genres' });
+  const filter = h('input', { type: 'search', class: 'genre-filter', placeholder: t().genreList.filter, 'aria-label': t().genreList.filter });
   const note = h('p', { class: 'band-count', 'aria-live': 'polite' });
-  const clear = h('button', { type: 'button', class: 'text-button', hidden: true }, 'Show all genres');
+  const clear = h('button', { type: 'button', class: 'text-button', hidden: true }, t().genreList.showAll);
   clear.addEventListener('click', () => callbacks.onClearChecked());
   const list = h('ul', { class: 'genre-rows' });
   const empty = h('p', { class: 'band-empty', hidden: true });
-  container.append(withClearButton(filter, 'Clear the genre filter'), h('div', { class: 'band-bulk' }, note, clear), list, empty);
+  container.append(withClearButton(filter, t().genreList.clearFilter), h('div', { class: 'band-bulk' }, note, clear), list, empty);
 
   let props: GenreListProps | null = null;
   filter.addEventListener('input', () => {
@@ -39,19 +39,19 @@ export function createGenreList(container: HTMLElement, callbacks: GenreListCall
   function draw(current: GenreListProps) {
     const query = foldForSearch(filter.value);
     const matching = current.genres.filter((genre) => query === '' || foldForSearch(genre.label).includes(query));
-    note.textContent = current.checked.size === 0 ? 'Tick genres to show only their bands' : `Showing bands of ${plural(current.checked.size, 'genre')}`;
+    note.textContent = current.checked.size === 0 ? t().genreList.hint : t().genreList.showing(current.checked.size);
     clear.hidden = current.checked.size === 0;
     empty.hidden = matching.length > 0;
-    empty.textContent = `No genre matches “${filter.value.trim()}”.`;
+    empty.textContent = t().genreList.noMatch(filter.value.trim());
     list.replaceChildren(
       ...matching.map((genre) => {
-        const checkbox = h('input', { type: 'checkbox', class: 'genre-checkbox', 'aria-label': `Show ${genre.label} bands on the map and timeline` });
+        const checkbox = h('input', { type: 'checkbox', class: 'genre-checkbox', 'aria-label': t().genreList.showOnMap(genre.label) });
         checkbox.checked = current.checked.has(genre.id);
         checkbox.addEventListener('change', () => callbacks.onToggle(genre.id));
-        const counts = genre.showCount === 0 ? 'No shows in this time range' : `${plural(genre.bandCount, 'band')}, ${plural(genre.showCount, 'show')}`;
+        const counts = genre.showCount === 0 ? t().noShowsInRange : t().genreList.bandsAndShows(genre.bandCount, genre.showCount);
         const select = h(
           'button',
-          { type: 'button', class: 'genre-select', 'aria-label': `List the dates of ${genre.label}` },
+          { type: 'button', class: 'genre-select', 'aria-label': t().genreList.listDates(genre.label) },
           h('span', { class: 'genre-name' }, genre.label),
           h('span', { class: 'band-meta' }, counts),
         );
