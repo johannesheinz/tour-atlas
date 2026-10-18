@@ -19,7 +19,7 @@ const PNG_PATH = 'src/brand/og-card.png';
 /** Stage lights, the default style: slate ink as the card, the mark's paper for the globe and the name. */
 const COLOURS = { card: '#1f2a35', paper: '#e3e4df', tagline: '#a6b0ba' } as const;
 const WORDMARK = { text: 'Tour Atlas', font: '@fontsource/jost/files/jost-latin-500-normal.woff', size: 132, letterSpacingEm: 0.04 } as const;
-const TAGLINE = { lines: ['Tour dates of many bands', 'on one map and timeline.'], font: '@fontsource/archivo/files/archivo-latin-400-normal.woff', size: 40, lineHeight: 54 } as const;
+const TAGLINE = { lines: ['Follow your favourite bands', 'on tour through space and time.'], font: '@fontsource/archivo/files/archivo-latin-400-normal.woff', size: 40, lineHeight: 54 } as const;
 const MARK_BOX = { x: 64, y: 114, size: 400 } as const;
 const TEXT_X = 500;
 const WORDMARK_BASELINE = 322;

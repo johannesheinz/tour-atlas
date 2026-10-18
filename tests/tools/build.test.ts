@@ -130,7 +130,7 @@ describe('injectSocialCard', () => {
   it('works with the real index.html, and check-dist accepts the result with the real card image', () => {
     const indexHtml = readFileSync('index.html', 'utf8');
     const html = injectSocialCard(indexHtml, siteUrl, counts);
-    expect(html).toMatch(/<meta property="og:description" content="Tour dates of 12 bands, 3,456 shows[^"]*" \/>/);
+    expect(html).toMatch(/<meta property="og:description" content="Follow your favourite bands[^"]*: 12 bands, 3,456 shows[^"]*" \/>/);
     const card = readFileSync('src/brand/og-card.png');
     expect(pngDimensions(card)).toEqual({ width: 1200, height: 630 });
     expect(socialCardProblems(html, card, true)).toEqual([]);
