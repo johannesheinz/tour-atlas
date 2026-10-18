@@ -28,6 +28,9 @@ export const TIMELINE_SETTINGS = {
   /** A drag shorter than this is a click. */
   brushThresholdPx: 5,
   laneFont: '17px "League Gothic", "Arial Narrow", sans-serif',
+  /** A range starts this many average lane-label characters in, so its first shows are not under the band names. */
+  gutterCharacters: 15,
+  maxGutterFraction: 0.25,
   compactLaneFont: '15px "League Gothic", "Arial Narrow", sans-serif',
   tickFont: '600 11px Archivo, system-ui, sans-serif',
 } as const;
@@ -109,6 +112,10 @@ export function createTimeline(container: HTMLElement, callbacks: TimelineCallba
   let props: TimelineProps | null = null;
   let baseScale: ScaleTime<number, number> = scaleUtc();
   let transform: ZoomTransform = zoomIdentity;
+  /** The transform that shows every show; isAtFit compares against it. */
+  let fitTransform: ZoomTransform = zoomIdentity;
+  /** Pixels at the left kept for the band names before a range starts. */
+  let gutter = 0;
   let cursorPosition: CursorPosition | null = null;
   let hoveredShowId: string | null = null;
   let drawScheduled = false;
@@ -268,6 +275,7 @@ export function createTimeline(container: HTMLElement, callbacks: TimelineCallba
     const nextWidth = Math.round(entry.contentRect.width);
     if (nextWidth === width) return;
     width = nextWidth;
+    measureGutter();
     layout();
     fitToData(false, null);
     if (pendingRange !== null) {
@@ -332,7 +340,8 @@ export function createTimeline(container: HTMLElement, callbacks: TimelineCallba
     const maxZoom = Math.max(1, (domain[1] - domain[0]) / (TIMELINE_SETTINGS.minVisibleDays * DAY_MS));
     zoomBehavior.scaleExtent([0.5, maxZoom]);
 
-    const target = range === null ? zoomIdentity : transformFor(range[0], range[1]);
+    fitTransform = transformFor(domain[0], domain[1]);
+    const target = range === null ? fitTransform : transformFor(range[0], range[1]);
     const [currentStart, currentEnd] = currentDomain;
     if (!animate || !hadDomain || prefersReducedMotion() || currentStart === undefined || currentEnd === undefined) {
       setTransform(target);
@@ -344,9 +353,23 @@ export function createTimeline(container: HTMLElement, callbacks: TimelineCallba
     scrollerSelection.transition().duration(TIMELINE_SETTINGS.fitDurationMs).call(zoomBehavior.transform, target);
   }
 
+  /** Puts start at the gutter's edge and end at the right edge. */
   function transformFor(start: number, end: number): ZoomTransform {
-    const k = width / (baseScale(end) - baseScale(start));
-    return new ZoomTransform(k, -k * baseScale(start), 0);
+    const k = (width - gutter) / (baseScale(end) - baseScale(start));
+    return new ZoomTransform(k, gutter - k * baseScale(start), 0);
+  }
+
+  /** The time range right of the gutter: what the band names leave visible, and what the app filters by. */
+  function visibleRange(): [number, number] {
+    const x = currentScale();
+    return [x.invert(gutter).getTime(), x.invert(width).getTime()];
+  }
+
+  function measureGutter() {
+    lanesContext.font = TIMELINE_SETTINGS.laneFont;
+    const alphabet = 'abcdefghijklmnopqrstuvwxyz';
+    const averageCharacter = lanesContext.measureText(alphabet).width / alphabet.length;
+    gutter = Math.round(Math.min(width * TIMELINE_SETTINGS.maxGutterFraction, averageCharacter * TIMELINE_SETTINGS.gutterCharacters + 12));
   }
 
   function zoomToRange(start: number, end: number, animate: boolean) {
@@ -391,17 +414,16 @@ export function createTimeline(container: HTMLElement, callbacks: TimelineCallba
   }
 
   function zoomOutAround(x: number) {
-    const [start, end] = currentScale().domain().map((date) => date.getTime());
-    if (start === undefined || end === undefined || width === 0) return;
-    const center = currentScale().invert(x).getTime();
+    if (width === 0) return;
+    const [start, end] = visibleRange();
+    const center = currentScale().invert(Math.max(gutter, x)).getTime();
     const span = (end - start) * 2;
-    const fraction = x / width;
+    const fraction = (Math.max(gutter, x) - gutter) / (width - gutter);
     animateTo(transformFor(center - span * fraction, center + span * (1 - fraction)));
   }
 
   function shift(direction: -1 | 1) {
-    const [start, end] = currentScale().domain().map((date) => date.getTime());
-    if (start === undefined || end === undefined) return;
+    const [start, end] = visibleRange();
     const offset = ((end - start) / 2) * direction;
     animateTo(transformFor(start + offset, end + offset));
   }
@@ -415,9 +437,8 @@ export function createTimeline(container: HTMLElement, callbacks: TimelineCallba
   }
 
   function emitWindow(byUser: boolean) {
-    const [start, end] = currentScale().domain();
-    if (start === undefined || end === undefined) return;
-    callbacks.onWindowChange({ start: start.getTime(), end: end.getTime() }, byUser);
+    const [start, end] = visibleRange();
+    callbacks.onWindowChange({ start, end }, byUser);
   }
 
   function scheduleDraw() {
@@ -672,7 +693,7 @@ export function createTimeline(container: HTMLElement, callbacks: TimelineCallba
     zoomBy,
     zoomOut: () => zoomOutAround(width / 2),
     shift,
-    isAtFit: () => Math.abs(transform.k - 1) < 1e-6 && Math.abs(transform.x) < 0.5,
+    isAtFit: () => Math.abs(transform.k - fitTransform.k) < 1e-6 && Math.abs(transform.x - fitTransform.x) < 0.5,
     lanesOverflow: () => container.classList.contains('has-overflow'),
   };
 }
