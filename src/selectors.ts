@@ -2,10 +2,9 @@ import { isInWindow, type AppState, type Derived, type Selection } from './appSt
 import { selectionShows } from './selection.ts';
 import { NO_GENRE, TAG_VOCABULARY, hasGenre } from './data/tags.ts';
 import { t } from './i18n/index.ts';
-import { showsInRange, sortBands, type BandEntry, type ShowRef } from './model.ts';
+import { showsInRange, sortBands, type BandEntry, type ShowRef, type TimelineLane } from './model.ts';
 import { countryName } from './view/format.ts';
 import { buildPlaces, type CountryPlace } from './places.ts';
-import type { TimelineLane } from './view/timeline.ts';
 import { buildSearchIndex, type SearchEntry } from './view/searchIndex.ts';
 
 export type ShowFilter = (ref: ShowRef) => boolean;
@@ -34,13 +33,13 @@ export function createSelectors(maxBandsWithRoutes: number) {
   let mapKey: [readonly ShowRef[], ShowFilter | null] | null = null;
   let mapShows: readonly ShowRef[] = [];
 
-  let rangeKey: [Derived['filteredBands'], Derived['refsByBand'], AppState['timeWindow'], AppState['bandSort']] | null = null;
+  let rangeKey: [Derived['filteredBands'], Derived['refsInScope'], AppState['timeWindow'], AppState['bandSort']] | null = null;
   let bandsInRange: BandsInRange = { ordered: [], shows: new Map() };
 
-  let lanesKey: [BandsInRange, Derived['visibleBands'], boolean] | null = null;
+  let lanesKey: [BandsInRange, Derived['visibleBands'], Derived['refsInScope'], AppState['timeWindow'], boolean] | null = null;
   let lanes: { readonly shown: readonly TimelineLane[]; readonly hiddenCount: number } = { shown: [], hiddenCount: 0 };
 
-  let selectionKey: [Selection, AppState['timeWindow'], Derived] | null = null;
+  let selectionKey: [Selection, AppState['timeWindow'], Derived['visibleShows'], Derived['refsInScope'], Derived['showsById']] | null = null;
   let selection: readonly ShowRef[] = [];
   let selectedIdsKey: readonly ShowRef[] | null = null;
   let selectedIds: ReadonlySet<string> = new Set();
@@ -48,8 +47,11 @@ export function createSelectors(maxBandsWithRoutes: number) {
   let placesKey: [readonly ShowRef[], AppState['timeWindow']] | null = null;
   let places: readonly CountryPlace[] = [];
 
-  let genresKey: [Derived['refsByBand'], AppState['timeWindow']] | null = null;
+  let genresKey: [Derived['refsInScope'], AppState['timeWindow']] | null = null;
   let genres: readonly GenreSummary[] = [];
+
+  let nearbyKey: [Derived['visibleShows'], AppState['timeWindow']] | null = null;
+  let nearby: readonly ShowRef[] = [];
 
   let searchKey: Derived['bands'] | null = null;
   let searchIndex: readonly SearchEntry[] = [];
@@ -89,36 +91,51 @@ export function createSelectors(maxBandsWithRoutes: number) {
       return mapShows;
     },
 
-    /** Bands that pass the tag filter, sorted by what they play in the time window, with those shows. */
+    /** Bands that pass the tag filter, sorted by what they play in the area and the time window, with those shows. */
     bandsInRange(current: AppState, derived: Derived): BandsInRange {
       const key = rangeKey;
-      if (key === null || key[0] !== derived.filteredBands || key[1] !== derived.refsByBand || key[2] !== current.timeWindow || key[3] !== current.bandSort) {
-        rangeKey = [derived.filteredBands, derived.refsByBand, current.timeWindow, current.bandSort];
-        const shows = new Map(derived.filteredBands.map((band) => [band, showsInRange(derived.refsByBand.get(band) ?? [], current.timeWindow)] as const));
+      if (key === null || key[0] !== derived.filteredBands || key[1] !== derived.refsInScope || key[2] !== current.timeWindow || key[3] !== current.bandSort) {
+        rangeKey = [derived.filteredBands, derived.refsInScope, current.timeWindow, current.bandSort];
+        const shows = new Map(derived.filteredBands.map((band) => [band, showsInRange(derived.refsInScope.get(band) ?? [], current.timeWindow)] as const));
         bandsInRange = { ordered: sortBands(derived.filteredBands, current.bandSort, (band) => shows.get(band) ?? []), shows };
       }
       return bandsInRange;
     },
 
-    /** Timeline lanes in band-list order; with hideEmptyLanes, bands without a show in the window collapse. */
+    /** Timeline lanes in band-list order with the shows in the area; with hideEmptyLanes, bands without a show in the window collapse. */
     lanes(current: AppState, derived: Derived): { readonly shown: readonly TimelineLane[]; readonly hiddenCount: number } {
       const inRange = this.bandsInRange(current, derived);
-      if (lanesKey === null || lanesKey[0] !== inRange || lanesKey[1] !== derived.visibleBands || lanesKey[2] !== current.hideEmptyLanes) {
-        lanesKey = [inRange, derived.visibleBands, current.hideEmptyLanes];
+      const key = lanesKey;
+      if (
+        key === null ||
+        key[0] !== inRange ||
+        key[1] !== derived.visibleBands ||
+        key[2] !== derived.refsInScope ||
+        key[3] !== current.timeWindow ||
+        key[4] !== current.hideEmptyLanes
+      ) {
+        lanesKey = [inRange, derived.visibleBands, derived.refsInScope, current.timeWindow, current.hideEmptyLanes];
         const position = new Map(inRange.ordered.map((band, index) => [band, index]));
         const last = position.size;
         const visible = derived.visibleBands.toSorted((a, b) => (position.get(a) ?? last) - (position.get(b) ?? last));
-        const inWindow = (band: BandEntry) => inRange.shows.get(band) ?? showsInRange(derived.refsByBand.get(band) ?? [], current.timeWindow);
+        const inWindow = (band: BandEntry) => inRange.shows.get(band) ?? showsInRange(derived.refsInScope.get(band) ?? [], current.timeWindow);
         const shown = current.hideEmptyLanes && current.timeWindow !== null ? visible.filter((band) => inWindow(band).length > 0) : visible;
-        lanes = { shown: shown.map((band) => ({ band, shows: derived.refsByBand.get(band) ?? [] })), hiddenCount: visible.length - shown.length };
+        lanes = { shown: shown.map((band) => ({ band, shows: derived.refsInScope.get(band) ?? [] })), hiddenCount: visible.length - shown.length };
       }
       return lanes;
     },
 
     selection(current: AppState, derived: Derived): readonly ShowRef[] {
       const key = selectionKey;
-      if (key === null || key[0] !== current.selection || key[1] !== current.timeWindow || key[2].visibleShows !== derived.visibleShows || key[2].refsByBand !== derived.refsByBand) {
-        selectionKey = [current.selection, current.timeWindow, derived];
+      if (
+        key === null ||
+        key[0] !== current.selection ||
+        key[1] !== current.timeWindow ||
+        key[2] !== derived.visibleShows ||
+        key[3] !== derived.refsInScope ||
+        key[4] !== derived.showsById
+      ) {
+        selectionKey = [current.selection, current.timeWindow, derived.visibleShows, derived.refsInScope, derived.showsById];
         selection = selectionShows(current.selection, current.timeWindow, derived);
       }
       return selection;
@@ -141,12 +158,12 @@ export function createSelectors(maxBandsWithRoutes: number) {
       return places;
     },
 
-    /** Every genre some band plays, alphabetically, with its bands and shows in the time window. */
+    /** Every genre some band plays, alphabetically, with its bands and shows in the area and the time window. */
     genres(current: AppState, derived: Derived): readonly GenreSummary[] {
-      if (genresKey === null || genresKey[0] !== derived.refsByBand || genresKey[1] !== current.timeWindow) {
-        genresKey = [derived.refsByBand, current.timeWindow];
+      if (genresKey === null || genresKey[0] !== derived.refsInScope || genresKey[1] !== current.timeWindow) {
+        genresKey = [derived.refsInScope, current.timeWindow];
         const totals = new Map<string, { bandCount: number; showCount: number }>();
-        for (const [band, refs] of derived.refsByBand) {
+        for (const [band, refs] of derived.refsInScope) {
           const tags = band.file.band.tags;
           const ids = hasGenre(tags) ? tags.filter((id) => TAG_VOCABULARY.byId.get(id)?.group === 'genre') : [NO_GENRE];
           const shows = showsInRange(refs, current.timeWindow).length;
@@ -161,6 +178,16 @@ export function createSelectors(maxBandsWithRoutes: number) {
           .toSorted((a, b) => Number(a.id === NO_GENRE) - Number(b.id === NO_GENRE) || a.label.localeCompare(b.label));
       }
       return genres;
+    },
+
+    /** The visible shows in the area and the time window, whether or not the map follows the timeline; null without an area. */
+    nearbyShows(current: AppState, derived: Derived): readonly ShowRef[] | null {
+      if (derived.area === null) return null;
+      if (nearbyKey === null || nearbyKey[0] !== derived.visibleShows || nearbyKey[1] !== current.timeWindow) {
+        nearbyKey = [derived.visibleShows, current.timeWindow];
+        nearby = showsInRange(derived.visibleShows, current.timeWindow);
+      }
+      return nearby;
     },
 
     searchIndex(derived: Derived): readonly SearchEntry[] {

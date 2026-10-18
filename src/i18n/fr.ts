@@ -106,6 +106,7 @@ export const fr: Messages = {
   shows,
   bands,
   noShowsInRange: 'Aucun concert sur cette période',
+  noShowsNear: (distance) => `Aucun concert dans un rayon de ${distance} sur cette période`,
   status: { scheduled: 'Prévu', cancelled: 'Annulé', postponed: 'Reporté', soldout: 'Complet', played: 'Joué' },
   search: {
     placeholder: 'Chercher groupes, villes, salles, tournées',
@@ -137,6 +138,8 @@ export const fr: Messages = {
     noMatch: (query) => `Aucun groupe ne correspond à « ${query} ».`,
     quietToggle: (open, count) =>
       n(count, open ? { one: 'Masquer # groupe sans concert sur cette période', other: 'Masquer # groupes sans concert sur cette période' } : { one: 'Afficher # groupe sans concert sur cette période', other: 'Afficher # groupes sans concert sur cette période' }),
+    quietToggleNear: (open, count, distance) =>
+      n(count, open ? { one: `Masquer # groupe sans concert dans un rayon de ${distance} sur cette période`, other: `Masquer # groupes sans concert dans un rayon de ${distance} sur cette période` } : { one: `Afficher # groupe sans concert dans un rayon de ${distance} sur cette période`, other: `Afficher # groupes sans concert dans un rayon de ${distance} sur cette période` }),
     previewBadge: 'Votre fichier',
     showOnMap: (band) => `Afficher ${band} sur la carte et la frise`,
     listDates: (band) => `Lister les dates de ${band}`,
@@ -147,6 +150,9 @@ export const fr: Messages = {
     summary: (cities, countries) =>
       `${n(cities, { one: '# ville', other: '# villes' })} dans ${n(countries, { one: '# pays', other: '# pays' })} avec des concerts sur la période`,
     empty: 'Aucun concert sur la période. Choisissez une période plus large.',
+    summaryNear: (cities, countries, distance) =>
+      `${n(cities, { one: '# ville', other: '# villes' })} dans ${n(countries, { one: '# pays', other: '# pays' })} avec des concerts dans un rayon de ${distance} sur la période`,
+    emptyNear: (distance) => `Aucun concert dans un rayon de ${distance} sur la période. Choisissez une période ou un rayon plus large.`,
     noMatch: (query) => `Aucune ville ni aucun pays ne correspond à « ${query} ».`,
     showCities: (country) => `Afficher les villes de ${country}`,
     hideCities: (country) => `Masquer les villes de ${country}`,
@@ -173,6 +179,9 @@ export const fr: Messages = {
     emptyNamed: (name, range) => `Aucun concert de ${name} ${range}. ${zoomOutHint}`,
     emptyBands: (range) => `Aucun concert de ces groupes ${range}. ${zoomOutHint}`,
     emptyPlace: (place, range) => `Aucun concert à ${place} ${range}. ${zoomOutHint}`,
+    near: (range, distance) => `dans un rayon de ${distance} ${range}`,
+    nearbyTitle: (distance) => `Concerts dans un rayon de ${distance}`,
+    emptyNearby: (range) => `Aucun concert ${range}. ${zoomOutHint}`,
     hiddenPicked: 'Ces concerts sont masqués. Affichez leurs groupes dans la liste des groupes.',
     pickedOne: (band, city) => `${band} à ${city}`,
     pickedInCity: (count, city, band) => `${band === null ? '' : `${band} : `}${shows(count)} à ${city}`,
@@ -194,8 +203,11 @@ export const fr: Messages = {
     cursor: 'Frise. Utilisez les flèches pour passer d’un concert à l’autre.',
     noBandsShown: 'Aucun groupe affiché. Activez des groupes dans la liste pour voir leurs dates.',
     noShowsInWindow: 'Aucun concert sur cette période. Choisissez une autre période ou dézoomez.',
+    noShowsInWindowNear: (distance) => `Aucun concert dans un rayon de ${distance} sur cette période. Choisissez une autre période ou un rayon plus large, ou dézoomez.`,
     hiddenLanes: (count) =>
       n(count, { one: '# groupe n’a aucun concert sur cette période et est masqué.', other: '# groupes n’ont aucun concert sur cette période et sont masqués.' }),
+    hiddenLanesNear: (count, distance) =>
+      n(count, { one: `# groupe n’a aucun concert dans un rayon de ${distance} sur cette période et est masqué.`, other: `# groupes n’ont aucun concert dans un rayon de ${distance} sur cette période et sont masqués.` }),
     showAllLanes: 'Afficher toutes les lignes',
     dot: (band, date, city, status) => `${band} : ${date}, ${city}${status === null ? '' : `, ${status}`}. Entrée pour les détails.`,
     presets: {

@@ -14,6 +14,8 @@ export interface MapControlsProps {
 
 export interface MapControlsCallbacks {
   onZoom(factor: number): void;
+  /** The corner button: fits the map to the shows, inside the area when one is active. */
+  onFit(): void;
   onView(view: MapViewPreset): void;
   onMode(mode: MapMode): void;
   onListNearby(): void;
@@ -45,7 +47,7 @@ export function createMapControls(controls: HTMLElement, statusBar: HTMLElement,
   const viewButton = iconButton('locate', t().map.area);
   zoomIn.addEventListener('click', () => callbacks.onZoom(ZOOM_STEP));
   zoomOut.addEventListener('click', () => callbacks.onZoom(1 / ZOOM_STEP));
-  fit.addEventListener('click', () => callbacks.onView({ kind: 'shows' }));
+  fit.addEventListener('click', () => callbacks.onFit());
 
   const unit = currentLocale().distance;
   const viewMenu = h('div', { class: 'popover map-view-menu', id: 'map-view-menu', role: 'group', 'aria-label': t().map.areaMenu });

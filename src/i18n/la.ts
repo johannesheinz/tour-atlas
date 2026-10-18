@@ -165,6 +165,7 @@ export const la: Messages = {
   shows,
   bands,
   noShowsInRange: 'Nulli concentus hoc spatio temporis',
+  noShowsNear: (distance) => `Nulli concentus intra ${distance} hoc spatio temporis`,
   status: { scheduled: 'Statutus', cancelled: 'Revocatus', postponed: 'Dilatus', soldout: 'Divenditus', played: 'Peractus' },
   search: {
     placeholder: 'Quaere greges, urbes, theatra, itinera',
@@ -196,6 +197,8 @@ export const la: Messages = {
     noMatch: (query) => `Nullus grex cum “${query}” congruit.`,
     quietToggle: (open, count) =>
       n(count, open ? { one: 'Cela # gregem sine concentibus hoc spatio', other: 'Cela # greges sine concentibus hoc spatio' } : { one: 'Monstra # gregem sine concentibus hoc spatio', other: 'Monstra # greges sine concentibus hoc spatio' }),
+    quietToggleNear: (open, count, distance) =>
+      n(count, open ? { one: `Cela # gregem sine concentibus intra ${distance} hoc spatio`, other: `Cela # greges sine concentibus intra ${distance} hoc spatio` } : { one: `Monstra # gregem sine concentibus intra ${distance} hoc spatio`, other: `Monstra # greges sine concentibus intra ${distance} hoc spatio` }),
     previewBadge: 'Fasciculus tuus',
     showOnMap: (band) => `Monstra ${band} in charta et linea temporis`,
     listDates: (band) => `Concentus gregis ${band} enumera`,
@@ -206,6 +209,9 @@ export const la: Messages = {
     summary: (cities, countries) =>
       `${n(cities, { one: '# urbs', other: '# urbes' })} in ${n(countries, { one: '# terra', other: '# terris' })} concentus hoc spatio ${cities === 1 ? 'habet' : 'habent'}`,
     empty: 'Nulli concentus hoc spatio. Spatium latius elige.',
+    summaryNear: (cities, countries, distance) =>
+      `${n(cities, { one: '# urbs', other: '# urbes' })} in ${n(countries, { one: '# terra', other: '# terris' })} concentus intra ${distance} hoc spatio ${cities === 1 ? 'habet' : 'habent'}`,
+    emptyNear: (distance) => `Nulli concentus intra ${distance} hoc spatio. Spatium latius aut regionem maiorem elige.`,
     noMatch: (query) => `Nec urbs nec terra cum “${query}” congruit.`,
     showCities: (country) => `${country}: urbes monstra`,
     hideCities: (country) => `${country}: urbes cela`,
@@ -232,6 +238,9 @@ export const la: Messages = {
     emptyNamed: (name, range) => `${name}: nulli concentus ${range}. ${zoomOutHint}`,
     emptyBands: (range) => `Nulli concentus horum gregum ${range}. ${zoomOutHint}`,
     emptyPlace: (place, range) => `${place}: nulli concentus ${range}. ${zoomOutHint}`,
+    near: (range, distance) => `intra ${distance} ${range}`,
+    nearbyTitle: (distance) => `Concentus intra ${distance}`,
+    emptyNearby: (range) => `Nulli concentus ${range}. ${zoomOutHint}`,
     hiddenPicked: 'Hi concentus celantur. Greges eorum in indice gregum monstra.',
     pickedOne: (band, city) => `${band} in urbe ${city}`,
     pickedInCity: (count, city, band) => `${band === null ? '' : `${band}: `}${shows(count)} in urbe ${city}`,
@@ -253,8 +262,11 @@ export const la: Messages = {
     cursor: 'Linea temporis. Clavibus sagittatis inter concentus transi.',
     noBandsShown: 'Nulli greges in conspectu. Greges in indice monstra, ut concentus eorum videas.',
     noShowsInWindow: 'Nulli concentus hoc spatio. Aliud spatium elige aut aspectum contrahe.',
+    noShowsInWindowNear: (distance) => `Nulli concentus intra ${distance} hoc spatio. Aliud spatium aut regionem maiorem elige, aut aspectum contrahe.`,
     hiddenLanes: (count) =>
       n(count, { one: '# grex hoc spatio nullos concentus habet et celatur.', other: '# greges hoc spatio nullos concentus habent et celantur.' }),
+    hiddenLanesNear: (count, distance) =>
+      n(count, { one: `# grex intra ${distance} hoc spatio nullos concentus habet et celatur.`, other: `# greges intra ${distance} hoc spatio nullos concentus habent et celantur.` }),
     showAllLanes: 'Omnes ordines monstra',
     dot: (band, date, city, status) => `${band}: ${date}, ${city}${status === null ? '' : `, ${status}`}. Preme Enter, ut singula cognoscas.`,
     presets: {

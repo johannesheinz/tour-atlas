@@ -8,6 +8,8 @@ export interface PlaceListProps {
   /** Countries with shows in the time window. */
   readonly places: readonly CountryPlace[];
   readonly selected: ReadonlySet<PlaceKey>;
+  /** The area's radius, formatted, while "Near me" limits the places. */
+  readonly nearDistance: string | null;
 }
 
 export interface PlaceListCallbacks {
@@ -40,9 +42,11 @@ export function createPlaceList(container: HTMLElement, callbacks: PlaceListCall
       return cities.length > 0 ? [{ country, cities, forceOpen: true }] : [];
     });
     const cityCount = current.places.reduce((sum, country) => sum + country.cities.length, 0);
-    count.textContent = t().placeList.summary(cityCount, current.places.length);
+    const near = current.nearDistance;
+    count.textContent = near === null ? t().placeList.summary(cityCount, current.places.length) : t().placeList.summaryNear(cityCount, current.places.length, near);
     empty.hidden = matching.length > 0;
-    empty.textContent = current.places.length === 0 ? t().placeList.empty : t().placeList.noMatch(filter.value.trim());
+    const noPlaces = near === null ? t().placeList.empty : t().placeList.emptyNear(near);
+    empty.textContent = current.places.length === 0 ? noPlaces : t().placeList.noMatch(filter.value.trim());
 
     list.replaceChildren(
       ...matching.map(({ country, cities, forceOpen }) => {
@@ -88,7 +92,7 @@ export function createPlaceList(container: HTMLElement, callbacks: PlaceListCall
       if (props !== null) draw(props);
     },
     render(next) {
-      if (props !== null && props.places === next.places && props.selected === next.selected) return;
+      if (props !== null && props.places === next.places && props.selected === next.selected && props.nearDistance === next.nearDistance) return;
       props = next;
       draw(next);
     },

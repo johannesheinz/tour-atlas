@@ -32,6 +32,7 @@ export const en: Messages = {
   shows,
   bands,
   noShowsInRange: 'No shows in this time range',
+  noShowsNear: (distance) => `No shows within ${distance} in this time range`,
   status: { scheduled: 'Scheduled', cancelled: 'Cancelled', postponed: 'Postponed', soldout: 'Sold out', played: 'Played' },
   search: {
     placeholder: 'Search bands, cities, venues, tours',
@@ -63,6 +64,8 @@ export const en: Messages = {
     noMatch: (query) => `No band matches “${query}”.`,
     quietToggle: (open, count) =>
       n(count, open ? { one: 'Hide # band without shows in this time range', other: 'Hide # bands without shows in this time range' } : { one: 'Show # band without shows in this time range', other: 'Show # bands without shows in this time range' }),
+    quietToggleNear: (open, count, distance) =>
+      n(count, open ? { one: `Hide # band without shows within ${distance} in this time range`, other: `Hide # bands without shows within ${distance} in this time range` } : { one: `Show # band without shows within ${distance} in this time range`, other: `Show # bands without shows within ${distance} in this time range` }),
     previewBadge: 'Your file',
     showOnMap: (band) => `Show ${band} on the map and timeline`,
     listDates: (band) => `List the dates of ${band}`,
@@ -73,6 +76,9 @@ export const en: Messages = {
     summary: (cities, countries) =>
       `${n(cities, { one: '# city', other: '# cities' })} in ${n(countries, { one: '# country', other: '# countries' })} ${cities === 1 ? 'has' : 'have'} shows in the time range`,
     empty: 'No shows in the time range. Pick a wider time range.',
+    summaryNear: (cities, countries, distance) =>
+      `${n(cities, { one: '# city', other: '# cities' })} in ${n(countries, { one: '# country', other: '# countries' })} ${cities === 1 ? 'has' : 'have'} shows within ${distance} in the time range`,
+    emptyNear: (distance) => `No shows within ${distance} in the time range. Pick a wider time range or a larger area.`,
     noMatch: (query) => `No city or country matches “${query}”.`,
     showCities: (country) => `Show cities in ${country}`,
     hideCities: (country) => `Hide cities in ${country}`,
@@ -99,6 +105,9 @@ export const en: Messages = {
     emptyNamed: (name, range) => `No ${name} shows ${range}. ${zoomOutHint}`,
     emptyBands: (range) => `No shows of these bands ${range}. ${zoomOutHint}`,
     emptyPlace: (place, range) => `No shows in ${place} ${range}. ${zoomOutHint}`,
+    near: (range, distance) => `within ${distance} ${range}`,
+    nearbyTitle: (distance) => `Shows within ${distance}`,
+    emptyNearby: (range) => `No shows ${range}. ${zoomOutHint}`,
     hiddenPicked: 'These shows are hidden. Turn their bands on in the band list.',
     pickedOne: (band, city) => `${band} in ${city}`,
     pickedInCity: (count, city, band) => `${band === null ? '' : `${band}: `}${shows(count)} in ${city}`,
@@ -119,7 +128,10 @@ export const en: Messages = {
     cursor: 'Timeline. Use the arrow keys to move between shows.',
     noBandsShown: 'No bands are shown. Turn bands on in the list to see their dates.',
     noShowsInWindow: 'No shows in this time range. Pick another time range or zoom out.',
+    noShowsInWindowNear: (distance) => `No shows within ${distance} in this time range. Pick another time range or a larger area, or zoom out.`,
     hiddenLanes: (count) => n(count, { one: '# band has no shows in this time range and is hidden.', other: '# bands have no shows in this time range and are hidden.' }),
+    hiddenLanesNear: (count, distance) =>
+      n(count, { one: `# band has no shows within ${distance} in this time range and is hidden.`, other: `# bands have no shows within ${distance} in this time range and are hidden.` }),
     showAllLanes: 'Show all lanes',
     dot: (band, date, city, status) => `${band}: ${date}, ${city}${status === null ? '' : `, ${status}`}. Press Enter for details.`,
     presets: {

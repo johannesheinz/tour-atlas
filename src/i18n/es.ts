@@ -106,6 +106,7 @@ export const es: Messages = {
   shows,
   bands,
   noShowsInRange: 'Sin conciertos en este periodo',
+  noShowsNear: (distance) => `Sin conciertos a menos de ${distance} en este periodo`,
   status: { scheduled: 'Programado', cancelled: 'Cancelado', postponed: 'Aplazado', soldout: 'Agotado', played: 'Celebrado' },
   search: {
     placeholder: 'Buscar bandas, ciudades, salas, giras',
@@ -137,6 +138,8 @@ export const es: Messages = {
     noMatch: (query) => `Ninguna banda coincide con «${query}».`,
     quietToggle: (open, count) =>
       n(count, open ? { one: 'Ocultar # banda sin conciertos en este periodo', other: 'Ocultar # bandas sin conciertos en este periodo' } : { one: 'Mostrar # banda sin conciertos en este periodo', other: 'Mostrar # bandas sin conciertos en este periodo' }),
+    quietToggleNear: (open, count, distance) =>
+      n(count, open ? { one: `Ocultar # banda sin conciertos a menos de ${distance} en este periodo`, other: `Ocultar # bandas sin conciertos a menos de ${distance} en este periodo` } : { one: `Mostrar # banda sin conciertos a menos de ${distance} en este periodo`, other: `Mostrar # bandas sin conciertos a menos de ${distance} en este periodo` }),
     previewBadge: 'Tu archivo',
     showOnMap: (band) => `Mostrar ${band} en el mapa y la línea de tiempo`,
     listDates: (band) => `Listar las fechas de ${band}`,
@@ -147,6 +150,9 @@ export const es: Messages = {
     summary: (cities, countries) =>
       `${n(cities, { one: '# ciudad', other: '# ciudades' })} en ${n(countries, { one: '# país', other: '# países' })} con conciertos en el periodo`,
     empty: 'Sin conciertos en el periodo. Elige un periodo más amplio.',
+    summaryNear: (cities, countries, distance) =>
+      `${n(cities, { one: '# ciudad', other: '# ciudades' })} en ${n(countries, { one: '# país', other: '# países' })} con conciertos a menos de ${distance} en el periodo`,
+    emptyNear: (distance) => `Sin conciertos a menos de ${distance} en el periodo. Elige un periodo más amplio o un radio mayor.`,
     noMatch: (query) => `Ninguna ciudad ni país coincide con «${query}».`,
     showCities: (country) => `Mostrar ciudades de ${country}`,
     hideCities: (country) => `Ocultar ciudades de ${country}`,
@@ -173,6 +179,9 @@ export const es: Messages = {
     emptyNamed: (name, range) => `Sin conciertos de ${name} ${range}. ${zoomOutHint}`,
     emptyBands: (range) => `Sin conciertos de estas bandas ${range}. ${zoomOutHint}`,
     emptyPlace: (place, range) => `Sin conciertos en ${place} ${range}. ${zoomOutHint}`,
+    near: (range, distance) => `a menos de ${distance} ${range}`,
+    nearbyTitle: (distance) => `Conciertos a menos de ${distance}`,
+    emptyNearby: (range) => `Sin conciertos ${range}. ${zoomOutHint}`,
     hiddenPicked: 'Estos conciertos están ocultos. Muestra sus bandas en la lista de bandas.',
     pickedOne: (band, city) => `${band} en ${city}`,
     pickedInCity: (count, city, band) => `${band === null ? '' : `${band}: `}${shows(count)} en ${city}`,
@@ -194,8 +203,11 @@ export const es: Messages = {
     cursor: 'Línea de tiempo. Usa las flechas para pasar de un concierto a otro.',
     noBandsShown: 'No hay bandas visibles. Activa bandas en la lista para ver sus fechas.',
     noShowsInWindow: 'Sin conciertos en este periodo. Elige otro periodo o aleja la vista.',
+    noShowsInWindowNear: (distance) => `Sin conciertos a menos de ${distance} en este periodo. Elige otro periodo o un radio mayor, o aleja la vista.`,
     hiddenLanes: (count) =>
       n(count, { one: '# banda no tiene conciertos en este periodo y está oculta.', other: '# bandas no tienen conciertos en este periodo y están ocultas.' }),
+    hiddenLanesNear: (count, distance) =>
+      n(count, { one: `# banda no tiene conciertos a menos de ${distance} en este periodo y está oculta.`, other: `# bandas no tienen conciertos a menos de ${distance} en este periodo y están ocultas.` }),
     showAllLanes: 'Mostrar todas las filas',
     dot: (band, date, city, status) => `${band}: ${date}, ${city}${status === null ? '' : `, ${status}`}. Pulsa Intro para ver los detalles.`,
     presets: {

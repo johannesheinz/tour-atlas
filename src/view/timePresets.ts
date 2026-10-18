@@ -26,9 +26,11 @@ function windowStart(today: number, includePastMonth: boolean): number {
   return includePastMonth ? today - PAST_MONTH_LEAD_DAYS * DAY_MS : today;
 }
 
-/** The window a preset shows; null means "fit everything". Throws for presets with no shows to show. */
-export function presetRange(preset: TimePreset, shows: readonly Dated[], today: number, includePastMonth: boolean): readonly [number, number] | null {
-  if (!isPresetAvailable(preset, shows, today, includePastMonth)) throw new RangeError(`preset ${preset} has no shows to show`);
+/**
+ * The window a preset shows; null means "fit everything". Shows only shape the open-ended presets; without any,
+ * "upcoming" and "past" show a short range next to today, so a preset can be applied to an empty area.
+ */
+export function presetWindow(preset: TimePreset, shows: readonly Dated[], today: number, includePastMonth: boolean): readonly [number, number] | null {
   const start = windowStart(today, includePastMonth);
   const daysAhead = MONTHS_AHEAD_DAYS[preset];
   if (daysAhead !== undefined) return [start, today + daysAhead * DAY_MS];
@@ -36,19 +38,40 @@ export function presetRange(preset: TimePreset, shows: readonly Dated[], today: 
     case 'all':
       return null;
     case 'upcoming': {
-      const last = Math.max(...shows.filter((show) => show.end >= start).map((show) => show.end)) + DAY_MS;
+      const ends = shows.filter((show) => show.end >= start).map((show) => show.end);
+      if (ends.length === 0) return [start, start + MIN_SPAN_DAYS * DAY_MS];
+      const last = Math.max(...ends) + DAY_MS;
       const end = last + (last - start) * TRAILING_PADDING;
       return [start, Math.max(end, start + MIN_SPAN_DAYS * DAY_MS)];
     }
     case 'past': {
-      const first = Math.min(...shows.filter((show) => show.end < today).map((show) => show.start));
       const end = today + PAST_TRAILING_DAYS * DAY_MS;
+      const starts = shows.filter((show) => show.end < today).map((show) => show.start);
+      if (starts.length === 0) return [end - MIN_SPAN_DAYS * DAY_MS, end];
+      const first = Math.min(...starts);
       const paddedStart = first - (end - first) * TRAILING_PADDING;
       return [Math.min(paddedStart, end - MIN_SPAN_DAYS * DAY_MS), end];
     }
     default:
       throw new RangeError(`preset ${preset} has no range rule`);
   }
+}
+
+/**
+ * The window after the bands, genres or area change: a preset is worked out again for the shows now in scope,
+ * a range of the user's own stays as it is. Every view then depends only on the filters and this choice, not on
+ * the order they were made in.
+ */
+export function windowAfterFilterChange(
+  preset: TimePreset | null,
+  window: Dated | null,
+  shows: readonly Dated[],
+  today: number,
+  includePastMonth: boolean,
+): readonly [number, number] | null {
+  if (preset !== null) return presetWindow(preset, shows, today, includePastMonth);
+  if (window === null) throw new RangeError('a custom range needs a window to keep');
+  return [window.start, window.end];
 }
 
 export function isPresetAvailable(preset: TimePreset, shows: readonly Dated[], today: number, includePastMonth: boolean): boolean {

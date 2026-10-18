@@ -17,6 +17,13 @@ export interface ShowRef {
   readonly isPast: boolean;
 }
 
+/** A band's row on the timeline. */
+export interface TimelineLane {
+  readonly band: BandEntry;
+  /** Sorted by start. */
+  readonly shows: readonly ShowRef[];
+}
+
 export type BandSort = 'name' | 'next-show' | 'show-count';
 export type ThemeMode = 'light' | 'dark';
 export type ThemePreference = 'auto' | 'light' | 'dark';

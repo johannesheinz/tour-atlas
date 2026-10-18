@@ -3,7 +3,7 @@ import { select } from 'd3-selection';
 import 'd3-transition';
 import { zoom, zoomIdentity, ZoomTransform, type D3ZoomEvent } from 'd3-zoom';
 import type { TimeWindow } from '../appState.ts';
-import type { BandEntry, ShowRef } from '../model.ts';
+import type { ShowRef, TimelineLane } from '../model.ts';
 import { context2d, h, prefersReducedMotion } from './dom.ts';
 import { t } from '../i18n/index.ts';
 import { formatDateSpan, statusLabel } from './format.ts';
@@ -36,17 +36,13 @@ export const TIMELINE_SETTINGS = {
   tickFont: '600 11px Archivo, system-ui, sans-serif',
 } as const;
 
-export interface TimelineLane {
-  readonly band: BandEntry;
-  /** Sorted by start. */
-  readonly shows: readonly ShowRef[];
-}
-
 export interface TimelineProps {
   readonly lanes: readonly TimelineLane[];
   /** Every show the timeline fits to, including those in collapsed lanes. */
   readonly domainShows: readonly ShowRef[];
   readonly hiddenLaneCount: number;
+  /** The area's radius, formatted, while "Near me" limits the lanes. */
+  readonly nearDistance: string | null;
   readonly emptyMessage: string;
   readonly highlightedShowIds: ReadonlySet<string>;
   readonly selectedShowIds: ReadonlySet<string>;
@@ -129,6 +125,8 @@ export function createTimeline(container: HTMLElement, callbacks: TimelineCallba
   let hasFitted = false;
   let pendingRange: [number, number] | null = null;
   let programmatic = false;
+  /** The range the last programmatic fit asked for, reported as asked so a kept range does not drift by rounding. */
+  let exactRange: readonly [number, number] | null = null;
   let brushStart: { readonly x: number; readonly pointerId: number } | null = null;
   let brushing = false;
   let suppressClick = false;
@@ -323,7 +321,8 @@ export function createTimeline(container: HTMLElement, callbacks: TimelineCallba
     empty.hidden = next.lanes.length > 0;
     empty.textContent = next.emptyMessage;
     note.hidden = next.hiddenLaneCount === 0;
-    noteText.textContent = `${t().timeline.hiddenLanes(next.hiddenLaneCount)} `;
+    const hiddenLanesText = next.nearDistance === null ? t().timeline.hiddenLanes(next.hiddenLaneCount) : t().timeline.hiddenLanesNear(next.hiddenLaneCount, next.nearDistance);
+    noteText.textContent = `${hiddenLanesText} `;
     if (previous === null || previous.lanes.length !== next.lanes.length) layout();
     if (cursorPosition !== null && next.lanes[cursorPosition.lane]?.shows[cursorPosition.show] === undefined) cursorPosition = null;
     scheduleDraw();
@@ -335,10 +334,12 @@ export function createTimeline(container: HTMLElement, callbacks: TimelineCallba
       return;
     }
     const ranges = props.domainShows;
-    const domain: [number, number] =
+    const dataDomain: readonly [number, number] =
       ranges.length === 0
         ? [props.today - 30 * DAY_MS, props.today + 30 * DAY_MS]
         : fitDateDomain(ranges, TIMELINE_SETTINGS.paddingFraction, TIMELINE_SETTINGS.minSpanDays);
+    // A kept range can lie beyond the shows left after a filter change; the zoom limits must still allow it.
+    const domain: [number, number] = range === null ? [dataDomain[0], dataDomain[1]] : [Math.min(dataDomain[0], range[0]), Math.max(dataDomain[1], range[1])];
     const currentDomain = transform.rescaleX(baseScale).domain().map((date) => date.getTime());
     const hadDomain = hasFitted;
     hasFitted = true;
@@ -347,7 +348,8 @@ export function createTimeline(container: HTMLElement, callbacks: TimelineCallba
     const maxZoom = Math.max(1, (domain[1] - domain[0]) / (TIMELINE_SETTINGS.minVisibleDays * DAY_MS));
     zoomBehavior.scaleExtent([0.5, maxZoom]);
 
-    fitTransform = transformFor(domain[0], domain[1]);
+    fitTransform = transformFor(dataDomain[0], dataDomain[1]);
+    exactRange = range;
     const target = range === null ? fitTransform : transformFor(range[0], range[1]);
     const [currentStart, currentEnd] = currentDomain;
     if (!animate || !hadDomain || prefersReducedMotion() || currentStart === undefined || currentEnd === undefined) {
@@ -405,6 +407,7 @@ export function createTimeline(container: HTMLElement, callbacks: TimelineCallba
       return;
     }
     const target = transformFor(start, end);
+    exactRange = [start, end];
     if (!animate || prefersReducedMotion()) {
       setTransform(target);
       emitWindow(false);
@@ -463,7 +466,8 @@ export function createTimeline(container: HTMLElement, callbacks: TimelineCallba
   }
 
   function emitWindow(byUser: boolean) {
-    const [start, end] = visibleRange();
+    if (byUser) exactRange = null;
+    const [start, end] = exactRange ?? visibleRange();
     callbacks.onWindowChange({ start, end }, byUser);
   }
 

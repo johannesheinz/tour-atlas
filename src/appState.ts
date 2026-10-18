@@ -6,13 +6,18 @@ import type { ThemePreference } from './model.ts';
 import type { Style } from './data/styles.ts';
 import type { TimePreset } from './view/timePresets.ts';
 import type { TourPacing } from './view/tourClock.ts';
-import type { MapMode, MapViewPreset } from './view/mapRegions.ts';
+import { kilometres, showsWithin, type Distance, type MapMode, type MapViewPreset } from './view/mapRegions.ts';
+import type { LonLat } from './view/geoFit.ts';
 import type { PlaceKey } from './places.ts';
 
-/** What the sidebar lists instead of the band and place lists. Places and bands resolve live to their shows in the time window. */
+/**
+ * What the sidebar lists instead of the band and place lists. Places, bands, genres and the nearby shows resolve
+ * live to their shows in the area and the time window; picked shows stay as picked.
+ */
 export type Selection =
   | { readonly kind: 'none' }
   | { readonly kind: 'shows'; readonly showIds: ReadonlySet<string> }
+  | { readonly kind: 'nearby' }
   | { readonly kind: 'places'; readonly places: ReadonlySet<PlaceKey> }
   | { readonly kind: 'bands'; readonly bandIds: ReadonlySet<string> }
   | { readonly kind: 'genres'; readonly genreIds: ReadonlySet<string> };
@@ -58,15 +63,39 @@ export interface AppState {
   readonly today: string;
 }
 
+/** The circle every view is limited to. The radius keeps the viewer's unit, so texts name it as chosen. */
+export interface Area {
+  readonly center: LonLat;
+  readonly radius: Distance;
+}
+
+/** "Near me" limits every view once the browser has told where the viewer is; regions only frame the map. */
+export function activeArea(state: Pick<AppState, 'mapView' | 'userPosition'>): Area | null {
+  if (state.mapView.kind !== 'near' || state.userPosition === null) return null;
+  return { center: state.userPosition, radius: state.mapView.radius };
+}
+
+export function showsInArea(refs: readonly ShowRef[], area: Area): ShowRef[] {
+  return showsWithin(refs, area.center, kilometres(area.radius));
+}
+
 export interface Derived {
   readonly bands: readonly BandEntry[];
   readonly orderedBands: readonly BandEntry[];
   /** Ordered bands that pass the tag filter, visible or not. */
   readonly filteredBands: readonly BandEntry[];
   readonly visibleBands: readonly BandEntry[];
+  readonly area: Area | null;
+  /** The visible bands' shows in the area: what the map, the timeline and the lists show. */
   readonly visibleShows: readonly ShowRef[];
+  /** The visible bands' shows wherever they are, for choices that must not depend on the area (presets, defaults). */
+  readonly bandShows: readonly ShowRef[];
+  /** Every show, for picked shows and search. */
   readonly showsById: ReadonlyMap<string, ShowRef>;
+  /** Every band's shows wherever they are. */
   readonly refsByBand: ReadonlyMap<BandEntry, readonly ShowRef[]>;
+  /** Every band's shows in the area; the same map as refsByBand while no area is active. */
+  readonly refsInScope: ReadonlyMap<BandEntry, readonly ShowRef[]>;
 }
 
 /** Recomputes derived data only when its inputs change identity, so views can compare by reference. */
@@ -86,6 +115,15 @@ export function createDeriver(): (state: AppState) => Derived {
 
   let visibleKey: [readonly BandEntry[], ReadonlySet<string>, ReadonlySet<string> | null] | null = null;
   let visibleBands: readonly BandEntry[] = [];
+  let bandShows: readonly ShowRef[] = [];
+
+  let areaKey: [AppState['mapView'], AppState['userPosition']] | null = null;
+  let area: Area | null = null;
+
+  let scopeKey: [ReadonlyMap<BandEntry, readonly ShowRef[]>, Area | null] | null = null;
+  let refsInScope: ReadonlyMap<BandEntry, readonly ShowRef[]> = refsByBand;
+
+  let scopedShowsKey: [readonly BandEntry[], ReadonlyMap<BandEntry, readonly ShowRef[]>] | null = null;
   let visibleShows: readonly ShowRef[] = [];
 
   return (state) => {
@@ -110,9 +148,22 @@ export function createDeriver(): (state: AppState) => Derived {
       visibleKey = [filteredBands, state.hiddenBandIds, solo];
       visibleBands =
         solo === null ? filteredBands.filter((band) => !state.hiddenBandIds.has(band.file.band.id)) : orderedBands.filter((band) => solo.has(band.file.band.id));
-      visibleShows = visibleBands.flatMap((band) => refsByBand.get(band) ?? []);
+      bandShows = visibleBands.flatMap((band) => refsByBand.get(band) ?? []);
     }
-    return { bands, orderedBands, filteredBands, visibleBands, visibleShows, showsById, refsByBand };
+    if (areaKey === null || areaKey[0] !== state.mapView || areaKey[1] !== state.userPosition) {
+      areaKey = [state.mapView, state.userPosition];
+      area = activeArea(state);
+    }
+    if (scopeKey === null || scopeKey[0] !== refsByBand || scopeKey[1] !== area) {
+      scopeKey = [refsByBand, area];
+      const scopeArea = area;
+      refsInScope = scopeArea === null ? refsByBand : new Map([...refsByBand].map(([band, refs]) => [band, showsInArea(refs, scopeArea)]));
+    }
+    if (scopedShowsKey === null || scopedShowsKey[0] !== visibleBands || scopedShowsKey[1] !== refsInScope) {
+      scopedShowsKey = [visibleBands, refsInScope];
+      visibleShows = refsInScope === refsByBand ? bandShows : visibleBands.flatMap((band) => refsInScope.get(band) ?? []);
+    }
+    return { bands, orderedBands, filteredBands, visibleBands, area, visibleShows, bandShows, showsById, refsByBand, refsInScope };
   };
 }
 

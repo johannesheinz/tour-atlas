@@ -4,7 +4,7 @@ import { NO_GENRE } from '../../src/data/tags.ts';
 import { parseIsoDate } from '../../src/data/dates.ts';
 import type { BandFile } from '../../src/data/types.ts';
 import { buildBandEntries, showRefs } from '../../src/model.ts';
-import { selectionShows } from '../../src/selection.ts';
+import { selectionFromUrl, selectionShows } from '../../src/selection.ts';
 import { makeFile, makeShow } from '../helpers.ts';
 
 const day = (iso: string) => parseIsoDate(iso).getTime();
@@ -19,7 +19,7 @@ const otherBand = makeFile([makeShow({ id: 'other-band-2026-11-10-berlin', date:
 const bands = buildBandEntries([testBand, otherBand], []);
 const refsByBand = new Map(bands.map((band) => [band, showRefs(band, '2026-10-16')]));
 const allShows = [...refsByBand.values()].flat();
-const derived = { visibleShows: allShows, showsById: new Map(allShows.map((ref) => [ref.show.id, ref])), refsByBand };
+const derived = { visibleShows: allShows, showsById: new Map(allShows.map((ref) => [ref.show.id, ref])), refsByBand, refsInScope: refsByBand };
 const autumn = { start: day('2026-11-01'), end: day('2026-12-31') };
 const ids = (refs: readonly { show: { id: string } }[]) => refs.map((ref) => ref.show.id);
 
@@ -50,6 +50,17 @@ describe('selectionShows', () => {
   it('lists the shows of every band in a genre, and of bands without one for NO_GENRE', () => {
     expect(selectionShows({ kind: 'genres', genreIds: new Set(['doom-metal']) }, autumn, derived)).toEqual([]);
     expect(ids(selectionShows({ kind: 'genres', genreIds: new Set([NO_GENRE]) }, autumn, derived))).toEqual(['test-band-2026-11-02-berlin', 'other-band-2026-11-10-berlin', 'test-band-2026-12-01-sao-paulo']);
+  });
+
+  it('lists the nearby shows inside the time window and follows it', () => {
+    const nearby = { kind: 'nearby' } as const;
+    expect(ids(selectionShows(nearby, autumn, derived))).toEqual(['test-band-2026-11-02-berlin', 'other-band-2026-11-10-berlin', 'test-band-2026-12-01-sao-paulo']);
+    expect(ids(selectionShows(nearby, { start: day('2027-01-01'), end: day('2027-12-31') }, derived))).toEqual(['test-band-2027-03-02-berlin']);
+  });
+
+  it('never opens the nearby shows from a link', () => {
+    const empty = { selectedPlaces: [], selectedBandIds: [], selectedGenres: [], selectedShowIds: [] };
+    expect(selectionFromUrl(empty, new Set(['test-band']), () => true)).toBe(NO_SELECTION);
   });
 
   it('keeps picked shows regardless of the window and drops unknown ids', () => {

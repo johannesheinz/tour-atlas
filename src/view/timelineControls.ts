@@ -9,6 +9,7 @@ import type { TourPacing } from './tourClock.ts';
 export interface TimelineControlsProps {
   /** Null after the user zoomed or panned to a range of their own. */
   readonly preset: TimePreset | null;
+  /** Presets with shows of the shown bands, wherever they are; the pressed preset stays enabled regardless. */
   readonly availablePresets: ReadonlySet<TimePreset>;
   readonly followTimeline: boolean;
   readonly hideEmptyLanes: boolean;
@@ -99,10 +100,10 @@ export function createTimelineControls(container: HTMLElement, callbacks: Timeli
     render(props) {
       for (const [id, pill] of pills) {
         pill.setAttribute('aria-pressed', String(props.preset === id));
-        pill.disabled = !props.availablePresets.has(id);
+        pill.disabled = props.preset !== id && !props.availablePresets.has(id);
       }
       custom.hidden = props.preset !== null;
-      for (const [id, option] of options) option.disabled = !props.availablePresets.has(id);
+      for (const [id, option] of options) option.disabled = props.preset !== id && !props.availablePresets.has(id);
       const value = props.preset ?? CUSTOM_RANGE;
       if (select.value !== value) select.value = value;
       follow.set(props.followTimeline);

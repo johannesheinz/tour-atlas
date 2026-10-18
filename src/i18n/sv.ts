@@ -106,6 +106,7 @@ export const sv: Messages = {
   shows,
   bands,
   noShowsInRange: 'Inga konserter under den här perioden',
+  noShowsNear: (distance) => `Inga konserter inom ${distance} under den här perioden`,
   status: { scheduled: 'Planerad', cancelled: 'Inställd', postponed: 'Uppskjuten', soldout: 'Slutsåld', played: 'Spelad' },
   search: {
     placeholder: 'Sök band, städer, spelställen, turnéer',
@@ -137,6 +138,8 @@ export const sv: Messages = {
     noMatch: (query) => `Inget band matchar ”${query}”.`,
     quietToggle: (open, count) =>
       n(count, open ? { one: 'Dölj # band utan konserter under den här perioden', other: 'Dölj # band utan konserter under den här perioden' } : { one: 'Visa # band utan konserter under den här perioden', other: 'Visa # band utan konserter under den här perioden' }),
+    quietToggleNear: (open, count, distance) =>
+      n(count, open ? { one: `Dölj # band utan konserter inom ${distance} under den här perioden`, other: `Dölj # band utan konserter inom ${distance} under den här perioden` } : { one: `Visa # band utan konserter inom ${distance} under den här perioden`, other: `Visa # band utan konserter inom ${distance} under den här perioden` }),
     previewBadge: 'Din fil',
     showOnMap: (band) => `Visa ${band} på kartan och tidslinjen`,
     listDates: (band) => `Lista datumen för ${band}`,
@@ -147,6 +150,9 @@ export const sv: Messages = {
     summary: (cities, countries) =>
       `${n(cities, { one: '# stad', other: '# städer' })} i ${n(countries, { one: '# land', other: '# länder' })} har konserter under perioden`,
     empty: 'Inga konserter under perioden. Välj en längre period.',
+    summaryNear: (cities, countries, distance) =>
+      `${n(cities, { one: '# stad', other: '# städer' })} i ${n(countries, { one: '# land', other: '# länder' })} har konserter inom ${distance} under perioden`,
+    emptyNear: (distance) => `Inga konserter inom ${distance} under perioden. Välj en längre period eller ett större område.`,
     noMatch: (query) => `Inga städer eller länder matchar ”${query}”.`,
     showCities: (country) => `Visa städer i ${country}`,
     hideCities: (country) => `Dölj städer i ${country}`,
@@ -173,6 +179,9 @@ export const sv: Messages = {
     emptyNamed: (name, range) => `Inga konserter med ${name} ${range}. ${zoomOutHint}`,
     emptyBands: (range) => `Inga konserter med de här banden ${range}. ${zoomOutHint}`,
     emptyPlace: (place, range) => `Inga konserter i ${place} ${range}. ${zoomOutHint}`,
+    near: (range, distance) => `inom ${distance} ${range}`,
+    nearbyTitle: (distance) => `Konserter inom ${distance}`,
+    emptyNearby: (range) => `Inga konserter ${range}. ${zoomOutHint}`,
     hiddenPicked: 'De här konserterna är dolda. Slå på deras band i bandlistan.',
     pickedOne: (band, city) => `${band} i ${city}`,
     pickedInCity: (count, city, band) => `${band === null ? '' : `${band}: `}${shows(count)} i ${city}`,
@@ -194,8 +203,11 @@ export const sv: Messages = {
     cursor: 'Tidslinje. Använd piltangenterna för att gå mellan konserter.',
     noBandsShown: 'Inga band visas. Slå på band i listan för att se deras datum.',
     noShowsInWindow: 'Inga konserter under den här perioden. Välj en annan period eller zooma ut.',
+    noShowsInWindowNear: (distance) => `Inga konserter inom ${distance} under den här perioden. Välj en annan period eller ett större område, eller zooma ut.`,
     hiddenLanes: (count) =>
       n(count, { one: '# band har inga konserter under den här perioden och är dolt.', other: '# band har inga konserter under den här perioden och är dolda.' }),
+    hiddenLanesNear: (count, distance) =>
+      n(count, { one: `# band har inga konserter inom ${distance} under den här perioden och är dolt.`, other: `# band har inga konserter inom ${distance} under den här perioden och är dolda.` }),
     showAllLanes: 'Visa alla rader',
     dot: (band, date, city, status) => `${band}: ${date}, ${city}${status === null ? '' : `, ${status}`}. Tryck på Enter för detaljer.`,
     presets: {

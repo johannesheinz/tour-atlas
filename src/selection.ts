@@ -12,7 +12,7 @@ export function sidebarPanel(state: Pick<AppState, 'selection' | 'previewsOpen' 
   return state.previewsOpen && state.previewResults.length > 0 ? 'previews' : 'lists';
 }
 
-/** A shared link names places before bands before genres before single shows; unknown bands and genres are ignored. */
+/** A shared link names places before bands before genres before single shows; unknown bands and genres are ignored. The nearby shows are never in a link. */
 export function selectionFromUrl(
   url: Pick<UrlState, 'selectedPlaces' | 'selectedBandIds' | 'selectedGenres' | 'selectedShowIds'>,
   knownBandIds: ReadonlySet<string>,
@@ -27,8 +27,11 @@ export function selectionFromUrl(
   return NO_SELECTION;
 }
 
-/** Places resolve to their visible shows and bands to all their shows, both inside the time window; picked shows stay as picked. Sorted by date. */
-export function selectionShows(selection: Selection, window: TimeWindow | null, derived: Pick<Derived, 'visibleShows' | 'showsById' | 'refsByBand'>): readonly ShowRef[] {
+/**
+ * Places and the nearby shows resolve to the visible shows, bands and genres to all their shows; all of them in the
+ * area and the time window. Picked shows stay as picked. Sorted by date.
+ */
+export function selectionShows(selection: Selection, window: TimeWindow | null, derived: Pick<Derived, 'visibleShows' | 'showsById' | 'refsInScope'>): readonly ShowRef[] {
   const inWindow = (ref: ShowRef) => window === null || isInWindow(ref, window);
   let refs: readonly ShowRef[];
   switch (selection.kind) {
@@ -37,14 +40,17 @@ export function selectionShows(selection: Selection, window: TimeWindow | null, 
     case 'shows':
       refs = [...selection.showIds].flatMap((id) => derived.showsById.get(id) ?? []);
       break;
+    case 'nearby':
+      refs = derived.visibleShows.filter(inWindow);
+      break;
     case 'places':
       refs = showsAtPlaces(derived.visibleShows, selection.places, window);
       break;
     case 'bands':
-      refs = [...derived.refsByBand].flatMap(([band, bandRefs]) => (selection.bandIds.has(band.file.band.id) ? bandRefs.filter(inWindow) : []));
+      refs = [...derived.refsInScope].flatMap(([band, bandRefs]) => (selection.bandIds.has(band.file.band.id) ? bandRefs.filter(inWindow) : []));
       break;
     case 'genres':
-      refs = [...derived.refsByBand].flatMap(([band, bandRefs]) => (playsGenre(band.file.band.tags, selection.genreIds) ? bandRefs.filter(inWindow) : []));
+      refs = [...derived.refsInScope].flatMap(([band, bandRefs]) => (playsGenre(band.file.band.tags, selection.genreIds) ? bandRefs.filter(inWindow) : []));
       break;
   }
   return refs.toSorted((a, b) => a.start - b.start || a.band.file.band.name.localeCompare(b.band.file.band.name));

@@ -164,6 +164,7 @@ export const eo: Messages = {
   shows,
   bands,
   noShowsInRange: 'Neniuj koncertoj en ĉi tiu periodo',
+  noShowsNear: (distance) => `Neniuj koncertoj ene de ${distance} en ĉi tiu periodo`,
   status: { scheduled: 'Planita', cancelled: 'Nuligita', postponed: 'Prokrastita', soldout: 'Elvendita', played: 'Okazinta' },
   search: {
     placeholder: 'Serĉi bandojn, urbojn, koncertejojn, turneojn',
@@ -195,6 +196,8 @@ export const eo: Messages = {
     noMatch: (query) => `Neniu bando kongruas kun “${query}”.`,
     quietToggle: (open, count) =>
       n(count, open ? { one: 'Kaŝi # bandon sen koncertoj en ĉi tiu periodo', other: 'Kaŝi # bandojn sen koncertoj en ĉi tiu periodo' } : { one: 'Montri # bandon sen koncertoj en ĉi tiu periodo', other: 'Montri # bandojn sen koncertoj en ĉi tiu periodo' }),
+    quietToggleNear: (open, count, distance) =>
+      n(count, open ? { one: `Kaŝi # bandon sen koncertoj ene de ${distance} en ĉi tiu periodo`, other: `Kaŝi # bandojn sen koncertoj ene de ${distance} en ĉi tiu periodo` } : { one: `Montri # bandon sen koncertoj ene de ${distance} en ĉi tiu periodo`, other: `Montri # bandojn sen koncertoj ene de ${distance} en ĉi tiu periodo` }),
     previewBadge: 'Via dosiero',
     showOnMap: (band) => `Montri la bandon ${band} sur la mapo kaj la templinio`,
     listDates: (band) => `Listigi la datojn de ${band}`,
@@ -205,6 +208,9 @@ export const eo: Messages = {
     summary: (cities, countries) =>
       `${n(cities, { one: '# urbo', other: '# urboj' })} en ${n(countries, { one: '# lando', other: '# landoj' })} havas koncertojn en la periodo`,
     empty: 'Neniuj koncertoj en la periodo. Elektu pli longan periodon.',
+    summaryNear: (cities, countries, distance) =>
+      `${n(cities, { one: '# urbo', other: '# urboj' })} en ${n(countries, { one: '# lando', other: '# landoj' })} havas koncertojn ene de ${distance} en la periodo`,
+    emptyNear: (distance) => `Neniuj koncertoj ene de ${distance} en la periodo. Elektu pli longan periodon aŭ pli grandan areon.`,
     noMatch: (query) => `Neniu urbo aŭ lando kongruas kun “${query}”.`,
     showCities: (country) => `Montri la urbojn en ${country}`,
     hideCities: (country) => `Kaŝi la urbojn en ${country}`,
@@ -231,6 +237,9 @@ export const eo: Messages = {
     emptyNamed: (name, range) => `Neniuj koncertoj de ${name} ${range}. ${zoomOutHint}`,
     emptyBands: (range) => `Neniuj koncertoj de ĉi tiuj bandoj ${range}. ${zoomOutHint}`,
     emptyPlace: (place, range) => `Neniuj koncertoj en ${place} ${range}. ${zoomOutHint}`,
+    near: (range, distance) => `ene de ${distance} ${range}`,
+    nearbyTitle: (distance) => `Koncertoj ene de ${distance}`,
+    emptyNearby: (range) => `Neniuj koncertoj ${range}. ${zoomOutHint}`,
     hiddenPicked: 'Ĉi tiuj koncertoj estas kaŝitaj. Ŝaltu iliajn bandojn en la listo de bandoj.',
     pickedOne: (band, city) => `${band} en ${city}`,
     pickedInCity: (count, city, band) => `${band === null ? '' : `${band}: `}${shows(count)} en ${city}`,
@@ -252,8 +261,11 @@ export const eo: Messages = {
     cursor: 'Templinio. Uzu la sagoklavojn por moviĝi inter koncertoj.',
     noBandsShown: 'Neniuj bandoj estas videblaj. Ŝaltu bandojn en la listo por vidi iliajn datojn.',
     noShowsInWindow: 'Neniuj koncertoj en ĉi tiu periodo. Elektu alian periodon aŭ malzomu.',
+    noShowsInWindowNear: (distance) => `Neniuj koncertoj ene de ${distance} en ĉi tiu periodo. Elektu alian periodon aŭ pli grandan areon, aŭ malzomu.`,
     hiddenLanes: (count) =>
       n(count, { one: '# bando havas neniujn koncertojn en ĉi tiu periodo kaj estas kaŝita.', other: '# bandoj havas neniujn koncertojn en ĉi tiu periodo kaj estas kaŝitaj.' }),
+    hiddenLanesNear: (count, distance) =>
+      n(count, { one: `# bando havas neniujn koncertojn ene de ${distance} en ĉi tiu periodo kaj estas kaŝita.`, other: `# bandoj havas neniujn koncertojn ene de ${distance} en ĉi tiu periodo kaj estas kaŝitaj.` }),
     showAllLanes: 'Montri ĉiujn vicojn',
     dot: (band, date, city, status) => `${band}: ${date}, ${city}${status === null ? '' : `, ${status}`}. Premu la enigan klavon por detaloj.`,
     presets: {

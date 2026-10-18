@@ -1,6 +1,6 @@
 import './styles.css';
 import world from 'virtual:world-topology';
-import { NO_SELECTION, createDeriver, soloBandIds, type AppState, type Derived, type Selection } from './appState.ts';
+import { NO_SELECTION, activeArea, createDeriver, showsInArea, soloBandIds, type AppState, type Area, type Derived, type Selection } from './appState.ts';
 import { addDays, formatIsoDate, localToday, parseIsoDate } from './data/dates.ts';
 import type { ShowRef } from './model.ts';
 import { createSelectors } from './selectors.ts';
@@ -37,8 +37,8 @@ import { formats, localeChoice, t, useLocale } from './i18n/index.ts';
 import { localizePage } from './i18n/page.ts';
 import type { LocaleChoice } from './i18n/locale.ts';
 import { slugify } from './data/ids.ts';
-import { findRegion, kilometres, regionPoints, showsWithin, type MapViewPreset } from './view/mapRegions.ts';
-import { PRESET_IDS, defaultPreset, isPresetAvailable, presetRange, usesPastMonth, type TimePreset } from './view/timePresets.ts';
+import { findRegion, kilometres, regionPoints, type MapViewPreset } from './view/mapRegions.ts';
+import { PRESET_IDS, defaultPreset, isPresetAvailable, presetWindow, usesPastMonth, windowAfterFilterChange, type TimePreset } from './view/timePresets.ts';
 
 const WINDOW_DEBOUNCE_MS = 150;
 const URL_DEBOUNCE_MS = 300;
@@ -211,6 +211,10 @@ const mapControls = createMapControls(requireElement(document, '#map-controls', 
     stopTour();
     map.zoomBy(factor);
   },
+  onFit() {
+    stopTour();
+    fitToScope();
+  },
   onView(view) {
     stopTour();
     setMapView(view);
@@ -222,10 +226,8 @@ const mapControls = createMapControls(requireElement(document, '#map-controls', 
     applyMapView(state.get().mapView, false);
   },
   onListNearby() {
-    const current = state.get();
-    if (current.mapView.kind !== 'near' || current.userPosition === null) return;
-    const nearby = showsWithin(select.mapShows(derive(current), select.windowFilter(current)), current.userPosition, kilometres(current.mapView.radius));
-    state.set({ selection: { kind: 'shows', showIds: idsOf(nearby) } });
+    if (derive(state.get()).area === null) throw new Error('there is no area to list the shows of');
+    state.set({ selection: { kind: 'nearby' } });
   },
 });
 map.setMode(state.get().mapMode);
@@ -275,6 +277,7 @@ document.fonts.addEventListener('loadingdone', () => refreshTheme());
 let searchFocus: { readonly shows: readonly ShowRef[]; readonly until: number } | null = null;
 let previousFitShows: readonly ShowRef[] | null = null;
 let previousVisibleBands: readonly unknown[] | null = null;
+let previousArea: Area | null = null;
 let previousSolo: ReadonlySet<string> | null = null;
 let restoreWindow = urlState.from !== null && urlState.to !== null ? { from: urlState.from, to: urlState.to } : null;
 
@@ -304,15 +307,19 @@ function renderAll() {
     previousFitShows = fitShows;
   }
 
+  const nearDistance = areaDistance(derived.area);
   const lanes = select.lanes(current, derived);
   timeline.render({
     lanes: lanes.shown,
     domainShows: derived.visibleShows,
     hiddenLaneCount: lanes.hiddenCount,
+    nearDistance,
     emptyMessage:
       derived.visibleBands.length === 0
         ? t().timeline.noBandsShown
-        : t().timeline.noShowsInWindow,
+        : nearDistance === null
+          ? t().timeline.noShowsInWindow
+          : t().timeline.noShowsInWindowNear(nearDistance),
     highlightedShowIds: current.hoverShowIds,
     selectedShowIds: select.selectedIds(current, derived),
     focusBandId: current.focusBandId,
@@ -330,32 +337,35 @@ function renderAll() {
     tourShows = mapShows;
     queueMicrotask(playTour);
   }
-  if (derived.visibleBands !== previousVisibleBands) {
+  const today = parseIsoDate(current.today).getTime();
+  const bandsChanged = derived.visibleBands !== previousVisibleBands;
+  const areaChanged = derived.area !== previousArea;
+  if (bandsChanged || areaChanged) {
     const firstRender = previousVisibleBands === null;
     previousVisibleBands = derived.visibleBands;
+    previousArea = derived.area;
     if (firstRender && restoreWindow !== null) {
       timeline.fitToData(false, [parseIsoDate(restoreWindow.from).getTime(), parseIsoDate(restoreWindow.to).getTime() + DAY_MS]);
       restoreWindow = null;
-    } else if (firstRender || !soloChanged) {
-      const today = parseIsoDate(current.today).getTime();
-      const preset = firstRender ? (current.timePreset ?? defaultPreset(derived.visibleShows, today)) : current.timePreset;
-      queueMicrotask(() => applyPreset(preset, !firstRender));
+    } else if (firstRender) {
+      const preset = current.timePreset ?? defaultPreset(derived.bandShows, today);
+      queueMicrotask(() => applyPreset(preset, false));
+    } else if (areaChanged || !soloChanged) {
+      queueMicrotask(refitAfterFilterChange);
     }
   }
 
-  const today = parseIsoDate(current.today).getTime();
-  const nearby =
-    current.mapView.kind === 'near' && current.userPosition !== null ? showsWithin(mapShows, current.userPosition, kilometres(current.mapView.radius)) : null;
+  const nearby = select.nearbyShows(current, derived);
   mapControls.render({
     view: current.mapView,
     mode: current.mapMode,
-    status: current.locationStatus ?? (nearby === null || current.mapView.kind !== 'near' ? null : t().map.nearby(nearby.length, formats().distance(current.mapView.radius.value, current.mapView.radius.unit))),
+    status: current.locationStatus ?? (nearby === null || nearDistance === null ? null : t().map.nearby(nearby.length, nearDistance)),
     canListNearby: nearby !== null && nearby.length > 0,
   });
 
   timelineControls.render({
     preset: state.get().timePreset,
-    availablePresets: new Set(PRESET_IDS.filter((preset) => isPresetAvailable(preset, derived.visibleShows, today, current.includePastMonth))),
+    availablePresets: new Set(PRESET_IDS.filter((preset) => isPresetAvailable(preset, derived.bandShows, today, current.includePastMonth))),
     followTimeline: current.followTimeline,
     hideEmptyLanes: current.hideEmptyLanes,
     includePastMonth: current.includePastMonth,
@@ -367,6 +377,7 @@ function renderAll() {
   bandList.render({
     bands: inRange.ordered,
     showsInRange: inRange.shows,
+    nearDistance,
     collapseBandsWithoutShows: current.hideEmptyLanes,
     totalBandCount: derived.bands.length,
     checkedGenreCount: current.tagFilter.size,
@@ -391,7 +402,7 @@ function renderAll() {
     });
     selectionPanel.highlight(current.hoverShowIds);
   }
-  placeList.render({ places: select.places(current, derived), selected: current.selection.kind === 'places' ? current.selection.places : NO_PLACES });
+  placeList.render({ places: select.places(current, derived), selected: current.selection.kind === 'places' ? current.selection.places : NO_PLACES, nearDistance });
   genreList.render({ genres: select.genres(current, derived), checked: current.tagFilter });
   sidebar.setToggleLabel(t().page.sidebarToggle(derived.visibleBands.length, derived.bands.length));
   search.setIndex(select.searchIndex(derived));
@@ -543,11 +554,31 @@ function genreLabel(id: string): string {
   return tag.label;
 }
 
+/** Frames a drill-down's shows; an active area stays, with its circle. */
 function fitMapTo(shows: readonly ShowRef[]) {
   if (shows.length === 0) return;
-  state.set({ mapView: { kind: 'shows' } });
-  map.setUserLocation(null);
+  if (derive(state.get()).area === null) {
+    state.set({ mapView: { kind: 'shows' } });
+    map.setUserLocation(null);
+  }
   map.fitToShows(shows, true);
+}
+
+/** The map's corner button: inside an active area it frames the shows there (or the circle when there are none) and keeps the area. */
+function fitToScope() {
+  const current = state.get();
+  const derived = derive(current);
+  if (derived.area === null) {
+    setMapView({ kind: 'shows' });
+    return;
+  }
+  const shows = select.mapShows(derived, select.windowFilter(current));
+  if (shows.length === 0) applyMapView(current.mapView, true);
+  else map.fitToShows(shows, true);
+}
+
+function areaDistance(area: Area | null): string | null {
+  return area === null ? null : formats().distance(area.radius.value, area.radius.unit);
 }
 
 function focusSearchResult(entry: SearchEntry) {
@@ -569,28 +600,32 @@ function focusSearchResult(entry: SearchEntry) {
   if (entry.bandIds.some((bandId) => hiddenBandIds.has(bandId))) {
     state.set({ hiddenBandIds: new Set([...hiddenBandIds].filter((bandId) => !entry.bandIds.includes(bandId))) });
   }
-  state.set({ mapView: { kind: 'shows' } });
-  map.setUserLocation(null);
+  const area = derived.area;
+  const keepsArea = area !== null && showsInArea(shows, area).length === shows.length;
+  const selection: Selection = placeKey === null ? { kind: 'shows', showIds: new Set(entry.showIds) } : { kind: 'places', places: new Set([placeKey]) };
+  state.set({ ...(keepsArea ? {} : { mapView: { kind: 'shows' } }), selection, timePreset: null });
+  if (!keepsArea) map.setUserLocation(null);
   map.fitToShows(shows, true);
-  state.set({ selection: placeKey === null ? { kind: 'shows', showIds: new Set(entry.showIds) } : { kind: 'places', places: new Set([placeKey]) }, timePreset: null });
   const start = Math.min(...shows.map((ref) => ref.start));
   const end = Math.max(...shows.map((ref) => ref.end)) + DAY_MS;
   const padding = Math.max(7 * DAY_MS, (end - start) * 0.1);
   timeline.zoomToRange(start - padding, end + padding, true);
 }
 
-/** Null keeps a custom window's behaviour: fit everything. Unavailable presets fall back to all dates. */
-function applyPreset(preset: TimePreset | null, animate: boolean) {
+/** A preset the viewer (or the start-up default) chose, for the shows in scope; an empty result stays chosen. */
+function applyPreset(preset: TimePreset, animate: boolean) {
   const current = state.get();
-  const shows = derive(current).visibleShows;
-  const today = parseIsoDate(current.today).getTime();
-  if (preset === null || !isPresetAvailable(preset, shows, today, current.includePastMonth)) {
-    if (preset !== null) state.set({ timePreset: 'all' });
-    timeline.fitToData(animate, null);
-    return;
-  }
   state.set({ timePreset: preset });
-  timeline.fitToData(animate, presetRange(preset, shows, today, current.includePastMonth));
+  timeline.fitToData(animate, presetWindow(preset, derive(current).visibleShows, parseIsoDate(current.today).getTime(), current.includePastMonth));
+}
+
+/** Bands, genres or the area changed: the timeline refits to the shows now in scope and keeps the chosen preset or range. */
+function refitAfterFilterChange() {
+  const current = state.get();
+  // Until the timeline reports its first window there is no range of the viewer's own to keep; its pending fit reads the new shows itself.
+  if (current.timePreset === null && current.timeWindow === null) return;
+  const today = parseIsoDate(current.today).getTime();
+  timeline.fitToData(true, windowAfterFilterChange(current.timePreset, current.timeWindow, derive(current).visibleShows, today, current.includePastMonth));
 }
 
 function selectPlaces(places: ReadonlySet<PlaceKey>) {
@@ -604,6 +639,8 @@ function selectionKey(selection: Selection): string {
       return 'none';
     case 'shows':
       return `shows:${[...selection.showIds].toSorted().join(',')}`;
+    case 'nearby':
+      return 'nearby';
     case 'places':
       return `places:${[...selection.places].toSorted().join(',')}`;
     case 'bands':
@@ -623,7 +660,9 @@ function searchPlaceKey(ref: string): PlaceKey {
 function selectionHeading(current: AppState, derived: Derived, shows: readonly ShowRef[]): SelectionHeading {
   const window = current.timeWindow;
   const text = t().selection;
-  const range = window === null ? text.allDates : text.between(formatDate(formatIsoDate(new Date(window.start))), formatDate(formatIsoDate(new Date(window.end))));
+  const dates = window === null ? text.allDates : text.between(formatDate(formatIsoDate(new Date(window.start))), formatDate(formatIsoDate(new Date(window.end))));
+  const nearDistance = areaDistance(derived.area);
+  const range = nearDistance === null ? dates : text.near(dates, nearDistance);
   const live = text.live(shows.length, range);
   const { selection } = current;
   switch (selection.kind) {
@@ -646,8 +685,12 @@ function selectionHeading(current: AppState, derived: Derived, shows: readonly S
       const title = formatList([...selection.genreIds].map(genreLabel));
       return { title, bandId: null, canReplayTour: false, note: live, emptyMessage: text.emptyNamed(title, range) };
     }
+    case 'nearby': {
+      if (nearDistance === null) throw new Error('the nearby shows need an area');
+      return { title: text.nearbyTitle(nearDistance), bandId: null, canReplayTour: false, note: live, emptyMessage: text.emptyNearby(range) };
+    }
     case 'places': {
-      const name = describePlaces(selection.places, derived.visibleShows, countryName, t().placeList.andMore);
+      const name = describePlaces(selection.places, derived.bandShows, countryName, t().placeList.andMore);
       return { title: name, bandId: null, canReplayTour: false, note: live, emptyMessage: text.emptyPlace(name, range) };
     }
     case 'shows':
@@ -679,15 +722,16 @@ function applyUrlView(url: UrlState) {
   const hiddenBandIds = new Set(url.hiddenBandIds.filter((id) => knownBandIds.has(id)));
   const tagFilter = new Set(url.tags.filter(isGenreId));
   const range = url.from !== null && url.to !== null ? ([parseIsoDate(url.from).getTime(), parseIsoDate(url.to).getTime() + DAY_MS] as const) : null;
+  const selection = selectionFromUrl(url, knownBandIds, isGenreId);
   const current = state.get();
-  const shows = derive({ ...current, hiddenBandIds, tagFilter }).visibleShows;
+  const shows = derive({ ...current, hiddenBandIds, tagFilter, selection, mapView }).bandShows;
   const preset = range === null ? (url.preset ?? defaultPreset(shows, parseIsoDate(current.today).getTime())) : null;
   state.set({
     hiddenBandIds,
     tagFilter,
     bandSort: url.sort ?? 'name',
     bandFilter: '',
-    selection: selectionFromUrl(url, knownBandIds, isGenreId),
+    selection,
     followTimeline: url.follow ?? true,
     hideEmptyLanes: !url.allLanes,
     includePastMonth: url.includePastMonth,
@@ -703,14 +747,17 @@ function applyUrlView(url: UrlState) {
   applyMapView(mapView, true);
   // After the refit that a change of visible bands queues, so the URL's range wins.
   queueMicrotask(() => {
-    if (range === null) applyPreset(preset, true);
+    if (preset !== null) applyPreset(preset, true);
     else timeline.fitToData(true, range);
   });
 }
 
+/** The area menu: one choice of fit, area or region. Leaving the area closes the list of its shows. */
 function setMapView(view: MapViewPreset) {
-  const previous = state.get().mapView;
-  state.set({ mapView: view, locationStatus: null });
+  const current = state.get();
+  const previous = current.mapView;
+  const closesNearby = current.selection.kind === 'nearby' && activeArea({ mapView: view, userPosition: current.userPosition }) === null;
+  state.set({ mapView: view, locationStatus: null, ...(closesNearby ? { selection: NO_SELECTION } : {}) });
   if (view.kind !== 'near') {
     applyMapView(view, true);
     return;
@@ -757,11 +804,11 @@ function applyMapView(view: MapViewPreset, animate: boolean) {
 
 function resetViews() {
   searchFocus = null;
-  const current = state.get();
   state.set({ selection: NO_SELECTION, hoverShowIds: new Set(), focusBandId: null, mapView: { kind: 'shows' }, locationStatus: null });
   map.setUserLocation(null);
   map.fitToData(true);
-  applyPreset(defaultPreset(derive(current).visibleShows, parseIsoDate(current.today).getTime()), true);
+  const current = state.get();
+  applyPreset(defaultPreset(derive(current).bandShows, parseIsoDate(current.today).getTime()), true);
 }
 
 let urlTimer: ReturnType<typeof setTimeout> | undefined;
@@ -797,7 +844,7 @@ function currentHash(): string {
     selectedBandIds: current.selection.kind === 'bands' ? [...current.selection.bandIds] : [],
     selectedGenres: current.selection.kind === 'genres' ? [...current.selection.genreIds] : [],
     follow: current.followTimeline ? null : false,
-    preset: current.timePreset === null || current.timePreset === defaultPreset(derive(current).visibleShows, parseIsoDate(current.today).getTime()) ? null : current.timePreset,
+    preset: current.timePreset === null || current.timePreset === defaultPreset(derive(current).bandShows, parseIsoDate(current.today).getTime()) ? null : current.timePreset,
     allLanes: !current.hideEmptyLanes,
     includePastMonth: current.includePastMonth,
     tourPacing: current.tourPacing,
