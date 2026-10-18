@@ -2,14 +2,18 @@ export interface Popover {
   close(restoreFocus: boolean): void;
 }
 
-/** A button that opens a panel next to it; Escape, a click outside or leaving it with the keyboard closes it. */
-export function attachPopover(trigger: HTMLButtonElement, panel: HTMLElement): Popover {
+/**
+ * A button that opens a panel next to it; Escape, a click outside or leaving it with the keyboard closes it.
+ * onOpen runs before the panel shows, so it can refresh what the panel says.
+ */
+export function attachPopover(trigger: HTMLButtonElement, panel: HTMLElement, onOpen?: () => void): Popover {
   if (panel.id === '') throw new Error('a popover panel needs an id for aria-controls');
   trigger.setAttribute('aria-expanded', 'false');
   trigger.setAttribute('aria-controls', panel.id);
   panel.hidden = true;
 
   const open = () => {
+    onOpen?.();
     panel.hidden = false;
     trigger.setAttribute('aria-expanded', 'true');
     panel.querySelector<HTMLElement>('button:not(:disabled), input:not(:disabled), select:not(:disabled)')?.focus();

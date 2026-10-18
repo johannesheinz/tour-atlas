@@ -862,6 +862,46 @@ a {
   overscroll-behavior: contain;
 }
 
+.share-panel {
+  top: calc(100% + 10px);
+  right: 0;
+  width: min(360px, calc(100vw - 2 * var(--gutter)));
+}
+
+.share-panel .share-note {
+  margin: 0 0 12px;
+}
+
+.share-label {
+  display: block;
+  margin-bottom: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ink-muted);
+}
+
+.share-link {
+  width: 100%;
+  min-height: 36px;
+  padding: 6px 10px;
+  border: var(--rule) solid var(--control-line);
+  border-radius: var(--radius-control);
+  background: var(--stock);
+  font-size: 13px;
+  text-overflow: ellipsis;
+}
+
+.share-panel .share-hint {
+  margin-top: 6px;
+}
+
+.share-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+
 .settings-title {
   margin: 0 0 10px;
   font-family: var(--font-heading);

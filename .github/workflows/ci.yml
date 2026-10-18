@@ -57,5 +57,10 @@ jobs:
         run: npm test
       - name: Build
         run: npm run build
+      - name: Build with a social card
+        env:
+          TOUR_ATLAS_SITE_URL: https://example.org/tour-atlas/
+          TOUR_ATLAS_OUT_DIR: .cache/social-card
+        run: npx vite build --logLevel warn && node tools/check-dist.ts .cache/social-card --require-social-card
       - name: Size budget at 50 bands / 5,000 shows
         run: npm run build:budget

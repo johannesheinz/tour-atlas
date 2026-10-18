@@ -3,7 +3,8 @@
 Static web app: concert tour dates of many bands on a world map with an aligned, zoomable timeline.
 No backend, no runtime network requests. Band data lives in `data/bands/*.json`, is produced upstream
 (LLM pipeline), reviewed via pull requests, and inlined into `dist/index.html`; only the self-hosted
-`.woff2` fonts and the band logo `.webp` files ship as separate files next to it (`tools/vite/hostedAssets.ts`).
+`.woff2` fonts and the band logo `.webp` files ship as separate files next to it (`tools/vite/hostedAssets.ts`),
+plus `og-card.png` for link previews when the build has `TOUR_ATLAS_SITE_URL` (`tools/vite/socialCard.ts`).
 
 ## Commands
 
@@ -21,6 +22,7 @@ npm run review -- --base origin/main   # diff + plausibility warnings, as posted
 npm run tags           # copy data/tags.json ids into the schema's band.tags enum
 npm run logos          # download band.logoUrl images once into data/logos/<id>.webp (silhouettes)
 npm run logo:preview -- <band-id> <url>   # check a candidate logo; previews in .cache/logo-previews
+npm run og-card        # rebuild src/brand/og-card.svg/.png (the social card image); commit both
 npm run check          # everything CI runs, in order
 ```
 
@@ -52,7 +54,12 @@ npm run check          # everything CI runs, in order
 - `src/main.ts` wires views to `src/state.ts`; `src/appState.ts` and `src/selectors.ts` memoise derived data.
 - `tools/`: Node CLIs (TypeScript run directly by Node's type stripping, so use `.ts` import specifiers and
   erasable syntax only); never shipped. `tools/vite/` holds the build plugins (data validation, CSP, slim topology,
-  brand mark and inline favicon from `src/brand/`).
+  brand mark and inline favicon from `src/brand/`, social card).
+- Social card: `TOUR_ATLAS_SITE_URL` (absolute `https:`, ending in `/`, no default) turns on the OpenGraph/Twitter
+  tags (texts in the `<!-- social-card -->` block of `index.html`) and `og-card.png` in dist; unset means neither,
+  anything else set fails the build. `check-dist` allows exactly `og-card.png` (1200x630, < 300 kB, named by
+  `og:image`, outside the budget); `--require-social-card` makes it mandatory (deploy and the CI card build).
+- `src/share.ts` builds share links from the current state, without `lang`/`clock`/`units`; `src/view/sharePanel.ts` is the popover.
 
 ## Skills
 
@@ -68,7 +75,7 @@ Only for work that needs judgement; everything checkable is a tool or a CI job.
 - Runtime dependencies are an allowlist: d3-geo, d3-scale, d3-time, d3-zoom, d3-selection,
   d3-transition, d3-quadtree, topojson-client, world-atlas, @fontsource/league-gothic, @fontsource/archivo,
   @fontsource/jost, @fontsource/charis-sil.
-  Justify any addition in the PR. `sharp` is a dev dependency for tools/logos.ts only; it never reaches the bundle.
+  Justify any addition in the PR. `sharp` is a dev dependency for tools/logos.ts and tools/og-card.ts only; it never runs at build time and never reaches the bundle.
 - No network at runtime, no CDNs, no cookies, no localStorage/sessionStorage/IndexedDB. View state lives in
   the URL hash only. `tools/check-dist.ts` fails the build otherwise; the CSP sets `connect-src 'none'` and
   `font-src 'self'`.

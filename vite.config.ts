@@ -5,10 +5,12 @@ import { bandDataPlugin } from './tools/vite/bandData.ts';
 import { brandPlugin } from './tools/vite/brand.ts';
 import { cspPlugin } from './tools/vite/csp.ts';
 import { hostedAssetsPlugin } from './tools/vite/hostedAssets.ts';
+import { parseSiteUrl, socialCardPlugin } from './tools/vite/socialCard.ts';
 import { worldTopologyPlugin } from './tools/vite/worldTopology.ts';
 
 const bandsDir = resolve(process.env['TOUR_ATLAS_BANDS_DIR'] ?? 'data/bands');
 const outDir = resolve(process.env['TOUR_ATLAS_OUT_DIR'] ?? 'dist');
+const siteUrl = parseSiteUrl(process.env['TOUR_ATLAS_SITE_URL']);
 
 export default defineConfig({
   base: './',
@@ -19,6 +21,7 @@ export default defineConfig({
     bandDataPlugin(bandsDir),
     brandPlugin(resolve('src/brand/mark.svg'), resolve('src/brand/favicon.svg')),
     worldTopologyPlugin(),
+    socialCardPlugin(siteUrl, bandsDir, resolve('src/brand/og-card.png')),
     viteSingleFile({ removeViteModuleLoader: true }),
     hostedAssetsPlugin(),
     cspPlugin(),
