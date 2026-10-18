@@ -1,6 +1,7 @@
 import { isCountryCode } from './countries.ts';
 import { daysBetween, isCalendarDate } from './dates.ts';
 import { DATE_PATTERN, IdError, SLUG_PATTERN, baseShowId, isShowIdFormat } from './ids.ts';
+import { ENGLISH_ISSUES, describeValue, issueText, type IssueCode, type IssueDetail, type IssueParams } from './issues.ts';
 import { isKnownTag } from './tags.ts';
 import {
   BAND_FILE_KEYS,
@@ -24,11 +25,21 @@ import {
 
 export type ValidationMode = 'draft' | 'repository';
 
-export interface ValidationIssue {
+export type ValidationIssue = {
   readonly file: string;
   /** Location inside the file, e.g. "shows[12].date"; empty for the file as a whole. */
   readonly path: string;
+  /** In English, for the command-line tools; the app renders `code` and `params` in the viewer's language. */
   readonly message: string;
+} & IssueDetail;
+
+export function issue<K extends IssueCode>(code: K, params: IssueParams[K]): IssueDetail {
+  // A generic code cannot be matched to its member of the IssueDetail union.
+  return { code, params } as IssueDetail;
+}
+
+export function makeIssue(file: string, path: string, detail: IssueDetail): ValidationIssue {
+  return { file, path, ...detail, message: issueText(ENGLISH_ISSUES, detail) };
 }
 
 export interface ValidationResult<T> {
@@ -47,7 +58,7 @@ export function parseBandJson(text: string, file: string): ParseResult {
     return { ok: true, value: JSON.parse(text) };
   } catch (error) {
     const reason = error instanceof Error ? error.message : String(error);
-    return { ok: false, issue: { file, path: '', message: `is not valid JSON (${reason})` } };
+    return { ok: false, issue: makeIssue(file, '', issue('invalidJson', { reason })) };
   }
 }
 
@@ -76,7 +87,7 @@ export function isCompleteShow(show: DraftShow): show is Show {
 export function validateFileName(file: string, bandId: string): ValidationIssue | null {
   const baseName = file.split(/[\\/]/).at(-1);
   const expected = `${bandId}.json`;
-  return baseName === expected ? null : { file, path: '', message: `file name must be "${expected}" to match band.id` };
+  return baseName === expected ? null : makeIssue(file, '', issue('wrongFileName', { expected }));
 }
 
 export function validateCollection(entries: readonly { readonly file: string; readonly bandId: string }[]): ValidationIssue[] {
@@ -87,7 +98,7 @@ export function validateCollection(entries: readonly { readonly file: string; re
     if (firstFile === undefined) {
       firstFileById.set(bandId, file);
     } else {
-      issues.push({ file, path: 'band.id', message: `"${bandId}" is already used by ${firstFile}` });
+      issues.push(makeIssue(file, 'band.id', issue('duplicateBandId', { bandId, firstFile })));
     }
   }
   return issues;
@@ -98,6 +109,8 @@ export function formatIssue(issue: ValidationIssue): string {
 }
 
 const INVALID: unique symbol = Symbol('invalid');
+/** Issues that say a text does not have the expected shape. */
+type PatternCode = 'notDate' | 'badBandId' | 'badColor' | 'badShowIdCharacters' | 'badTime' | 'badCountryFormat';
 type Checked<T> = T | typeof INVALID;
 type Check<T> = (path: string, value: unknown) => Checked<T>;
 type JsonRecord = Readonly<Record<string, unknown>>;
@@ -117,79 +130,79 @@ class Collector {
     this.#file = file;
   }
 
-  add(path: string, message: string): typeof INVALID {
-    this.issues.push({ file: this.#file, path, message });
+  add(path: string, detail: IssueDetail): typeof INVALID {
+    this.issues.push(makeIssue(this.#file, path, detail));
     return INVALID;
   }
 
   record(path: string, value: unknown, allowedKeys: readonly string[]): Checked<JsonRecord> {
-    if (!isRecord(value)) return this.add(path, `must be an object (got ${describe(value)})`);
+    if (!isRecord(value)) return this.add(path, issue('notObject', { got: describeValue(value) }));
     for (const key of Object.keys(value)) {
-      if (!allowedKeys.includes(key)) this.add(join(path, key), 'unknown field');
+      if (!allowedKeys.includes(key)) this.add(join(path, key), issue('unknownField', {}));
     }
     return value;
   }
 
   required<T>(record: JsonRecord, path: string, key: string, check: Check<T>): Checked<T> {
     const fieldPath = join(path, key);
-    if (!Object.hasOwn(record, key)) return this.add(fieldPath, 'missing');
+    if (!Object.hasOwn(record, key)) return this.add(fieldPath, issue('missing', {}));
     return check(fieldPath, record[key]);
   }
 
   nullable<T>(record: JsonRecord, path: string, key: string, check: Check<T>): Checked<T | null> {
     const fieldPath = join(path, key);
-    if (!Object.hasOwn(record, key)) return this.add(fieldPath, 'missing (use null when unknown)');
+    if (!Object.hasOwn(record, key)) return this.add(fieldPath, issue('missingUseNull', {}));
     const value = record[key];
     return value === null ? null : check(fieldPath, value);
   }
 
   text(maxLength: number): Check<string> {
     return (path, value) => {
-      if (typeof value !== 'string') return this.add(path, `must be text (got ${describe(value)})`);
-      if (value.trim() === '') return this.add(path, 'is empty (use null when unknown)');
-      if (value.length > maxLength) return this.add(path, `is ${value.length} characters long; the limit is ${maxLength}`);
-      if (UNSAFE_CHARACTERS.test(value)) return this.add(path, 'contains control or text-direction characters');
+      if (typeof value !== 'string') return this.add(path, issue('notText', { got: describeValue(value) }));
+      if (value.trim() === '') return this.add(path, issue('emptyText', {}));
+      if (value.length > maxLength) return this.add(path, issue('tooLong', { length: value.length, limit: maxLength }));
+      if (UNSAFE_CHARACTERS.test(value)) return this.add(path, issue('unsafeCharacters', {}));
       return value;
     };
   }
 
-  matching(pattern: RegExp, expectation: string): Check<string> {
+  matching(pattern: RegExp, code: PatternCode): Check<string> {
     return (path, value) => {
-      if (typeof value !== 'string') return this.add(path, `must be text (got ${describe(value)})`);
-      return pattern.test(value) ? value : this.add(path, `${describe(value)} ${expectation}`);
+      if (typeof value !== 'string') return this.add(path, issue('notText', { got: describeValue(value) }));
+      return pattern.test(value) ? value : this.add(path, issue(code, { value: describeValue(value) }));
     };
   }
 
   readonly date: Check<string> = (path, value) => {
-    const text = this.matching(DATE_PATTERN, 'is not YYYY-MM-DD')(path, value);
+    const text = this.matching(DATE_PATTERN, 'notDate')(path, value);
     if (text === INVALID) return INVALID;
-    if (!isCalendarDate(text)) return this.add(path, `${describe(text)} is not a real calendar date`);
+    if (!isCalendarDate(text)) return this.add(path, issue('notCalendarDate', { value: describeValue(text) }));
     const year = Number(text.slice(0, 4));
     if (year < LIMITS.minYear || year > LIMITS.maxYear) {
-      return this.add(path, `${describe(text)} is outside the years ${LIMITS.minYear}–${LIMITS.maxYear}`);
+      return this.add(path, issue('yearOutOfRange', { value: describeValue(text), min: LIMITS.minYear, max: LIMITS.maxYear }));
     }
     return text;
   };
 
   readonly url: Check<string> = (path, value) => {
-    if (typeof value !== 'string') return this.add(path, `must be a URL (got ${describe(value)})`);
-    if (value.length > LIMITS.url) return this.add(path, `is ${value.length} characters long; the limit is ${LIMITS.url}`);
-    if (!URL_PATTERN.test(value)) return this.add(path, `${describe(value)} is not an http(s) URL`);
-    if (!URL.canParse(value)) return this.add(path, `${describe(value)} is not a valid URL`);
+    if (typeof value !== 'string') return this.add(path, issue('notUrl', { got: describeValue(value) }));
+    if (value.length > LIMITS.url) return this.add(path, issue('tooLong', { length: value.length, limit: LIMITS.url }));
+    if (!URL_PATTERN.test(value)) return this.add(path, issue('notHttpUrl', { value: describeValue(value) }));
+    if (!URL.canParse(value)) return this.add(path, issue('invalidUrl', { value: describeValue(value) }));
     return value;
   };
 
   oneOf<T extends string>(values: readonly T[]): Check<T> {
     return (path, value) => {
       const match = values.find((candidate) => candidate === value);
-      return match ?? this.add(path, `${describe(value)} is not one of ${values.join(', ')}`);
+      return match ?? this.add(path, issue('notOneOf', { value: describeValue(value), options: values }));
     };
   }
 
   number(min: number, max: number, name: string): Check<number> {
     return (path, value) => {
-      if (typeof value !== 'number' || !Number.isFinite(value)) return this.add(path, `must be a number (got ${describe(value)})`);
-      if (value < min || value > max) return this.add(path, `${name} ${value} is outside ${min}…${max}`);
+      if (typeof value !== 'number' || !Number.isFinite(value)) return this.add(path, issue('notNumber', { got: describeValue(value) }));
+      if (value < min || value > max) return this.add(path, issue('numberOutOfRange', { name, value, min, max }));
       return value;
     };
   }
@@ -203,14 +216,14 @@ function validateBandFile(input: unknown, file: string, mode: ValidationMode): V
   }
 
   const schemaVersion = c.required(root, '', 'schemaVersion', (path, value) =>
-    value === SCHEMA_VERSION ? SCHEMA_VERSION : c.add(path, `must be ${SCHEMA_VERSION} (got ${describe(value)})`),
+    value === SCHEMA_VERSION ? SCHEMA_VERSION : c.add(path, issue('wrongSchemaVersion', { expected: SCHEMA_VERSION, got: describeValue(value) })),
   );
   const band = c.required(root, '', 'band', (path, value) => validateBand(c, path, value));
   const source = c.required(root, '', 'source', (path, value) => validateSource(c, path, value));
   const rawShows = c.required(root, '', 'shows', (path, value) => {
-    if (!Array.isArray(value)) return c.add(path, `must be a list (got ${describe(value)})`);
+    if (!Array.isArray(value)) return c.add(path, issue('notList', { got: describeValue(value) }));
     if (value.length > LIMITS.showsPerFile) {
-      return c.add(path, `has ${value.length} shows; the limit per file is ${LIMITS.showsPerFile}`);
+      return c.add(path, issue('tooManyShows', { count: value.length, limit: LIMITS.showsPerFile }));
     }
     return value as readonly unknown[];
   });
@@ -236,7 +249,7 @@ function validateBandFile(input: unknown, file: string, mode: ValidationMode): V
       firstIndexById.set(show.id, index);
       return true;
     }
-    c.add(`shows[${index}].id`, `duplicate id "${show.id}" (also used by shows[${firstIndex}])`);
+    c.add(`shows[${index}].id`, issue('duplicateShowId', { id: show.id, firstIndex }));
     rejected.push(index);
     return false;
   });
@@ -254,9 +267,9 @@ function validateBandFile(input: unknown, file: string, mode: ValidationMode): V
 function validateBand(c: Collector, path: string, value: unknown): Checked<Band> {
   const record = c.record(path, value, BAND_KEYS);
   if (record === INVALID) return INVALID;
-  const id = c.required(record, path, 'id', c.matching(SLUG_PATTERN, 'must be a lowercase slug like "glass-harbor"'));
+  const id = c.required(record, path, 'id', c.matching(SLUG_PATTERN, 'badBandId'));
   const name = c.required(record, path, 'name', c.text(LIMITS.bandName));
-  const color = c.nullable(record, path, 'color', c.matching(COLOR_PATTERN, 'is not a lowercase hex colour like "#3a7bd5"'));
+  const color = c.nullable(record, path, 'color', c.matching(COLOR_PATTERN, 'badColor'));
   const tags = c.required(record, path, 'tags', (fieldPath, value) => validateTags(c, fieldPath, value));
   const logoUrl = c.nullable(record, path, 'logoUrl', c.url);
   if (id === INVALID || name === INVALID || color === INVALID || tags === INVALID || logoUrl === INVALID) return INVALID;
@@ -264,16 +277,16 @@ function validateBand(c: Collector, path: string, value: unknown): Checked<Band>
 }
 
 function validateTags(c: Collector, path: string, value: unknown): Checked<readonly string[]> {
-  if (!Array.isArray(value)) return c.add(path, `must be a list of tag ids (got ${describe(value)}); use [] for none`);
-  if (value.length > LIMITS.tagsPerBand) return c.add(path, `has ${value.length} tags; the limit is ${LIMITS.tagsPerBand}`);
+  if (!Array.isArray(value)) return c.add(path, issue('notTagList', { got: describeValue(value) }));
+  if (value.length > LIMITS.tagsPerBand) return c.add(path, issue('tooManyTags', { count: value.length, limit: LIMITS.tagsPerBand }));
   const issuesBefore = c.issues.length;
   const seen = new Set<string>();
   const tags: string[] = [];
   value.forEach((tag: unknown, index) => {
     const tagPath = `${path}[${index}]`;
-    if (typeof tag !== 'string') c.add(tagPath, `must be a tag id (got ${describe(tag)})`);
-    else if (!isKnownTag(tag)) c.add(tagPath, `${describe(tag)} is not in data/tags.json; add it there in the same pull request or remove it`);
-    else if (seen.has(tag)) c.add(tagPath, `${describe(tag)} is listed twice`);
+    if (typeof tag !== 'string') c.add(tagPath, issue('notTagId', { got: describeValue(tag) }));
+    else if (!isKnownTag(tag)) c.add(tagPath, issue('unknownTag', { value: describeValue(tag) }));
+    else if (seen.has(tag)) c.add(tagPath, issue('duplicateTag', { value: describeValue(tag) }));
     else {
       seen.add(tag);
       tags.push(tag);
@@ -308,13 +321,13 @@ function validateShow(c: Collector, path: string, value: unknown, bandId: string
   if (record === INVALID) return INVALID;
 
   const id = c.nullable(record, path, 'id', (fieldPath, raw) => {
-    const text = c.matching(/^[a-z0-9-]+$/, 'must contain only a–z, 0–9 and hyphens')(fieldPath, raw);
+    const text = c.matching(/^[a-z0-9-]+$/, 'badShowIdCharacters')(fieldPath, raw);
     if (text === INVALID || bandId === null || isShowIdFormat(text, bandId)) return text;
-    return c.add(fieldPath, `${describe(text)} must look like "${bandId}-YYYY-MM-DD-<city>"`);
+    return c.add(fieldPath, issue('badShowIdFormat', { value: describeValue(text), bandId }));
   });
   const date = c.required(record, path, 'date', c.date);
   const endDate = c.nullable(record, path, 'endDate', c.date);
-  const startTime = c.nullable(record, path, 'startTime', c.matching(TIME_PATTERN, 'is not HH:MM (24-hour clock)'));
+  const startTime = c.nullable(record, path, 'startTime', c.matching(TIME_PATTERN, 'badTime'));
   const tourName = c.nullable(record, path, 'tourName', c.text(LIMITS.tourName));
   const eventName = c.nullable(record, path, 'eventName', c.text(LIMITS.eventName));
   const venue = c.nullable(record, path, 'venue', c.text(LIMITS.venue));
@@ -325,15 +338,15 @@ function validateShow(c: Collector, path: string, value: unknown, bandId: string
       baseShowId('x', '2000-01-01', text);
       return text;
     } catch (error) {
-      if (error instanceof IdError) return c.add(fieldPath, error.message);
+      if (error instanceof IdError) return c.add(fieldPath, error.detail);
       throw error;
     }
   });
   const region = c.nullable(record, path, 'region', c.text(LIMITS.region));
   const countryCode = c.required(record, path, 'countryCode', (fieldPath, raw) => {
-    const code = c.matching(COUNTRY_PATTERN, 'is not a two-letter uppercase country code')(fieldPath, raw);
+    const code = c.matching(COUNTRY_PATTERN, 'badCountryFormat')(fieldPath, raw);
     if (code === INVALID) return INVALID;
-    return isCountryCode(code) ? code : c.add(fieldPath, `${describe(code)} is not an ISO 3166-1 alpha-2 country code`);
+    return isCountryCode(code) ? code : c.add(fieldPath, issue('unknownCountry', { value: describeValue(code) }));
   });
   const status = c.nullable(record, path, 'status', c.oneOf(SHOW_STATUSES));
   const ticketUrl = c.nullable(record, path, 'ticketUrl', c.url);
@@ -343,14 +356,14 @@ function validateShow(c: Collector, path: string, value: unknown, bandId: string
 
   if (date !== INVALID && endDate !== INVALID && endDate !== null) {
     const span = daysBetween(date, endDate);
-    if (span < 0) c.add(`${path}.endDate`, `${describe(endDate)} is before date ${describe(date)}`);
+    if (span < 0) c.add(`${path}.endDate`, issue('endBeforeDate', { endDate: describeValue(endDate), date: describeValue(date) }));
     else if (span > LIMITS.endDateMaxDaysAfterDate) {
-      c.add(`${path}.endDate`, `is ${span} days after date; the limit is ${LIMITS.endDateMaxDaysAfterDate}`);
+      c.add(`${path}.endDate`, issue('endTooLate', { days: span, limit: LIMITS.endDateMaxDaysAfterDate }));
     }
   }
   if (mode === 'repository') {
-    if (id === null) c.add(`${path}.id`, 'missing; run "npm run normalize" to generate it');
-    if (geo === null) c.add(`${path}.geo`, 'missing coordinates; run "npm run geocode"');
+    if (id === null) c.add(`${path}.id`, issue('missingShowId', {}));
+    if (geo === null) c.add(`${path}.geo`, issue('missingGeo', {}));
   }
 
   if (
@@ -385,11 +398,3 @@ function join(path: string, key: string): string {
   return path === '' ? key : `${path}.${key}`;
 }
 
-function describe(value: unknown): string {
-  if (typeof value === 'string') return JSON.stringify(value.length > 60 ? `${value.slice(0, 57)}...` : value);
-  if (value === null) return 'null';
-  if (value === undefined) return 'nothing';
-  if (Array.isArray(value)) return 'a list';
-  if (typeof value === 'object') return 'an object';
-  return String(value);
-}

@@ -1,3 +1,4 @@
+import { ENGLISH_ISSUES, issueText, type IssueDetail } from './issues.ts';
 import type { DraftShow, IdentifiedShow } from './types.ts';
 
 const LETTERS_WITHOUT_DECOMPOSITION: Readonly<Record<string, string>> = {
@@ -20,12 +21,20 @@ export function slugify(text: string): string {
     .replace(/^-+|-+$/g, '');
 }
 
-export class IdError extends Error {}
+/** A show id cannot be built from the data; `detail` says why, for any language. */
+export class IdError extends Error {
+  readonly detail: IssueDetail;
+
+  constructor(detail: IssueDetail) {
+    super(issueText(ENGLISH_ISSUES, detail));
+    this.detail = detail;
+  }
+}
 
 export function baseShowId(bandId: string, date: string, city: string): string {
   const citySlug = slugify(city);
   if (citySlug === '') {
-    throw new IdError(`city "${city}" has no Latin letters or digits to build an id from; use the Latin-script name`);
+    throw new IdError({ code: 'cityWithoutLatin', params: { city } });
   }
   return `${bandId}-${date}-${citySlug}`;
 }
@@ -59,7 +68,7 @@ export function assignShowIds(bandId: string, shows: readonly DraftShow[]): Iden
   return shows.map((show) => {
     const id = show.id ?? assigned.get(show);
     if (id === undefined) {
-      throw new IdError(`no id assigned for show on ${show.date} in ${show.city}`);
+      throw new Error(`id assignment invariant broken: no id for show on ${show.date} in ${show.city}`);
     }
     return { ...show, id };
   });

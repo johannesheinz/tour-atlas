@@ -3,7 +3,8 @@ import type { CountryLocator } from './countryLocator.ts';
 import { daysBetween } from './dates.ts';
 import { slugify } from './ids.ts';
 import type { BandFileOf, IdentifiedShow } from './types.ts';
-import type { ValidationIssue } from './validate.ts';
+import type { IssueDetail } from './issues.ts';
+import { issue, makeIssue, type ValidationIssue } from './validate.ts';
 
 export interface LintOptions {
   readonly today: string;
@@ -24,19 +25,19 @@ const EARTH_RADIUS_KM = 6371;
 /** Plausibility warnings for a valid file. They never block a merge; they point reviewers at likely mistakes. */
 export function lintBandFile(file: string, data: BandFileOf<IdentifiedShow>, options: LintOptions): ValidationIssue[] {
   const warnings: ValidationIssue[] = [];
-  const warn = (path: string, message: string) => warnings.push({ file, path, message });
+  const warn = (path: string, detail: IssueDetail) => warnings.push(makeIssue(file, path, detail));
 
   const sourceAge = daysBetween(data.source.retrievedAt, options.today);
-  if (sourceAge < 0) warn('source.retrievedAt', 'is in the future');
+  if (sourceAge < 0) warn('source.retrievedAt', issue('sourceInFuture', {}));
   else if (sourceAge > LINT_THRESHOLDS.staleSourceDays) {
-    warn('source.retrievedAt', `is ${sourceAge} days old; refresh the data from source.url`);
+    warn('source.retrievedAt', issue('sourceStale', { days: sourceAge }));
   }
 
   const indexed = data.shows.map((show, index) => ({ show, index, path: `shows[${index}]` }));
 
   for (const { show, path } of indexed) {
     if (daysBetween(options.today, show.date) > LINT_THRESHOLDS.farFutureDays) {
-      warn(`${path}.date`, 'is more than three years ahead; check the year');
+      warn(`${path}.date`, issue('farFuture', {}));
     }
     if (show.geo !== null && options.locateCountry !== null) {
       const locate = options.locateCountry;
@@ -47,7 +48,7 @@ export function lintBandFile(file: string, data: BandFileOf<IdentifiedShow>, opt
       const nearby = [locate(lon + d, lat), locate(lon - d, lat), locate(lon, lat + d), locate(lon, lat - d)];
       const nearAcceptableBorder = nearby.some((country) => country !== null && acceptable.includes(country));
       if (found !== null && !acceptable.includes(found) && !nearAcceptableBorder) {
-        warn(`${path}.geo`, `coordinates fall inside ${found}, but countryCode is ${show.countryCode}`);
+        warn(`${path}.geo`, issue('wrongCountry', { found, countryCode: show.countryCode }));
       }
     }
   }
@@ -57,17 +58,14 @@ export function lintBandFile(file: string, data: BandFileOf<IdentifiedShow>, opt
     sameDay.forEach((current, position) => {
       for (const earlier of sameDay.slice(0, position)) {
         if (looksDuplicate(earlier.show, current.show)) {
-          warn(current.path, `looks like a duplicate of ${earlier.path} (same date, city and venue)`);
+          warn(current.path, issue('duplicateShow', { earlier: earlier.path }));
           continue;
         }
         const distance = distanceKm(earlier.show, current.show);
         const bothHappen = earlier.show.status !== 'cancelled' && current.show.status !== 'cancelled';
         const dayKnown = earlier.show.endDate === null && current.show.endDate === null;
         if (bothHappen && dayKnown && distance !== null && distance > LINT_THRESHOLDS.sameDayDistanceKm) {
-          warn(
-            `${current.path}.date`,
-            `same day as ${earlier.path} (${earlier.show.city}) but ${Math.round(distance)} km away; check the date`,
-          );
+          warn(`${current.path}.date`, issue('sameDayFarApart', { earlier: earlier.path, city: earlier.show.city, km: Math.round(distance) }));
         }
       }
     });

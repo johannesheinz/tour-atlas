@@ -1,7 +1,7 @@
 import { writeFileSync } from 'node:fs';
 import { IdError } from '../src/data/ids.ts';
 import { normalizeBandFile, serializeBandFile } from '../src/data/normalize.ts';
-import { parseBandJson, validateDraft } from '../src/data/validate.ts';
+import { issue, makeIssue, parseBandJson, validateDraft } from '../src/data/validate.ts';
 import { displayPath, expandInputs, parseArguments, readText, runCli } from './shared/files.ts';
 import { parseFormat, printIssue } from './shared/report.ts';
 
@@ -38,7 +38,7 @@ runCli(USAGE, () => {
       normalized = serializeBandFile(normalizeBandFile(result.value));
     } catch (error) {
       if (!(error instanceof IdError)) throw error;
-      printIssue({ file, path: 'shows', message: error.message }, 'error', format, text);
+      printIssue(makeIssue(file, 'shows', error.detail), 'error', format, text);
       failed++;
       continue;
     }
@@ -47,7 +47,7 @@ runCli(USAGE, () => {
     changed++;
     if (check) {
       const line = firstDifferentLine(text, normalized);
-      printIssue({ file, path: '', message: `is not normalized (first difference at line ${line}); run "npm run normalize"` }, 'error', format, null);
+      printIssue(makeIssue(file, '', issue('notNormalized', { line })), 'error', format, null);
     } else {
       writeFileSync(path, normalized);
       console.log(`WROTE ${file}`);

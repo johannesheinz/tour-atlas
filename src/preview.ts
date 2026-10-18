@@ -4,7 +4,7 @@ import { IdError } from './data/ids.ts';
 import { lintBandFile } from './data/lint.ts';
 import { normalizeBandFile, serializeBandFile } from './data/normalize.ts';
 import type { BandFile, IdentifiedBandFile } from './data/types.ts';
-import { isCompleteShow, parseBandJson, validateDraft, validateFileName, type ValidationIssue } from './data/validate.ts';
+import { isCompleteShow, issue, makeIssue, parseBandJson, validateDraft, validateFileName, type ValidationIssue } from './data/validate.ts';
 
 export const MAX_PREVIEW_BYTES = 5_000_000;
 
@@ -44,7 +44,7 @@ export function processPreviewFile(fileName: string, text: string, published: Ba
   });
 
   if (text.length > MAX_PREVIEW_BYTES) {
-    return invalid([{ file: fileName, path: '', message: `is larger than ${MAX_PREVIEW_BYTES / 1_000_000} MB; split it into one file per band` }]);
+    return invalid([makeIssue(fileName, '', issue('previewTooLarge', { megabytes: MAX_PREVIEW_BYTES / 1_000_000 }))]);
   }
   const parsed = parseBandJson(text, fileName);
   if (!parsed.ok) return invalid([parsed.issue]);
@@ -56,7 +56,7 @@ export function processPreviewFile(fileName: string, text: string, published: Ba
   try {
     normalized = normalizeBandFile(result.value);
   } catch (error) {
-    if (error instanceof IdError) return invalid([...result.issues, { file: fileName, path: 'shows', message: error.message }], result.totalShows);
+    if (error instanceof IdError) return invalid([...result.issues, makeIssue(fileName, 'shows', error.detail)], result.totalShows);
     throw error;
   }
 
@@ -65,14 +65,10 @@ export function processPreviewFile(fileName: string, text: string, published: Ba
   const warnings: ValidationIssue[] = [];
   const fileNameIssue = validateFileName(fileName, normalized.band.id);
   if (fileNameIssue !== null) {
-    warnings.push({ ...fileNameIssue, message: `will be downloaded as "${normalized.band.id}.json" to match band.id` });
+    warnings.push(makeIssue(fileNameIssue.file, fileNameIssue.path, issue('previewRenamed', { bandId: normalized.band.id })));
   }
   if (missingGeoCount > 0) {
-    warnings.push({
-      file: fileName,
-      path: 'shows',
-      message: `${missingGeoCount} ${missingGeoCount === 1 ? 'show has' : 'shows have'} no coordinates yet and ${missingGeoCount === 1 ? 'is' : 'are'} not drawn; run "npm run geocode" before committing`,
-    });
+    warnings.push(makeIssue(fileName, 'shows', issue('previewMissingCoordinates', { count: missingGeoCount })));
   }
   warnings.push(...lintBandFile(fileName, normalized, options));
 
