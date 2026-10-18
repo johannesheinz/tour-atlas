@@ -52,6 +52,8 @@ export interface TimelineProps {
   readonly focusBandId: string | null;
   readonly theme: ThemeColors;
   readonly today: number;
+  /** Forward-looking ranges keep the gutter under the band names free of dots, and of clicks on them. */
+  readonly clearGutter: boolean;
 }
 
 export interface TimelineCallbacks {
@@ -365,6 +367,19 @@ export function createTimeline(container: HTMLElement, callbacks: TimelineCallba
     return [x.invert(gutter).getTime(), x.invert(width).getTime()];
   }
 
+  /** Dots left of this x are not drawn or clickable: inside the gutter, for forward-looking ranges. */
+  function firstDotX(): number {
+    return props?.clearGutter === true ? gutter - TIMELINE_SETTINGS.dotRadius - 2 : Number.NEGATIVE_INFINITY;
+  }
+
+  function clipToDots() {
+    const left = firstDotX();
+    if (left === Number.NEGATIVE_INFINITY) return;
+    lanesContext.beginPath();
+    lanesContext.rect(left, 0, width - left, viewportHeight);
+    lanesContext.clip();
+  }
+
   function measureGutter() {
     lanesContext.font = TIMELINE_SETTINGS.laneFont;
     const alphabet = 'abcdefghijklmnopqrstuvwxyz';
@@ -527,9 +542,11 @@ export function createTimeline(container: HTMLElement, callbacks: TimelineCallba
       const dimmed = current.focusBandId !== null && current.focusBandId !== lane.band.file.band.id;
       lanesContext.globalAlpha = dimmed ? 0.2 : 1;
 
+      lanesContext.save();
+      clipToDots();
       for (const ref of lane.shows) {
         const [startX, endX] = dotCenter(x, ref);
-        if (endX < -radius) continue;
+        if (endX < Math.max(-radius, firstDotX())) continue;
         if (startX > width + radius) break;
         lanesContext.globalAlpha = (dimmed ? 0.2 : 1) * (ref.isPast ? 0.5 : 1);
         lanesContext.beginPath();
@@ -549,6 +566,7 @@ export function createTimeline(container: HTMLElement, callbacks: TimelineCallba
           lanesContext.stroke();
         }
       }
+      lanesContext.restore();
       lanesContext.fillStyle = theme.inkMuted;
       lanesContext.globalAlpha = 0.35;
       lanesContext.fillRect(0, top + laneHeight - 1, width, 1);
@@ -567,6 +585,8 @@ export function createTimeline(container: HTMLElement, callbacks: TimelineCallba
       lanesContext.setLineDash([]);
     }
 
+    lanesContext.save();
+    clipToDots();
     for (let index = first; index <= last; index++) {
       const lane = current.lanes[index];
       if (lane === undefined) continue;
@@ -583,6 +603,7 @@ export function createTimeline(container: HTMLElement, callbacks: TimelineCallba
         lanesContext.stroke();
       }
     }
+    lanesContext.restore();
 
     lanesContext.font = compact ? TIMELINE_SETTINGS.compactLaneFont : TIMELINE_SETTINGS.laneFont;
     lanesContext.textBaseline = 'alphabetic';
@@ -626,6 +647,7 @@ export function createTimeline(container: HTMLElement, callbacks: TimelineCallba
     let bestDistance: number = TIMELINE_SETTINGS.hitRadiusPx;
     for (const ref of lane.shows) {
       const [startX, endX] = dotCenter(x, ref);
+      if (endX < firstDotX()) continue;
       const distance = px < startX ? startX - px : px > endX ? px - endX : 0;
       if (distance <= bestDistance) {
         best = ref;

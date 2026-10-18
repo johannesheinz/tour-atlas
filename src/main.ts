@@ -282,6 +282,7 @@ function renderAll() {
     focusBandId: current.focusBandId,
     theme,
     today: parseIsoDate(current.today).getTime(),
+    clearGutter: current.timePreset !== null && usesPastMonth(current.timePreset),
   });
   if (derived.visibleBands !== previousVisibleBands) {
     const firstRender = previousVisibleBands === null;
