@@ -1,0 +1,107 @@
+{
+  "schemaVersion": 1,
+  "band": {
+    "id": "war-of-ages",
+    "name": "War of Ages",
+    "color": null,
+    "tags": [
+      "metalcore",
+      "christian-metal"
+    ],
+    "logoUrl": "https://www.metal-archives.com/images/3/5/4/0/3540525161_logo.jpg"
+  },
+  "source": {
+    "url": "https://warofagesmetal.com/tours/",
+    "retrievedAt": "2026-10-18"
+  },
+  "shows": [
+    {
+      "id": "war-of-ages-2026-08-01-hickory",
+      "date": "2026-08-01",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": "Breaking Darkness Music Festival",
+      "venue": "The Hickory Premier",
+      "city": "Hickory",
+      "region": "NC",
+      "countryCode": "US",
+      "status": null,
+      "ticketUrl": null,
+      "sourceUrl": "https://warofagesmetal.com/breaking-darkness-music-festival/",
+      "notes": null,
+      "geo": {
+        "lat": 35.73333,
+        "lon": -81.34429,
+        "precision": "city",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "war-of-ages-2026-09-11-erie",
+      "date": "2026-09-11",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "Centennial Hall",
+      "city": "Erie",
+      "region": "PA",
+      "countryCode": "US",
+      "status": null,
+      "ticketUrl": null,
+      "sourceUrl": null,
+      "notes": "With Convictions",
+      "geo": {
+        "lat": 41.86869,
+        "lon": -80.12645,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "war-of-ages-2026-09-12-shippensburg",
+      "date": "2026-09-12",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": "Uprise Festival",
+      "venue": "Shippensburg Fairgrounds",
+      "city": "Shippensburg",
+      "region": "PA",
+      "countryCode": "US",
+      "status": null,
+      "ticketUrl": null,
+      "sourceUrl": "https://www.setlist.fm/setlist/war-of-ages/2026/shippensburg-fairgrounds-rockstar-stage-shippensburg-pa-637ee25b.html",
+      "notes": "Rockstar Stage",
+      "geo": {
+        "lat": 40.05072,
+        "lon": -77.52055,
+        "precision": "city",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "war-of-ages-2026-09-19-wissen",
+      "date": "2026-09-19",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": "Loud & Proud Festival",
+      "venue": "kulturWERK wissen",
+      "city": "Wissen",
+      "region": null,
+      "countryCode": "DE",
+      "status": null,
+      "ticketUrl": null,
+      "sourceUrl": "https://www.setlist.fm/setlist/war-of-ages/2026/kulturwerk-wissen-wissen-germany-3b7070e4.html",
+      "notes": null,
+      "geo": {
+        "lat": 50.78284,
+        "lon": 7.74126,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    }
+  ]
+}

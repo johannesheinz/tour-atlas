@@ -1,0 +1,220 @@
+{
+  "schemaVersion": 1,
+  "band": {
+    "id": "pillar",
+    "name": "Pillar",
+    "color": null,
+    "tags": [
+      "alternative-metal",
+      "nu-metal",
+      "christian-metal",
+      "hard-rock",
+      "christian-rock"
+    ],
+    "logoUrl": "https://r2.theaudiodb.com/images/media/artist/logo/pillar-4e03cd2c65a8d.png"
+  },
+  "source": {
+    "url": "https://www.pillarmusic.com/pages/tour",
+    "retrievedAt": "2026-10-18"
+  },
+  "shows": [
+    {
+      "id": "pillar-2024-06-09-broken-arrow",
+      "date": "2024-06-09",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "BattleCreek Church",
+      "city": "Broken Arrow",
+      "region": "OK",
+      "countryCode": "US",
+      "status": null,
+      "ticketUrl": null,
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 36.0526,
+        "lon": -95.79082,
+        "precision": "city",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "pillar-2024-07-19-versailles",
+      "date": "2024-07-19",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "BMI Event Center",
+      "city": "Versailles",
+      "region": "OH",
+      "countryCode": "US",
+      "status": null,
+      "ticketUrl": null,
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 40.22257,
+        "lon": -84.48444,
+        "precision": "city",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "pillar-2024-07-20-mineral-city",
+      "date": "2024-07-20",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": "Alive Festival",
+      "venue": "Atwood Lake Park",
+      "city": "Mineral City",
+      "region": "OH",
+      "countryCode": "US",
+      "status": null,
+      "ticketUrl": null,
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 40.60117,
+        "lon": -81.36122,
+        "precision": "city",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "pillar-2025-07-30-darien-center",
+      "date": "2025-07-30",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": "Kingdom Bound Festival",
+      "venue": "Six Flags Darien Lake",
+      "city": "Darien Center",
+      "region": "NY",
+      "countryCode": "US",
+      "status": null,
+      "ticketUrl": null,
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 42.93094,
+        "lon": -78.38041,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "pillar-2025-09-19-wissen",
+      "date": "2025-09-19",
+      "endDate": "2025-09-20",
+      "startTime": null,
+      "tourName": null,
+      "eventName": "Loud and Proud Festival",
+      "venue": null,
+      "city": "Wissen",
+      "region": null,
+      "countryCode": "DE",
+      "status": null,
+      "ticketUrl": null,
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 50.78292,
+        "lon": 7.73448,
+        "precision": "city",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "pillar-2025-10-12-dallas",
+      "date": "2025-10-12",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": "Beyond the Frontline",
+      "venue": "House of Blues",
+      "city": "Dallas",
+      "region": "TX",
+      "countryCode": "US",
+      "status": null,
+      "ticketUrl": null,
+      "sourceUrl": null,
+      "notes": "Pillar documentary red carpet premiere screening and concert",
+      "geo": {
+        "lat": 32.78509,
+        "lon": -96.80818,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "pillar-2025-10-17-manheim",
+      "date": "2025-10-17",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "The Junction Center - Landis Hall",
+      "city": "Manheim",
+      "region": "PA",
+      "countryCode": "US",
+      "status": null,
+      "ticketUrl": null,
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 40.16374,
+        "lon": -76.39524,
+        "precision": "city",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "pillar-2025-10-18-massillon",
+      "date": "2025-10-18",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": null,
+      "venue": "Rivertree Christian Church",
+      "city": "Massillon",
+      "region": "OH",
+      "countryCode": "US",
+      "status": null,
+      "ticketUrl": null,
+      "sourceUrl": null,
+      "notes": null,
+      "geo": {
+        "lat": 40.79651,
+        "lon": -81.52316,
+        "precision": "city",
+        "source": "nominatim"
+      }
+    },
+    {
+      "id": "pillar-2026-09-12-shippensburg",
+      "date": "2026-09-12",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": "Uprise Festival",
+      "venue": "Shippensburg Fairgrounds",
+      "city": "Shippensburg",
+      "region": "PA",
+      "countryCode": "US",
+      "status": null,
+      "ticketUrl": null,
+      "sourceUrl": "https://www.uprisefest.com/lineup",
+      "notes": null,
+      "geo": {
+        "lat": 40.05072,
+        "lon": -77.52055,
+        "precision": "city",
+        "source": "nominatim"
+      }
+    }
+  ]
+}

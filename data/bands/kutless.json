@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "band": {
+    "id": "kutless",
+    "name": "Kutless",
+    "color": null,
+    "tags": [
+      "alternative-rock",
+      "christian-rock"
+    ],
+    "logoUrl": "https://r2.theaudiodb.com/images/media/artist/logo/kutless-4ebac21bdcb2a.png"
+  },
+  "source": {
+    "url": "http://kutless.com/",
+    "retrievedAt": "2026-10-18"
+  },
+  "shows": [
+    {
+      "id": "kutless-2026-09-18-wissen",
+      "date": "2026-09-18",
+      "endDate": null,
+      "startTime": null,
+      "tourName": null,
+      "eventName": "Loud and Proud Festival",
+      "venue": "kulturWERK Wissen",
+      "city": "Wissen",
+      "region": null,
+      "countryCode": "DE",
+      "status": null,
+      "ticketUrl": null,
+      "sourceUrl": "https://www.setlist.fm/setlist/kutless/2026/kulturwerk-wissen-wissen-germany-1b707140.html",
+      "notes": null,
+      "geo": {
+        "lat": 50.78284,
+        "lon": 7.74126,
+        "precision": "venue",
+        "source": "nominatim"
+      }
+    }
+  ]
+}
