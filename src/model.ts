@@ -57,9 +57,19 @@ export function byBandName(a: BandEntry, b: BandEntry): number {
   return a.file.band.name.localeCompare(b.file.band.name);
 }
 
-/** The shows that touch the range; all shows without a range. */
+const HALF_DAY_MS = 12 * 60 * 60 * 1000;
+
+/**
+ * A show is in a range when the middle of one of its days is: the timeline draws dots there, so the
+ * lists count exactly what is visible, and a range starting at midnight cannot catch the day before.
+ */
+export function isInRange(ref: ShowRef, range: TimeRange): boolean {
+  return ref.end + HALF_DAY_MS >= range.start && ref.start + HALF_DAY_MS <= range.end;
+}
+
+/** The shows in the range; all shows without a range. */
 export function showsInRange(refs: readonly ShowRef[], range: TimeRange | null): readonly ShowRef[] {
-  return range === null ? refs : refs.filter((ref) => ref.end >= range.start && ref.start <= range.end);
+  return range === null ? refs : refs.filter((ref) => isInRange(ref, range));
 }
 
 /** Sorts by what happens in the time range: most shows in it, or the earliest upcoming show in it. */

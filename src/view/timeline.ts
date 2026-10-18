@@ -368,14 +368,15 @@ export function createTimeline(container: HTMLElement, callbacks: TimelineCallba
     return [x.invert(gutter).getTime(), x.invert(width).getTime()];
   }
 
-  /** Dots left of this x are not drawn or clickable: inside the gutter, for forward-looking ranges. */
-  function firstDotX(): number {
-    return props?.clearGutter === true ? gutter - TIMELINE_SETTINGS.dotRadius - 2 : Number.NEGATIVE_INFINITY;
+  /** Dots centred left of the gutter's edge (shows before the range) are not drawn or clickable, for forward-looking ranges. */
+  function firstDotCenterX(): number {
+    return props?.clearGutter === true ? gutter - 0.5 : Number.NEGATIVE_INFINITY;
   }
 
+  /** Clips just left of the gutter's edge, so a dot centred on the edge stays round. */
   function clipToDots() {
-    const left = firstDotX();
-    if (left === Number.NEGATIVE_INFINITY) return;
+    if (props?.clearGutter !== true) return;
+    const left = gutter - TIMELINE_SETTINGS.dotRadius - 2;
     lanesContext.beginPath();
     lanesContext.rect(left, 0, width - left, viewportHeight);
     lanesContext.clip();
@@ -547,7 +548,7 @@ export function createTimeline(container: HTMLElement, callbacks: TimelineCallba
       clipToDots();
       for (const ref of lane.shows) {
         const [startX, endX] = dotCenter(x, ref);
-        if (endX < Math.max(-radius, firstDotX())) continue;
+        if (endX < Math.max(-radius, firstDotCenterX())) continue;
         if (startX > width + radius) break;
         lanesContext.globalAlpha = (dimmed ? 0.2 : 1) * (ref.isPast ? 0.5 : 1);
         lanesContext.beginPath();
@@ -595,6 +596,7 @@ export function createTimeline(container: HTMLElement, callbacks: TimelineCallba
         const selected = current.selectedShowIds.has(ref.show.id);
         if (!selected && !current.highlightedShowIds.has(ref.show.id)) continue;
         const [startX, endX] = dotCenter(x, ref);
+        if (endX < firstDotCenterX()) continue;
         lanesContext.strokeStyle = theme.ink;
         lanesContext.lineWidth = selected ? 2.5 : 1.5;
         lanesContext.beginPath();
@@ -648,7 +650,7 @@ export function createTimeline(container: HTMLElement, callbacks: TimelineCallba
     let bestDistance: number = TIMELINE_SETTINGS.hitRadiusPx;
     for (const ref of lane.shows) {
       const [startX, endX] = dotCenter(x, ref);
-      if (endX < firstDotX()) continue;
+      if (endX < firstDotCenterX()) continue;
       const distance = px < startX ? startX - px : px > endX ? px - endX : 0;
       if (distance <= bestDistance) {
         best = ref;

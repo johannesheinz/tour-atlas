@@ -13,15 +13,15 @@ const shows = [
 ];
 
 describe('time presets', () => {
-  it('all upcoming runs from just before today to the last show', () => {
+  it('all upcoming runs from today to the last show', () => {
     const range = presetRange('upcoming', shows, today, false);
-    expect(range?.[0]).toBe(today - 3 * DAY_MS);
+    expect(range?.[0]).toBe(today);
     expect(range?.[1]).toBeGreaterThan(day('2027-06-21'));
     expect(range?.[1]).toBeLessThan(day('2027-07-10'));
   });
 
   it('fixed windows look 3, 6 and 12 months ahead', () => {
-    expect(presetRange('next-3-months', shows, today, false)).toEqual([today - 3 * DAY_MS, today + 92 * DAY_MS]);
+    expect(presetRange('next-3-months', shows, today, false)).toEqual([today, today + 92 * DAY_MS]);
     expect(presetRange('next-6-months', shows, today, false)?.[1]).toBe(today + 183 * DAY_MS);
     expect(presetRange('next-12-months', shows, today, false)?.[1]).toBe(today + 365 * DAY_MS);
   });

@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { parseIsoDate } from '../../src/data/dates.ts';
 import type { BandFile } from '../../src/data/types.ts';
-import { buildBandEntries, dateRange, showRefs, showsInRange, sortBands, type BandEntry } from '../../src/model.ts';
+import { buildBandEntries, dateRange, isInRange, showRefs, showsInRange, sortBands, type BandEntry } from '../../src/model.ts';
 import { makeFile, makeShow } from '../helpers.ts';
 
 const day = (iso: string) => parseIsoDate(iso).getTime();
@@ -46,5 +46,18 @@ describe('bands in the time range', () => {
     if (soon === undefined) throw new Error('fixture missing');
     expect(dateRange(inAutumn(soon))).toEqual({ first: '2026-10-20', last: '2026-10-21' });
     expect(dateRange([])).toBeNull();
+  });
+
+  it('counts a show when the middle of its day is in the range, robust to rounding at midnight', () => {
+    const [, soon] = bands;
+    if (soon === undefined) throw new Error('fixture missing');
+    const [first] = refs.get(soon) ?? [];
+    if (first === undefined) throw new Error('fixture missing');
+    const showDay = day('2026-10-20');
+    for (const drift of [-1, 0, 1]) {
+      expect(isInRange(first, { start: showDay + drift, end: showDay + 30 * 86_400_000 })).toBe(true);
+      expect(isInRange(first, { start: showDay + 86_400_000 + drift, end: showDay + 30 * 86_400_000 })).toBe(false);
+    }
+    expect(isInRange(first, { start: showDay - 30 * 86_400_000, end: showDay })).toBe(false);
   });
 });

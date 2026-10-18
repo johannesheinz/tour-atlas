@@ -6,8 +6,8 @@ export type TimePreset = 'next-3-months' | 'next-6-months' | 'next-12-months' | 
 export const PRESET_IDS: readonly TimePreset[] = ['next-3-months', 'next-6-months', 'next-12-months', 'upcoming', 'past', 'all'];
 
 const MONTHS_AHEAD_DAYS: Partial<Record<TimePreset, number>> = { 'next-3-months': 92, 'next-6-months': 183, 'next-12-months': 365 };
-const DEFAULT_LEAD_DAYS = 3;
 const PAST_MONTH_LEAD_DAYS = 31;
+const PAST_TRAILING_DAYS = 3;
 const TRAILING_PADDING = 0.03;
 const MIN_SPAN_DAYS = 14;
 
@@ -21,8 +21,9 @@ export function usesPastMonth(preset: TimePreset): boolean {
   return preset !== 'past' && preset !== 'all';
 }
 
+/** Forward-looking ranges start today; the timeline's gutter keeps today clear of the band names. */
 function windowStart(today: number, includePastMonth: boolean): number {
-  return today - (includePastMonth ? PAST_MONTH_LEAD_DAYS : DEFAULT_LEAD_DAYS) * DAY_MS;
+  return includePastMonth ? today - PAST_MONTH_LEAD_DAYS * DAY_MS : today;
 }
 
 /** The window a preset shows; null means "fit everything". Throws for presets with no shows to show. */
@@ -41,7 +42,7 @@ export function presetRange(preset: TimePreset, shows: readonly Dated[], today: 
     }
     case 'past': {
       const first = Math.min(...shows.filter((show) => show.end < today).map((show) => show.start));
-      const end = today + DEFAULT_LEAD_DAYS * DAY_MS;
+      const end = today + PAST_TRAILING_DAYS * DAY_MS;
       const paddedStart = first - (end - first) * TRAILING_PADDING;
       return [Math.min(paddedStart, end - MIN_SPAN_DAYS * DAY_MS), end];
     }

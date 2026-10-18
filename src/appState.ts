@@ -1,7 +1,7 @@
 import { matchesTagFilter } from './data/tags.ts';
 import type { BandFile } from './data/types.ts';
 import type { PreviewResult } from './preview.ts';
-import { buildBandEntries, byBandName, showRefs, type BandEntry, type BandSort, type ShowRef } from './model.ts';
+import { buildBandEntries, byBandName, isInRange, showRefs, type BandEntry, type BandSort, type ShowRef } from './model.ts';
 import type { ThemePreference } from './model.ts';
 import type { TimePreset } from './view/timePresets.ts';
 import type { MapMode, MapViewPreset } from './view/mapRegions.ts';
@@ -111,5 +111,5 @@ export function createDeriver(): (state: AppState) => Derived {
 }
 
 export function isInWindow(ref: ShowRef, window: TimeWindow): boolean {
-  return ref.end >= window.start && ref.start <= window.end;
+  return isInRange(ref, window);
 }
