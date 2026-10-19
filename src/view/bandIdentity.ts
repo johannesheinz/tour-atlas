@@ -14,10 +14,14 @@ export function createBandIdentity(context: string): BandIdentity {
   return {
     element,
     update(bandId, bandName) {
-      const url = logoFor(bandId);
-      logo.hidden = url === null;
-      if (url !== null && logo.getAttribute('src') !== url) logo.setAttribute('src', url);
-      element.classList.toggle('has-logo', url !== null);
+      const found = logoFor(bandId);
+      logo.hidden = found === null;
+      if (found !== null && logo.getAttribute('src') !== found.url) {
+        logo.setAttribute('width', String(found.width));
+        logo.setAttribute('height', String(found.height));
+        logo.setAttribute('src', found.url);
+      }
+      element.classList.toggle('has-logo', found !== null);
       name.textContent = bandName;
     },
   };

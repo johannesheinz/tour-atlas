@@ -7,7 +7,7 @@ import type { ShowRef, TimelineLane } from '../model.ts';
 import { context2d, h, prefersReducedMotion } from './dom.ts';
 import { t } from '../i18n/index.ts';
 import { formatDateSpan, statusLabel } from './format.ts';
-import { DAY_MS, fitDateDomain, timeTicks } from './timeScale.ts';
+import { DAY_MS, timeTicks, timelineDomain } from './timeScale.ts';
 import { bandColor } from '../model.ts';
 import type { ThemeTokens } from './theme.ts';
 import { createTooltip } from './tooltip.ts';
@@ -56,7 +56,10 @@ export interface TimelineProps {
 export interface TimelineCallbacks {
   onHover(shows: readonly ShowRef[] | null): void;
   onSelect(shows: readonly ShowRef[]): void;
-  /** Called when a zoom or pan gesture ends, after fits and on resize. byUser is false for programmatic fits. */
+  /**
+   * Called when a zoom or pan gesture ends, on resize, and for programmatic fits (byUser false) as soon as their
+   * target is known, before the move is drawn.
+   */
   onWindowChange(window: TimeWindow, byUser: boolean): void;
   onShowAllLanes(): void;
 }
@@ -85,6 +88,11 @@ export interface TimelineView {
 interface CursorPosition {
   readonly lane: number;
   readonly show: number;
+}
+
+/** The dates the timeline shows at its fit; the window it reports for a fit to everything. */
+export function fitDomain(shows: readonly ShowRef[], today: number): readonly [number, number] {
+  return timelineDomain(shows, today, TIMELINE_SETTINGS.paddingFraction, TIMELINE_SETTINGS.minSpanDays);
 }
 
 export function createTimeline(container: HTMLElement, callbacks: TimelineCallbacks, sizing: TimelineLayout): TimelineView {
@@ -127,6 +135,8 @@ export function createTimeline(container: HTMLElement, callbacks: TimelineCallba
   let programmatic = false;
   /** The range the last programmatic fit asked for, reported as asked so a kept range does not drift by rounding. */
   let exactRange: readonly [number, number] | null = null;
+  /** Where a programmatic move is going; isAtFit answers for its end. */
+  let heading: ZoomTransform | null = null;
   let brushStart: { readonly x: number; readonly pointerId: number } | null = null;
   let brushing = false;
   let suppressClick = false;
@@ -145,6 +155,7 @@ export function createTimeline(container: HTMLElement, callbacks: TimelineCallba
     })
     .on('end', () => {
       if (silent) return;
+      heading = null;
       emitWindow(!programmatic);
       programmatic = false;
     });
@@ -281,12 +292,9 @@ export function createTimeline(container: HTMLElement, callbacks: TimelineCallba
     width = nextWidth;
     if (props !== null) measureGutter(props.theme.laneFont);
     layout();
-    fitToData(false, null);
-    if (pendingRange !== null) {
-      const [start, end] = pendingRange;
-      pendingRange = null;
-      zoomToRange(start, end, false);
-    }
+    const range = pendingRange;
+    pendingRange = null;
+    fitToData(false, range);
   }).observe(container);
   window.addEventListener('resize', () => layout());
 
@@ -333,11 +341,7 @@ export function createTimeline(container: HTMLElement, callbacks: TimelineCallba
       if (range !== null) pendingRange = [range[0], range[1]];
       return;
     }
-    const ranges = props.domainShows;
-    const dataDomain: readonly [number, number] =
-      ranges.length === 0
-        ? [props.today - 30 * DAY_MS, props.today + 30 * DAY_MS]
-        : fitDateDomain(ranges, TIMELINE_SETTINGS.paddingFraction, TIMELINE_SETTINGS.minSpanDays);
+    const dataDomain = fitDomain(props.domainShows, props.today);
     // A kept range can lie beyond the shows left after a filter change; the zoom limits must still allow it.
     const domain: [number, number] = range === null ? [dataDomain[0], dataDomain[1]] : [Math.min(dataDomain[0], range[0]), Math.max(dataDomain[1], range[1])];
     const currentDomain = transform.rescaleX(baseScale).domain().map((date) => date.getTime());
@@ -349,7 +353,7 @@ export function createTimeline(container: HTMLElement, callbacks: TimelineCallba
     zoomBehavior.scaleExtent([0.5, maxZoom]);
 
     fitTransform = transformFor(dataDomain[0], dataDomain[1]);
-    exactRange = range;
+    exactRange = range ?? dataDomain;
     const target = range === null ? fitTransform : transformFor(range[0], range[1]);
     const [currentStart, currentEnd] = currentDomain;
     if (!animate || !hadDomain || prefersReducedMotion() || currentStart === undefined || currentEnd === undefined) {
@@ -358,8 +362,15 @@ export function createTimeline(container: HTMLElement, callbacks: TimelineCallba
       return;
     }
     setTransform(transformFor(currentStart, currentEnd));
+    moveTo(target);
+  }
+
+  /** A programmatic animated move: its window is reported at once, so the app does not wait for the move to end. */
+  function moveTo(target: ZoomTransform) {
     programmatic = true;
+    heading = target;
     scrollerSelection.transition().duration(TIMELINE_SETTINGS.fitDurationMs).call(zoomBehavior.transform, target);
+    emitWindow(false);
   }
 
   /** Puts start at the gutter's edge and end at the right edge. */
@@ -395,7 +406,7 @@ export function createTimeline(container: HTMLElement, callbacks: TimelineCallba
     const averageCharacter = lanesContext.measureText(alphabet).width / alphabet.length;
     const measured = Math.round(Math.min(width * TIMELINE_SETTINGS.maxGutterFraction, averageCharacter * TIMELINE_SETTINGS.gutterCharacters + 12));
     if (measured === gutter) return;
-    const range = hasFitted && width > gutter ? visibleRange() : null;
+    const range = hasFitted && width > gutter ? (exactRange ?? visibleRange()) : null;
     gutter = measured;
     if (range !== null) zoomToRange(range[0], range[1], false);
   }
@@ -413,8 +424,7 @@ export function createTimeline(container: HTMLElement, callbacks: TimelineCallba
       emitWindow(false);
       return;
     }
-    programmatic = true;
-    scrollerSelection.transition().duration(TIMELINE_SETTINGS.fitDurationMs).call(zoomBehavior.transform, target);
+    moveTo(target);
   }
 
   /** Jumps without emitting a window change; callers that need one emit it themselves. */
@@ -422,6 +432,7 @@ export function createTimeline(container: HTMLElement, callbacks: TimelineCallba
     silent = true;
     scrollerSelection.interrupt().call(zoomBehavior.transform, next);
     silent = false;
+    heading = null;
     transform = next;
     scheduleDraw();
   }
@@ -434,6 +445,7 @@ export function createTimeline(container: HTMLElement, callbacks: TimelineCallba
   /** A user-initiated animated move: its end clears the preset. */
   function animateTo(target: ZoomTransform) {
     programmatic = false;
+    heading = null;
     if (prefersReducedMotion()) {
       setTransform(target);
       emitWindow(true);
@@ -752,7 +764,10 @@ export function createTimeline(container: HTMLElement, callbacks: TimelineCallba
     zoomBy,
     zoomOut: () => zoomOutAround(width / 2),
     shift,
-    isAtFit: () => Math.abs(transform.k - fitTransform.k) < 1e-6 && Math.abs(transform.x - fitTransform.x) < 0.5,
+    isAtFit() {
+      const shown = heading ?? transform;
+      return Math.abs(shown.k - fitTransform.k) < 1e-6 && Math.abs(shown.x - fitTransform.x) < 0.5;
+    },
     setPlayhead(date) {
       playhead = date;
       scheduleDraw();

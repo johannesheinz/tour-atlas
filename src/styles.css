@@ -1470,6 +1470,8 @@ input[type='search']::placeholder {
 
 .band-identity-logo {
   display: block;
+  /* The width and height attributes only give the aspect ratio, so the space is kept before the logo loads. */
+  width: auto;
   object-fit: contain;
   object-position: left center;
   filter: var(--logo-filter);

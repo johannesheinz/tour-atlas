@@ -40,6 +40,19 @@ const APPROX_DAYS = { day: 1, week: 7, month: 30.44, quarter: 91.3, year: 365.25
 const UNITS_FINE_TO_COARSE: readonly TickUnit[] = ['day', 'week', 'month', 'quarter', 'year'];
 
 /** Finest unit whose labels still fit: days, then weeks, then months (then quarters and years). */
+const EMPTY_DOMAIN_DAYS = 30;
+
+/** The dates the timeline fits to: the shows padded, or a month either side of today when there are none. */
+export function timelineDomain(
+  ranges: readonly { readonly start: number; readonly end: number }[],
+  today: number,
+  paddingFraction: number,
+  minSpanDays: number,
+): readonly [number, number] {
+  if (ranges.length === 0) return [today - EMPTY_DOMAIN_DAYS * DAY_MS, today + EMPTY_DOMAIN_DAYS * DAY_MS];
+  return fitDateDomain(ranges, paddingFraction, minSpanDays);
+}
+
 export function chooseTickUnit(domain: readonly [number, number], widthPx: number): TickUnit {
   const pxPerDay = widthPx / Math.max(1, (domain[1] - domain[0]) / DAY_MS);
   return UNITS_FINE_TO_COARSE.find((unit) => pxPerDay * APPROX_DAYS[unit] >= MIN_LABEL_SPACING_PX[unit]) ?? 'year';

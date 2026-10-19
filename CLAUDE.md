@@ -55,7 +55,7 @@ npm run check          # everything CI runs, in order
 - `src/main.ts` wires views to `src/state.ts`; `src/appState.ts` and `src/selectors.ts` memoise derived data.
 - `tools/`: Node CLIs (TypeScript run directly by Node's type stripping, so use `.ts` import specifiers and
   erasable syntax only); never shipped. `tools/vite/` holds the build plugins (data validation, CSP, slim topology,
-  brand mark and inline favicon from `src/brand/`, social card).
+  brand mark and inline favicon from `src/brand/`, social card, logo sizes read from the `.webp` headers).
 - Social card: `TOUR_ATLAS_SITE_URL` (absolute `https:`, ending in `/`, no default) turns on the OpenGraph/Twitter
   tags (texts in the `<!-- social-card -->` block of `index.html`) and `og-card.png` in dist; unset means neither,
   anything else set fails the build. `check-dist` allows exactly `og-card.png` (1200x630, < 300 kB, named by

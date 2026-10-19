@@ -97,7 +97,9 @@ matches, and every group with a selection must match.
 downloads it once, scales it to 80 px high and stores it as a black silhouette in
 `data/logos/<band-id>.webp`; the app prints that silhouette in its ink colour, so every logo fits both
 themes. Existing files are kept; `node tools/logos.ts data/bands --force` replaces them. Link the image
-file itself (for Wikipedia: the "Original file" link), not the page around it.
+file itself (for Wikipedia: the "Original file" link), not the page around it. The build reads each
+silhouette's pixel size from its WebP header (`tools/vite/logoSizes.ts`), so the page keeps the logo's
+space before it loads; a file it cannot read fails the build.
 
 ### Hand-made silhouettes
 

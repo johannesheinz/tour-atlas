@@ -10,6 +10,21 @@ import { context2d, h, prefersReducedMotion, s } from './dom.ts';
 import { t } from '../i18n/index.ts';
 import { formatDate } from './format.ts';
 import { computeGlobeFit, computeMapFit, interpolateFit, type LonLat, type MapFit } from './geoFit.ts';
+import {
+  affineMaxStretch,
+  affineScale,
+  applyAffine,
+  chooseFitMotion,
+  cutInView,
+  fitAffine,
+  frameCanMove,
+  invertAffine,
+  largestShift,
+  matchedPoints,
+  moveStage,
+  type Affine,
+  type FitMotion,
+} from './fitMotion.ts';
 import { radiusDegrees, type AreaCircle, type MapMode } from './mapRegions.ts';
 export type { AreaCircle, MapMode } from './mapRegions.ts';
 import { IDLE_PRESS, LONG_PRESS, stepLongPress, type LongPressInput } from './longPress.ts';
@@ -101,6 +116,17 @@ export interface MapView {
   setTourTime(ms: number): void;
 }
 
+/** A fit on its way: `current` is the fit the last frame showed. */
+interface FitAnimation {
+  readonly from: MapFit;
+  target: MapFit;
+  readonly startedAt: number;
+  readonly duration: number;
+  /** The flat map moves its drawn layers; the globe, and frames they cannot follow closely enough, are projected. */
+  stage: Exclude<FitMotion, 'skip'>;
+  current: MapFit;
+}
+
 interface PinStyle {
   readonly radius: number;
   /** Band-colour ring for pins with several bands; empty otherwise. */
@@ -115,7 +141,7 @@ export function createMapView(container: HTMLElement, world: WorldTopology, call
   const land = feature(world, world.objects.land);
   const borders = mesh(world, world.objects.countries, (a, b) => a !== b);
   let mode: MapMode = 'flat';
-  let projection: GeoProjection = geoEqualEarth();
+  let projection: GeoProjection = projectionFor(mode);
   let path = geoPath(projection);
   let areaCircle: AreaCircle | null = null;
   let picking = false;
@@ -172,6 +198,12 @@ export function createMapView(container: HTMLElement, world: WorldTopology, call
   let hoveredPinId: string | null = null;
   let cursorPinId: string | null = null;
   let animationFrame: number | null = null;
+  let fitAnimation: FitAnimation | null = null;
+  /** While a fit moves the drawn layers: where a point of the projected map is on screen. Replaces `transform` until the fit lands. */
+  let motion: Affine | null = null;
+  /** rAF callbacks of one frame share their timestamp; a frame that projected the map does not project it again. */
+  let projectedAtFrame: number | null = null;
+  let refitRequested = false;
   let programmaticZoom = false;
   let tour: MapTour | null = null;
   let tourTime = 0;
@@ -187,7 +219,7 @@ export function createMapView(container: HTMLElement, world: WorldTopology, call
     .on('start', (event: D3ZoomEvent<SVGSVGElement, unknown>) => {
       if (programmaticZoom) return;
       if (event.sourceEvent !== null) callbacks.onUserMove();
-      cancelAnimation();
+      settleAnimation();
       tooltip.hide();
       labelsLayer.replaceChildren();
     })
@@ -216,9 +248,33 @@ export function createMapView(container: HTMLElement, world: WorldTopology, call
     const ratio = window.devicePixelRatio;
     canvas.width = Math.round(width * ratio);
     canvas.height = Math.round(height * ratio);
-    refit();
+    if (base === null) {
+      refit();
+      return;
+    }
+    positionPins();
+    requestRefit();
   });
   resizeObserver.observe(container);
+
+  /** A resize refits in the next frame: a running fit heads for the new target instead of jumping to its end. */
+  function requestRefit() {
+    if (refitRequested) return;
+    refitRequested = true;
+    requestAnimationFrame(function refitForSize(now) {
+      if (fitAnimation !== null) {
+        refitRequested = false;
+        retargetAnimation(fitAnimation);
+        return;
+      }
+      if (projectedAtFrame === now) {
+        requestAnimationFrame(refitForSize);
+        return;
+      }
+      refitRequested = false;
+      refit();
+    });
+  }
 
   surface.addEventListener('pointermove', (event) => {
     if (event.buttons !== 0 || picking) return;
@@ -295,8 +351,7 @@ export function createMapView(container: HTMLElement, world: WorldTopology, call
   function pointAt(clientX: number, clientY: number): LonLat | null {
     if (base === null) return null;
     const bounds = surface.getBoundingClientRect();
-    const x = transform.invertX(clientX - bounds.left);
-    const y = transform.invertY(clientY - bounds.top);
+    const [x, y] = toMap(clientX - bounds.left, clientY - bounds.top);
     const point = projection.invert?.([x, y]);
     if (point === undefined || point === null || !Number.isFinite(point[0]) || !Number.isFinite(point[1])) return null;
     const front = frontCenter();
@@ -345,7 +400,21 @@ export function createMapView(container: HTMLElement, world: WorldTopology, call
   });
 
   function pinAt(x: number, y: number): DisplayPin | null {
-    return tree.find(transform.invertX(x), transform.invertY(y), MAP_SETTINGS.hitRadiusPx / transform.k) ?? null;
+    const [mapX, mapY] = toMap(x, y);
+    return tree.find(mapX, mapY, MAP_SETTINGS.hitRadiusPx / viewScale()) ?? null;
+  }
+
+  /** Where a point of the projected map is on screen: the viewer's zoom, or a fit's move while one runs. */
+  function toScreen(x: number, y: number): [number, number] {
+    return motion === null ? [transform.applyX(x), transform.applyY(y)] : applyAffine(motion, x, y);
+  }
+
+  function toMap(x: number, y: number): [number, number] {
+    return motion === null ? [transform.invertX(x), transform.invertY(y)] : applyAffine(invertAffine(motion), x, y);
+  }
+
+  function viewScale(): number {
+    return motion === null ? transform.k : affineScale(motion);
   }
 
   function currentCursorPin(): DisplayPin | undefined {
@@ -364,20 +433,23 @@ export function createMapView(container: HTMLElement, world: WorldTopology, call
 
   function showPinTooltip(pin: DisplayPin) {
     if (props === null) return;
-    tooltip.show(pinTooltip(pin.shows, pinLabel(pin), props.theme.mode), transform.applyX(pin.x), transform.applyY(pin.y));
+    tooltip.show(pinTooltip(pin.shows, pinLabel(pin), props.theme.mode), ...toScreen(pin.x, pin.y));
   }
 
   function positionCursor() {
     const pin = currentCursorPin();
     cursor.classList.toggle('is-active', pin !== undefined && document.activeElement === cursor);
     if (pin === undefined) return;
-    cursor.style.setProperty('--x', `${transform.applyX(pin.x)}px`);
-    cursor.style.setProperty('--y', `${transform.applyY(pin.y)}px`);
+    const [x, y] = toScreen(pin.x, pin.y);
+    cursor.style.setProperty('--x', `${x}px`);
+    cursor.style.setProperty('--y', `${y}px`);
   }
 
   function render(next: MapProps) {
     const previous = props;
     props = next;
+    // A new theme also arrives when a font finishes loading; widths measured with the fallback font are stale.
+    if (previous?.theme !== next.theme) labelWidths.clear();
     if (previous === null || previous.shows !== next.shows) {
       groups = groupByCoordinates(next.shows);
       useCanvas = next.shows.length > MAP_SETTINGS.canvasThreshold;
@@ -409,6 +481,12 @@ export function createMapView(container: HTMLElement, world: WorldTopology, call
     else fitToPoints(lastFit.points, lastFit.minSpanKm, false);
   }
 
+  /** The points the last fit frames; null while there are no props to read the data fit from. */
+  function lastFitPoints(): { readonly points: readonly LonLat[]; readonly minSpanKm: number } | null {
+    if (lastFit.kind === 'points') return lastFit;
+    return props === null ? null : { points: showPoints(props.fitShows), minSpanKm: MAP_SETTINGS.minSpanKm };
+  }
+
   function fitToData(animate: boolean) {
     lastFit = { kind: 'data' };
     if (props === null) {
@@ -419,19 +497,11 @@ export function createMapView(container: HTMLElement, world: WorldTopology, call
   }
 
   function fitShowsNow(shows: readonly ShowRef[], animate: boolean) {
-    fitPointsNow(
-      shows.map((ref): LonLat => [ref.show.geo.lon, ref.show.geo.lat]),
-      MAP_SETTINGS.minSpanKm,
-      animate,
-    );
+    fitPointsNow(showPoints(shows), MAP_SETTINGS.minSpanKm, animate);
   }
 
   function fitToShows(shows: readonly ShowRef[], animate: boolean) {
-    fitToPoints(
-      shows.map((ref): LonLat => [ref.show.geo.lon, ref.show.geo.lat]),
-      MAP_SETTINGS.minSpanKm,
-      animate,
-    );
+    fitToPoints(showPoints(shows), MAP_SETTINGS.minSpanKm, animate);
   }
 
   function fitToPoints(points: readonly LonLat[], minSpanKm: number, animate: boolean) {
@@ -445,24 +515,109 @@ export function createMapView(container: HTMLElement, world: WorldTopology, call
       return;
     }
     pendingFit = false;
-    const options = { width, height, padding: MAP_SETTINGS.padding, minSpanKm };
-    const target = mode === 'flat' ? computeMapFit(points, options) : computeGlobeFit(points, options);
-    globeFitRadius = Math.min(width, height) / 2 - MAP_SETTINGS.padding;
-    const duration = mode === 'flat' ? MAP_SETTINGS.fitDurationMs : MAP_SETTINGS.globeFitDurationMs;
-    cancelAnimation();
-    const start = base === null ? null : flatten(base, transform);
-    resetZoomTransform();
-    if (start === null || !animate || prefersReducedMotion()) {
-      applyBase(target);
+    const target = fitTarget(points, minSpanKm);
+    const running = fitAnimation;
+    const start = running?.current ?? (base === null ? null : flatten(base, transform));
+    stopAnimation();
+    if (start === null) {
+      landOn(target);
       return;
     }
-    const startedAt = performance.now();
-    const step = (now: number) => {
-      const t = Math.min(1, (now - startedAt) / duration);
-      applyBase(interpolateFit(start, target, easeInOutCubic(t)), t < 1);
-      animationFrame = t < 1 ? requestAnimationFrame(step) : null;
-    };
-    animationFrame = requestAnimationFrame(step);
+    const shift = largestShift(matchedPoints(projectionAt(start), projectionAt(target), width, height));
+    const motionKind = chooseFitMotion(shift, mode === 'flat', mode === 'flat' ? transformResidual(target) : null);
+    if (motionKind === 'skip') {
+      if (running !== null) landOn(target);
+      return;
+    }
+    if (!animate || prefersReducedMotion()) {
+      landOn(target);
+      return;
+    }
+    resetZoomTransform();
+    const duration = mode === 'flat' ? MAP_SETTINGS.fitDurationMs : MAP_SETTINGS.globeFitDurationMs;
+    fitAnimation = { from: start, target, startedAt: performance.now(), duration, stage: motionKind, current: start };
+    animationFrame = requestAnimationFrame(stepAnimation);
+  }
+
+  function fitTarget(points: readonly LonLat[], minSpanKm: number): MapFit {
+    const options = { width, height, padding: MAP_SETTINGS.padding, minSpanKm };
+    globeFitRadius = Math.min(width, height) / 2 - MAP_SETTINGS.padding;
+    return mode === 'flat' ? computeMapFit(points, options) : computeGlobeFit(points, options);
+  }
+
+  function projectionAt(fit: MapFit): GeoProjection {
+    return projectionFor(mode).rotate([...fit.rotate]).scale(fit.scale).translate([...fit.translate]);
+  }
+
+  /** How far the drawn map, moved by the closest affine map, would end from `target`; null when it cannot be moved there. */
+  function transformResidual(target: MapFit): number | null {
+    if (base === null) throw new Error('there is no drawn map to move');
+    const targetProjection = projectionAt(target);
+    if (cutInView(base.rotate[0], targetProjection, width, height)) return null;
+    return fitAffine(matchedPoints(projection, targetProjection, width, height))?.maxResidual ?? null;
+  }
+
+  function stepAnimation(now: number) {
+    const animation = fitAnimation;
+    if (animation === null) throw new Error('a fit frame ran without a fit to show');
+    const progress = Math.min(1, Math.max(0, (now - animation.startedAt) / animation.duration));
+    if (progress === 1) {
+      fitAnimation = null;
+      animationFrame = null;
+      projectedAtFrame = now;
+      landOn(animation.target);
+      return;
+    }
+    const fit = interpolateFit(animation.from, animation.target, easeInOutCubic(progress));
+    animation.current = fit;
+    if (animation.stage !== 'project' && !moveDrawnMap(fit, animation.stage === 'move-then-project')) animation.stage = 'project';
+    if (animation.stage === 'project') {
+      if (motion !== null) {
+        motion = null;
+        writeLayerTransform();
+      }
+      projectedAtFrame = now;
+      applyBase(fit, true);
+    }
+    animationFrame = requestAnimationFrame(stepAnimation);
+  }
+
+  /** Shows `fit` by moving the layers drawn for `base`, the way the viewer's zoom does; false when they cannot follow. */
+  function moveDrawnMap(fit: MapFit, checked: boolean): boolean {
+    if (base === null) throw new Error('there is no drawn map to move');
+    const frameProjection = projectionAt(fit);
+    const moved = fitAffine(matchedPoints(projection, frameProjection, width, height));
+    if (moved === null || (checked && !frameCanMove(moved.maxResidual, cutInView(base.rotate[0], frameProjection, width, height)))) return false;
+    motion = moved.matrix;
+    labelsLayer.replaceChildren();
+    applyZoomTransform();
+    return true;
+  }
+
+  /** A resize during a fit: the fit heads for the target of the new size, on its own schedule. */
+  function retargetAnimation(animation: FitAnimation) {
+    const wanted = lastFitPoints();
+    if (wanted === null || width <= 2 * MAP_SETTINGS.padding || height <= 2 * MAP_SETTINGS.padding) return;
+    animation.target = fitTarget(wanted.points, wanted.minSpanKm);
+    if (animation.stage !== 'project') animation.stage = moveStage(transformResidual(animation.target));
+  }
+
+  /** Ends any motion and projects `fit` once, at full precision. */
+  function landOn(fit: MapFit) {
+    stopAnimation();
+    motion = null;
+    resetZoomTransform();
+    applyBase(fit);
+  }
+
+  /** The viewer takes over: a fit stops where it is, projected there so the viewer's zoom starts from it. */
+  function settleAnimation() {
+    const animation = fitAnimation;
+    stopAnimation();
+    if (animation === null || motion === null) return;
+    motion = null;
+    writeLayerTransform();
+    applyBase(animation.current);
   }
 
   function zoomBy(factor: number) {
@@ -482,9 +637,10 @@ export function createMapView(container: HTMLElement, world: WorldTopology, call
   function setMode(next: MapMode) {
     if (next === mode) return;
     mode = next;
-    cancelAnimation();
+    stopAnimation();
+    motion = null;
     resetZoomTransform();
-    projection = next === 'flat' ? geoEqualEarth() : geoOrthographic().clipAngle(90);
+    projection = projectionFor(next);
     path = geoPath(projection);
     container.classList.toggle('is-globe', next === 'globe');
     base = null;
@@ -492,8 +648,19 @@ export function createMapView(container: HTMLElement, world: WorldTopology, call
   }
 
   function setAreaCircle(circle: AreaCircle | null) {
+    if (sameCircle(circle, areaCircle)) return;
     areaCircle = circle;
-    if (base !== null) applyBase(base);
+    if (base === null) return;
+    drawAreaCircle();
+    positionCentreMarker();
+  }
+
+  /** The circle lies in the zoom layer, so it follows the viewer's zoom and a fit's move like the land does. */
+  function drawAreaCircle() {
+    radiusPath.setAttribute(
+      'd',
+      areaCircle === null ? '' : (path(geoCircle().center([areaCircle.lon, areaCircle.lat]).radius(radiusDegrees(areaCircle.radiusKm))()) ?? ''),
+    );
   }
 
   function setPicking(next: boolean) {
@@ -516,7 +683,7 @@ export function createMapView(container: HTMLElement, world: WorldTopology, call
     globeDragged = false;
     if (mode !== 'globe' || event.button !== 0 || base === null) return;
     callbacks.onUserMove();
-    cancelAnimation();
+    settleAnimation();
     tooltip.hide();
     globeDrag = { x: event.clientX, y: event.clientY, fit: base };
     surface.setPointerCapture(event.pointerId);
@@ -560,10 +727,7 @@ export function createMapView(container: HTMLElement, world: WorldTopology, call
     graticulePath.setAttribute('d', mode === 'globe' ? (path(geoGraticule10()) ?? '') : '');
     landPath.setAttribute('d', path(land) ?? '');
     bordersPath.setAttribute('d', path(borders) ?? '');
-    radiusPath.setAttribute(
-      'd',
-      areaCircle === null ? '' : (path(geoCircle().center([areaCircle.lon, areaCircle.lat]).radius(radiusDegrees(areaCircle.radiusKm))()) ?? ''),
-    );
+    drawAreaCircle();
     renderRoutes();
     projectAndCluster(inMotion);
   }
@@ -575,7 +739,7 @@ export function createMapView(container: HTMLElement, world: WorldTopology, call
       const point = projection([group.lon, group.lat]);
       return point === null ? [] : [{ group, x: point[0], y: point[1] }];
     });
-    pins = clusterGroups(projected, MAP_SETTINGS.clusterRadiusPx / transform.k).toSorted(
+    pins = clusterGroups(projected, MAP_SETTINGS.clusterRadiusPx / viewScale()).toSorted(
       (a, b) => a.firstStart - b.firstStart || (a.id < b.id ? -1 : 1),
     );
     tree = quadtree<DisplayPin>()
@@ -605,8 +769,7 @@ export function createMapView(container: HTMLElement, world: WorldTopology, call
     meMarker.toggleAttribute('hidden', point === null || circle?.centre !== 'viewer');
     pointMarker.toggleAttribute('hidden', point === null || circle?.centre !== 'point');
     if (point === null) return;
-    const x = transform.applyX(point[0]);
-    const y = transform.applyY(point[1]);
+    const [x, y] = toScreen(point[0], point[1]);
     meMarker.setAttribute('cx', String(x));
     meMarker.setAttribute('cy', String(y));
     pointMarker.setAttribute('transform', `translate(${x},${y})`);
@@ -629,14 +792,11 @@ export function createMapView(container: HTMLElement, world: WorldTopology, call
     surfaceSelection.call(zoomBehavior.transform, zoomIdentity);
     programmaticZoom = false;
     transform = zoomIdentity;
-    zoomLayer.removeAttribute('transform');
-    halftone.removeAttribute('patternTransform');
-    halftone.setAttribute('patternTransform', 'rotate(45)');
+    writeLayerTransform();
   }
 
   function applyZoomTransform() {
-    zoomLayer.setAttribute('transform', transform.toString());
-    halftone.setAttribute('patternTransform', `scale(${1 / transform.k}) rotate(45)`);
+    writeLayerTransform();
     positionPins();
     drawHighlights();
     positionCursor();
@@ -644,9 +804,25 @@ export function createMapView(container: HTMLElement, world: WorldTopology, call
     drawTour();
   }
 
-  function cancelAnimation() {
+  /** The halftone keeps its screen size and angle however the layer is scaled or sheared. */
+  function writeLayerTransform() {
+    if (motion === null && transform === zoomIdentity) {
+      zoomLayer.removeAttribute('transform');
+      halftone.setAttribute('patternTransform', 'rotate(45)');
+    } else if (motion === null) {
+      zoomLayer.setAttribute('transform', transform.toString());
+      halftone.setAttribute('patternTransform', `scale(${1 / transform.k}) rotate(45)`);
+    } else {
+      const inverse = invertAffine(motion);
+      zoomLayer.setAttribute('transform', `matrix(${motion.a} ${motion.b} ${motion.c} ${motion.d} ${motion.e} ${motion.f})`);
+      halftone.setAttribute('patternTransform', `matrix(${inverse.a} ${inverse.b} ${inverse.c} ${inverse.d} 0 0) rotate(45)`);
+    }
+  }
+
+  function stopAnimation() {
     if (animationFrame !== null) cancelAnimationFrame(animationFrame);
     animationFrame = null;
+    fitAnimation = null;
   }
 
   function renderRoutes() {
@@ -691,14 +867,15 @@ export function createMapView(container: HTMLElement, world: WorldTopology, call
     const heads = new Map<string, SVGCircleElement>();
     for (const leg of tourLegs) {
       const progress = Math.min(1, Math.max(0, (tourTime - leg.start) / Math.max(1, leg.end - leg.start)));
-      const dash = leg.length * transform.k;
+      const dash = leg.length * (motion === null ? transform.k : affineMaxStretch(motion));
       leg.element.style.strokeDasharray = `${dash} ${dash}`;
       leg.element.style.strokeDashoffset = `${dash * (1 - progress)}`;
       const onFarSide = leg.length === 0;
       if (progress > 0 && progress < 1 && !onFarSide && !heads.has(leg.bandId)) {
         const tip = leg.element.getPointAtLength(leg.length * progress);
         const stroke = leg.element.getAttribute('stroke') ?? '';
-        heads.set(leg.bandId, s('circle', { class: 'map-tour-head', cx: transform.applyX(tip.x), cy: transform.applyY(tip.y), r: 6.5, fill: stroke }));
+        const [cx, cy] = toScreen(tip.x, tip.y);
+        heads.set(leg.bandId, s('circle', { class: 'map-tour-head', cx, cy, r: 6.5, fill: stroke }));
       }
     }
     tourHeadsLayer.replaceChildren(...heads.values());
@@ -784,7 +961,8 @@ export function createMapView(container: HTMLElement, world: WorldTopology, call
       return;
     }
     for (const pin of pins) {
-      svgPins.get(pin.id)?.setAttribute('transform', `translate(${transform.applyX(pin.x)},${transform.applyY(pin.y)})`);
+      const [x, y] = toScreen(pin.x, pin.y);
+      svgPins.get(pin.id)?.setAttribute('transform', `translate(${x},${y})`);
     }
   }
 
@@ -793,8 +971,7 @@ export function createMapView(container: HTMLElement, world: WorldTopology, call
     context.setTransform(ratio, 0, 0, ratio, 0, 0);
     context.clearRect(0, 0, width, height);
     for (const pin of pins) {
-      const x = transform.applyX(pin.x);
-      const y = transform.applyY(pin.y);
+      const [x, y] = toScreen(pin.x, pin.y);
       if (x < -20 || y < -20 || x > width + 20 || y > height + 20) continue;
       const style = pinStyle(pin, current);
       context.globalAlpha = style.opacity;
@@ -835,10 +1012,13 @@ export function createMapView(container: HTMLElement, world: WorldTopology, call
 
   function placePinLabels() {
     if (props === null) return;
+    if (fitAnimation !== null) {
+      labelsLayer.replaceChildren();
+      return;
+    }
     measureContext.font = MAP_SETTINGS.labelFont;
     const visible = pins.flatMap((pin) => {
-      const x = transform.applyX(pin.x);
-      const y = transform.applyY(pin.y);
+      const [x, y] = toScreen(pin.x, pin.y);
       return x >= 0 && y >= 0 && x <= width && y <= height ? [{ pin, x, y }] : [];
     });
     const candidates = visible
@@ -867,8 +1047,7 @@ export function createMapView(container: HTMLElement, world: WorldTopology, call
     const rings: SVGCircleElement[] = [];
     const hovered: SVGCircleElement[] = [];
     for (const pin of pins) {
-      const cx = transform.applyX(pin.x);
-      const cy = transform.applyY(pin.y);
+      const [cx, cy] = toScreen(pin.x, pin.y);
       if (pin.shows.some((ref) => current.selectedShowIds.has(ref.show.id))) rings.push(s('circle', { class: 'map-ring is-selected', cx, cy, r: pinRadius(pin) + 5 }));
       if (pin.shows.some((ref) => current.highlightedShowIds.has(ref.show.id))) {
         const r = pinRadius(pin) + MAP_SETTINGS.hoverRingGap;
@@ -905,6 +1084,19 @@ export function createMapView(container: HTMLElement, world: WorldTopology, call
       drawTour();
     },
   };
+}
+
+function projectionFor(mode: MapMode): GeoProjection {
+  return mode === 'flat' ? geoEqualEarth() : geoOrthographic().clipAngle(90);
+}
+
+function showPoints(shows: readonly ShowRef[]): LonLat[] {
+  return shows.map((ref): LonLat => [ref.show.geo.lon, ref.show.geo.lat]);
+}
+
+function sameCircle(a: AreaCircle | null, b: AreaCircle | null): boolean {
+  if (a === null || b === null) return a === b;
+  return a.lon === b.lon && a.lat === b.lat && a.radiusKm === b.radiusKm && a.centre === b.centre;
 }
 
 function pinRadius(pin: DisplayPin): number {

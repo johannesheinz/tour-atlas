@@ -1,6 +1,6 @@
 import './styles.css';
 import world from 'virtual:world-topology';
-import { NO_SELECTION, activeArea, createDeriver, showsInArea, soloBandIds, type AppState, type Area, type Derived, type Selection } from './appState.ts';
+import { NO_SELECTION, activeArea, createDeriver, sameWindow, showsInArea, soloBandIds, type AppState, type Area, type Derived, type Selection, type TimeWindow } from './appState.ts';
 import { addDays, formatIsoDate, localToday, parseIsoDate } from './data/dates.ts';
 import type { ShowRef } from './model.ts';
 import { createSelectors } from './selectors.ts';
@@ -21,7 +21,7 @@ import { createSearch } from './view/search.ts';
 import type { SearchEntry } from './view/searchIndex.ts';
 import { applyStyle, applyThemePreference, readThemeTokens, watchSystemTheme, type ThemeTokens } from './view/theme.ts';
 import { DAY_MS } from './view/timeScale.ts';
-import { TIMELINE_SETTINGS, createTimeline } from './view/timeline.ts';
+import { TIMELINE_SETTINGS, createTimeline, fitDomain } from './view/timeline.ts';
 import { FRAME_LAYOUT_QUERY, MAP_SHARE } from './view/layout.ts';
 import { createTimelineControls } from './view/timelineControls.ts';
 import { createMapControls } from './view/mapControls.ts';
@@ -121,9 +121,14 @@ const timeline = createTimeline(requireElement(document, '#timeline', HTMLDivEle
   onHover: (shows) => state.set({ hoverShowIds: idsOf(shows) }),
   onSelect: (shows) => state.set({ selection: shows === null || shows.length === 0 ? NO_SELECTION : { kind: 'shows', showIds: idsOf(shows) } }),
   onWindowChange(window, byUser) {
-    if (byUser) state.set({ timePreset: null });
     clearTimeout(windowTimer);
-    windowTimer = setTimeout(() => state.set({ timeWindow: window }), WINDOW_DEBOUNCE_MS);
+    if (!byUser) {
+      // A programmatic fit reports its target before it moves; a microtask keeps it out of a render in progress.
+      queueMicrotask(() => setTimeWindow(window));
+      return;
+    }
+    state.set({ timePreset: null });
+    windowTimer = setTimeout(() => setTimeWindow(window), WINDOW_DEBOUNCE_MS);
   },
   onShowAllLanes: () => state.set({ hideEmptyLanes: false }),
 }, { maxLanesHeight });
@@ -391,7 +396,7 @@ function renderAll() {
     previousVisibleBands = derived.visibleBands;
     previousArea = derived.area;
     if (firstRender && restoreWindow !== null) {
-      timeline.fitToData(false, [parseIsoDate(restoreWindow.from).getTime(), parseIsoDate(restoreWindow.to).getTime() + DAY_MS]);
+      timeline.fitToData(false, restoreRange(restoreWindow));
       restoreWindow = null;
     } else if (firstRender) {
       const preset = current.timePreset ?? defaultPreset(derived.bandShows, today);
@@ -457,6 +462,27 @@ function renderAll() {
   search.setIndex(select.searchIndex(derived));
   previewPanel.render(current.previewResults, listsLabel);
   scheduleUrlUpdate();
+}
+
+/** An unchanged window keeps its object, so nothing derived from it is worked out again. */
+function setTimeWindow(window: TimeWindow) {
+  if (!sameWindow(state.get().timeWindow, window)) state.set({ timeWindow: window });
+}
+
+/** The window the timeline will report once it has a width, so the first render already shows it. */
+function startWindow(current: AppState): TimeWindow {
+  const derived = derive(current);
+  const today = parseIsoDate(current.today).getTime();
+  const range =
+    restoreWindow !== null
+      ? restoreRange(restoreWindow)
+      : presetWindow(current.timePreset ?? defaultPreset(derived.bandShows, today), derived.visibleShows, today, current.includePastMonth);
+  const [start, end] = range ?? fitDomain(derived.visibleShows, today);
+  return { start, end };
+}
+
+function restoreRange(window: { readonly from: string; readonly to: string }): readonly [number, number] {
+  return [parseIsoDate(window.from).getTime(), parseIsoDate(window.to).getTime() + DAY_MS];
 }
 
 let countryLocator: CountryLocator | null = null;
@@ -1012,6 +1038,7 @@ function refreshTheme() {
   renderAll();
 }
 
+state.set({ timeWindow: startWindow(state.get()) });
 state.subscribe(renderAll);
 const navigation = createNavigation();
 requireElement(document, '#home-link', HTMLAnchorElement).addEventListener('click', (event) => {

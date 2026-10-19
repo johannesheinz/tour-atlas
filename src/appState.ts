@@ -29,6 +29,11 @@ export interface TimeWindow {
   readonly end: number;
 }
 
+export function sameWindow(a: TimeWindow | null, b: TimeWindow | null): boolean {
+  if (a === null || b === null) return a === b;
+  return a.start === b.start && a.end === b.end;
+}
+
 export interface AppState {
   readonly bundled: readonly BandFile[];
   readonly previewResults: readonly PreviewResult[];
