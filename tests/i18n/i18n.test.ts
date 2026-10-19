@@ -130,8 +130,8 @@ describe('formats', () => {
     expect(t().bands(1)).toBe('1 grex');
     expect(t().bands(1234)).toBe(`1${NO_BREAK_SPACE}234 greges`);
     useLocale({ language: 'la', clock: '12', distance: null }, ['la']);
-    expect(formatTime('20:00')).toBe('8:00 p.m.');
-    expect(formatTime('09:30')).toBe('9:30 a.m.');
+    expect(formatTime('20:00')).toBe(`8:00${NO_BREAK_SPACE}p.m.`);
+    expect(formatTime('09:30')).toBe(`9:30${NO_BREAK_SPACE}a.m.`);
   });
 
   it('formats Esperanto with its own calendar words, list conjunction, country names and plurals', () => {
@@ -149,7 +149,7 @@ describe('formats', () => {
     expect(t().shows(0)).toBe('0 koncertoj');
     expect(t().shows(1234)).toBe(`1${NO_BREAK_SPACE}234 koncertoj`);
     useLocale({ language: 'eo', clock: '12', distance: null }, ['eo']);
-    expect(formatTime('20:00')).toBe('8:00 ptm');
+    expect(formatTime('20:00')).toBe(`8:00${NO_BREAK_SPACE}ptm`);
   });
 
   it('formats Latin and Esperanto the same in a browser that has no data for them', async () => {

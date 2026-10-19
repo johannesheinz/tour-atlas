@@ -134,21 +134,28 @@ function withOwnWords(shape: Intl.DateTimeFormat, options: DateOptions, words: F
         return part.value;
     }
   };
+  const joined = <Part extends Intl.DateTimeFormatPart>(parts: readonly Part[], dateOf: (part: Part) => Date) =>
+    parts
+      .map((part, index) => (isGapNextToDayPeriod(parts, index) ? DAY_PERIOD_GAP : word(part, dateOf(part))))
+      .join('');
   return {
     format(date) {
       const day = new Date(date);
-      return shape
-        .formatToParts(day)
-        .map((part) => word(part, day))
-        .join('');
+      return joined(shape.formatToParts(day), () => day);
     },
     formatRange(start, end) {
-      return shape
-        .formatRangeToParts(start, end)
-        .map((part) => word(part, part.source === 'endRange' ? end : start))
-        .join('');
+      return joined(shape.formatRangeToParts(start, end), (part) => (part.source === 'endRange' ? end : start));
     },
   };
+}
+
+/** ICU versions differ on the space before "p.m." (U+0020 or U+202F); our own words get one fixed, unbreakable gap. */
+const DAY_PERIOD_GAP = ' ';
+
+function isGapNextToDayPeriod(parts: readonly Intl.DateTimeFormatPart[], index: number): boolean {
+  const part = parts[index];
+  if (part?.type !== 'literal' || !/^\s+$/u.test(part.value)) return false;
+  return parts[index - 1]?.type === 'dayPeriod' || parts[index + 1]?.type === 'dayPeriod';
 }
 
 function nameAt(names: readonly string[], index: number): string {

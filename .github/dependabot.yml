@@ -10,6 +10,10 @@ updates:
     open-pull-requests-limit: 10
     commit-message:
       prefix: deps
+    ignore:
+      # The types follow the Node version in .nvmrc; bump both together by hand.
+      - dependency-name: "@types/node"
+        update-types: ["version-update:semver-major"]
     groups:
       map-and-scales:
         patterns: ["d3-*", "@types/d3-*", "topojson-*", "@types/topojson-*", "world-atlas"]
