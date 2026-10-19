@@ -44,4 +44,5 @@ Projection: Equal Earth (Šavrič, Patterson, Jenny). Coastlines and borders: Na
 [world-atlas](https://github.com/topojson/world-atlas). Geocoding: Nominatim, © OpenStreetMap contributors
 (ODbL). Fonts: League Gothic, Archivo, Jost and Charis SIL (SIL Open Font License), self-hosted via Fontsource.
 GitHub mark: [Octicons](https://github.com/primer/octicons) (MIT).
+Band names and logos belong to their owners; Tour Atlas is a fan project and not affiliated with any band.
 All bands in `samples/` are fictional. Tour dates in `data/bands/` come from each band's `source.url`.

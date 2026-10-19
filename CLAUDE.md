@@ -88,7 +88,6 @@ Only for work that needs judgement; everything checkable is a tool or a CI job.
 - Keep the transfer size (gzipped `dist/index.html` plus the fonts of the heaviest style) under 800 kB at 50 bands / 5,000 shows.
   Every hosted font belongs to a style in `src/data/styles.ts`; browsers download only the active style's fonts.
 - Never send requests to Nominatim from tests or CI; tests inject a fake fetch.
-- The repository is local-only for now; do not add a remote or push.
 - Comments only where the code cannot say it; prefer descriptive names.
 - No interface text in code: add it to `src/i18n/messages.ts` and every catalog. Dates, times and place
   names go through `src/view/format.ts` (Intl in the active locale, own words for Latin and Esperanto), never hand-built.
