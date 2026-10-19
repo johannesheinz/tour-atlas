@@ -78,8 +78,13 @@ npm run demo-video
 Builds the app, serves `dist/` with Vite's preview server, plays a scripted 50-second tour through it in
 headless Chromium (title card, map and timeline, a tour, shows around Stockholm, filters, sharing, the phone
 layout, end card) and encodes it with ffmpeg to `docs/demo.mp4` (1920x1080, H.264), plus the poster
-`docs/demo-poster.jpg` from the Stockholm scene that README.md links. Frames go to a temporary directory
-under `.cache/`, removed after a successful run; on failure the files in `docs/` stay untouched.
+`docs/demo-poster.jpg` from the Stockholm scene. Frames go to a temporary directory under `.cache/`, removed
+after a successful run; on failure the files in `docs/` stay untouched.
+
+README.md plays a copy uploaded to GitHub, because GitHub only plays uploaded videos inline. After a new
+recording, upload it again: drag `docs/demo.mp4` into the comment box of a new issue, copy the
+`https://github.com/user-attachments/assets/…` link it inserts (no need to create the issue) and replace the
+link in README.md.
 
 It needs ffmpeg on the `PATH` and the Chromium build that the pinned `playwright-core` expects (or
 `TOUR_ATLAS_CHROMIUM`, see above). The script, its overlay (cursor, captions, cards) and the phone frame page
