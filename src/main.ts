@@ -1,3 +1,4 @@
+import { startup } from './startup.ts';
 import './styles.css';
 import world from 'virtual:world-topology';
 import { NO_SELECTION, activeArea, createDeriver, sameWindow, showsInArea, soloBandIds, type AppState, type Area, type Derived, type Selection, type TimeWindow } from './appState.ts';
@@ -1082,3 +1083,4 @@ requireElement(document, '#home-link', HTMLAnchorElement).addEventListener('clic
   navigation.goHome();
 });
 renderAll();
+startup.finishAfterFirstFrame();

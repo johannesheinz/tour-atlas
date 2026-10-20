@@ -28,6 +28,8 @@ export const en: Messages = {
     footerPrivacy: 'No cookies, no tracking, no network requests. Every file you check stays in this tab.',
     dropFiles: 'Drop band files to check them',
     dropFilesNote: 'Checked in your browser. Nothing is uploaded.',
+    loading: 'Loading tour dates…',
+    startupFailed: 'Tour Atlas could not start. Reload the page to try again.',
     sidebarToggle: (visible, total) => `Bands, places and genres (${visible} of ${total} bands shown)`,
   },
   sheet: {

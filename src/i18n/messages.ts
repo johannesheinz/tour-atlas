@@ -36,6 +36,8 @@ export interface Messages {
     readonly footerPrivacy: Text;
     readonly dropFiles: Text;
     readonly dropFilesNote: Text;
+    readonly loading: Text;
+    readonly startupFailed: Text;
     readonly sidebarToggle: (visible: number, total: number) => string;
   };
   /** The bottom sheet that holds the lists on phones. */

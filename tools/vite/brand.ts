@@ -19,7 +19,8 @@ export function injectBrand(html: string, markSvg: string, faviconSvg: string): 
   if (!html.includes('</head>')) throw new Error('brand: index.html has no </head> for the favicon link');
   const mark = markSvg.trim();
   if (!mark.startsWith('<svg ')) throw new Error('brand: the mark file must start with <svg');
-  const decoratedMark = mark.replace('<svg ', '<svg class="brand-mark" aria-hidden="true" ');
+  // The size attributes keep the mark at text size should the page ever paint before its stylesheet applies.
+  const decoratedMark = mark.replace('<svg ', '<svg class="brand-mark" aria-hidden="true" width="1em" height="1em" ');
   const iconLink = `<link rel="icon" type="image/svg+xml" href="${faviconDataUri(faviconSvg)}" />`;
   return html.replace(BRAND_MARK_PLACEHOLDER, () => decoratedMark).replace('</head>', () => `  ${iconLink}\n  </head>`);
 }

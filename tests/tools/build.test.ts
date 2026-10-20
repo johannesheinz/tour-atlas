@@ -4,6 +4,7 @@ import type { BandFile } from '../../src/data/types.ts';
 import { StaticStore } from '../../src/store/StaticStore.ts';
 import { BRAND_MARK_PLACEHOLDER, faviconDataUri, injectBrand } from '../../tools/vite/brand.ts';
 import { injectContentSecurityPolicy } from '../../tools/vite/csp.ts';
+import { loadOrderProblems, orderForLoading } from '../../tools/vite/loadOrder.ts';
 import { SOCIAL_CARD_TAGS, escapeAttribute, injectSocialCard, parseSiteUrl, pngDimensions, socialCardProblems } from '../../tools/vite/socialCard.ts';
 import { slimWorldTopology } from '../../tools/vite/worldTopology.ts';
 import { makeFile, makeShow } from '../helpers.ts';
@@ -25,13 +26,59 @@ describe('injectContentSecurityPolicy', () => {
   });
 });
 
+describe('orderForLoading', () => {
+  const singleFileOutput = [
+    '<head>',
+    '    <meta charset="utf-8" />',
+    '    <title>T</title>',
+    '    <script type="module">if (a < b) run("$&");</script>',
+    '    <style>body{color:red}</style>',
+    '  </head>',
+    '  <body>',
+    '    <h1>Tour Atlas</h1>',
+    '  </body>',
+  ].join('\n');
+
+  it('puts the stylesheet before the title and the script at the end of the body, unchanged', () => {
+    const result = orderForLoading(singleFileOutput);
+    expect(result.indexOf('<style>body{color:red}</style>\n    <title>T</title>')).toBeGreaterThan(result.indexOf('<meta charset'));
+    expect(result).toContain('<h1>Tour Atlas</h1>\n    <script type="module">if (a < b) run("$&");</script>\n  </body>');
+    expect(loadOrderProblems(result)).toEqual([]);
+  });
+
+  it('keeps the CSP hashes, since the inline contents do not change', () => {
+    const policy = (html: string) => /content="([^"]+)"/.exec(injectContentSecurityPolicy(html))?.[1];
+    expect(policy(orderForLoading(singleFileOutput))).toBe(policy(singleFileOutput));
+  });
+
+  it('refuses output it cannot order unambiguously', () => {
+    expect(() => orderForLoading(singleFileOutput.replace('</style>', '</style><style>p{}</style>'))).toThrow(/exactly one inline <style>, found 2/);
+    expect(() => orderForLoading(singleFileOutput.replace(/<script[^]*<\/script>/, ''))).toThrow(/exactly one inline <script>, found 0/);
+    expect(() => orderForLoading(singleFileOutput.replace('<title>T</title>', ''))).toThrow(/needs a <title>/);
+  });
+});
+
+describe('loadOrderProblems', () => {
+  it('reports a stylesheet after the script and a script before the page content', () => {
+    expect(loadOrderProblems('<head><script type="module">x()</script><style>p{}</style></head><body></body>')).toEqual([
+      'the inline <style> must come before the first <script> and <body>, or the page paints unstyled',
+      'the inline <script> must come after the page content in <body>, or nothing shows while it downloads',
+    ]);
+    expect(loadOrderProblems('<head></head><body><style>p{}</style><script>x()</script></body>')).toEqual([
+      'the inline <style> must come before the first <script> and <body>, or the page paints unstyled',
+    ]);
+    expect(loadOrderProblems('<head><style>p{}</style></head><body><noscript>No JavaScript</noscript><script>x()</script></body>')).toEqual([]);
+    expect(loadOrderProblems('<head></head><body></body>')).toEqual(['index.html needs an inline <style>, an inline <script> and a <body>']);
+  });
+});
+
 describe('injectBrand', () => {
   const mark = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><circle r="1"/></svg>';
   const favicon = '<svg xmlns="http://www.w3.org/2000/svg">\n  <path d="M0 0"/>\n</svg>\n';
 
   it('puts the mark, hidden from screen readers, where the placeholder is and links the favicon inline', () => {
     const result = injectBrand(`<head><title>T</title></head><h1>${BRAND_MARK_PLACEHOLDER}Tour Atlas</h1>`, mark, favicon);
-    expect(result).toContain('<h1><svg class="brand-mark" aria-hidden="true" xmlns=');
+    expect(result).toContain('<h1><svg class="brand-mark" aria-hidden="true" width="1em" height="1em" xmlns=');
     expect(result).toContain(`<link rel="icon" type="image/svg+xml" href="${faviconDataUri(favicon)}" />\n  </head>`);
     expect(result).not.toContain(BRAND_MARK_PLACEHOLDER);
   });
@@ -48,7 +95,7 @@ describe('injectBrand', () => {
 
   it('works with the real index.html and brand files', () => {
     const result = injectBrand(readFileSync('index.html', 'utf8'), readFileSync('src/brand/mark.svg', 'utf8'), readFileSync('src/brand/favicon.svg', 'utf8'));
-    expect(result).toMatch(/<a class="wordmark-link"[^>]*><svg class="brand-mark" aria-hidden="true"[^]*<\/svg>Tour Atlas<\/a><\/h1>/);
+    expect(result).toMatch(/<a class="wordmark-link"[^>]*><svg class="brand-mark" aria-hidden="true" width="1em" height="1em"[^]*<\/svg>Tour Atlas<\/a><\/h1>/);
     expect(result).toContain('<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,');
   });
 });

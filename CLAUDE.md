@@ -60,6 +60,10 @@ npm run check          # everything CI runs, in order
   tags (texts in the `<!-- social-card -->` block of `index.html`) and `og-card.png` in dist; unset means neither,
   anything else set fails the build. `check-dist` allows exactly `og-card.png` (1200x630, < 300 kB, named by
   `og:image`, outside the budget); `--require-social-card` makes it mandatory (deploy and the CI card build).
+- Load order: `tools/vite/loadOrder.ts` puts the inlined `<style>` first in `<head>` and the module script at the end of
+  `<body>` (check-dist enforces it), so slow connections paint the header and the loading note at once.
+  `<html class="is-loading">` hides the half-built interface until `src/startup.ts` ends it after the first render;
+  a start-up error shows `page.startupFailed` instead.
 - `src/share.ts` builds share links from the current state, without `lang`/`clock`/`units`; `src/view/sharePanel.ts` is the popover.
 
 ## Skills

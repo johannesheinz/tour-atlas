@@ -161,6 +161,8 @@ export const la: Messages = {
     footerPrivacy: 'Nulla crustula, nulla vestigatio, nullae petitiones retiales. Fasciculi quos inspicis in hac scheda manent.',
     dropFiles: 'Fasciculos gregum huc demitte, ut inspicias',
     dropFilesNote: 'Hic inspiciuntur. Nihil imponitur.',
+    loading: 'Dies itinerum onerantur…',
+    startupFailed: 'Tour Atlas incipere non potuit. Paginam renova ut iterum temptes.',
     sidebarToggle: (visible, total) => `Greges, loca et genera (${visible} ex ${total} gregibus in conspectu)`,
   },
   sheet: {

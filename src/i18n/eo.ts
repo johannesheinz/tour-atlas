@@ -160,6 +160,8 @@ export const eo: Messages = {
     footerPrivacy: 'Neniuj kuketoj, neniu spurado, neniuj retaj petoj. Dosieroj, kiujn vi kontrolas, restas en ĉi tiu langeto.',
     dropFiles: 'Demetu dosierojn de bandoj por kontroli ilin',
     dropFilesNote: 'Kontrolataj en via retumilo. Nenio estas alŝutata.',
+    loading: 'Ŝargante turneajn datojn…',
+    startupFailed: 'Tour Atlas ne povis starti. Reŝargu la paĝon por reprovi.',
     sidebarToggle: (visible, total) => `Bandoj, lokoj kaj ĝenroj (${visible} el ${total} bandoj videblaj)`,
   },
   sheet: {

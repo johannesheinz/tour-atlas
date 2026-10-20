@@ -102,6 +102,8 @@ export const fi: Messages = {
     footerPrivacy: 'Ei evästeitä, ei seurantaa, ei verkkopyyntöjä. Tarkistamasi tiedostot pysyvät tällä välilehdellä.',
     dropFiles: 'Tarkista yhtyetiedostoja pudottamalla ne tähän',
     dropFilesNote: 'Tarkistus tehdään selaimessasi. Mitään ei lähetetä.',
+    loading: 'Ladataan kiertuepäiviä…',
+    startupFailed: 'Tour Atlas ei käynnistynyt. Lataa sivu uudelleen ja yritä uudestaan.',
     sidebarToggle: (visible, total) => `Yhtyeet, paikat ja tyylilajit (${visible}/${total} yhtyettä näkyvissä)`,
   },
   sheet: {

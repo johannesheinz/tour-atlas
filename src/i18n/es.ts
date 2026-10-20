@@ -102,6 +102,8 @@ export const es: Messages = {
     footerPrivacy: 'Sin cookies, sin rastreo, sin peticiones de red. Los archivos que revisas se quedan en esta pestaña.',
     dropFiles: 'Suelta archivos de bandas para revisarlos',
     dropFilesNote: 'Se comprueban en tu navegador. No se sube nada.',
+    loading: 'Cargando fechas de gira…',
+    startupFailed: 'Tour Atlas no ha podido arrancar. Recarga la página para volver a intentarlo.',
     sidebarToggle: (visible, total) => `Bandas, lugares y géneros (${visible} de ${total} bandas visibles)`,
   },
   sheet: {

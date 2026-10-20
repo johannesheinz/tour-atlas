@@ -102,6 +102,8 @@ export const sv: Messages = {
     footerPrivacy: 'Inga kakor, ingen spårning, inga nätverksanrop. Filer du granskar stannar i den här fliken.',
     dropFiles: 'Släpp bandfiler här för att granska dem',
     dropFilesNote: 'Granskas i din webbläsare. Inget laddas upp.',
+    loading: 'Laddar turnédatum…',
+    startupFailed: 'Tour Atlas kunde inte starta. Ladda om sidan för att försöka igen.',
     sidebarToggle: (visible, total) => `Band, platser och genrer (${visible} av ${total} band visas)`,
   },
   sheet: {

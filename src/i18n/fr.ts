@@ -102,6 +102,8 @@ export const fr: Messages = {
     footerPrivacy: 'Aucun cookie, aucun pistage, aucune requête réseau. Tout fichier que vous vérifiez reste dans cet onglet.',
     dropFiles: 'Déposez des fichiers de groupes pour les vérifier',
     dropFilesNote: 'Vérifiés dans votre navigateur. Rien n’est envoyé.',
+    loading: 'Chargement des dates de tournée…',
+    startupFailed: 'Tour Atlas n’a pas pu démarrer. Rechargez la page pour réessayer.',
     sidebarToggle: (visible, total) => `Groupes, lieux et genres (${visible} groupes affichés sur ${total})`,
   },
   sheet: {

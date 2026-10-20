@@ -102,6 +102,8 @@ export const de: Messages = {
     footerPrivacy: 'Keine Cookies, kein Tracking, keine Netzwerkanfragen. Geprüfte Dateien bleiben in diesem Tab.',
     dropFiles: 'Banddateien hier ablegen, um sie zu prüfen',
     dropFilesNote: 'Die Prüfung läuft im Browser. Nichts wird hochgeladen.',
+    loading: 'Tourdaten werden geladen …',
+    startupFailed: 'Tour Atlas konnte nicht starten. Lade die Seite neu, um es noch einmal zu versuchen.',
     sidebarToggle: (visible, total) => `Bands, Orte und Genres (${visible} von ${total} Bands sichtbar)`,
   },
   sheet: {

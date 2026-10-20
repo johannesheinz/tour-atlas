@@ -3,12 +3,14 @@ import { join, relative } from 'node:path';
 import { gzipSync } from 'node:zlib';
 import { parseArguments, runCli, UsageError } from './shared/files.ts';
 import { STYLES, STYLE_FONT_FAMILIES, type Style } from '../src/data/styles.ts';
+import { loadOrderProblems } from './vite/loadOrder.ts';
 import { SOCIAL_CARD_FILE, socialCardProblems } from './vite/socialCard.ts';
 
 const USAGE = `Usage: node tools/check-dist.ts <dist-dir> [--budget-kb <n>] [--require-social-card]
 
-Checks the build output: index.html with every script and style inlined plus self-hosted
-fonts next to it, no remote resources, no storage or network APIs, and a transfer size
+Checks the build output: index.html with every script and style inlined (the stylesheet
+first in <head>, the script last in <body>) plus self-hosted fonts next to it, no remote
+resources, no storage or network APIs, and a transfer size
 (gzipped HTML + the fonts of the heaviest style) within the budget (default 800 kB).
 og-card.png, when present, must be the 1200x630 image the OpenGraph tags name; crawlers
 fetch it, browsers never do, so it is outside the budget. --require-social-card fails
@@ -59,6 +61,7 @@ runCli(USAGE, () => {
     if (pattern.test(html)) problems.push(`contains ${description}`);
   }
   if (!html.includes('http-equiv="Content-Security-Policy"')) problems.push('has no Content-Security-Policy meta tag');
+  problems.push(...loadOrderProblems(html));
   const socialCard = files.includes(SOCIAL_CARD_FILE) ? readFileSync(join(distDir, SOCIAL_CARD_FILE)) : null;
   problems.push(...socialCardProblems(html, socialCard, args.flags.has('require-social-card')));
   if (!/<link rel="icon" type="image\/svg\+xml" href="data:image\/svg\+xml,/.test(html)) problems.push('has no inline SVG favicon; browsers would request /favicon.ico');

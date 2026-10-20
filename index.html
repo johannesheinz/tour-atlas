@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" class="is-loading">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -56,6 +56,12 @@
           <div class="timeline" id="timeline"></div>
         </section>
       </main>
+
+      <div class="boot-notes">
+        <p class="loading-note" data-i18n="loading">Loading tour dates…</p>
+        <p class="startup-error" role="alert" data-i18n="startupFailed">Tour Atlas could not start. Reload the page to try again.</p>
+        <noscript><p class="noscript-note">Tour Atlas needs JavaScript to show the map and timeline.</p></noscript>
+      </div>
 
       <footer class="colophon">
         <p data-i18n="footerSources">Projection: Equal Earth. Coastlines: Natural Earth via world-atlas. Geocoded venues: © OpenStreetMap contributors (ODbL).</p>

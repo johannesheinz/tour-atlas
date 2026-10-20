@@ -5,6 +5,7 @@ import { bandDataPlugin } from './tools/vite/bandData.ts';
 import { brandPlugin } from './tools/vite/brand.ts';
 import { cspPlugin } from './tools/vite/csp.ts';
 import { hostedAssetsPlugin } from './tools/vite/hostedAssets.ts';
+import { loadOrderPlugin } from './tools/vite/loadOrder.ts';
 import { logoSizesPlugin } from './tools/vite/logoSizes.ts';
 import { parseSiteUrl, socialCardPlugin } from './tools/vite/socialCard.ts';
 import { worldTopologyPlugin } from './tools/vite/worldTopology.ts';
@@ -26,6 +27,7 @@ export default defineConfig({
     socialCardPlugin(siteUrl, bandsDir, resolve('src/brand/og-card.png')),
     viteSingleFile({ removeViteModuleLoader: true }),
     hostedAssetsPlugin(),
+    loadOrderPlugin(),
     cspPlugin(),
   ],
   build: {
