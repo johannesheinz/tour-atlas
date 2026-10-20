@@ -9,8 +9,9 @@ const USAGE = `Usage: node tools/og-card.ts
 
 Builds src/brand/og-card.svg from the globe mark (src/brand/mark.svg) and the wordmark and
 tagline, outlined from the Fontsource font files, and renders it to src/brand/og-card.png
-(${SOCIAL_CARD_WIDTH}x${SOCIAL_CARD_HEIGHT}), the image every shared link shows. Run it after changing the mark
-or the card's text and commit both files; the build only copies the PNG.`;
+(${SOCIAL_CARD_WIDTH}x${SOCIAL_CARD_HEIGHT}), the image every shared link shows. It also renders the mark and
+wordmark on a transparent background to docs/brand/logo-light.webp and logo-dark.webp for the README.
+Run it after changing the mark or the card's text and commit all files; the build only copies the PNG.`;
 
 const MARK_PATH = 'src/brand/mark.svg';
 const SVG_PATH = 'src/brand/og-card.svg';
@@ -34,6 +35,16 @@ const WORDMARK_BASELINE = 322;
 const TAGLINE_FIRST_BASELINE = 408;
 const RIGHT_MARGIN = 64;
 
+/**
+ * The README logo, one per GitHub theme. The globe's paper takes the page's background, as the app's mark takes its
+ * style's stock, so only the ink details show; the ink is Stage lights' ink for that theme.
+ */
+const README_LOGOS = [
+  { path: 'docs/brand/logo-light.webp', paper: '#ffffff', ink: '#1f2a35' },
+  { path: 'docs/brand/logo-dark.webp', paper: '#0d1117', ink: '#d6dee6' },
+] as const;
+const LOGO = { height: 160, markSize: 160, gap: 30, wordmarkSize: 132, baseline: 128 } as const;
+
 runCli(USAGE, async () => {
   const args = parseArguments(process.argv.slice(2), [], []);
   if (args.positional.length > 0) throw new UsageError('og-card takes no arguments');
@@ -53,8 +64,39 @@ runCli(USAGE, async () => {
   if (kb > MAX_SOCIAL_CARD_KB) throw new Error(`the card is ${kb.toFixed(1)} kB; it must stay under ${MAX_SOCIAL_CARD_KB} kB`);
   writeFileSync(PNG_PATH, png);
   console.log(`Wrote ${SVG_PATH} and ${PNG_PATH} (${kb.toFixed(1)} kB)`);
+
+  for (const logo of README_LOGOS) {
+    const webp = await sharp(Buffer.from(logoSvg(readFileSync(MARK_PATH, 'utf8'), wordmarkParts, logo.paper, logo.ink)))
+      .webp({ lossless: true, effort: 6 })
+      .toBuffer();
+    writeFileSync(logo.path, webp);
+    console.log(`Wrote ${logo.path} (${(webp.byteLength / 1000).toFixed(1)} kB)`);
+  }
   return 0;
 });
+
+function logoSvg(markSvg: string, wordmarkParts: readonly WordmarkPart[], paper: string, ink: string): string {
+  const mark = markSvg.trim();
+  if (!mark.startsWith('<svg ')) throw new Error(`${MARK_PATH} must start with <svg`);
+  const recoloured = mark.replaceAll('fill="#e3e4df"', `fill="${paper}"`).replaceAll('stroke="#e3e4df"', `stroke="${paper}"`);
+  if (recoloured.includes('#e3e4df')) throw new Error(`${MARK_PATH} uses its paper colour somewhere the logo does not recolour`);
+  const placedMark = recoloured.replace('<svg ', `<svg x="0" y="${(LOGO.height - LOGO.markSize) / 2}" width="${LOGO.markSize}" height="${LOGO.markSize}" color="${ink}" `);
+  let penX = LOGO.markSize + LOGO.gap;
+  const paths = wordmarkParts.map((part) => {
+    const outline = part.font.textPath(part.text, LOGO.wordmarkSize, 0);
+    const path = `  <path transform="translate(${penX} ${LOGO.baseline})" fill="${ink}" d="${outline.d}"/>`;
+    penX += outline.width;
+    return path;
+  });
+  const width = Math.ceil(penX);
+  return [
+    `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${LOGO.height}" viewBox="0 0 ${width} ${LOGO.height}">`,
+    placedMark.replace(/\n/g, '\n  ').replace(/^/, '  '),
+    ...paths,
+    '</svg>',
+    '',
+  ].join('\n');
+}
 
 interface WordmarkPart {
   readonly text: string;
