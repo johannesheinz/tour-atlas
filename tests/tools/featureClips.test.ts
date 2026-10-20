@@ -13,7 +13,7 @@ import {
   spliceSpans,
   WEBP_QUALITIES,
 } from '../../tools/shared/featureClips.ts';
-import type { ScreencastFrame } from '../../tools/shared/demoVideo.ts';
+import type { ScreencastFrame } from '../../tools/shared/screenRecording.ts';
 
 const frames: ScreencastFrame[] = [
   { file: 'a.jpg', timestamp: 100 },

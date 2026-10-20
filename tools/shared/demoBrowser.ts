@@ -1,4 +1,4 @@
-/** Browser, preview server and encoder plumbing shared by tools/demo-video.ts and tools/feature-clips.ts. */
+/** Browser, preview server and encoder plumbing for tools/feature-clips.ts. */
 import { spawnSync } from 'node:child_process';
 import { existsSync, renameSync, statSync, writeFileSync } from 'node:fs';
 import { createServer } from 'node:net';
@@ -13,7 +13,7 @@ import {
   type GeoPoint,
   type ScreencastFrame,
   type ScreenPoint,
-} from './demoVideo.ts';
+} from './screenRecording.ts';
 
 export const CHROMIUM_VARIABLE = 'TOUR_ATLAS_CHROMIUM';
 export const DIST_DIR = 'dist';

@@ -22,7 +22,7 @@ import {
   type Director,
   type Recording,
 } from './shared/demoBrowser.ts';
-import { concatList, type ScreenPoint } from './shared/demoVideo.ts';
+import { concatList, type ScreenPoint } from './shared/screenRecording.ts';
 import {
   CLIP_BUDGET_BYTES,
   checkClipDuration,

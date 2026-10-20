@@ -1,5 +1,5 @@
-// Injected into every page of the demo recording (Playwright init script): a visible mouse cursor,
-// captions and the title card. Driven by tools/demo-video.ts through globalThis.__demo.
+// Injected into every page of a desktop feature clip (Playwright init script): a visible mouse cursor,
+// captions and the title card. Driven by tools/feature-clips.ts through globalThis.__demo.
 (() => {
   const SVG = 'http://www.w3.org/2000/svg';
   const STYLE = `

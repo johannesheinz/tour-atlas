@@ -2,17 +2,12 @@ import { describe, expect, it } from 'vitest';
 import {
   calibrateScreen,
   concatList,
-  encodeArguments,
-  frameAt,
   geoPointAt,
   parseAroundPoint,
-  playBadgePixels,
-  posterArguments,
   screenPointOf,
   timedFrames,
-  totalDuration,
   type ScreencastFrame,
-} from '../../tools/shared/demoVideo.ts';
+} from '../../tools/shared/screenRecording.ts';
 
 const frames: ScreencastFrame[] = [
   { file: '/tmp/frames/00000.jpg', timestamp: 1000 },
@@ -35,12 +30,6 @@ describe('timedFrames', () => {
   });
 });
 
-describe('totalDuration', () => {
-  it('runs from the first frame to the stop', () => {
-    expect(totalDuration(frames, 1002)).toBeCloseTo(2);
-  });
-});
-
 describe('concatList', () => {
   it('lists every frame with its duration and repeats the last file', () => {
     expect(concatList(frames, 1002).split('\n')).toEqual([
@@ -57,14 +46,6 @@ describe('concatList', () => {
 
   it('escapes single quotes in paths', () => {
     expect(concatList([{ file: "/tmp/it's/0.jpg", timestamp: 1 }], 2)).toContain("file '/tmp/it'\\''s/0.jpg'");
-  });
-});
-
-describe('frameAt', () => {
-  it('picks the frame on screen at a moment', () => {
-    expect(frameAt(frames, 1000.3).file).toBe('/tmp/frames/00001.jpg');
-    expect(frameAt(frames, 1000.5).file).toBe('/tmp/frames/00002.jpg');
-    expect(() => frameAt(frames, 999)).toThrow(/no frame/);
   });
 });
 
@@ -102,71 +83,5 @@ describe('screen calibration', () => {
     const origin = { screen: { x: 100, y: 200 }, geo: { lat: 60, lon: 10 } };
     expect(() => calibrateScreen(origin, { screen: { x: 100.5, y: 400 }, geo: { lat: 50, lon: 20 } })).toThrow(/at least a pixel/);
     expect(() => calibrateScreen(origin, { screen: { x: 300, y: 400 }, geo: { lat: 60, lon: 20 } })).toThrow(/same longitude or latitude/);
-  });
-});
-
-describe('encodeArguments', () => {
-  it('encodes the frame list as H.264 with a fade in and out', () => {
-    expect(encodeArguments('/work/frames.txt', 50.25, '/work/demo.mp4')).toEqual([
-      '-y',
-      '-loglevel',
-      'error',
-      '-f',
-      'concat',
-      '-safe',
-      '0',
-      '-i',
-      '/work/frames.txt',
-      '-t',
-      '50.250',
-      '-vf',
-      'fps=30,fade=t=in:st=0:d=0.6,fade=t=out:st=49.350:d=0.85,format=yuv420p',
-      '-c:v',
-      'libx264',
-      '-preset',
-      'slow',
-      '-crf',
-      '18',
-      '-profile:v',
-      'high',
-      '-movflags',
-      '+faststart',
-      '-an',
-      '/work/demo.mp4',
-    ]);
-  });
-
-  it('refuses a recording too short for both fades', () => {
-    expect(() => encodeArguments('/work/frames.txt', 1.4, '/work/demo.mp4')).toThrow(/too short/);
-  });
-});
-
-describe('posterArguments', () => {
-  it('scales the frame to 1280x720 and overlays the raw RGBA badge', () => {
-    const args = posterArguments('/work/frames/00420.jpg', '/work/badge.rgba', '/work/poster.jpg');
-    expect(args.slice(args.indexOf('-f'), args.indexOf('-f') + 7)).toEqual(['-f', 'rawvideo', '-pix_fmt', 'rgba', '-s', '1280x720', '-i']);
-    expect(args).toContain('[0:v]scale=1280:720:flags=lanczos[frame];[frame][1:v]overlay=format=auto');
-    expect(args.at(-1)).toBe('/work/poster.jpg');
-  });
-});
-
-describe('playBadgePixels', () => {
-  const width = 400;
-  const height = 300;
-  const pixels = playBadgePixels(width, height);
-  const at = (x: number, y: number) => Array.from(pixels.subarray((y * width + x) * 4, (y * width + x) * 4 + 4));
-
-  it('dims the whole frame slightly', () => {
-    expect(pixels.length).toBe(width * height * 4);
-    expect(at(0, 0)).toEqual([0, 0, 0, 46]);
-  });
-
-  it('draws a white triangle on a dark disc with a white ring', () => {
-    expect(at(width / 2, height / 2)).toEqual([255, 255, 255, 255]);
-    const disc = at(width / 2 - 40, height / 2);
-    expect(disc.slice(0, 3)).toEqual([10, 12, 20].map((channel) => Math.round((channel * 0.78) / (0.78 + 0.18 * 0.22))));
-    expect(disc[3]).toBe(Math.round((0.78 + 0.18 * 0.22) * 255));
-    const ring = at(width / 2, height / 2 - 64);
-    expect(ring.slice(0, 3).every((channel) => channel > 200)).toBe(true);
   });
 });

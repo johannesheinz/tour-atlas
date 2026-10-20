@@ -22,7 +22,6 @@
     "logos": "node tools/logos.ts data/bands",
     "logo:preview": "node tools/logos.ts --preview",
     "og-card": "node tools/og-card.ts",
-    "demo-video": "npm run build && node tools/demo-video.ts",
     "feature-clips": "npm run build && node tools/feature-clips.ts",
     "tags": "node tools/tags.ts",
     "review": "node tools/review.ts",

@@ -1,5 +1,5 @@
 /** Pure helpers for tools/feature-clips.ts: which parts of a recording make a clip, cropping, and the encoder command lines. */
-import type { ScreencastFrame, ScreenPoint } from './demoVideo.ts';
+import type { ScreencastFrame, ScreenPoint } from './screenRecording.ts';
 
 export const CLIP_FPS = 12;
 export const CLIP_SECONDS = { min: 3, max: 7 } as const;
