@@ -1,6 +1,6 @@
 {
   "name": "tour-atlas",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "private": true,
   "description": "Concert tour dates for multiple bands on a world map with an aligned, zoomable timeline.",
   "license": "MIT",
