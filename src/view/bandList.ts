@@ -118,7 +118,7 @@ export function createBandList(container: HTMLElement, callbacks: BandListCallba
     const badge = h('span', { class: 'preview-badge' }, t().bandList.previewBadge);
     const meta = h('span', { class: 'band-meta' });
     const identity = createBandIdentity('is-band-row');
-    const select = h('button', { type: 'button', class: 'band-select', 'aria-label': t().bandList.listDates(band.file.band.name) }, identity.element, meta);
+    const select = h('button', { type: 'button', class: 'band-select', 'aria-label': t().bandList.listDates(band.file.band.name), 'data-row-key': bandId }, identity.element, meta);
     const element = h('li', { class: 'band-row' }, checkbox, select, badge);
 
     select.addEventListener('click', () => callbacks.onSelect(bandId));

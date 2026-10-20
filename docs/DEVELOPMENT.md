@@ -160,13 +160,37 @@ above the closed bottom sheet and never move; the page itself does not scroll. T
 - Handle: a button with `aria-expanded`. Tap, Enter or Space toggle between closed and half (and close from full);
   the up and down arrow keys step one height and announce it; touch, pen or mouse drag it, and a release snaps to
   the next height in the direction of a fling or else to the nearest one. Focus stays on the handle, which the
-  sheet's content follows in tab order; closing moves focus from inside the sheet back to the handle.
+  sheet's content follows in tab order; closing moves focus from inside the sheet back to the handle. A release
+  that rests before letting go counts as still, so it snaps to the nearest height rather than flinging on.
 - Opening a band, place, genre or search result (from the lists, a pin, search) shows it in the sheet at half, so
   its route stays in view above, and announces it. Focus moves only where it did before (into the panel when
   opened from a list). Back to bands, browser Back and Escape close the drill-down and keep the height; with the
   lists showing, Escape closes the sheet.
-- The map frames fits in the part above the resting sheet (`setHiddenBottom`), and the map's status bar rises with
-  the sheet's top edge, also while it is dragged or slides.
+- Focus after a drill-down closes (all layouts, `src/view/sidebar.ts`, logic in `src/view/drillDownFocus.ts`):
+  when focus was in the drill-down, or was lost and no click elsewhere (such as on the map) closed it, it returns
+  to the control that opened it: the band, place or genre row (found again by its `data-row-key` when the list
+  has redrawn), the search field or the map's keyboard cursor, while it is shown and not inert. Otherwise it goes
+  to the sheet's handle on phones, or to the active tab (the preview panel's first control) elsewhere. A selection
+  opened from the previews steps back to its preview card first.
+- The map frames fits in the part above the resting sheet (`setHiddenBottom`, which the sheet calls as it starts to
+  move, with the map frame measured then), and the map's status bar rises with the sheet's top edge, also while it
+  is dragged or slides.
+- Whenever the sheet comes to rest at half (handle, drag, keys, a pin, a list, search or a URL),
+  `MapView.uncoverPins` keeps clear of it the pins the viewer saw before it moved (centres at least
+  `uncoverMarginPx` inside the map's visible part then) and the selected pins in the map frame. When any of them is
+  within `uncoverMarginPx` of the sheet's top edge or under it, the map pans up just far enough, or zooms out
+  (keeping the topmost pin in place) when their spread does not fit; it uses the fit animation, so the flat map
+  moves by transforms. A fit since the sheet started moving (opening a band, place, genre or search result) framed
+  its shows above the sheet already, so then only the selected pins count, checked once that fit lands. The pure
+  geometry is `src/view/uncover.ts`. At full height nothing moves; at closed the view stays as it is (no jump back),
+  since closing only uncovers more map and moving it again would undo what the viewer looked at.
+- Popovers (`src/view/popover.ts`, placement in `src/view/popoverPlacement.ts`): an open one is fixed to the window
+  where its stylesheet puts it, so the stage's scrolling cannot cut it off and it lies over the sheet at every
+  height; it flips to the other side of its anchor when it would leave the window and fits there, else shifts, and
+  scrolls when the window is shorter than it. It follows page scrolls and resizes while open. The area menu lifts
+  the map controls with it (`:has()`), which otherwise stay under the sheet. "Shows around here" opens beside the
+  pressed spot, flipping away from the window's edges, so the finger of a long press is never on it. Desktop
+  positions are unchanged.
 - The timeline sits under the map and is covered at half and full; closing the sheet shows it. Its lanes keep their
   height (`fillsMaxHeight`) and the hidden-lanes note keeps its room, so selections never resize the map. Windows too
   short for the map and the fewest lanes scroll the stage, not the page.

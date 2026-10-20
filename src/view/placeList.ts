@@ -59,7 +59,7 @@ export function createPlaceList(container: HTMLElement, callbacks: PlaceListCall
         });
         const select = h(
           'button',
-          { type: 'button', class: 'place-button place-country', 'aria-pressed': String(current.selected.has(country.key)) },
+          { type: 'button', class: 'place-button place-country', 'aria-pressed': String(current.selected.has(country.key)), 'data-row-key': country.key },
           h('span', { class: 'place-name' }, country.name),
           h('span', { class: 'place-count' }, t().shows(country.showCount)),
         );
@@ -71,7 +71,7 @@ export function createPlaceList(container: HTMLElement, callbacks: PlaceListCall
               ...cities.map((city) => {
                 const button = h(
                   'button',
-                  { type: 'button', class: 'place-button', 'aria-pressed': String(current.selected.has(city.key)) },
+                  { type: 'button', class: 'place-button', 'aria-pressed': String(current.selected.has(city.key)), 'data-row-key': city.key },
                   h('span', { class: 'place-name' }, city.city),
                   h('span', { class: 'place-count' }, t().placeList.showsAndBands(city.showCount, city.bandCount)),
                 );

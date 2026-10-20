@@ -162,12 +162,7 @@ export function createMapControls(controls: HTMLElement, statusBar: HTMLElement,
     },
     openPointMenu(point, clientX, clientY, byTouch) {
       menuPoint = point;
-      pointPopover.open(!byTouch);
-      const bounds = frame.getBoundingClientRect();
-      const left = Math.max(0, Math.min(clientX - bounds.left, bounds.width - pointMenu.offsetWidth));
-      const top = Math.max(0, Math.min(clientY - bounds.top, bounds.height - pointMenu.offsetHeight));
-      pointMenu.style.setProperty('--x', `${left}px`);
-      pointMenu.style.setProperty('--y', `${top}px`);
+      pointPopover.open(!byTouch, clientX, clientY);
     },
   };
 }

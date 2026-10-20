@@ -171,7 +171,6 @@ const bandList = createBandList(requireElement(document, '#band-list', HTMLEleme
 const selectionPanel = createSelectionPanel(requireElement(document, '#selection-panel', HTMLElement), {
   onBack() {
     state.set({ selection: NO_SELECTION });
-    if (!state.get().previewsOpen) sidebar.focusActiveTab();
   },
   onHover: (ref) => state.set({ hoverShowIds: ref === null ? new Set() : new Set([ref.show.id]) }),
   onReplayTour: () => playTour(),
@@ -185,7 +184,6 @@ const selectionPanel = createSelectionPanel(requireElement(document, '#selection
 const previewPanel = createPreviewPanel(requireElement(document, '#preview-panel', HTMLElement), {
   onBack() {
     state.set({ previewsOpen: false });
-    sidebar.focusActiveTab();
   },
   onDownload: (preview) => {
     const bandId = preview.normalized?.band.id;
@@ -197,11 +195,12 @@ const previewPanel = createPreviewPanel(requireElement(document, '#preview-panel
 });
 
 const sidebarElement = requireElement(document, '#sidebar', HTMLElement);
-const sidebar = createSidebar(sidebarElement);
+const sheetHandle = requireElement(sidebarElement, '#sidebar-toggle', HTMLButtonElement);
+const sidebar = createSidebar(sidebarElement, { handle: sheetHandle, hasSheet: () => phoneLayout.matches });
 const sheet = createBottomSheet(
   {
     sheet: sidebarElement,
-    handle: requireElement(sidebarElement, '#sidebar-toggle', HTMLButtonElement),
+    handle: sheetHandle,
     body: requireElement(sidebarElement, '#sidebar-body', HTMLElement),
     ceiling: requireElement(document, '.masthead', HTMLElement),
     stage,
@@ -211,7 +210,12 @@ const sheet = createBottomSheet(
     tail: requireElement(document, '.colophon', HTMLElement),
   },
   phoneLayout,
-  { onMapCover: (pixels) => map.setHiddenBottom(pixels) },
+  {
+    onMapCover: (pixels) => map.setHiddenBottom(pixels),
+    onRest(height) {
+      if (height === 'half') map.uncoverPins();
+    },
+  },
 );
 const placeList = createPlaceList(requireElement(document, '#place-list', HTMLElement), {
   onSelect(key) {

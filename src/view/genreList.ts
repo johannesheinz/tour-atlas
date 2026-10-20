@@ -51,7 +51,7 @@ export function createGenreList(container: HTMLElement, callbacks: GenreListCall
         const counts = genre.showCount === 0 ? t().noShowsInRange : t().genreList.bandsAndShows(genre.bandCount, genre.showCount);
         const select = h(
           'button',
-          { type: 'button', class: 'genre-select', 'aria-label': t().genreList.listDates(genre.label) },
+          { type: 'button', class: 'genre-select', 'aria-label': t().genreList.listDates(genre.label), 'data-row-key': genre.id },
           h('span', { class: 'genre-name' }, genre.label),
           h('span', { class: 'band-meta' }, counts),
         );

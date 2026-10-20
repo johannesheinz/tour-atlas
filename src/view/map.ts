@@ -37,6 +37,7 @@ import { createTooltip } from './tooltip.ts';
 import { pinTooltip } from './tooltipContent.ts';
 import { COARSE_WORLD_SETTINGS, simplifyTopology, worldDetailAt, type WorldDetail } from './simplifyTopology.ts';
 import { createRouteLineRecorder, pointAlongRoute, type Point, type RouteLine } from './routeLine.ts';
+import { uncoverMove, type ScreenMove } from './uncover.ts';
 
 export const MAP_SETTINGS = {
   /** The pointed-at pin's ring sits outside the selection ring, so it stands out even when every pin is selected. */
@@ -59,6 +60,8 @@ export const MAP_SETTINGS = {
   globeFitDurationMs: 900,
   /** Fits use the whole map when less than this much of it is left above the bottom sheet. */
   minFitHeight: 120,
+  /** Pins moved clear of the sheet keep this distance from its top edge: the largest pin with its badge, and some air. */
+  uncoverMarginPx: 14,
   globeMinScale: 0.8,
   globeMaxScale: 60,
   maxBandsWithRoutes: 8,
@@ -127,8 +130,13 @@ export interface MapView {
   /** Null draws the routes whole again. */
   setTour(tour: MapTour | null): void;
   setTourTime(ms: number): void;
-  /** On phones the bottom sheet hides the lower part of the map; fits frame their points in the part above it. */
+  /** On phones the bottom sheet hides the lower part of the map; fits frame their points in the part above it. Called as the sheet starts to move. */
   setHiddenBottom(pixels: number): void;
+  /**
+   * The sheet came to rest: pins the viewer saw before it moved, and selected pins, that it now hides move into
+   * view above it. A fit since it started moving framed its points there already, so then only selected pins count.
+   */
+  uncoverPins(): void;
 }
 
 /** A fit on its way: `current` is the fit the last frame showed. */
@@ -169,6 +177,11 @@ export function createMapView(container: HTMLElement, world: WorldTopology, call
   let picking = false;
   let globeFitRadius = 1;
   let hiddenBottom = 0;
+  /** How far down the viewer saw the map before the sheet last started to move, in px from its top. */
+  let seenBottom = 0;
+  /** A fit or the viewer moved the map since the sheet last started to move, so what was seen before no longer counts. */
+  let movedSinceCover = false;
+  let uncoverAfterFit = false;
 
   const halftoneDot = s('circle', { class: 'halftone-dot', cx: 2, cy: 2, r: 1.15 });
   const halftone = s('pattern', { id: 'halftone', patternUnits: 'userSpaceOnUse', width: 4, height: 4 }, halftoneDot);
@@ -246,6 +259,7 @@ export function createMapView(container: HTMLElement, world: WorldTopology, call
     .clickDistance(MAP_SETTINGS.clickDistancePx)
     .on('start', (event: D3ZoomEvent<SVGSVGElement, unknown>) => {
       if (programmaticZoom) return;
+      movedSinceCover = true;
       if (event.sourceEvent !== null) callbacks.onUserMove();
       settleAnimation();
       tooltip.hide();
@@ -545,7 +559,12 @@ export function createMapView(container: HTMLElement, world: WorldTopology, call
       return;
     }
     pendingFit = false;
-    const target = fitTarget(points, minSpanKm);
+    movedSinceCover = true;
+    moveToFit(fitTarget(points, minSpanKm), animate);
+  }
+
+  /** Heads for `target` the cheapest way: moving the drawn map where it can follow, else projecting each frame. */
+  function moveToFit(target: MapFit, animate: boolean) {
     const running = fitAnimation;
     const start = running?.current ?? (base === null ? null : flatten(base, transform));
     stopAnimation();
@@ -639,6 +658,36 @@ export function createMapView(container: HTMLElement, world: WorldTopology, call
     motion = null;
     resetZoomTransform();
     applyBase(fit);
+    if (uncoverAfterFit) {
+      uncoverAfterFit = false;
+      uncoverNow();
+    }
+  }
+
+  function uncoverPins() {
+    // After the selection that raised the sheet has started its fit, which happens in the same task.
+    requestAnimationFrame(() => {
+      if (fitAnimation !== null) uncoverAfterFit = true;
+      else uncoverNow();
+    });
+  }
+
+  function uncoverNow() {
+    const visibleHeight = height - hiddenBottom;
+    if (props === null || base === null || hiddenBottom === 0 || visibleHeight < MAP_SETTINGS.minFitHeight) return;
+    const selectedShowIds = props.selectedShowIds;
+    const points = pins.flatMap((pin): Point[] => {
+      const point = toScreen(pin.x, pin.y);
+      const [x, y] = point;
+      if (x < 0 || x > width || y < 0 || y > height) return [];
+      // Pins as close to the map's lower edge before were cut by it already; the sheet hides no more of them.
+      const seen = !movedSinceCover && y <= seenBottom - MAP_SETTINGS.uncoverMarginPx;
+      return seen || pin.shows.some((ref) => selectedShowIds.has(ref.show.id)) ? [point] : [];
+    });
+    const move = uncoverMove(points, { width, visibleHeight, margin: MAP_SETTINGS.uncoverMarginPx });
+    if (move === null) return;
+    movedSinceCover = true;
+    moveToFit(movedFit(flatten(base, transform), move), true);
   }
 
   /** The viewer takes over: a fit stops where it is, projected there so the viewer's zoom starts from it. */
@@ -654,6 +703,7 @@ export function createMapView(container: HTMLElement, world: WorldTopology, call
   function zoomBy(factor: number) {
     if (width === 0) return;
     if (mode === 'globe') {
+      movedSinceCover = true;
       if (base !== null) applyBase(scaleGlobe(base, factor));
       return;
     }
@@ -713,6 +763,7 @@ export function createMapView(container: HTMLElement, world: WorldTopology, call
   surface.addEventListener('pointerdown', (event) => {
     globeDragged = false;
     if (mode !== 'globe' || event.button !== 0 || base === null) return;
+    movedSinceCover = true;
     callbacks.onUserMove();
     settleAnimation();
     tooltip.hide();
@@ -739,6 +790,7 @@ export function createMapView(container: HTMLElement, world: WorldTopology, call
     (event) => {
       if (mode !== 'globe' || base === null) return;
       event.preventDefault();
+      movedSinceCover = true;
       callbacks.onUserMove();
       applyBase(scaleGlobe(base, Math.exp(-event.deltaY * 0.002)), true);
       clearTimeout(globeSettle);
@@ -1178,8 +1230,12 @@ export function createMapView(container: HTMLElement, world: WorldTopology, call
     },
     setHiddenBottom(pixels) {
       if (!Number.isFinite(pixels) || pixels < 0) throw new RangeError(`the sheet cannot hide ${pixels} px of the map`);
+      seenBottom = height - hiddenBottom;
       hiddenBottom = pixels;
+      movedSinceCover = false;
+      uncoverAfterFit = false;
     },
+    uncoverPins,
     setTourTime(ms) {
       tourTime = ms;
       drawTour();
@@ -1197,6 +1253,15 @@ function projectionFor(mode: MapMode): GeoProjection {
 
 function showPoints(shows: readonly ShowRef[]): LonLat[] {
   return shows.map((ref): LonLat => [ref.show.geo.lon, ref.show.geo.lat]);
+}
+
+/** The fit that shows the map moved on screen by `move`: projections scale and shift alike on the flat map and the globe. */
+function movedFit(fit: MapFit, move: ScreenMove): MapFit {
+  return {
+    rotate: fit.rotate,
+    scale: fit.scale * move.scale,
+    translate: [fit.translate[0] * move.scale + move.dx, fit.translate[1] * move.scale + move.dy],
+  };
 }
 
 function sameCircle(a: AreaCircle | null, b: AreaCircle | null): boolean {

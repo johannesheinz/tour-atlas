@@ -34,8 +34,10 @@ export interface BottomSheetParts {
 }
 
 export interface BottomSheetCallbacks {
-  /** How much of the map the sheet will hide once it comes to rest, in px. */
+  /** How much of the map the sheet will hide once it comes to rest, in px; called as it starts to move there. */
   onMapCover(pixels: number): void;
+  /** The sheet came to rest at a height it was moved to (not after a resize). */
+  onRest(height: SheetHeight): void;
 }
 
 export interface BottomSheetView {
@@ -74,6 +76,8 @@ export function createBottomSheet(parts: BottomSheetParts, layout: MediaQueryLis
   let drag: { readonly pointerId: number; readonly startY: number; readonly startVisible: number; readonly samples: DragSample[]; moved: boolean } | null = null;
   let suppressClick = false;
   let restTimer: ReturnType<typeof setTimeout> | undefined;
+  /** A move to a height is on its way, so the next rest reports it. */
+  let arriving = false;
 
   const currentSizes = (): SheetSizes => {
     if (sizes === null) throw new Error('the sheet has not been measured');
@@ -126,6 +130,9 @@ export function createBottomSheet(parts: BottomSheetParts, layout: MediaQueryLis
     sheet.style.transform = '';
     moveRisers(visible);
     body.inert = height === 'closed';
+    if (!arriving) return;
+    arriving = false;
+    callbacks.onRest(height);
   }
 
   function slideTo(next: SheetHeight, animate: boolean) {
@@ -133,6 +140,8 @@ export function createBottomSheet(parts: BottomSheetParts, layout: MediaQueryLis
     height = next;
     handle.setAttribute('aria-expanded', String(next !== 'closed'));
     const target = currentSizes()[next];
+    arriving = true;
+    measureMapFrame();
     callbacks.onMapCover(sheetCover(target, viewportHeight, mapFrameBottom));
     if (next === 'closed' && document.activeElement instanceof HTMLElement && body.contains(document.activeElement)) handle.focus({ preventScroll: true });
     clearTimeout(restTimer);
@@ -182,6 +191,8 @@ export function createBottomSheet(parts: BottomSheetParts, layout: MediaQueryLis
     const { moved, samples } = drag;
     drag = null;
     if (!moved) return;
+    // A finger that rests before letting go sends no moves, so the release itself says the sheet stood still.
+    samples.push({ time: event.timeStamp, visibleHeight: currentVisible() });
     suppressClick = true;
     sheet.classList.remove('is-dragging');
     slideTo(snapAfterDrag(currentSizes(), currentVisible(), cancelled ? 0 : releaseVelocity(samples)), true);
@@ -224,6 +235,7 @@ export function createBottomSheet(parts: BottomSheetParts, layout: MediaQueryLis
 
   function deactivate() {
     active = false;
+    arriving = false;
     drag = null;
     clearTimeout(restTimer);
     setSnapping(false);
@@ -238,7 +250,10 @@ export function createBottomSheet(parts: BottomSheetParts, layout: MediaQueryLis
 
   layout.addEventListener('change', () => (layout.matches ? activate() : deactivate()));
   window.addEventListener('resize', remeasure);
-  new ResizeObserver(remeasure).observe(ceiling);
+  // The map frame settles after the sheet first measures it, once fonts and the timeline's lanes are in.
+  const resizeObserver = new ResizeObserver(remeasure);
+  resizeObserver.observe(ceiling);
+  resizeObserver.observe(mapFrame);
   stage.addEventListener(
     'scroll',
     () => {

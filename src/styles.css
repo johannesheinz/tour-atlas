@@ -1818,6 +1818,11 @@ input[type='search']::placeholder {
   gap: 8px;
 }
 
+/* An open area menu lies over the phone's bottom sheet like the other popovers, so its controls rise with it. */
+.map-controls:has(> .popover:not([hidden])) {
+  z-index: 30;
+}
+
 .map-control-stack {
   display: flex;
   flex-direction: column;
@@ -1917,8 +1922,6 @@ input[type='search']::placeholder {
 }
 
 .map-point-menu {
-  left: var(--x, 0);
-  top: var(--y, 0);
   width: 230px;
   padding: 8px;
 }
