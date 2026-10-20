@@ -1578,6 +1578,7 @@ input[type='search']::placeholder {
 }
 
 .map-surface,
+.map-routes-surface,
 .map-canvas,
 .map-overlay {
   position: absolute;
@@ -1599,9 +1600,16 @@ input[type='search']::placeholder {
   cursor: pointer;
 }
 
+.map-routes-surface,
 .map-canvas,
 .map-overlay {
   pointer-events: none;
+}
+
+/* Its own compositing layer: a tour frame repaints the routes, not the halftone land under them */
+.map-routes-surface {
+  display: block;
+  will-change: transform;
 }
 
 .map-canvas {
@@ -2618,11 +2626,35 @@ input[type='search']::placeholder {
   cursor: pointer;
 }
 
-.timeline-lanes {
+.timeline-viewport {
   position: sticky;
   top: 0;
+  overflow: clip;
+}
+
+.timeline-lanes {
   display: block;
   width: 100%;
+}
+
+/* Rings and lane names, drawn above the playhead as they were when one canvas held everything */
+.timeline-marks {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+}
+
+/* Moved by a transform each tour frame, so the lanes are not redrawn */
+.timeline-playhead {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 2px;
+  height: 100%;
+  background: var(--ink);
+  pointer-events: none;
+  will-change: transform;
 }
 
 .timeline-cursor {

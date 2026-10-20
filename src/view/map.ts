@@ -36,6 +36,7 @@ import type { ThemeTokens } from './theme.ts';
 import { createTooltip } from './tooltip.ts';
 import { pinTooltip } from './tooltipContent.ts';
 import { COARSE_WORLD_SETTINGS, simplifyTopology, worldDetailAt, type WorldDetail } from './simplifyTopology.ts';
+import { createRouteLineRecorder, pointAlongRoute, type Point, type RouteLine } from './routeLine.ts';
 
 export const MAP_SETTINGS = {
   /** The pointed-at pin's ring sits outside the selection ring, so it stands out even when every pin is selected. */
@@ -97,9 +98,18 @@ export interface MapTour {
 interface TourLeg {
   readonly bandId: string;
   readonly element: SVGPathElement;
+  readonly line: RouteLine;
   readonly start: number;
   readonly end: number;
-  readonly length: number;
+  /** The dash the element shows, so a frame writes only the legs whose drawing changed; null before the first. */
+  drawnDash: number | null;
+  drawnProgress: number | null;
+}
+
+/** The dot leading a band's tour; one element per band, moved and hidden instead of rebuilt. */
+interface TourHead {
+  readonly element: SVGCircleElement;
+  shownAt: Point | null;
 }
 
 export interface MapView {
@@ -170,9 +180,11 @@ export function createMapView(container: HTMLElement, world: WorldTopology, call
   const shadePath = s('path', { class: 'map-globe-shade', fill: 'url(#globe-shade)' });
   const radiusPath = s('path', { class: 'map-radius' });
   const routesLayer = s('g', { class: 'map-routes' });
-  const zoomLayer = s('g', { class: 'map-zoom-layer' }, spherePath, graticulePath, landPath, bordersPath, shadePath, radiusPath, routesLayer);
+  const zoomLayer = s('g', { class: 'map-zoom-layer' }, spherePath, graticulePath, landPath, bordersPath, shadePath, radiusPath);
   const pinsLayer = s('g', { class: 'map-pins' });
-  const surface = s('svg', { class: 'map-surface', role: 'img', 'aria-label': t().map.surface }, s('defs', {}, halftone, globeShade), zoomLayer, pinsLayer);
+  const surface = s('svg', { class: 'map-surface', role: 'img', 'aria-label': t().map.surface }, s('defs', {}, halftone, globeShade), zoomLayer);
+  /** Routes and pins sit above the land on a layer of their own, so a tour frame does not repaint the halftone land. */
+  const routesSurface = s('svg', { class: 'map-routes-surface', 'aria-hidden': 'true' }, routesLayer, pinsLayer);
   const canvas = h('canvas', { class: 'map-canvas', 'aria-hidden': 'true' });
   const highlightsLayer = s('g', { class: 'map-highlights' });
   const labelsLayer = s('g', { class: 'map-labels' });
@@ -188,7 +200,7 @@ export function createMapView(container: HTMLElement, world: WorldTopology, call
   const overlay = s('svg', { class: 'map-overlay', 'aria-hidden': 'true' }, labelsLayer, highlightsLayer, tourHeadsLayer, meMarker, pointMarker);
   const cursor = h('button', { type: 'button', class: 'map-cursor', 'aria-label': t().map.cursor });
   const announcer = h('div', { class: 'visually-hidden', 'aria-live': 'polite' });
-  container.append(surface, canvas, overlay, cursor, announcer);
+  container.append(surface, routesSurface, canvas, overlay, cursor, announcer);
   const tooltip = createTooltip(container);
 
   const context = context2d(canvas);
@@ -216,6 +228,7 @@ export function createMapView(container: HTMLElement, world: WorldTopology, call
   let tour: MapTour | null = null;
   let tourTime = 0;
   let tourLegs: readonly TourLeg[] = [];
+  const tourHeads = new Map<string, TourHead>();
   let pendingFit = false;
   const svgPins = new Map<string, SVGGElement>();
   const labelWidths = new Map<string, number>();
@@ -251,10 +264,10 @@ export function createMapView(container: HTMLElement, world: WorldTopology, call
     if (nextWidth === width && nextHeight === height) return;
     width = nextWidth;
     height = nextHeight;
-    surface.setAttribute('width', String(width));
-    surface.setAttribute('height', String(height));
-    overlay.setAttribute('width', String(width));
-    overlay.setAttribute('height', String(height));
+    for (const layer of [surface, routesSurface, overlay]) {
+      layer.setAttribute('width', String(width));
+      layer.setAttribute('height', String(height));
+    }
     const ratio = window.devicePixelRatio;
     canvas.width = Math.round(width * ratio);
     canvas.height = Math.round(height * ratio);
@@ -834,17 +847,18 @@ export function createMapView(container: HTMLElement, world: WorldTopology, call
     drawTour();
   }
 
-  /** The halftone keeps its screen size and angle however the layer is scaled or sheared. */
+  /** The routes move with the land. The halftone keeps its screen size and angle however the layer is scaled or sheared. */
   function writeLayerTransform() {
     if (motion === null && transform === zoomIdentity) {
-      zoomLayer.removeAttribute('transform');
+      for (const layer of [zoomLayer, routesLayer]) layer.removeAttribute('transform');
       halftone.setAttribute('patternTransform', 'rotate(45)');
     } else if (motion === null) {
-      zoomLayer.setAttribute('transform', transform.toString());
+      for (const layer of [zoomLayer, routesLayer]) layer.setAttribute('transform', transform.toString());
       halftone.setAttribute('patternTransform', `scale(${1 / transform.k}) rotate(45)`);
     } else {
       const inverse = invertAffine(motion);
-      zoomLayer.setAttribute('transform', `matrix(${motion.a} ${motion.b} ${motion.c} ${motion.d} ${motion.e} ${motion.f})`);
+      const matrix = `matrix(${motion.a} ${motion.b} ${motion.c} ${motion.d} ${motion.e} ${motion.f})`;
+      for (const layer of [zoomLayer, routesLayer]) layer.setAttribute('transform', matrix);
       halftone.setAttribute('patternTransform', `matrix(${inverse.a} ${inverse.b} ${inverse.c} ${inverse.d} 0 0) rotate(45)`);
     }
   }
@@ -862,7 +876,10 @@ export function createMapView(container: HTMLElement, world: WorldTopology, call
       current.shows.filter((ref) => current.routeBandIds.has(ref.band.file.band.id) && ref.show.status !== 'cancelled'),
       (ref) => ref.band,
     );
-    const legs: Omit<TourLeg, 'length'>[] = [];
+    const legRecorder = createRouteLineRecorder(path.digits());
+    const legPath = geoPath(projection, legRecorder);
+    const legs: TourLeg[] = [];
+    const headColors = new Map<string, string>();
     routesLayer.replaceChildren(
       ...[...routes.entries()].flatMap(([band, refs]) => {
         const stops = refs
@@ -871,44 +888,75 @@ export function createMapView(container: HTMLElement, world: WorldTopology, call
         if (stops.length < 2) return [];
         const dimmed = current.focusBandId !== null && current.focusBandId !== band.file.band.id;
         const emphasized = current.emphasizedBandIds.has(band.file.band.id);
-        const attributes = { class: `map-route${dimmed ? ' is-dimmed' : ''}${emphasized ? ' is-emphasized' : ''}`, stroke: bandColor(band, current.theme.mode) };
-        const line = (coordinates: [number, number][]) => path({ type: 'Feature', properties: {}, geometry: { type: 'LineString', coordinates } } satisfies Feature<LineString | MultiLineString>) ?? '';
+        const stroke = bandColor(band, current.theme.mode);
+        const attributes = { class: `map-route${dimmed ? ' is-dimmed' : ''}${emphasized ? ' is-emphasized' : ''}`, stroke };
+        const lineFeature = (coordinates: [number, number][]) => ({ type: 'Feature', properties: {}, geometry: { type: 'LineString', coordinates } }) satisfies Feature<LineString | MultiLineString>;
         const point = (ref: ShowRef): [number, number] => [ref.show.geo.lon, ref.show.geo.lat];
-        if (tour === null || !tour.bandIds.has(band.file.band.id)) return [s('path', { ...attributes, d: line(stops.map(point)) })];
+        if (tour === null || !tour.bandIds.has(band.file.band.id)) return [s('path', { ...attributes, d: path(lineFeature(stops.map(point))) ?? '' })];
         const at = tour.at;
+        headColors.set(band.file.band.id, stroke);
         return stops.slice(1).map((to, index) => {
           const from = stops[index] ?? to;
-          const element = s('path', { ...attributes, d: line([point(from), point(to)]) });
-          legs.push({ bandId: band.file.band.id, element, start: at(from.start), end: at(to.start) });
+          legPath(lineFeature([point(from), point(to)]));
+          const line = legRecorder.finish();
+          const element = s('path', { ...attributes, d: line.pathData });
+          legs.push({ bandId: band.file.band.id, element, line, start: at(from.start), end: at(to.start), drawnDash: null, drawnProgress: null });
           return element;
         });
       }),
     );
-    tourLegs = legs.map((leg) => ({ ...leg, length: leg.element.getTotalLength() }));
+    tourLegs = legs;
+    keepTourHeads(headColors);
     drawTour();
+  }
+
+  /** One head per touring band, in the order of their routes; heads of bands no longer touring go. */
+  function keepTourHeads(colors: ReadonlyMap<string, string>) {
+    for (const [bandId, head] of tourHeads) {
+      if (colors.has(bandId)) continue;
+      head.element.remove();
+      tourHeads.delete(bandId);
+    }
+    for (const [bandId, color] of colors) {
+      const head = tourHeads.get(bandId);
+      if (head === undefined) tourHeads.set(bandId, { element: s('circle', { class: 'map-tour-head', r: 6.5, fill: color, hidden: true }), shownAt: null });
+      else if (head.element.getAttribute('fill') !== color) head.element.setAttribute('fill', color);
+    }
+    tourHeadsLayer.replaceChildren(...[...colors.keys()].flatMap((bandId) => tourHeads.get(bandId)?.element ?? []));
   }
 
   /** Each leg grows from its first show to the next while the tour time passes their dates; a dot leads each band. */
   function drawTour() {
-    if (tour === null) {
-      tourHeadsLayer.replaceChildren();
-      return;
-    }
-    const heads = new Map<string, SVGCircleElement>();
+    if (tour === null) return;
+    const stretch = motion === null ? transform.k : affineMaxStretch(motion);
+    const headPoints = new Map<string, Point>();
     for (const leg of tourLegs) {
       const progress = Math.min(1, Math.max(0, (tourTime - leg.start) / Math.max(1, leg.end - leg.start)));
-      const dash = leg.length * (motion === null ? transform.k : affineMaxStretch(motion));
-      leg.element.style.strokeDasharray = `${dash} ${dash}`;
-      leg.element.style.strokeDashoffset = `${dash * (1 - progress)}`;
-      const onFarSide = leg.length === 0;
-      if (progress > 0 && progress < 1 && !onFarSide && !heads.has(leg.bandId)) {
-        const tip = leg.element.getPointAtLength(leg.length * progress);
-        const stroke = leg.element.getAttribute('stroke') ?? '';
-        const [cx, cy] = toScreen(tip.x, tip.y);
-        heads.set(leg.bandId, s('circle', { class: 'map-tour-head', cx, cy, r: 6.5, fill: stroke }));
+      const dash = leg.line.length * stretch;
+      if (dash !== leg.drawnDash) leg.element.style.strokeDasharray = `${dash} ${dash}`;
+      if (dash !== leg.drawnDash || progress !== leg.drawnProgress) leg.element.style.strokeDashoffset = `${dash * (1 - progress)}`;
+      leg.drawnDash = dash;
+      leg.drawnProgress = progress;
+      const onFarSide = leg.line.length === 0;
+      if (progress > 0 && progress < 1 && !onFarSide && !headPoints.has(leg.bandId)) {
+        const tip = pointAlongRoute(leg.line, leg.line.length * progress);
+        if (tip === null) throw new Error('a leg with a length has points');
+        headPoints.set(leg.bandId, toScreen(tip[0], tip[1]));
       }
     }
-    tourHeadsLayer.replaceChildren(...heads.values());
+    for (const [bandId, head] of tourHeads) moveTourHead(head, headPoints.get(bandId) ?? null);
+  }
+
+  function moveTourHead(head: TourHead, at: Point | null) {
+    const shownAt = head.shownAt;
+    head.shownAt = at;
+    if (at === null) {
+      if (shownAt !== null) head.element.setAttribute('hidden', '');
+      return;
+    }
+    if (shownAt === null) head.element.removeAttribute('hidden');
+    if (shownAt?.[0] !== at[0]) head.element.setAttribute('cx', String(at[0]));
+    if (shownAt?.[1] !== at[1]) head.element.setAttribute('cy', String(at[1]));
   }
 
   function pinStyle(pin: DisplayPin, current: MapProps): PinStyle {

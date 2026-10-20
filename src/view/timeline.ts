@@ -33,6 +33,8 @@ export const TIMELINE_SETTINGS = {
   /** The pointed-at dot's ring sits outside the selection ring, so it stands out when every dot is selected. */
   hoverRingGap: 7,
   maxGutterFraction: 0.25,
+  /** The width of .timeline-playhead in styles.css. */
+  playheadWidthPx: 2,
   tickFont: '600 11px Archivo, system-ui, sans-serif',
 } as const;
 
@@ -98,8 +100,11 @@ export function fitDomain(shows: readonly ShowRef[], today: number): readonly [n
 export function createTimeline(container: HTMLElement, callbacks: TimelineCallbacks, sizing: TimelineLayout): TimelineView {
   const axisCanvas = h('canvas', { class: 'timeline-axis', 'aria-hidden': 'true' });
   const lanesCanvas = h('canvas', { class: 'timeline-lanes', 'aria-hidden': 'true' });
+  const playheadLine = h('div', { class: 'timeline-playhead', hidden: true, 'aria-hidden': 'true' });
+  const marksCanvas = h('canvas', { class: 'timeline-marks', 'aria-hidden': 'true' });
+  const lanesViewport = h('div', { class: 'timeline-viewport' }, lanesCanvas, playheadLine, marksCanvas);
   const spacer = h('div', { class: 'timeline-spacer' });
-  const scroller = h('div', { class: 'timeline-scroll' }, lanesCanvas, spacer);
+  const scroller = h('div', { class: 'timeline-scroll' }, lanesViewport, spacer);
   const brush = h('div', { class: 'timeline-brush', hidden: true, 'aria-hidden': 'true' });
   const cursor = h('button', { type: 'button', class: 'timeline-cursor', 'aria-label': t().timeline.cursor });
   const announcer = h('div', { class: 'visually-hidden', 'aria-live': 'polite' });
@@ -113,6 +118,7 @@ export function createTimeline(container: HTMLElement, callbacks: TimelineCallba
 
   const axisContext = context2d(axisCanvas);
   const lanesContext = context2d(lanesCanvas);
+  const marksContext = context2d(marksCanvas);
 
   let width = 0;
   let viewportHeight = 0;
@@ -126,6 +132,8 @@ export function createTimeline(container: HTMLElement, callbacks: TimelineCallba
   /** Pixels at the left kept for the band names before a range starts. */
   let gutter = 0;
   let playhead: number | null = null;
+  /** The left edge the playhead element was moved to; null while it is hidden. */
+  let drawnPlayheadLeft: number | null = null;
   let cursorPosition: CursorPosition | null = null;
   let hoveredShowId: string | null = null;
   let drawScheduled = false;
@@ -306,12 +314,15 @@ export function createTimeline(container: HTMLElement, callbacks: TimelineCallba
     const maxHeight = Math.max(TIMELINE_SETTINGS.minViewportHeight, sizing.maxLanesHeight());
     viewportHeight = Math.min(total, Math.round(maxHeight));
     scroller.style.height = `${viewportHeight}px`;
-    lanesCanvas.style.height = `${viewportHeight}px`;
+    lanesViewport.style.height = `${viewportHeight}px`;
     spacer.style.height = `${total - viewportHeight}px`;
     container.classList.toggle('has-overflow', total > viewportHeight);
     const ratio = window.devicePixelRatio;
-    lanesCanvas.width = Math.round(width * ratio);
-    lanesCanvas.height = Math.round(viewportHeight * ratio);
+    for (const lanesLayer of [lanesCanvas, marksCanvas]) {
+      lanesLayer.style.height = `${viewportHeight}px`;
+      lanesLayer.width = Math.round(width * ratio);
+      lanesLayer.height = Math.round(viewportHeight * ratio);
+    }
     axisCanvas.width = Math.round(width * ratio);
     axisCanvas.height = Math.round(TIMELINE_SETTINGS.axisHeight * ratio);
     baseScale.range([0, width]);
@@ -391,12 +402,12 @@ export function createTimeline(container: HTMLElement, callbacks: TimelineCallba
   }
 
   /** Clips just left of the gutter's edge, so a dot centred on the edge stays round. */
-  function clipToDots() {
+  function clipToDots(context: CanvasRenderingContext2D) {
     if (props?.clearGutter !== true) return;
     const left = gutter - TIMELINE_SETTINGS.dotRadius - 2;
-    lanesContext.beginPath();
-    lanesContext.rect(left, 0, width - left, viewportHeight);
-    lanesContext.clip();
+    context.beginPath();
+    context.rect(left, 0, width - left, viewportHeight);
+    context.clip();
   }
 
   /** A new lane font (another style, or the font finished loading) moves the gutter; the visible range stays. */
@@ -509,6 +520,19 @@ export function createTimeline(container: HTMLElement, callbacks: TimelineCallba
     const x = currentScale();
     drawAxis(x, props);
     drawLanes(x, props);
+    drawMarks(x, props);
+    positionPlayhead(x);
+  }
+
+  /** A line across the lanes at the playhead's date, between the dots and the rings and names as it always was. */
+  function positionPlayhead(x: ScaleTime<number, number>) {
+    const centerX = playhead === null || props === null || width === 0 ? null : Math.round(x(playhead + DAY_MS / 2)) + 0.5;
+    const halfWidth = TIMELINE_SETTINGS.playheadWidthPx / 2;
+    const left = centerX === null || centerX + halfWidth <= 0 || centerX - halfWidth >= width ? null : centerX - halfWidth;
+    if (left === drawnPlayheadLeft) return;
+    if (left !== null) playheadLine.style.transform = `translateX(${left}px)`;
+    if ((left === null) !== (drawnPlayheadLeft === null)) playheadLine.hidden = left === null;
+    drawnPlayheadLeft = left;
   }
 
   function drawAxis(x: ScaleTime<number, number>, current: TimelineProps) {
@@ -550,15 +574,23 @@ export function createTimeline(container: HTMLElement, callbacks: TimelineCallba
     }
   }
 
+  /** The lanes in view, and the dot size their height allows. */
+  function laneGeometry(current: TimelineProps): { readonly compact: boolean; readonly first: number; readonly last: number; readonly radius: number } {
+    const compact = laneHeight !== TIMELINE_SETTINGS.laneHeight;
+    return {
+      compact,
+      first: Math.max(0, Math.floor(scrollTop / laneHeight)),
+      last: Math.min(current.lanes.length - 1, Math.ceil((scrollTop + viewportHeight) / laneHeight)),
+      radius: compact ? TIMELINE_SETTINGS.dotRadius - 1 : TIMELINE_SETTINGS.dotRadius,
+    };
+  }
+
   function drawLanes(x: ScaleTime<number, number>, current: TimelineProps) {
     const ratio = lanesCanvas.width / width;
     lanesContext.setTransform(ratio, 0, 0, ratio, 0, 0);
     lanesContext.clearRect(0, 0, width, viewportHeight);
-    const compact = laneHeight !== TIMELINE_SETTINGS.laneHeight;
-    const first = Math.max(0, Math.floor(scrollTop / laneHeight));
-    const last = Math.min(current.lanes.length - 1, Math.ceil((scrollTop + viewportHeight) / laneHeight));
+    const { first, last, radius } = laneGeometry(current);
     const { theme } = current;
-    const radius = compact ? TIMELINE_SETTINGS.dotRadius - 1 : TIMELINE_SETTINGS.dotRadius;
 
     for (let index = first; index <= last; index++) {
       const lane = current.lanes[index];
@@ -570,7 +602,7 @@ export function createTimeline(container: HTMLElement, callbacks: TimelineCallba
       lanesContext.globalAlpha = dimmed ? 0.2 : 1;
 
       lanesContext.save();
-      clipToDots();
+      clipToDots(lanesContext);
       for (const ref of lane.shows) {
         const [startX, endX] = dotCenter(x, ref);
         if (endX < Math.max(-radius, firstDotCenterX())) continue;
@@ -611,25 +643,23 @@ export function createTimeline(container: HTMLElement, callbacks: TimelineCallba
       lanesContext.stroke();
       lanesContext.setLineDash([]);
     }
+  }
 
-    if (playhead !== null) {
-      const playheadX = Math.round(x(playhead + DAY_MS / 2)) + 0.5;
-      lanesContext.strokeStyle = theme.ink;
-      lanesContext.lineWidth = 2;
-      lanesContext.beginPath();
-      lanesContext.moveTo(playheadX, 0);
-      lanesContext.lineTo(playheadX, viewportHeight);
-      lanesContext.stroke();
-    }
+  function drawMarks(x: ScaleTime<number, number>, current: TimelineProps) {
+    const ratio = marksCanvas.width / width;
+    marksContext.setTransform(ratio, 0, 0, ratio, 0, 0);
+    marksContext.clearRect(0, 0, width, viewportHeight);
+    const { compact, first, last, radius } = laneGeometry(current);
+    const { theme } = current;
 
-    lanesContext.save();
-    clipToDots();
+    marksContext.save();
+    clipToDots(marksContext);
     const ringAround = (index: number, ref: ShowRef, gap: number) => {
       const [startX, endX] = dotCenter(x, ref);
       const ring = radius + gap;
-      lanesContext.beginPath();
-      if (endX - startX > 1) lanesContext.roundRect(startX - ring, dotY(index) - ring, endX - startX + 2 * ring, 2 * ring, ring);
-      else lanesContext.arc(startX, dotY(index), ring, 0, Math.PI * 2);
+      marksContext.beginPath();
+      if (endX - startX > 1) marksContext.roundRect(startX - ring, dotY(index) - ring, endX - startX + 2 * ring, 2 * ring, ring);
+      else marksContext.arc(startX, dotY(index), ring, 0, Math.PI * 2);
     };
     const pointedAt: [number, ShowRef][] = [];
     for (let index = first; index <= last; index++) {
@@ -639,25 +669,25 @@ export function createTimeline(container: HTMLElement, callbacks: TimelineCallba
         if (dotCenter(x, ref)[1] < firstDotCenterX()) continue;
         if (current.highlightedShowIds.has(ref.show.id)) pointedAt.push([index, ref]);
         if (!current.selectedShowIds.has(ref.show.id)) continue;
-        lanesContext.strokeStyle = theme.ink;
-        lanesContext.lineWidth = 2.5;
+        marksContext.strokeStyle = theme.ink;
+        marksContext.lineWidth = 2.5;
         ringAround(index, ref, 4);
-        lanesContext.stroke();
+        marksContext.stroke();
       }
     }
     for (const [index, ref] of pointedAt) {
-      lanesContext.strokeStyle = theme.stock;
-      lanesContext.lineWidth = 6;
+      marksContext.strokeStyle = theme.stock;
+      marksContext.lineWidth = 6;
       ringAround(index, ref, TIMELINE_SETTINGS.hoverRingGap);
-      lanesContext.stroke();
-      lanesContext.strokeStyle = theme.ink;
-      lanesContext.lineWidth = 3;
-      lanesContext.stroke();
+      marksContext.stroke();
+      marksContext.strokeStyle = theme.ink;
+      marksContext.lineWidth = 3;
+      marksContext.stroke();
     }
-    lanesContext.restore();
+    marksContext.restore();
 
-    lanesContext.font = compact ? theme.compactLaneFont : theme.laneFont;
-    lanesContext.textBaseline = 'alphabetic';
+    marksContext.font = compact ? theme.compactLaneFont : theme.laneFont;
+    marksContext.textBaseline = 'alphabetic';
     for (let index = first; index <= last; index++) {
       const lane = current.lanes[index];
       if (lane === undefined) continue;
@@ -665,14 +695,14 @@ export function createTimeline(container: HTMLElement, callbacks: TimelineCallba
       const name = lane.band.file.band.name;
       const dimmed = current.focusBandId !== null && current.focusBandId !== lane.band.file.band.id;
       const label = compact ? { x: 6, baseline: top + laneHeight / 2 + 5, backingTop: top + 3, backingHeight: laneHeight - 6 } : { x: 8, baseline: top + 16, backingTop: top + 2, backingHeight: 19 };
-      lanesContext.fillStyle = theme.stock;
-      lanesContext.globalAlpha = (dimmed ? 0.35 : 1) * 0.85;
-      lanesContext.fillRect(0, label.backingTop, lanesContext.measureText(name).width + label.x + 4, label.backingHeight);
-      lanesContext.globalAlpha = dimmed ? 0.35 : 1;
-      lanesContext.fillStyle = theme.ink;
-      lanesContext.fillText(name, label.x, label.baseline);
+      marksContext.fillStyle = theme.stock;
+      marksContext.globalAlpha = (dimmed ? 0.35 : 1) * 0.85;
+      marksContext.fillRect(0, label.backingTop, marksContext.measureText(name).width + label.x + 4, label.backingHeight);
+      marksContext.globalAlpha = dimmed ? 0.35 : 1;
+      marksContext.fillStyle = theme.ink;
+      marksContext.fillText(name, label.x, label.baseline);
     }
-    lanesContext.globalAlpha = 1;
+    marksContext.globalAlpha = 1;
   }
 
   function laneIndexAt(event: MouseEvent): number {
@@ -770,7 +800,7 @@ export function createTimeline(container: HTMLElement, callbacks: TimelineCallba
     },
     setPlayhead(date) {
       playhead = date;
-      scheduleDraw();
+      positionPlayhead(currentScale());
     },
     lanesOverflow: () => container.classList.contains('has-overflow'),
   };
