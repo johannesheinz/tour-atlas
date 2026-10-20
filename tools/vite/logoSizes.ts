@@ -1,5 +1,5 @@
 import { readdirSync, readFileSync } from 'node:fs';
-import { join } from 'node:path';
+import { basename, join } from 'node:path';
 import type { Plugin } from 'vite';
 
 const MODULE_ID = 'virtual:logo-sizes';
@@ -19,19 +19,26 @@ export function logoSizesPlugin(logosDir: string): Plugin {
     },
     load(id) {
       if (id !== RESOLVED_ID) return null;
-      this.addWatchFile(logosDir);
+      // The dev server resolves every watched file as an import, so watch the logo files, never their directory.
+      for (const path of logoPaths(logosDir)) this.addWatchFile(path);
       return `export default ${JSON.stringify(readLogoSizes(logosDir))};`;
     },
   };
 }
 
+function logoPaths(logosDir: string): string[] {
+  return readdirSync(logosDir)
+    .filter((file) => file.endsWith('.webp'))
+    .toSorted()
+    .map((file) => join(logosDir, file));
+}
+
 export function readLogoSizes(logosDir: string): Record<string, ImageSize> {
   const sizes: Record<string, ImageSize> = {};
-  for (const name of readdirSync(logosDir).filter((file) => file.endsWith('.webp')).toSorted()) {
-    const path = join(logosDir, name);
+  for (const path of logoPaths(logosDir)) {
     const size = webpDimensions(readFileSync(path));
     if (size === null) throw new Error(`${path} is not a WebP image whose size can be read; run "npm run logos -- --force"`);
-    sizes[name.replace(/\.webp$/, '')] = size;
+    sizes[basename(path, '.webp')] = size;
   }
   return sizes;
 }
