@@ -30,7 +30,7 @@ for geocoding.
 | `TOUR_ATLAS_BANDS_DIR` | `vite build` | Build from another directory of band files (the size-budget build uses this). Default `data/bands`. |
 | `TOUR_ATLAS_OUT_DIR` | `vite build` | Write the build somewhere else. Default `dist`. |
 | `TOUR_ATLAS_SITE_URL` | `vite build` | The published address, absolute `https:` and ending in `/` (for example `https://example.org/tour-atlas/`). When set, the build adds the OpenGraph/Twitter card tags and puts `og-card.png` next to `index.html`; anything else set fails the build. Unset (local builds, CI, the budget build) means no card. The deploy workflow sets it from GitHub Pages. |
-| `TOUR_ATLAS_CHROMIUM` | `npm run demo-video` | Path to a Chrome or Chromium executable for the recording, instead of the one `npx playwright-core install chromium` downloads. |
+| `TOUR_ATLAS_CHROMIUM` | `npm run demo-video`, `npm run feature-clips` | Path to a Chrome or Chromium executable for the recordings, instead of the one `npx playwright-core install chromium` downloads. |
 | `GITHUB_STEP_SUMMARY` | `validate`, `review` with `--format github` | Set by GitHub Actions; the tools append their Markdown summary to it. |
 
 For local runs, keep them in `.env.local`, which is git-ignored; `npm run geocode` loads it:
@@ -58,7 +58,8 @@ Twitter tags (texts in the `<!-- social-card -->` block in `index.html`, band an
 build time) and `og-card.png`. Link previews never see the hash, so every shared link shows the same card.
 The image is `src/brand/og-card.png`, rendered with `src/brand/og-card.svg` by `npm run og-card` (sharp, run
 by hand after changing the mark or the card's text; commit both files). Browsers never request it, so it is
-outside the size budget.
+outside the size budget. The same command also writes `docs/brand/logo-light.webp` and `logo-dark.webp`, the
+wordmark README.md shows for GitHub's light and dark themes; commit them too.
 
 To look at the build, serve it locally: `npm run preview` (http://localhost:4173). Opening
 `dist/index.html` from disk (`file://`) also works as long as the font files stay next to it; a browser
@@ -81,10 +82,9 @@ layout, end card) and encodes it with ffmpeg to `docs/demo.mp4` (1920x1080, H.26
 `docs/demo-poster.jpg` from the Stockholm scene. Frames go to a temporary directory under `.cache/`, removed
 after a successful run; on failure the files in `docs/` stay untouched.
 
-README.md plays a copy uploaded to GitHub, because GitHub only plays uploaded videos inline. After a new
-recording, upload it again: drag `docs/demo.mp4` into the comment box of a new issue, copy the
-`https://github.com/user-attachments/assets/…` link it inserts (no need to create the issue) and replace the
-link in README.md.
+README.md shows the feature clips instead and no longer embeds the video. GitHub only plays uploaded videos
+inline: to embed it somewhere, drag `docs/demo.mp4` into the comment box of a new issue and copy the
+`https://github.com/user-attachments/assets/…` link it inserts (no need to create the issue).
 
 It needs ffmpeg on the `PATH` and the Chromium build that the pinned `playwright-core` expects (or
 `TOUR_ATLAS_CHROMIUM`, see above). The script, its overlay (cursor, captions, cards) and the phone frame page
@@ -92,6 +92,31 @@ are in `tools/demo-video.ts` and `tools/demo/`; the phone page is served by the 
 reaches `dist/`. The recording uses the real band data, so the video changes with it: commit the new files
 after notable data or interface changes. It needs the band Sabaton for the tour scene and shows around
 Stockholm for the area scene, and stops with an error otherwise.
+
+## Feature clips
+
+```sh
+brew install ffmpeg webp                # once (Debian/Ubuntu: sudo apt install ffmpeg webp)
+npx playwright-core install chromium    # once, and after updating playwright-core
+npm run feature-clips                   # all clips; or: npm run feature-clips -- share mobile
+```
+
+Builds the app and records one short looping clip per feature for README.md in headless Chromium, written to
+`docs/features/<clip>.webp` as animated WebP (12 fps, at most 600 kB each, loops forever): desktop clips at
+1024x640 (the desktop layout starts above 820 px) with a visible cursor, the whole window scaled to 768 px wide
+or a region cropped at its own size; phone clips at 390x844 and pixel ratio 2, scaled to 300 px wide, with a
+dot for each touch. ffmpeg crops, scales and resamples the screencast into PNG
+frames under `.cache/`, and `img2webp` (from libwebp) assembles them, lowering the quality step by step until
+a clip fits. Every clip must run 3 to 7 seconds; page reloads (changing the language) are cut out.
+`docs/features/` changes only after every requested clip was recorded and encoded; on failure the frames stay
+in `.cache/feature-clips-*` for a look.
+
+The clips use the real band data and the app as it is, served under `https://example.org/tour-atlas/` so a
+copied link reads like a published one. Re-run after interface changes and commit the new files. Each clip
+checks what it shows (the tooltips, the map status naming Stockholm, Sabaton in the search, "Link copied",
+the German settings) and stops with an error otherwise. The scenes are in `tools/feature-clips.ts`, the touch
+dots in `tools/demo/touch.js`; they share the browser and screencast plumbing with the demo video
+(`tools/shared/demoBrowser.ts`).
 
 ## Deploy
 
