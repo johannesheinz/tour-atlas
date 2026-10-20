@@ -7,7 +7,7 @@ import type { ShowRef, TimelineLane } from '../model.ts';
 import { context2d, h, prefersReducedMotion } from './dom.ts';
 import { t } from '../i18n/index.ts';
 import { formatDateSpan, statusLabel } from './format.ts';
-import { DAY_MS, timeTicks, timelineDomain } from './timeScale.ts';
+import { DAY_MS, rangeKeptOnResize, timeTicks, timelineDomain } from './timeScale.ts';
 import { bandColor } from '../model.ts';
 import type { ThemeTokens } from './theme.ts';
 import { createTooltip } from './tooltip.ts';
@@ -300,12 +300,12 @@ export function createTimeline(container: HTMLElement, callbacks: TimelineCallba
     if (entry === undefined) return;
     const nextWidth = Math.round(entry.contentRect.width);
     if (nextWidth === width) return;
+    const shownRange = rangeKeptOnResize(pendingRange, hasFitted && width > gutter ? (exactRange ?? visibleRange()) : null);
     width = nextWidth;
     if (props !== null) measureGutter(props.theme.laneFont);
     layout();
-    const range = pendingRange;
     pendingRange = null;
-    fitToData(false, range);
+    fitToData(false, shownRange);
   }).observe(container);
   window.addEventListener('resize', () => layout());
 

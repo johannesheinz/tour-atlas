@@ -89,3 +89,11 @@ export function timeTicks(domain: readonly [number, number], widthPx: number): {
       return { unit, ticks: build(utcYear, formatYear, () => true) };
   }
 }
+
+/**
+ * The range a timeline shows after its width changes: one still waiting for the first fit, else the range it showed;
+ * null (fit to the data) only before anything was shown, so resizing never resets a chosen range.
+ */
+export function rangeKeptOnResize(pending: readonly [number, number] | null, shown: readonly [number, number] | null): readonly [number, number] | null {
+  return pending ?? shown;
+}
