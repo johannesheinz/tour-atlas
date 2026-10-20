@@ -98,6 +98,17 @@ function toDisplayPin(anchor: ProjectedGroup, members: readonly ProjectedGroup[]
   };
 }
 
+/** Busiest pin first; equal counts by id, so the order never depends on how the pins were found or drawn before. */
+export function compareByProminence(a: DisplayPin, b: DisplayPin): number {
+  if (a !== b && a.id === b.id) throw new Error(`two pins share the id ${a.id}`);
+  return b.shows.length - a.shows.length || (a.id < b.id ? -1 : a.id > b.id ? 1 : 0);
+}
+
+/** Bottom to top: the busiest pin is painted last, so it sits on top of the pins it overlaps. */
+export function paintOrder(pins: readonly DisplayPin[]): DisplayPin[] {
+  return pins.toSorted((a, b) => compareByProminence(b, a));
+}
+
 /** City names of a pin, biggest group first: "Berlin" or "Berlin +2". */
 export function pinLabel(pin: DisplayPin): string {
   const cities = [...new Set(pin.groups.map((group) => group.shows[0]?.show.city ?? ''))].filter((city) => city !== '');

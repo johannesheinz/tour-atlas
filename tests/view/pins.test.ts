@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { buildBandEntries, showRefs } from '../../src/model.ts';
 import type { BandFile } from '../../src/data/types.ts';
 import { placeLabels } from '../../src/view/labels.ts';
-import { clusterGroups, groupByCoordinates, pinLabel } from '../../src/view/pins.ts';
+import { clusterGroups, compareByProminence, groupByCoordinates, paintOrder, pinLabel, type DisplayPin } from '../../src/view/pins.ts';
 import { makeFile, makeShow } from '../helpers.ts';
 
 const berlin = { lat: 52.52, lon: 13.405, precision: 'city' as const, source: 'manual' as const };
@@ -41,6 +41,55 @@ describe('pins', () => {
     const groups = groupByCoordinates(refs());
     const projected = groups.map((group, index) => ({ group, x: 100 + index * 50, y: 100 }));
     expect(clusterGroups(projected, 12)).toHaveLength(2);
+  });
+});
+
+describe('paintOrder', () => {
+  /** One pin per entry, far apart on screen: [latitude, show count]. */
+  function pinsWithCounts(entries: readonly (readonly [number, number])[]): DisplayPin[] {
+    const shows = entries.flatMap(([lat, count]) =>
+      Array.from({ length: count }, (_, index) => {
+        const date = new Date(Date.UTC(2026, 10, 1 + index)).toISOString().slice(0, 10);
+        return makeShow({ id: `test-band-${date}-lat-${lat}`, date, geo: { lat, lon: 0, precision: 'city', source: 'manual' } });
+      }),
+    );
+    const [band] = buildBandEntries([makeFile(shows) as BandFile], []);
+    if (band === undefined) throw new Error('no band');
+    const projected = groupByCoordinates(showRefs(band, '2026-10-01')).map((group) => ({ group, x: group.lat * 100, y: 0 }));
+    return clusterGroups(projected, 12);
+  }
+
+  const summary = (pins: readonly DisplayPin[]) => pins.map((pin) => [pin.id, pin.shows.length]);
+
+  it('paints the busiest pin last, so it sits on top', () => {
+    const pins = pinsWithCounts([[10, 21], [20, 35], [30, 1], [40, 4]]);
+    expect(paintOrder(pins).map((pin) => pin.shows.length)).toEqual([1, 4, 21, 35]);
+  });
+
+  it('breaks ties by id, the smallest id on top', () => {
+    const pins = pinsWithCounts([[30, 2], [10, 2], [20, 2]]);
+    expect(paintOrder(pins).map((pin) => pin.id)).toEqual(['30.00000,0.00000', '20.00000,0.00000', '10.00000,0.00000']);
+  });
+
+  it('gives the same stack whatever order the pins arrive in', () => {
+    const pins = pinsWithCounts([[10, 3], [20, 3], [30, 5], [40, 1]]);
+    const expected = summary(paintOrder(pins));
+    const permutations = (items: readonly DisplayPin[]): DisplayPin[][] =>
+      items.length <= 1 ? [[...items]] : items.flatMap((item, index) => permutations(items.toSpliced(index, 1)).map((rest) => [item, ...rest]));
+    for (const arrangement of permutations(pins)) expect(summary(paintOrder(arrangement))).toEqual(expected);
+  });
+
+  it('leaves its input untouched', () => {
+    const pins = pinsWithCounts([[10, 3], [20, 1]]);
+    const before = summary(pins);
+    paintOrder(pins);
+    expect(summary(pins)).toEqual(before);
+  });
+
+  it('rejects two pins with the same id', () => {
+    const [pin] = pinsWithCounts([[10, 2]]);
+    if (pin === undefined) throw new Error('no pin');
+    expect(() => compareByProminence(pin, { ...pin })).toThrow(/share the id/);
   });
 });
 

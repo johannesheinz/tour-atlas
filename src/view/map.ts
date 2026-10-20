@@ -29,7 +29,7 @@ import { radiusDegrees, type AreaCircle, type MapMode } from './mapRegions.ts';
 export type { AreaCircle, MapMode } from './mapRegions.ts';
 import { IDLE_PRESS, LONG_PRESS, stepLongPress, type LongPressInput } from './longPress.ts';
 import { placeLabels } from './labels.ts';
-import { clusterGroups, groupByCoordinates, pinLabel, type DisplayPin, type PinGroup } from './pins.ts';
+import { clusterGroups, groupByCoordinates, paintOrder, pinLabel, type DisplayPin, type PinGroup } from './pins.ts';
 import { annularSectorPath, pinSegments, type PinSegment } from './pinSegments.ts';
 import { bandColor } from '../model.ts';
 import type { ThemeTokens } from './theme.ts';
@@ -212,7 +212,9 @@ export function createMapView(container: HTMLElement, world: WorldTopology, call
   let transform: ZoomTransform = zoomIdentity;
   let props: MapProps | null = null;
   let groups: PinGroup[] = [];
+  /** Chronological, the order the keyboard cursor steps through. */
   let pins: DisplayPin[] = [];
+  let pinsBottomToTop: DisplayPin[] = [];
   let tree: Quadtree<DisplayPin> = quadtree<DisplayPin>();
   let useCanvas = false;
   let hoveredPinId: string | null = null;
@@ -785,6 +787,7 @@ export function createMapView(container: HTMLElement, world: WorldTopology, call
     pins = clusterGroups(projected, MAP_SETTINGS.clusterRadiusPx / viewScale()).toSorted(
       (a, b) => a.firstStart - b.firstStart || (a.id < b.id ? -1 : 1),
     );
+    pinsBottomToTop = paintOrder(pins);
     tree = quadtree<DisplayPin>()
       .x((pin) => pin.x)
       .y((pin) => pin.y)
@@ -987,7 +990,7 @@ export function createMapView(container: HTMLElement, world: WorldTopology, call
 
   function drawSvgPins(current: MapProps) {
     const seen = new Set<string>();
-    for (const pin of pins) {
+    for (const pin of pinsBottomToTop) {
       seen.add(pin.id);
       const style = pinStyle(pin, current);
       let element = svgPins.get(pin.id);
@@ -1030,7 +1033,19 @@ export function createMapView(container: HTMLElement, world: WorldTopology, call
       element.remove();
       svgPins.delete(id);
     }
+    stackSvgPins();
     positionPins();
+  }
+
+  /** Moves only the pins out of paint order, so an unchanged stack costs one walk and no DOM writes. */
+  function stackSvgPins() {
+    let expected = pinsLayer.firstElementChild;
+    for (const pin of pinsBottomToTop) {
+      const element = svgPins.get(pin.id);
+      if (element === undefined) throw new Error(`pin ${pin.id} has no element`);
+      if (element === expected) expected = element.nextElementSibling;
+      else pinsLayer.insertBefore(element, expected);
+    }
   }
 
   function positionPins() {
@@ -1048,7 +1063,7 @@ export function createMapView(container: HTMLElement, world: WorldTopology, call
     const ratio = canvas.width / Math.max(1, width);
     context.setTransform(ratio, 0, 0, ratio, 0, 0);
     context.clearRect(0, 0, width, height);
-    for (const pin of pins) {
+    for (const pin of pinsBottomToTop) {
       const [x, y] = toScreen(pin.x, pin.y);
       if (x < -20 || y < -20 || x > width + 20 || y > height + 20) continue;
       const style = pinStyle(pin, current);
@@ -1095,22 +1110,20 @@ export function createMapView(container: HTMLElement, world: WorldTopology, call
       return;
     }
     measureContext.font = MAP_SETTINGS.labelFont;
-    const visible = pins.flatMap((pin) => {
+    const visibleTopFirst = pinsBottomToTop.toReversed().flatMap((pin) => {
       const [x, y] = toScreen(pin.x, pin.y);
       return x >= 0 && y >= 0 && x <= width && y <= height ? [{ pin, x, y }] : [];
     });
-    const candidates = visible
-      .toSorted((a, b) => b.pin.shows.length - a.pin.shows.length)
-      .map(({ pin, x, y }) => {
-        const text = pinLabel(pin);
-        let textWidth = labelWidths.get(text);
-        if (textWidth === undefined) {
-          textWidth = measureContext.measureText(text).width;
-          labelWidths.set(text, textWidth);
-        }
-        return { id: pin.id, text, x, y, width: textWidth, height: 14, pinRadius: pinRadius(pin) + 2 };
-      });
-    const obstacles = visible.map(({ pin, x, y }) => ({ id: pin.id, x, y, radius: MAP_SETTINGS.pinRadius + 2 }));
+    const candidates = visibleTopFirst.map(({ pin, x, y }) => {
+      const text = pinLabel(pin);
+      let textWidth = labelWidths.get(text);
+      if (textWidth === undefined) {
+        textWidth = measureContext.measureText(text).width;
+        labelWidths.set(text, textWidth);
+      }
+      return { id: pin.id, text, x, y, width: textWidth, height: 14, pinRadius: pinRadius(pin) + 2 };
+    });
+    const obstacles = visibleTopFirst.map(({ pin, x, y }) => ({ id: pin.id, x, y, radius: MAP_SETTINGS.pinRadius + 2 }));
     const placed = placeLabels(candidates, obstacles, { width, height });
     labelsLayer.replaceChildren(
       ...placed.map((label) =>
