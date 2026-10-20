@@ -35,6 +35,7 @@ import { bandColor } from '../model.ts';
 import type { ThemeTokens } from './theme.ts';
 import { createTooltip } from './tooltip.ts';
 import { pinTooltip } from './tooltipContent.ts';
+import { COARSE_WORLD_SETTINGS, simplifyTopology, worldDetailAt, type WorldDetail } from './simplifyTopology.ts';
 
 export const MAP_SETTINGS = {
   /** The pointed-at pin's ring sits outside the selection ring, so it stands out even when every pin is selected. */
@@ -127,6 +128,11 @@ interface FitAnimation {
   current: MapFit;
 }
 
+interface WorldShapes {
+  readonly land: ReturnType<typeof feature>;
+  readonly borders: MultiLineString;
+}
+
 interface PinStyle {
   readonly radius: number;
   /** Band-colour ring for pins with several bands; empty otherwise. */
@@ -138,8 +144,10 @@ interface PinStyle {
 }
 
 export function createMapView(container: HTMLElement, world: WorldTopology, callbacks: MapCallbacks): MapView {
-  const land = feature(world, world.objects.land);
-  const borders = mesh(world, world.objects.countries, (a, b) => a !== b);
+  const detailedWorld = worldShapes(world);
+  /** Simplified on first need, which always replaces a projection of the detailed world that costs more. */
+  let coarseWorld: WorldShapes | null = null;
+  let drawnDetail: WorldDetail | null = null;
   let mode: MapMode = 'flat';
   let projection: GeoProjection = projectionFor(mode);
   let path = geoPath(projection);
@@ -229,7 +237,9 @@ export function createMapView(container: HTMLElement, world: WorldTopology, call
       applyZoomTransform();
     })
     .on('end', () => {
-      if (!programmaticZoom) rebuildPins();
+      if (programmaticZoom) return;
+      rebuildPins();
+      drawWorldFor(transform.k);
     });
   const surfaceSelection = select(surface);
   surfaceSelection.call(zoomBehavior);
@@ -725,11 +735,31 @@ export function createMapView(container: HTMLElement, world: WorldTopology, call
     spherePath.setAttribute('d', sphere);
     shadePath.setAttribute('d', mode === 'globe' ? sphere : '');
     graticulePath.setAttribute('d', mode === 'globe' ? (path(geoGraticule10()) ?? '') : '');
-    landPath.setAttribute('d', path(land) ?? '');
-    bordersPath.setAttribute('d', path(borders) ?? '');
+    drawWorld(inMotion ? 'coarse' : worldDetailAt(fit.scale, window.devicePixelRatio));
     drawAreaCircle();
     renderRoutes();
     projectAndCluster(inMotion);
+  }
+
+  /** Moving, the world is drawn coarse; at rest, coarse only while the points it drops are too small to see. */
+  function drawWorld(detail: WorldDetail) {
+    const shapes = worldShapesFor(detail);
+    landPath.setAttribute('d', path(shapes.land) ?? '');
+    bordersPath.setAttribute('d', path(shapes.borders) ?? '');
+    drawnDetail = detail;
+  }
+
+  function worldShapesFor(detail: WorldDetail): WorldShapes {
+    if (detail === 'detailed') return detailedWorld;
+    coarseWorld ??= worldShapes(simplifyTopology(world, COARSE_WORLD_SETTINGS.minAreaSquareDegrees));
+    return coarseWorld;
+  }
+
+  /** After the viewer's zoom, which only scales the drawn world: the detail its scale on screen needs. */
+  function drawWorldFor(zoomFactor: number) {
+    if (base === null) return;
+    const detail = worldDetailAt(base.scale * zoomFactor, window.devicePixelRatio);
+    if (detail !== drawnDetail) drawWorld(detail);
   }
 
   function projectAndCluster(inMotion = false) {
@@ -1084,6 +1114,10 @@ export function createMapView(container: HTMLElement, world: WorldTopology, call
       drawTour();
     },
   };
+}
+
+function worldShapes(topology: WorldTopology): WorldShapes {
+  return { land: feature(topology, topology.objects.land), borders: mesh(topology, topology.objects.countries, (a, b) => a !== b) };
 }
 
 function projectionFor(mode: MapMode): GeoProjection {
