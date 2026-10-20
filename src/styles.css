@@ -3001,6 +3001,33 @@ input[type='search']::placeholder {
     font-size: 12px;
   }
 
+  /*
+   * iOS zooms in on a focused control set below 16 px (src/view/iosZoomGuard.ts), so there it is set at 16 px with
+   * every length above divided by 0.75, then shrunk by 0.75; the negative margins hand the freed space back to the row.
+   * Browsers round border widths down to whole pixels and leave a seam between two shrunk arrow halves, so the
+   * border is an inset shadow and the arrow a single tile.
+   */
+  .ios-zoom-guard .preset-select {
+    min-height: calc(32px / 0.75);
+    margin-block: calc(32px / 0.75 * -0.125);
+    margin-right: var(--shrunk-margin-right);
+    padding: calc((4px + var(--rule)) / 0.75) calc((26px + var(--rule)) / 0.75) calc((4px + var(--rule)) / 0.75) calc((10px + var(--rule)) / 0.75);
+    border: 0;
+    border-radius: calc(var(--radius-control) / 0.75);
+    box-shadow: inset 0 0 0 calc(var(--rule) / 0.75) var(--control-line);
+    background-image: conic-gradient(from -45deg at 50% 100%, currentColor 90deg, transparent 90deg);
+    background-position: calc(100% - (10px + var(--rule)) / 0.75) 50%;
+    background-size: calc(10px / 0.75) calc(5px / 0.75);
+    font-size: 16px;
+    transform: scale(0.75);
+    transform-origin: left center;
+  }
+
+  .ios-zoom-guard .preset-select:focus-visible {
+    outline-width: calc(3px / 0.75);
+    outline-offset: calc(2px / 0.75);
+  }
+
 
   .search-slot {
     order: 3;

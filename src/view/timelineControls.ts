@@ -1,5 +1,6 @@
-import { h, holdWidestOptionWidth } from './dom.ts';
+import { h, holdShrunkLayoutWidth, holdWidestOptionWidth } from './dom.ts';
 import { iconButton } from './icons.ts';
+import { IOS_ZOOM_GUARD_CLASS } from './iosZoomGuard.ts';
 import { attachPopover } from './popover.ts';
 import { createSwitch } from './switch.ts';
 import { t } from '../i18n/index.ts';
@@ -96,6 +97,7 @@ export function createTimelineControls(container: HTMLElement, callbacks: Timeli
     h('div', { class: 'toolbar-group timeline-bar-end' }, h('div', { class: 'popover-anchor' }, optionsButton, optionsPanel), h('div', { class: 'popover-anchor' }, info, help)),
   );
   holdWidestOptionWidth(select);
+  if (document.documentElement.classList.contains(IOS_ZOOM_GUARD_CLASS)) holdShrunkLayoutWidth(select);
 
   return {
     render(props) {

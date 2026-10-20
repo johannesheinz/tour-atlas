@@ -1,3 +1,5 @@
+import { shrunkControlMarginRight } from './iosZoomGuard.ts';
+
 type AttributeValue = string | number | boolean | null | undefined;
 type Attributes = Readonly<Record<string, AttributeValue>>;
 type Child = Node | string | null | undefined | false;
@@ -84,4 +86,13 @@ export function holdWidestOptionWidth(select: HTMLSelectElement): void {
   document.fonts.addEventListener('loadingdone', fit);
   window.addEventListener('resize', fit);
   new MutationObserver(fit).observe(document.documentElement, { attributes: true, attributeFilter: ['data-style'] });
+}
+
+/** A control shrunk by the iOS zoom guard (src/view/iosZoomGuard.ts) has an intrinsic width, so its margin follows it here. */
+export function holdShrunkLayoutWidth(control: HTMLElement): void {
+  new ResizeObserver(([entry]) => {
+    const box = entry?.borderBoxSize[0];
+    if (box === undefined) throw new Error('ResizeObserver reported no border box');
+    control.style.setProperty('--shrunk-margin-right', `${shrunkControlMarginRight(box.inlineSize)}px`);
+  }).observe(control);
 }

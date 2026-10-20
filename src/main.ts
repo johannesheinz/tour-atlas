@@ -25,6 +25,7 @@ import { DAY_MS } from './view/timeScale.ts';
 import { TIMELINE_SETTINGS, createTimeline, fitDomain } from './view/timeline.ts';
 import { FRAME_LAYOUT_QUERY, MAP_SHARE, PHONE_LAYOUT_QUERY, PHONE_MAP_SHARE } from './view/layout.ts';
 import { createTimelineControls } from './view/timelineControls.ts';
+import { IOS_ZOOM_GUARD_CLASS, needsIosZoomGuard } from './view/iosZoomGuard.ts';
 import { createMapControls } from './view/mapControls.ts';
 import { createSettings } from './view/settings.ts';
 import { createSharePanel } from './view/sharePanel.ts';
@@ -54,6 +55,7 @@ const urlState = parseUrlState(location.hash);
 useLocale({ language: urlState.language, clock: urlState.clock, distance: urlState.distance }, navigator.languages);
 localizePage(document);
 applyStyle(urlState.style);
+if (needsIosZoomGuard((property, value) => CSS.supports(property, value))) document.documentElement.classList.add(IOS_ZOOM_GUARD_CLASS);
 
 const dataStore = createBundledStore();
 const knownBandIds = new Set(dataStore.listBands().map((file) => file.band.id));
