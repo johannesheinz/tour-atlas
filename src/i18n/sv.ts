@@ -286,7 +286,6 @@ export const sv: Messages = {
   settings: {
     title: 'Inställningar',
     style: 'Stil',
-    styles: { stage: 'Scenljus', bold: 'Stark kontrast', soft: 'Mjukt tryck', atlas: 'Vägatlas' },
     theme: 'Tema',
     themes: { auto: 'Auto', light: 'Ljust', dark: 'Mörkt' },
     language: 'Språk',

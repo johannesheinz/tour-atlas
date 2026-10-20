@@ -11,6 +11,8 @@ export interface ThemeTokens {
   readonly inkSoft: string;
   readonly inkMuted: string;
   readonly past: string;
+  /** The style's text font family, for the canvas text that is not a lane label. */
+  readonly textFont: string;
   /** Canvas font shorthands for the timeline's lane labels. */
   readonly laneFont: string;
   readonly compactLaneFont: string;
@@ -51,6 +53,7 @@ export function readThemeTokens(preference: ThemePreference): ThemeTokens {
     inkSoft: token('--ink-soft'),
     inkMuted: token('--ink-muted'),
     past: token('--past'),
+    textFont: token('--font-text'),
     laneFont: token('--lane-font'),
     compactLaneFont: token('--lane-font-compact'),
   };

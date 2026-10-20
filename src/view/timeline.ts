@@ -35,7 +35,8 @@ export const TIMELINE_SETTINGS = {
   maxGutterFraction: 0.25,
   /** The width of .timeline-playhead in styles.css. */
   playheadWidthPx: 2,
-  tickFont: '600 11px Archivo, system-ui, sans-serif',
+  /** Canvas font weight and size of the axis labels; the family is the style's text font. */
+  tickWeightAndSize: '600 11px',
 } as const;
 
 export interface TimelineProps {
@@ -542,7 +543,7 @@ export function createTimeline(container: HTMLElement, callbacks: TimelineCallba
     const height = TIMELINE_SETTINGS.axisHeight;
     axisContext.setTransform(ratio, 0, 0, ratio, 0, 0);
     axisContext.clearRect(0, 0, width, height);
-    axisContext.font = TIMELINE_SETTINGS.tickFont;
+    axisContext.font = `${TIMELINE_SETTINGS.tickWeightAndSize} ${current.theme.textFont}`;
     axisContext.textBaseline = 'middle';
     const [start, end] = x.domain();
     if (start === undefined || end === undefined) return;

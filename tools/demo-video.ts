@@ -44,16 +44,17 @@ const PHONE_PAGE_PATH = 'tools/demo/phone.html';
 const OVERLAY_SCRIPT_PATH = 'tools/demo/overlay.js';
 const PHONE_PAGE_ROUTE = '/demo-phone.html';
 const PHONE_FONT_ROUTES: Readonly<Record<string, string>> = {
-  '/demo-phone/jost-latin-500-normal.woff2': '@fontsource/jost/files/jost-latin-500-normal.woff2',
-  '/demo-phone/archivo-latin-400-normal.woff2': '@fontsource/archivo/files/archivo-latin-400-normal.woff2',
+  '/demo-phone/inter-tight-latin-300-normal.woff2': '@fontsource/inter-tight/files/inter-tight-latin-300-normal.woff2',
+  '/demo-phone/inter-tight-latin-400-normal.woff2': '@fontsource/inter-tight/files/inter-tight-latin-400-normal.woff2',
+  '/demo-phone/inter-tight-latin-700-normal.woff2': '@fontsource/inter-tight/files/inter-tight-latin-700-normal.woff2',
 };
 
 const VIEWPORT = { width: 1920, height: 1080 } as const;
 /** Every scripted pause and movement takes this many times its nominal length. */
 const PACE = 1.5;
-type CardLine = readonly ['h1' | 'p', string];
+type CardLine = readonly ['wordmark', heavy: string, light: string] | readonly ['p', string];
 const TITLE_CARD: readonly CardLine[] = [
-  ['h1', 'Tour Atlas'],
+  ['wordmark', 'Tour', 'Atlas'],
   ['p', 'Follow your favourite bands on tour through space and time'],
 ];
 const TOUR_BAND = 'Sabaton';
@@ -180,7 +181,7 @@ function previewUrl(server: PreviewServer): string {
   return url;
 }
 
-/** Serves the phone frame page and its two fonts next to the built app; only for this preview, never in dist/. */
+/** Serves the phone frame page and its fonts next to the built app; only for this preview, never in dist/. */
 function demoPhonePlugin(): Plugin {
   const require = createRequire(import.meta.url);
   return {

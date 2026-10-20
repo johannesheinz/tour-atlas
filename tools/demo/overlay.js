@@ -9,15 +9,17 @@
     #demo-caption { position: fixed; left: 50%; bottom: 56px; z-index: 2147483646; pointer-events: none;
       transform: translate(-50%, 16px); opacity: 0; transition: opacity .45s ease, transform .45s ease;
       padding: 16px 34px; border-radius: 14px; background: rgba(10, 12, 20, .82); color: #fff;
-      font: 500 38px/1.15 'Jost', 'Archivo', sans-serif; letter-spacing: .01em; white-space: nowrap;
+      font: 400 38px/1.15 'Inter Tight', sans-serif; letter-spacing: .01em; white-space: nowrap;
       box-shadow: 0 10px 40px rgba(0,0,0,.45); border: 1px solid rgba(255,255,255,.12); backdrop-filter: blur(6px); }
     #demo-caption.on { opacity: 1; transform: translate(-50%, 0); }
     #demo-card { position: fixed; inset: 0; z-index: 2147483645; pointer-events: none; display: grid; place-content: center;
       text-align: center; gap: 22px; color: #fff; opacity: 0; transition: opacity .7s ease;
       background: radial-gradient(ellipse at center, rgba(14,16,28,.80) 0%, rgba(6,7,12,.96) 75%); backdrop-filter: blur(10px); }
     #demo-card.on { opacity: 1; }
-    #demo-card h1 { margin: 0; font: 500 150px/1 'Jost', sans-serif; letter-spacing: .02em; }
-    #demo-card p { margin: 0; font: 400 44px/1.3 'Jost', sans-serif; color: rgba(255,255,255,.82); }
+    #demo-card h1 { margin: 0; font: 700 150px/1 'Inter Tight', sans-serif; }
+    #demo-card .wordmark-space { font-size: 0; }
+    #demo-card .wordmark-light { font-weight: 300; }
+    #demo-card p { margin: 0; font: 400 44px/1.3 'Inter Tight', sans-serif; color: rgba(255,255,255,.82); }
   `;
 
   function cursorArrow() {
@@ -33,6 +35,20 @@
     arrow.setAttribute('stroke-linejoin', 'round');
     svg.append(arrow);
     return svg;
+  }
+
+  // The wordmark as the app sets it in Stage lights: a real space for screen readers, hidden on screen.
+  function cardLine([kind, ...texts]) {
+    if (kind === 'p') return Object.assign(document.createElement('p'), { textContent: texts[0] });
+    if (kind !== 'wordmark') throw new Error(`unknown card line ${kind}`);
+    const [heavy, light] = texts;
+    const heading = document.createElement('h1');
+    heading.append(
+      heavy,
+      Object.assign(document.createElement('span'), { className: 'wordmark-space', textContent: ' ' }),
+      Object.assign(document.createElement('span'), { className: 'wordmark-light', textContent: light }),
+    );
+    return heading;
   }
 
   function install() {
@@ -62,7 +78,7 @@
           card.classList.remove('on');
           return;
         }
-        card.replaceChildren(...lines.map(([tag, text]) => Object.assign(document.createElement(tag), { textContent: text })));
+        card.replaceChildren(...lines.map(cardLine));
         card.classList.add('on');
       },
     };

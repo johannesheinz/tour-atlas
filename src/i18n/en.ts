@@ -206,7 +206,6 @@ export const en: Messages = {
   settings: {
     title: 'Settings',
     style: 'Style',
-    styles: { stage: 'Stage lights', bold: 'Bold contrast', soft: 'Soft print', atlas: 'Road atlas' },
     theme: 'Theme',
     themes: { auto: 'Auto', light: 'Light', dark: 'Dark' },
     language: 'Language',

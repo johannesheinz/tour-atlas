@@ -1,4 +1,4 @@
-import { h } from './dom.ts';
+import { h, holdWidestOptionWidth } from './dom.ts';
 import { iconButton } from './icons.ts';
 import { attachPopover } from './popover.ts';
 import { createSwitch } from './switch.ts';
@@ -95,6 +95,7 @@ export function createTimelineControls(container: HTMLElement, callbacks: Timeli
     h('div', { class: 'toolbar-group', role: 'group', 'aria-label': t().timeline.moveRange }, earlier, zoomOut, later),
     h('div', { class: 'toolbar-group timeline-bar-end' }, h('div', { class: 'popover-anchor' }, optionsButton, optionsPanel), h('div', { class: 'popover-anchor' }, info, help)),
   );
+  holdWidestOptionWidth(select);
 
   return {
     render(props) {

@@ -15,9 +15,9 @@ https://github.com/user-attachments/assets/0ca2d52c-bfb0-4e42-a6d5-5ad271f44663
 - **Follow a tour:** a band's route animates leg by leg, with a playhead on the timeline
 - **Search:** bands, cities, venues, tours and festivals
 - **Share:** a link to exactly what you see; social media shows a preview card
-- **Mobile:** a phone layout with a collapsible sidebar; pinch to zoom, long press to pick a point
+- **Mobile:** lists and band views in a bottom sheet over a map and timeline that stay still; pinch to zoom, long press to pick a point
 - **Keyboard and screen readers:** skip link, keyboard cursors on the map and timeline that announce each show, live announcements for results and counts, visible focus
-- **Your way:** four styles in light and dark (all meet WCAG AA contrast), eight languages, local date formats, km or miles, less animation on request
+- **Your way:** four styles in light and dark (all meet WCAG AA contrast), eight languages, local date formats, km, miles or Swedish mil, less animation on request
 
 ## Privacy in mind
 
@@ -42,7 +42,7 @@ Building, configuring and deploying the app: [docs/DEVELOPMENT.md](docs/DEVELOPM
 
 Projection: Equal Earth (Šavrič, Patterson, Jenny). Coastlines and borders: Natural Earth via
 [world-atlas](https://github.com/topojson/world-atlas). Geocoding: Nominatim, © OpenStreetMap contributors
-(ODbL). Fonts: League Gothic, Archivo, Jost and Charis SIL (SIL Open Font License), self-hosted via Fontsource.
+(ODbL). Fonts: Inter Tight, League Gothic, Archivo and Charis SIL (SIL Open Font License), self-hosted via Fontsource.
 GitHub mark: [Octicons](https://github.com/primer/octicons) (MIT).
 Band names and logos belong to their owners; Tour Atlas is a fan project and not affiliated with any band.
 All bands in `samples/` are fictional. Tour dates in `data/bands/` come from each band's `source.url`.

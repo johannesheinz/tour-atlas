@@ -5,8 +5,9 @@
 <title>Tour Atlas on a phone</title>
 <!-- Served only by npm run demo-video, next to the built app so the framed app and its fonts are same-origin. -->
 <style>
-  @font-face { font-family: 'Jost'; font-weight: 500; src: url('demo-phone/jost-latin-500-normal.woff2') format('woff2'); }
-  @font-face { font-family: 'Archivo'; font-weight: 400; src: url('demo-phone/archivo-latin-400-normal.woff2') format('woff2'); }
+  @font-face { font-family: 'Inter Tight'; font-weight: 300; src: url('demo-phone/inter-tight-latin-300-normal.woff2') format('woff2'); }
+  @font-face { font-family: 'Inter Tight'; font-weight: 400; src: url('demo-phone/inter-tight-latin-400-normal.woff2') format('woff2'); }
+  @font-face { font-family: 'Inter Tight'; font-weight: 700; src: url('demo-phone/inter-tight-latin-700-normal.woff2') format('woff2'); }
   html, body { margin: 0; height: 100%; background: radial-gradient(ellipse at 30% 40%, #2a3644 0%, #12171e 70%); overflow: hidden; }
   .phone { position: absolute; left: 50%; top: calc(50% - 48px); transform: translate(-50%, -50%); width: 390px; height: 844px;
     border-radius: 46px; padding: 14px; background: #0b0d10; box-shadow: 0 30px 80px rgba(0,0,0,.6), inset 0 0 0 2px #2c333c; opacity: 0; transition: opacity .6s ease; }
@@ -16,7 +17,7 @@
 <script>
   globalThis.__phone = {
     load(src) { document.getElementById('app').src = src; },
-    fontsReady() { return document.fonts.load("500 38px 'Jost'").then(() => undefined); },
+    fontsReady() { return Promise.all([300, 400, 700].map((weight) => document.fonts.load(`${weight} 38px 'Inter Tight'`))).then(() => undefined); },
     reveal() { document.querySelector('.phone').classList.add('on'); },
   };
 </script>

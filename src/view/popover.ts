@@ -1,3 +1,4 @@
+import { closesSelectList } from './dom.ts';
 import { POPOVER_VIEWPORT_MARGIN_PX, placeInViewport, type Box } from './popoverPlacement.ts';
 
 export interface Popover {
@@ -126,7 +127,7 @@ function focusFirstControl(panel: HTMLElement) {
 function closeOnDismiss(keyTargets: readonly HTMLElement[], panel: HTMLElement, isInside: (target: EventTarget | null) => boolean, close: (restoreFocus: boolean) => void) {
   for (const element of keyTargets) {
     element.addEventListener('keydown', (event) => {
-      if (event.key !== 'Escape' || panel.hidden) return;
+      if (event.key !== 'Escape' || panel.hidden || closesSelectList(event)) return;
       event.preventDefault();
       close(true);
     });

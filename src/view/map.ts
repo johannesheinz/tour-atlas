@@ -65,8 +65,9 @@ export const MAP_SETTINGS = {
   globeMinScale: 0.8,
   globeMaxScale: 60,
   maxBandsWithRoutes: 8,
-  labelFont: '600 12px Archivo, system-ui, sans-serif',
-  badgeFont: '600 10px Archivo, system-ui, sans-serif',
+  /** Canvas font weight and size; the family is the style's text font. */
+  labelWeightAndSize: '600 12px',
+  badgeWeightAndSize: '600 10px',
 } as const;
 
 export interface MapProps {
@@ -1152,7 +1153,7 @@ export function createMapView(container: HTMLElement, world: WorldTopology, call
         context.fillStyle = current.theme.ink;
         context.fillRect(x + style.radius - 2, y - style.radius - 12, badgeWidth, 12);
         context.fillStyle = current.theme.stock;
-        context.font = MAP_SETTINGS.badgeFont;
+        context.font = `${MAP_SETTINGS.badgeWeightAndSize} ${current.theme.textFont}`;
         context.textAlign = 'center';
         context.textBaseline = 'middle';
         context.fillText(label, x + style.radius - 2 + badgeWidth / 2, y - style.radius - 5.5);
@@ -1167,7 +1168,7 @@ export function createMapView(container: HTMLElement, world: WorldTopology, call
       labelsLayer.replaceChildren();
       return;
     }
-    measureContext.font = MAP_SETTINGS.labelFont;
+    measureContext.font = `${MAP_SETTINGS.labelWeightAndSize} ${props.theme.textFont}`;
     const visibleTopFirst = pinsBottomToTop.toReversed().flatMap((pin) => {
       const [x, y] = toScreen(pin.x, pin.y);
       return x >= 0 && y >= 0 && x <= width && y <= height ? [{ pin, x, y }] : [];

@@ -95,7 +95,7 @@ describe('injectBrand', () => {
 
   it('works with the real index.html and brand files', () => {
     const result = injectBrand(readFileSync('index.html', 'utf8'), readFileSync('src/brand/mark.svg', 'utf8'), readFileSync('src/brand/favicon.svg', 'utf8'));
-    expect(result).toMatch(/<a class="wordmark-link"[^>]*><svg class="brand-mark" aria-hidden="true" width="1em" height="1em"[^]*<\/svg>Tour Atlas<\/a><\/h1>/);
+    expect(result).toMatch(/<a class="wordmark-link"[^>]*><svg class="brand-mark" aria-hidden="true" width="1em" height="1em"[^]*<\/svg><span class="wordmark-text">Tour<span class="wordmark-space"> <\/span><span class="wordmark-light">Atlas<\/span><\/span><\/a><\/h1>/);
     expect(result).toContain('<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,');
   });
 });

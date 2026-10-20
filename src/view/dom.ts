@@ -55,3 +55,33 @@ export function context2d(canvas: HTMLCanvasElement): CanvasRenderingContext2D {
   if (context === null) throw new Error('2D canvas is not available');
   return context;
 }
+
+const OPEN_LIST = ':open';
+
+/** An Escape that closes a select's own list (customizable select) reaches the page too; it must not also close what holds the select. */
+export function closesSelectList(event: KeyboardEvent): boolean {
+  return event.target instanceof Element && CSS.supports(`selector(${OPEN_LIST})`) && event.target.closest('select')?.matches(OPEN_LIST) === true;
+}
+
+/**
+ * A customizable select (appearance: base-select) is only as wide as its chosen option, so it would change width
+ * with every choice; this keeps it as wide as its widest option, hidden ones included, as a native select is.
+ */
+export function holdWidestOptionWidth(select: HTMLSelectElement): void {
+  const measure = context2d(document.createElement('canvas'));
+  const fit = () => {
+    const style = getComputedStyle(select);
+    if (style.appearance !== 'base-select') {
+      select.style.minWidth = '';
+      return;
+    }
+    measure.font = `${style.fontWeight} ${style.fontSize} ${style.fontFamily}`;
+    const widestText = Math.max(...[...select.options].map((option) => measure.measureText(option.text).width));
+    const frame = [style.paddingLeft, style.paddingRight, style.borderLeftWidth, style.borderRightWidth].reduce((sum, length) => sum + Number.parseFloat(length), 0);
+    select.style.minWidth = `${Math.ceil(widestText + frame)}px`;
+  };
+  fit();
+  document.fonts.addEventListener('loadingdone', fit);
+  window.addEventListener('resize', fit);
+  new MutationObserver(fit).observe(document.documentElement, { attributes: true, attributeFilter: ['data-style'] });
+}

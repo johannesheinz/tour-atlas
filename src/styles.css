@@ -47,20 +47,53 @@
   src: url('@fontsource/archivo/files/archivo-latin-ext-600-normal.woff2') format('woff2');
   unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
 }
+/* No 600 file: Stage lights' emphasis (600) takes the 700 one, which its wordmark and headings use anyway. */
 @font-face {
-  font-family: 'Jost';
+  font-family: 'Inter Tight';
   font-style: normal;
-  font-weight: 500;
+  font-weight: 300;
   font-display: swap;
-  src: url('@fontsource/jost/files/jost-latin-500-normal.woff2') format('woff2');
+  src: url('@fontsource/inter-tight/files/inter-tight-latin-300-normal.woff2') format('woff2');
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 @font-face {
-  font-family: 'Jost';
+  font-family: 'Inter Tight';
   font-style: normal;
-  font-weight: 500;
+  font-weight: 300;
   font-display: swap;
-  src: url('@fontsource/jost/files/jost-latin-ext-500-normal.woff2') format('woff2');
+  src: url('@fontsource/inter-tight/files/inter-tight-latin-ext-300-normal.woff2') format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'Inter Tight';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('@fontsource/inter-tight/files/inter-tight-latin-400-normal.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Inter Tight';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('@fontsource/inter-tight/files/inter-tight-latin-ext-400-normal.woff2') format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'Inter Tight';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('@fontsource/inter-tight/files/inter-tight-latin-700-normal.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Inter Tight';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('@fontsource/inter-tight/files/inter-tight-latin-ext-700-normal.woff2') format('woff2');
   unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
 }
 @font-face {
@@ -103,7 +136,6 @@
  * Logos are stored as black silhouettes: printed in ink, inverted where the ink is light.
  */
 :root {
-  --font-text: 'Archivo', system-ui, -apple-system, 'Segoe UI', sans-serif;
   --gutter: 24px;
   --sidebar: 360px;
   --field-height: 36px;
@@ -139,20 +171,23 @@
   --shadow-pop-big: 0 14px 36px rgb(31 42 53 / 0.2);
   --logo-filter: none;
   --logo-filter-on-ink: invert(1);
-  --font-display: 'Jost', Futura, 'Century Gothic', sans-serif;
-  --display-weight: 500;
-  --display-scale: 0.66;
-  --display-tracking: 0.04em;
-  --font-heading: 'Jost', Futura, 'Century Gothic', sans-serif;
-  --heading-weight: 500;
+  --font-text: 'Inter Tight', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-display: 'Inter Tight', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --display-weight: 700;
+  --display-scale: 0.68;
+  --display-tracking: 0em;
+  --wordmark-light-weight: 300;
+  --wordmark-space: 0;
+  --font-heading: 'Inter Tight', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --heading-weight: 700;
   --heading-scale: 0.62;
-  --heading-tracking: 0.03em;
-  --font-label: 'Jost', Futura, 'Century Gothic', sans-serif;
-  --label-weight: 500;
+  --heading-tracking: 0em;
+  --font-label: 'Inter Tight', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --label-weight: 700;
   --label-scale: 0.68;
-  --label-tracking: 0.01em;
-  --lane-font: 500 13px 'Jost', Futura, 'Century Gothic', sans-serif;
-  --lane-font-compact: 500 12px 'Jost', Futura, 'Century Gothic', sans-serif;
+  --label-tracking: 0em;
+  --lane-font: 700 13px 'Inter Tight', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --lane-font-compact: 700 12px 'Inter Tight', system-ui, -apple-system, 'Segoe UI', sans-serif;
   --rule: 1px;
   --rule-heavy: 1px;
   --rule-marker: 2px;
@@ -259,10 +294,13 @@
   --shadow-pop-big: 6px 6px 0 #000000;
   --logo-filter: none;
   --logo-filter-on-ink: invert(1);
+  --font-text: 'Archivo', system-ui, -apple-system, 'Segoe UI', sans-serif;
   --font-display: 'League Gothic', 'Arial Narrow', Impact, sans-serif;
   --display-weight: 400;
   --display-scale: 1;
   --display-tracking: 0em;
+  --wordmark-light-weight: 400;
+  --wordmark-space: 1em;
   --font-heading: 'League Gothic', 'Arial Narrow', Impact, sans-serif;
   --heading-weight: 400;
   --heading-scale: 1;
@@ -379,10 +417,13 @@
   --shadow-pop-big: 4px 4px 0 #d3d2cb;
   --logo-filter: none;
   --logo-filter-on-ink: invert(1);
+  --font-text: 'Archivo', system-ui, -apple-system, 'Segoe UI', sans-serif;
   --font-display: 'League Gothic', 'Arial Narrow', Impact, sans-serif;
   --display-weight: 400;
   --display-scale: 1;
   --display-tracking: 0em;
+  --wordmark-light-weight: 400;
+  --wordmark-space: 1em;
   --font-heading: 'Archivo', system-ui, -apple-system, 'Segoe UI', sans-serif;
   --heading-weight: 600;
   --heading-scale: 0.6;
@@ -499,10 +540,13 @@
   --shadow-pop-big: 0 10px 28px rgb(35 48 56 / 0.18);
   --logo-filter: none;
   --logo-filter-on-ink: invert(1);
+  --font-text: 'Archivo', system-ui, -apple-system, 'Segoe UI', sans-serif;
   --font-display: 'Charis SIL', Charter, 'Iowan Old Style', Georgia, serif;
   --display-weight: 700;
   --display-scale: 0.66;
   --display-tracking: 0em;
+  --wordmark-light-weight: 700;
+  --wordmark-space: 1em;
   --font-heading: 'Charis SIL', Charter, 'Iowan Old Style', Georgia, serif;
   --heading-weight: 400;
   --heading-scale: 0.72;
@@ -699,6 +743,14 @@ a {
   color: inherit;
   text-decoration: none;
   white-space: nowrap;
+}
+
+.wordmark-space {
+  font-size: var(--wordmark-space);
+}
+
+.wordmark-light {
+  font-weight: var(--wordmark-light-weight);
 }
 
 .brand-mark {
@@ -1155,6 +1207,75 @@ select {
   background-position: calc(100% - 18px) 50%, calc(100% - 13px) 50%;
   background-size: 5px 5px;
   background-repeat: no-repeat;
+}
+
+/*
+ * Where the browser lets the open list be styled, it opens right below its control (above when there is no room),
+ * at least as wide, in the app's font and menu look; elsewhere the native list stays.
+ */
+@supports (appearance: base-select) {
+  select,
+  ::picker(select) {
+    appearance: base-select;
+  }
+
+  select {
+    align-items: center;
+  }
+
+  select::picker-icon {
+    display: none;
+  }
+
+  ::picker(select) {
+    position-try-order: normal;
+    margin-block: 4px;
+    padding: 4px;
+    border: var(--rule) solid var(--line);
+    border-radius: var(--radius-control);
+    background: var(--panel);
+    color: var(--ink);
+    box-shadow: var(--shadow-pop);
+  }
+
+  option {
+    gap: 8px;
+    min-height: 32px;
+    padding: 0 12px 0 8px;
+    border-radius: var(--radius-control);
+    font-weight: 400;
+  }
+
+  option::checkmark {
+    content: '';
+    width: 4px;
+    height: 8px;
+    margin: -2px 3px 0;
+    border-right: 2px solid currentColor;
+    border-bottom: 2px solid currentColor;
+    transform: rotate(45deg);
+  }
+
+  option:hover:not(:disabled),
+  option:focus-visible {
+    outline: none;
+    background: var(--hover-fill);
+    color: var(--on-hover-fill);
+  }
+
+  option:checked {
+    font-weight: 600;
+  }
+
+  option:disabled {
+    color: var(--ink-muted);
+  }
+
+  @media (pointer: coarse) {
+    option {
+      min-height: 40px;
+    }
+  }
 }
 
 .search-field {
@@ -2030,9 +2151,11 @@ input[type='search']::placeholder {
   border-bottom: var(--rule) solid var(--line);
 }
 
+/* Set like the pills it stands in for on narrow screens. */
 .preset-select {
   width: auto;
   min-height: 34px;
+  font-size: 12px;
   font-weight: 600;
 }
 
@@ -2833,11 +2956,51 @@ input[type='search']::placeholder {
   .masthead {
     position: relative;
     z-index: 25;
+    column-gap: 12px;
   }
 
+  /* Shrinks just enough that the wordmark and the three buttons share a row from 340 px up. */
   .wordmark {
-    font-size: 38px;
+    font-size: clamp(26px, 8.9vw, 38px);
   }
+
+  .masthead-actions {
+    gap: 6px;
+  }
+
+  .masthead-actions .icon-button,
+  .timeline-bar .icon-button {
+    width: 32px;
+    height: 32px;
+  }
+
+  /* Range, move and options share one row from 360 px up; a language whose longest range name is too wide wraps instead of clipping it. */
+  .timeline-bar {
+    gap: 8px 4px;
+    padding-inline: 4px;
+  }
+
+  .timeline-bar .toolbar-group {
+    gap: 4px;
+  }
+
+  /* 16 px keeps phones from zooming in on a focused field; the open list reads like the lists and menus. */
+  select {
+    font-size: 16px;
+  }
+
+  option {
+    font-size: 15px;
+  }
+
+  /* The closed control is set like a small button, so the bar fits one row; its open list is set like every other. */
+  .preset-select {
+    min-height: 32px;
+    padding: 4px 26px 4px 10px;
+    background-position: calc(100% - 15px) 50%, calc(100% - 10px) 50%;
+    font-size: 12px;
+  }
+
 
   .search-slot {
     order: 3;

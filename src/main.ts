@@ -16,7 +16,7 @@ import { NO_GENRE, TAG_VOCABULARY } from './data/tags.ts';
 import { exportAll, mergePreviews, normalizedFileText, processPreviewFile, type PreviewResult } from './preview.ts';
 import { createBandList } from './view/bandList.ts';
 import { createPreviewPanel } from './view/previewPanel.ts';
-import { h, prefersReducedMotion, requireElement } from './view/dom.ts';
+import { closesSelectList, h, prefersReducedMotion, requireElement } from './view/dom.ts';
 import { MAP_SETTINGS, createMapView } from './view/map.ts';
 import { createSearch } from './view/search.ts';
 import type { SearchEntry } from './view/searchIndex.ts';
@@ -346,7 +346,7 @@ const settings = createSettings(settingsButton, requireElement(document, '#setti
 }, localeChoice(), navigator.languages);
 
 document.addEventListener('keydown', (event) => {
-  if (event.key !== 'Escape' || event.defaultPrevented) return;
+  if (event.key !== 'Escape' || event.defaultPrevented || closesSelectList(event)) return;
   if (state.get().pickRadius !== null) state.set({ pickRadius: null });
   // On phones a first Escape closes the drill-down, the next one the sheet.
   else if (sidebarPanel(state.get()) !== 'lists' || !sheet.close()) resetViews();

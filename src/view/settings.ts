@@ -1,5 +1,6 @@
 import { STYLES, isStyle, type Style } from '../data/styles.ts';
 import { formats, t } from '../i18n/index.ts';
+import { STYLE_NAMES, STYLE_NAMES_LANGUAGE } from '../i18n/styleNames.ts';
 import {
   AUTOMATIC,
   CLOCKS,
@@ -49,7 +50,7 @@ export function createSettings(trigger: HTMLButtonElement, panel: HTMLElement, c
   const popover = attachPopover(trigger, panel);
   const text = t().settings;
 
-  const style = h('select', { class: 'settings-select', id: 'settings-style' }, ...STYLES.map((value) => h('option', { value }, text.styles[value])));
+  const style = h('select', { class: 'settings-select', id: 'settings-style' }, ...STYLES.map((value) => h('option', { value, lang: STYLE_NAMES_LANGUAGE }, STYLE_NAMES[value])));
   style.addEventListener('change', () => {
     if (!isStyle(style.value)) throw new Error(`The style menu offers an unknown style "${style.value}"`);
     callbacks.onStyle(style.value);

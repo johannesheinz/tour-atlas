@@ -49,6 +49,7 @@ npm run check          # everything CI runs, in order
   Validation issues carry a code (`src/data/issues.ts`) so the app can translate them; tools print English.
   Browsers have no Latin or Esperanto data, so `la.ts`/`eo.ts` carry their own month, weekday and country names
   (`FormatWords`), formatted in en-GB's shape by `src/i18n/formats.ts`.
+  The four style names are names and stay English in every language (`src/i18n/styleNames.ts`).
 - Styles: `src/data/styles.ts` lists the four styles (Stage lights is the default) and the fonts each downloads;
   `src/styles.css` sets every token per style, light and dark, and `tests/view/styles.test.ts` checks that each
   style sets them all and meets WCAG AA contrast. Components use tokens only, never a style's colours directly.
@@ -79,7 +80,8 @@ Only for work that needs judgement; everything checkable is a tool or a CI job.
 
 - Runtime dependencies are an allowlist: d3-geo, d3-scale, d3-time, d3-zoom, d3-selection,
   d3-transition, d3-quadtree, topojson-client, world-atlas, @fontsource/league-gothic, @fontsource/archivo,
-  @fontsource/jost, @fontsource/charis-sil.
+  @fontsource/inter-tight (Stage lights: text, headings and the two-weight wordmark in one family),
+  @fontsource/charis-sil.
   Justify any addition in the PR. `sharp` is a dev dependency for tools/logos.ts and tools/og-card.ts only; it never runs at build time and never reaches the bundle.
   `playwright-core` is a dev dependency for tools/demo-video.ts only, likewise.
 - No network at runtime, no CDNs, no cookies, no localStorage/sessionStorage/IndexedDB. View state lives in

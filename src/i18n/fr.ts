@@ -286,7 +286,6 @@ export const fr: Messages = {
   settings: {
     title: 'Réglages',
     style: 'Style',
-    styles: { stage: 'Lumières de scène', bold: 'Contraste fort', soft: 'Impression douce', atlas: 'Atlas routier' },
     theme: 'Thème',
     themes: { auto: 'Auto', light: 'Clair', dark: 'Sombre' },
     language: 'Langue',

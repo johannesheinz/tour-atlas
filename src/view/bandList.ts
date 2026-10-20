@@ -1,6 +1,6 @@
 import { dateRange, type BandEntry, type BandSort, type ShowRef } from '../model.ts';
 import { createBandIdentity, type BandIdentity } from './bandIdentity.ts';
-import { h } from './dom.ts';
+import { h, holdWidestOptionWidth } from './dom.ts';
 import { withClearButton } from './searchField.ts';
 import { t } from '../i18n/index.ts';
 import { formatDateSpan } from './format.ts';
@@ -86,6 +86,7 @@ export function createBandList(container: HTMLElement, callbacks: BandListCallba
     empty,
   );
   container.append(body);
+  holdWidestOptionWidth(sort);
 
   const rows = new Map<string, Row>();
   let quietOpen = false;

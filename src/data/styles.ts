@@ -13,7 +13,7 @@ export function isStyle(value: string): value is Style {
  * so the transfer budget counts the heaviest single style; every hosted font must belong to one.
  */
 export const STYLE_FONT_FAMILIES: Readonly<Record<Style, readonly string[]>> = {
-  stage: ['archivo', 'jost'],
+  stage: ['inter-tight'],
   bold: ['archivo', 'league-gothic'],
   soft: ['archivo', 'league-gothic'],
   atlas: ['archivo', 'charis-sil'],
