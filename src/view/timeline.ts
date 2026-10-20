@@ -69,6 +69,8 @@ export interface TimelineCallbacks {
 export interface TimelineLayout {
   /** The most height the lanes may take before they scroll. */
   maxLanesHeight(): number;
+  /** Whether the lanes keep that height when fewer would do, so the map above never changes size. */
+  fillsMaxHeight(): boolean;
 }
 
 export interface TimelineView {
@@ -312,10 +314,10 @@ export function createTimeline(container: HTMLElement, callbacks: TimelineCallba
     laneHeight = lanes > TIMELINE_SETTINGS.compactAbove ? TIMELINE_SETTINGS.compactLaneHeight : TIMELINE_SETTINGS.laneHeight;
     const total = Math.max(1, lanes) * laneHeight;
     const maxHeight = Math.max(TIMELINE_SETTINGS.minViewportHeight, sizing.maxLanesHeight());
-    viewportHeight = Math.min(total, Math.round(maxHeight));
+    viewportHeight = sizing.fillsMaxHeight() ? Math.round(maxHeight) : Math.min(total, Math.round(maxHeight));
     scroller.style.height = `${viewportHeight}px`;
     lanesViewport.style.height = `${viewportHeight}px`;
-    spacer.style.height = `${total - viewportHeight}px`;
+    spacer.style.height = `${Math.max(0, total - viewportHeight)}px`;
     container.classList.toggle('has-overflow', total > viewportHeight);
     const ratio = window.devicePixelRatio;
     for (const lanesLayer of [lanesCanvas, marksCanvas]) {

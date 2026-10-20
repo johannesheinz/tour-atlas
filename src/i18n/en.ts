@@ -30,6 +30,12 @@ export const en: Messages = {
     dropFilesNote: 'Checked in your browser. Nothing is uploaded.',
     sidebarToggle: (visible, total) => `Bands, places and genres (${visible} of ${total} bands shown)`,
   },
+  sheet: {
+    summary: (visible, total) => (visible === total ? bands(total) : `${visible} of ${bands(total)}`),
+    handleHint: 'Opens and closes the list. Drag it, or use the up and down arrow keys, to change its height.',
+    heights: { closed: 'List closed', half: 'List at half height', full: 'List at full height' },
+    opened: (title) => `${title}, shown in the panel below the map`,
+  },
   shows,
   bands,
   noShowsInRange: 'No shows in this time range',

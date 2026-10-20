@@ -104,6 +104,12 @@ export const sv: Messages = {
     dropFilesNote: 'Granskas i din webbläsare. Inget laddas upp.',
     sidebarToggle: (visible, total) => `Band, platser och genrer (${visible} av ${total} band visas)`,
   },
+  sheet: {
+    summary: (visible, total) => (visible === total ? bands(total) : `${visible} av ${bands(total)}`),
+    handleHint: 'Öppnar och stänger listan. Dra i den, eller använd piltangenterna upp och ner, för att ändra höjden.',
+    heights: { closed: 'Listan stängd', half: 'Listan på halv höjd', full: 'Listan på full höjd' },
+    opened: (title) => `${title}, visas i panelen under kartan`,
+  },
   shows,
   bands,
   noShowsInRange: 'Inga konserter under den här perioden',

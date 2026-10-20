@@ -104,6 +104,12 @@ export const fr: Messages = {
     dropFilesNote: 'Vérifiés dans votre navigateur. Rien n’est envoyé.',
     sidebarToggle: (visible, total) => `Groupes, lieux et genres (${visible} groupes affichés sur ${total})`,
   },
+  sheet: {
+    summary: (visible, total) => (visible === total ? bands(total) : `${visible} sur ${bands(total)}`),
+    handleHint: 'Ouvre et ferme la liste. Faites-la glisser, ou utilisez les flèches haut et bas, pour changer sa hauteur.',
+    heights: { closed: 'Liste fermée', half: 'Liste à mi-hauteur', full: 'Liste en pleine hauteur' },
+    opened: (title) => `${title} : à voir dans le panneau sous la carte`,
+  },
   shows,
   bands,
   noShowsInRange: 'Aucun concert sur cette période',

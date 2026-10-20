@@ -57,6 +57,8 @@ export const MAP_SETTINGS = {
   fitDurationMs: 300,
   /** The globe turns further than the flat map moves, so it gets more time. */
   globeFitDurationMs: 900,
+  /** Fits use the whole map when less than this much of it is left above the bottom sheet. */
+  minFitHeight: 120,
   globeMinScale: 0.8,
   globeMaxScale: 60,
   maxBandsWithRoutes: 8,
@@ -125,6 +127,8 @@ export interface MapView {
   /** Null draws the routes whole again. */
   setTour(tour: MapTour | null): void;
   setTourTime(ms: number): void;
+  /** On phones the bottom sheet hides the lower part of the map; fits frame their points in the part above it. */
+  setHiddenBottom(pixels: number): void;
 }
 
 /** A fit on its way: `current` is the fit the last frame showed. */
@@ -164,6 +168,7 @@ export function createMapView(container: HTMLElement, world: WorldTopology, call
   let areaCircle: AreaCircle | null = null;
   let picking = false;
   let globeFitRadius = 1;
+  let hiddenBottom = 0;
 
   const halftoneDot = s('circle', { class: 'halftone-dot', cx: 2, cy: 2, r: 1.15 });
   const halftone = s('pattern', { id: 'halftone', patternUnits: 'userSpaceOnUse', width: 4, height: 4 }, halftoneDot);
@@ -565,8 +570,9 @@ export function createMapView(container: HTMLElement, world: WorldTopology, call
   }
 
   function fitTarget(points: readonly LonLat[], minSpanKm: number): MapFit {
-    const options = { width, height, padding: MAP_SETTINGS.padding, minSpanKm };
-    globeFitRadius = Math.min(width, height) / 2 - MAP_SETTINGS.padding;
+    const visibleHeight = height - hiddenBottom >= MAP_SETTINGS.minFitHeight ? height - hiddenBottom : height;
+    const options = { width, height: visibleHeight, padding: MAP_SETTINGS.padding, minSpanKm };
+    globeFitRadius = Math.min(width, visibleHeight) / 2 - MAP_SETTINGS.padding;
     return mode === 'flat' ? computeMapFit(points, options) : computeGlobeFit(points, options);
   }
 
@@ -1169,6 +1175,10 @@ export function createMapView(container: HTMLElement, world: WorldTopology, call
       tour = next;
       tourTime = 0;
       renderRoutes();
+    },
+    setHiddenBottom(pixels) {
+      if (!Number.isFinite(pixels) || pixels < 0) throw new RangeError(`the sheet cannot hide ${pixels} px of the map`);
+      hiddenBottom = pixels;
     },
     setTourTime(ms) {
       tourTime = ms;

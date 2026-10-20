@@ -2744,22 +2744,31 @@ input[type='search']::placeholder {
   }
 }
 
-/* Narrow screens */
+/*
+ * Phones (PHONE_LAYOUT_QUERY in src/view/layout.ts): the map and timeline fill the window above the closed bottom
+ * sheet and never move; the sheet (the sidebar, driven by src/view/sheet.ts) slides over them from the bottom.
+ */
 
 @media (max-width: 820px) {
   :root {
     --gutter: 16px;
+    --sheet-handle: 52px;
   }
 
   .app {
     grid-template-columns: minmax(0, 1fr);
-    grid-template-areas: 'mast' 'side' 'stage' 'foot';
-    grid-template-rows: auto;
+    grid-template-areas: 'mast' 'stage';
+    grid-template-rows: auto minmax(0, 1fr);
+    height: 100dvh;
+    min-height: 0;
+    padding-bottom: calc(var(--sheet-handle) + var(--rule-heavy));
+    overflow: hidden;
   }
 
-  /* With a selection, its dates follow the map and timeline, like the back of the shirt. */
-  .app:has(.sidebar.is-drilled-down) {
-    grid-template-areas: 'mast' 'stage' 'side' 'foot';
+  /* Above the sheet, so the search results and the header's popovers open over it. */
+  .masthead {
+    position: relative;
+    z-index: 25;
   }
 
   .wordmark {
@@ -2772,58 +2781,125 @@ input[type='search']::placeholder {
     max-width: none;
   }
 
-  .sidebar {
-    border-right: 0;
-    border-bottom: var(--rule) solid var(--line);
+  .stage {
+    min-height: 0;
     padding: 8px var(--gutter);
+    overflow-y: auto;
+    overscroll-behavior: contain;
   }
 
-  .sidebar-body {
-    position: static;
-    max-height: none;
-    overflow: visible;
-    padding: 0;
+  .atlas {
+    display: flex;
+    flex: 1 0 0;
+    flex-direction: column;
   }
 
-  .sidebar.is-drilled-down {
-    border-top: var(--rule) solid var(--line);
-    border-bottom: 0;
-    padding-top: 16px;
+  .map-frame {
+    flex: 1 1 0;
+    min-height: 200px;
   }
 
-  .sidebar.is-drilled-down .sidebar-toggle {
-    display: none;
+  .map {
+    height: 100%;
+  }
+
+  /* Keeps its room while no lanes are hidden, so the map above never changes size (fillsMaxHeight in src/main.ts). */
+  .timeline-note[hidden] {
+    display: block !important;
+    visibility: hidden;
+  }
+
+  .sidebar {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 20;
+    display: flex;
+    flex-direction: column;
+    height: calc(var(--sheet-handle) + var(--rule-heavy));
+    border: 0;
+    border-top: var(--rule-heavy) solid var(--line);
+    border-radius: calc(2 * var(--radius-control)) calc(2 * var(--radius-control)) 0 0;
+    background: var(--panel);
+    box-shadow: var(--shadow-pop-big);
+  }
+
+  .sidebar.is-snapping,
+  .map-status-bar.is-snapping {
+    transition: transform 240ms cubic-bezier(0.2, 0.8, 0.2, 1);
   }
 
   .sidebar-toggle {
-    display: flex;
-    justify-content: space-between;
+    position: relative;
+    display: block;
+    flex: none;
     width: 100%;
-    padding: 8px 0;
+    height: var(--sheet-handle);
+    padding: 18px var(--gutter) 0;
     border: 0;
     background: none;
     font-family: var(--font-heading);
     font-weight: var(--heading-weight);
-    font-size: calc(24px * var(--heading-scale));
-    line-height: 1;
-    cursor: pointer;
+    font-size: calc(28px * var(--heading-scale));
+    line-height: 1.2;
     letter-spacing: var(--heading-tracking);
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    cursor: grab;
+    touch-action: none;
+    user-select: none;
   }
 
-  .sidebar-toggle::after {
-    content: '+';
+  .sidebar-toggle::before {
+    content: '';
+    position: absolute;
+    top: 8px;
+    left: 50%;
+    width: 40px;
+    height: 4px;
+    margin-left: -20px;
+    border-radius: 2px;
+    background: var(--control-line);
   }
 
-  .sidebar-toggle[aria-expanded='true']::after {
-    content: '\2212';
+  .sidebar-toggle:focus-visible {
+    outline-offset: -4px;
   }
 
-  .sidebar:not(.is-expanded, .is-drilled-down) .sidebar-body {
-    display: none;
+  .sidebar.is-dragging .sidebar-toggle {
+    cursor: grabbing;
   }
 
-  .map {
-    height: clamp(260px, 46vh, 420px);
+  .sidebar-body {
+    position: relative;
+    flex: 1;
+    min-height: 0;
+    max-height: none;
+    padding: 10px var(--gutter) 0;
+  }
+
+  .sidebar-body .colophon {
+    margin: 24px calc(-1 * var(--gutter)) 0;
+  }
+}
+
+/* Short phones, held sideways: the search shares the header's row. */
+@media (max-width: 820px) and (max-height: 520px) {
+  .masthead {
+    flex-wrap: nowrap;
+    padding-block: 8px;
+  }
+
+  .wordmark {
+    font-size: 30px;
+  }
+
+  .search-slot {
+    order: 0;
+    flex: 1 1 auto;
   }
 }
 

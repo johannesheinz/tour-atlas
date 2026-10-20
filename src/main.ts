@@ -22,7 +22,7 @@ import type { SearchEntry } from './view/searchIndex.ts';
 import { applyStyle, applyThemePreference, readThemeTokens, watchSystemTheme, type ThemeTokens } from './view/theme.ts';
 import { DAY_MS } from './view/timeScale.ts';
 import { TIMELINE_SETTINGS, createTimeline, fitDomain } from './view/timeline.ts';
-import { FRAME_LAYOUT_QUERY, MAP_SHARE } from './view/layout.ts';
+import { FRAME_LAYOUT_QUERY, MAP_SHARE, PHONE_LAYOUT_QUERY, PHONE_MAP_SHARE } from './view/layout.ts';
 import { createTimelineControls } from './view/timelineControls.ts';
 import { createMapControls } from './view/mapControls.ts';
 import { createSettings } from './view/settings.ts';
@@ -33,6 +33,7 @@ import { createPlaceList } from './view/placeList.ts';
 import { createGenreList } from './view/genreList.ts';
 import { createSelectionPanel, type SelectionHeading } from './view/selectionPanel.ts';
 import { createSidebar } from './view/sidebar.ts';
+import { createBottomSheet } from './view/sheet.ts';
 import { cityKey, describePlaces, showsAtPlaces, type PlaceKey } from './places.ts';
 import { countryName, formatDate, formatList } from './view/format.ts';
 import { localeChoice, t, useLocale } from './i18n/index.ts';
@@ -107,11 +108,21 @@ const map = createMapView(requireElement(document, '#map', HTMLDivElement), worl
 });
 
 const frameLayout = window.matchMedia(FRAME_LAYOUT_QUERY);
+const phoneLayout = window.matchMedia(PHONE_LAYOUT_QUERY);
 const atlas = requireElement(document, '#atlas', HTMLElement);
 const atlasToolbar = requireElement(document, '#timeline-controls', HTMLElement);
+const stage = requireElement(document, '.stage', HTMLElement);
 
-/** In the frame the lanes get what the map leaves; on a scrolling page a share of the window. */
+/**
+ * In the frame the lanes get what the map leaves; on a scrolling page a share of the window. Above the phone's
+ * sheet they share the stage, which scrolls when the window is too short for the map and the fewest lanes.
+ */
 function maxLanesHeight(): number {
+  if (phoneLayout.matches) {
+    const { paddingTop, paddingBottom } = getComputedStyle(stage);
+    const room = stage.clientHeight - Number.parseFloat(paddingTop) - Number.parseFloat(paddingBottom);
+    return room * (1 - PHONE_MAP_SHARE) - atlasToolbar.offsetHeight - TIMELINE_SETTINGS.axisHeight;
+  }
   if (!frameLayout.matches) return window.innerHeight * TIMELINE_SETTINGS.maxViewportFraction;
   return atlas.clientHeight * (1 - MAP_SHARE) - atlasToolbar.offsetHeight - TIMELINE_SETTINGS.axisHeight;
 }
@@ -131,7 +142,7 @@ const timeline = createTimeline(requireElement(document, '#timeline', HTMLDivEle
     windowTimer = setTimeout(() => setTimeWindow(window), WINDOW_DEBOUNCE_MS);
   },
   onShowAllLanes: () => state.set({ hideEmptyLanes: false }),
-}, { maxLanesHeight });
+}, { maxLanesHeight, fillsMaxHeight: () => phoneLayout.matches });
 
 const bandList = createBandList(requireElement(document, '#band-list', HTMLElement), {
   onSelect(bandId) {
@@ -185,7 +196,23 @@ const previewPanel = createPreviewPanel(requireElement(document, '#preview-panel
   onClearAll: () => setPreviews([]),
 });
 
-const sidebar = createSidebar(requireElement(document, '#sidebar', HTMLElement));
+const sidebarElement = requireElement(document, '#sidebar', HTMLElement);
+const sidebar = createSidebar(sidebarElement);
+const sheet = createBottomSheet(
+  {
+    sheet: sidebarElement,
+    handle: requireElement(sidebarElement, '#sidebar-toggle', HTMLButtonElement),
+    body: requireElement(sidebarElement, '#sidebar-body', HTMLElement),
+    ceiling: requireElement(document, '.masthead', HTMLElement),
+    stage,
+    mapFrame: requireElement(document, '.map-frame', HTMLElement),
+    mapControls: requireElement(document, '#map-controls', HTMLElement),
+    risers: [requireElement(document, '#map-status', HTMLElement)],
+    tail: requireElement(document, '.colophon', HTMLElement),
+  },
+  phoneLayout,
+  { onMapCover: (pixels) => map.setHiddenBottom(pixels) },
+);
 const placeList = createPlaceList(requireElement(document, '#place-list', HTMLElement), {
   onSelect(key) {
     selectPlaces(new Set([key]));
@@ -316,7 +343,8 @@ const settings = createSettings(settingsButton, requireElement(document, '#setti
 document.addEventListener('keydown', (event) => {
   if (event.key !== 'Escape' || event.defaultPrevented) return;
   if (state.get().pickRadius !== null) state.set({ pickRadius: null });
-  else resetViews();
+  // On phones a first Escape closes the drill-down, the next one the sheet.
+  else if (sidebarPanel(state.get()) !== 'lists' || !sheet.close()) resetViews();
 });
 
 watchSystemTheme(() => refreshTheme());
@@ -334,6 +362,7 @@ let restoreWindow = urlState.from !== null && urlState.to !== null ? { from: url
 function renderAll() {
   const current = state.get();
   const derived = derive(current);
+  const firstRender = previousVisibleBands === null;
   const filter = select.windowFilter(current);
   const mapShows = select.mapShows(derived, filter);
   const fitShows = mapShows;
@@ -392,7 +421,6 @@ function renderAll() {
   const bandsChanged = derived.visibleBands !== previousVisibleBands;
   const areaChanged = derived.area !== previousArea;
   if (bandsChanged || areaChanged) {
-    const firstRender = previousVisibleBands === null;
     previousVisibleBands = derived.visibleBands;
     previousArea = derived.area;
     if (firstRender && restoreWindow !== null) {
@@ -443,11 +471,13 @@ function renderAll() {
   const selected = select.selection(current, derived);
   const panel = sidebarPanel(current);
   const previewsShown = current.previewsOpen && current.previewResults.length > 0;
-  sidebar.show(panel, panel === 'selection' ? selectionKey(current.selection) : panel);
+  const heading = current.selection.kind === 'none' ? null : selectionHeading(current, derived, selected);
+  const drillDownTitle = heading?.title ?? t().page.previewedFiles;
+  if (sidebar.show(panel, panel === 'selection' ? selectionKey(current.selection) : panel) && panel !== 'lists') sheet.reveal(drillDownTitle, !firstRender);
   const listsLabel = t().selection.back[sidebar.activeTab()];
-  if (current.selection.kind !== 'none') {
+  if (heading !== null) {
     selectionPanel.render({
-      heading: selectionHeading(current, derived, selected),
+      heading,
       shows: selected,
       showBand: current.selection.kind !== 'bands' || current.selection.bandIds.size > 1,
       backLabel: previewsShown ? t().selection.back.previews : listsLabel,
@@ -458,7 +488,8 @@ function renderAll() {
   }
   placeList.render({ places: select.places(current, derived), selected: current.selection.kind === 'places' ? current.selection.places : NO_PLACES, areaWithin });
   genreList.render({ genres: select.genres(current, derived), checked: current.tagFilter });
-  sidebar.setToggleLabel(t().page.sidebarToggle(derived.visibleBands.length, derived.bands.length));
+  if (panel === 'lists') sheet.setLabel(t().sheet.summary(derived.visibleBands.length, derived.bands.length), t().page.sidebarToggle(derived.visibleBands.length, derived.bands.length));
+  else sheet.setLabel(drillDownTitle, null);
   search.setIndex(select.searchIndex(derived));
   previewPanel.render(current.previewResults, listsLabel);
   scheduleUrlUpdate();

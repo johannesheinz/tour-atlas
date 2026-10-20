@@ -148,6 +148,31 @@ Every view is a pure function of the current choices, so the order in which a vi
   bands does not change it), otherwise the coordinates. It is derived from the URL alone, so a reloaded or
   shared link shows the same label.
 
+## Phone layout
+
+At 820 px wide and below (`PHONE_LAYOUT_QUERY` in `src/view/layout.ts`) the header, map and timeline fill the window
+above the closed bottom sheet and never move; the page itself does not scroll. The sheet is the sidebar
+(`src/view/sheet.ts`, snap maths in `src/view/sheetSnap.ts`) and overlays the stage from the bottom.
+
+- Heights: **closed** (the handle with the band count, or the open selection's title), **half** (45% of the window,
+  but never over the map controls) and **full** (up to just below the search). The page footer moves to the end of
+  the sheet's content.
+- Handle: a button with `aria-expanded`. Tap, Enter or Space toggle between closed and half (and close from full);
+  the up and down arrow keys step one height and announce it; touch, pen or mouse drag it, and a release snaps to
+  the next height in the direction of a fling or else to the nearest one. Focus stays on the handle, which the
+  sheet's content follows in tab order; closing moves focus from inside the sheet back to the handle.
+- Opening a band, place, genre or search result (from the lists, a pin, search) shows it in the sheet at half, so
+  its route stays in view above, and announces it. Focus moves only where it did before (into the panel when
+  opened from a list). Back to bands, browser Back and Escape close the drill-down and keep the height; with the
+  lists showing, Escape closes the sheet.
+- The map frames fits in the part above the resting sheet (`setHiddenBottom`), and the map's status bar rises with
+  the sheet's top edge, also while it is dragged or slides.
+- The timeline sits under the map and is covered at half and full; closing the sheet shows it. Its lanes keep their
+  height (`fillsMaxHeight`) and the hidden-lanes note keeps its room, so selections never resize the map. Windows too
+  short for the map and the fewest lanes scroll the stage, not the page.
+- The height is not in the URL or any storage: a reload starts closed, or at half when the URL selects something.
+  Reduced motion snaps without the slide.
+
 ## Privacy, technically
 
 - No cookies, no localStorage, sessionStorage or IndexedDB, no analytics, no third-party fonts or scripts;

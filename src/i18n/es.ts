@@ -104,6 +104,12 @@ export const es: Messages = {
     dropFilesNote: 'Se comprueban en tu navegador. No se sube nada.',
     sidebarToggle: (visible, total) => `Bandas, lugares y géneros (${visible} de ${total} bandas visibles)`,
   },
+  sheet: {
+    summary: (visible, total) => (visible === total ? bands(total) : `${visible} de ${bands(total)}`),
+    handleHint: 'Abre y cierra la lista. Arrástrala, o usa las flechas arriba y abajo, para cambiar su altura.',
+    heights: { closed: 'Lista cerrada', half: 'Lista a media altura', full: 'Lista a altura completa' },
+    opened: (title) => `${title}, en el panel bajo el mapa`,
+  },
   shows,
   bands,
   noShowsInRange: 'Sin conciertos en este periodo',

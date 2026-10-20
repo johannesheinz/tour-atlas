@@ -162,6 +162,12 @@ export const eo: Messages = {
     dropFilesNote: 'Kontrolataj en via retumilo. Nenio estas alŝutata.',
     sidebarToggle: (visible, total) => `Bandoj, lokoj kaj ĝenroj (${visible} el ${total} bandoj videblaj)`,
   },
+  sheet: {
+    summary: (visible, total) => (visible === total ? bands(total) : `${visible} el ${bands(total)}`),
+    handleHint: 'Malfermas kaj fermas la liston. Trenu ĝin, aŭ uzu la sagoklavojn supren kaj malsupren, por ŝanĝi ĝian altecon.',
+    heights: { closed: 'Listo fermita', half: 'Listo duonalta', full: 'Listo plenalta' },
+    opened: (title) => `${title}, montrata en la panelo sub la mapo`,
+  },
   shows,
   bands,
   noShowsInRange: 'Neniuj koncertoj en ĉi tiu periodo',

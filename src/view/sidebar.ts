@@ -7,17 +7,15 @@ const TABS: readonly SidebarTab[] = ['bands', 'places', 'genres'];
 const LIST_IDS: Readonly<Record<SidebarTab, string>> = { bands: '#band-list', places: '#place-list', genres: '#genre-list' };
 
 export interface SidebarView {
-  setToggleLabel(text: string): void;
   showTab(tab: SidebarTab): void;
   activeTab(): SidebarTab;
   focusActiveTab(): void;
-  /** Shows the band and place lists or drills down into a panel; new content (by key) starts at the top. */
-  show(panel: SidebarPanel, contentKey: string): void;
+  /** Shows the band and place lists or drills down into a panel; new content (by key) starts at the top. False when it was shown already. */
+  show(panel: SidebarPanel, contentKey: string): boolean;
 }
 
-/** Tabs between the band and place lists (ARIA tabs with arrow keys), the drill-down panels, and the collapsible panel on phones. */
+/** Tabs between the band and place lists (ARIA tabs with arrow keys) and the drill-down panels; on phones src/view/sheet.ts moves it. */
 export function createSidebar(root: HTMLElement): SidebarView {
-  const toggle = requireElement(root, '#sidebar-toggle', HTMLButtonElement);
   const scroller = requireElement(root, '#sidebar-body', HTMLElement);
   const tabList = requireElement(root, '.sidebar-tabs', HTMLElement);
   const tabs = TABS.map((tab) => requireElement(root, `#tab-${tab}`, HTMLButtonElement));
@@ -26,12 +24,6 @@ export function createSidebar(root: HTMLElement): SidebarView {
   let active = 0;
   let shown: { panel: SidebarPanel; key: string } = { panel: 'lists', key: 'lists' };
   let listScrollTop = 0;
-
-  toggle.addEventListener('click', () => {
-    const expanded = toggle.getAttribute('aria-expanded') !== 'true';
-    toggle.setAttribute('aria-expanded', String(expanded));
-    root.classList.toggle('is-expanded', expanded);
-  });
 
   const select = (index: number, focus: boolean) => {
     active = index;
@@ -55,9 +47,6 @@ export function createSidebar(root: HTMLElement): SidebarView {
   });
 
   return {
-    setToggleLabel: (text) => {
-      toggle.textContent = text;
-    },
     showTab: (tab) => select(TABS.indexOf(tab), false),
     activeTab: () => {
       const tab = TABS[active];
@@ -66,15 +55,15 @@ export function createSidebar(root: HTMLElement): SidebarView {
     },
     focusActiveTab: () => tabs[active]?.focus(),
     show(panel, contentKey) {
-      if (panel === shown.panel && contentKey === shown.key) return;
+      if (panel === shown.panel && contentKey === shown.key) return false;
       if (shown.panel === 'lists') listScrollTop = scroller.scrollTop;
       shown = { panel, key: contentKey };
-      root.classList.toggle('is-drilled-down', panel !== 'lists');
       tabList.hidden = panel !== 'lists';
       drillDowns.selection.hidden = panel !== 'selection';
       drillDowns.previews.hidden = panel !== 'previews';
       select(active, false);
       scroller.scrollTop = panel === 'lists' ? listScrollTop : 0;
+      return true;
     },
   };
 }

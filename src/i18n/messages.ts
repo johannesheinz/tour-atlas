@@ -4,6 +4,7 @@ import type { DistanceUnit } from './locale.ts';
 import type { BandSort, ThemePreference } from '../model.ts';
 import type { RegionId } from '../view/mapRegions.ts';
 import type { TimePreset } from '../view/timePresets.ts';
+import type { SheetHeight } from '../view/sheetSnap.ts';
 
 type Text = string;
 type Count = (count: number) => string;
@@ -36,6 +37,16 @@ export interface Messages {
     readonly dropFiles: Text;
     readonly dropFilesNote: Text;
     readonly sidebarToggle: (visible: number, total: number) => string;
+  };
+  /** The bottom sheet that holds the lists on phones. */
+  readonly sheet: {
+    /** The handle's short text; the page's sidebarToggle stays its accessible name. */
+    readonly summary: (visible: number, total: number) => string;
+    readonly handleHint: Text;
+    /** Announced when a key changes the height. */
+    readonly heights: Readonly<Record<SheetHeight, string>>;
+    /** Announced when a band, place or other selection opens in the sheet. */
+    readonly opened: (title: string) => string;
   };
   readonly shows: Count;
   readonly bands: Count;

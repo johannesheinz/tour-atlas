@@ -163,6 +163,12 @@ export const la: Messages = {
     dropFilesNote: 'Hic inspiciuntur. Nihil imponitur.',
     sidebarToggle: (visible, total) => `Greges, loca et genera (${visible} ex ${total} gregibus in conspectu)`,
   },
+  sheet: {
+    summary: (visible, total) => (visible === total ? bands(total) : `${visible} ex ${total} gregibus`),
+    handleHint: 'Indicem aperit et claudit. Trahe, aut sagittis sursum et deorsum utere, ut altitudinem mutes.',
+    heights: { closed: 'Index clausus', half: 'Index dimidia altitudine', full: 'Index tota altitudine' },
+    opened: (title) => `${title} infra chartam ostenditur`,
+  },
   shows,
   bands,
   noShowsInRange: 'Nulli concentus hoc spatio temporis',

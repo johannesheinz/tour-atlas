@@ -104,6 +104,12 @@ export const fi: Messages = {
     dropFilesNote: 'Tarkistus tehdään selaimessasi. Mitään ei lähetetä.',
     sidebarToggle: (visible, total) => `Yhtyeet, paikat ja tyylilajit (${visible}/${total} yhtyettä näkyvissä)`,
   },
+  sheet: {
+    summary: (visible, total) => (visible === total ? bands(total) : `${visible}/${bands(total)}`),
+    handleHint: 'Avaa ja sulkee listan. Muuta korkeutta vetämällä tai ylä- ja alanuolinäppäimillä.',
+    heights: { closed: 'Lista suljettu', half: 'Lista puolikorkeudella', full: 'Lista täydellä korkeudella' },
+    opened: (title) => `${title} näkyy kartan alla olevassa paneelissa`,
+  },
   shows,
   bands,
   noShowsInRange: 'Ei keikkoja tällä aikavälillä',
