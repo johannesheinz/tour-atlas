@@ -25,7 +25,7 @@ export const en: Messages = {
     mapControls: 'Map controls',
     timelineControls: 'Timeline controls',
     footerSources: 'Projection: Equal Earth. Coastlines: Natural Earth via world-atlas. Geocoded venues: © OpenStreetMap contributors (ODbL).',
-    footerPrivacy: 'No cookies, no tracking, no network requests. Every file you check stays in this tab.',
+    footerPrivacy: 'No cookies, no tracking, self-contained. Every file you check stays in this tab.',
     dropFiles: 'Drop band files to check them',
     dropFilesNote: 'Checked in your browser. Nothing is uploaded.',
     loading: 'Loading tour dates…',

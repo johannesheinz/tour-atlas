@@ -158,7 +158,7 @@ export const la: Messages = {
     mapControls: 'Moderamina chartae',
     timelineControls: 'Moderamina lineae temporis',
     footerSources: 'Proiectio: Equal Earth. Orae: Natural Earth per world-atlas. Situs theatrorum: © collaboratores OpenStreetMap (ODbL).',
-    footerPrivacy: 'Nulla crustula, nulla vestigatio, nullae petitiones retiales. Fasciculi quos inspicis in hac scheda manent.',
+    footerPrivacy: 'Nulla crustula, nulla vestigatio, sibi sufficiens. Fasciculi quos inspicis in hac scheda manent.',
     dropFiles: 'Fasciculos gregum huc demitte, ut inspicias',
     dropFilesNote: 'Hic inspiciuntur. Nihil imponitur.',
     loading: 'Dies itinerum onerantur…',

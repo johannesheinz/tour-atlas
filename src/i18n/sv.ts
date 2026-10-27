@@ -99,7 +99,7 @@ export const sv: Messages = {
     mapControls: 'Kartkontroller',
     timelineControls: 'Tidslinjekontroller',
     footerSources: 'Projektion: Equal Earth. Kustlinjer: Natural Earth via world-atlas. Geokodade spelställen: © OpenStreetMap-bidragsgivare (ODbL).',
-    footerPrivacy: 'Inga kakor, ingen spårning, inga nätverksanrop. Filer du granskar stannar i den här fliken.',
+    footerPrivacy: 'Inga kakor, ingen spårning, helt fristående. Filer du granskar stannar i den här fliken.',
     dropFiles: 'Släpp bandfiler här för att granska dem',
     dropFilesNote: 'Granskas i din webbläsare. Inget laddas upp.',
     loading: 'Laddar turnédatum…',

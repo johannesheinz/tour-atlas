@@ -157,7 +157,7 @@ export const eo: Messages = {
     mapControls: 'Regiloj de la mapo',
     timelineControls: 'Regiloj de la templinio',
     footerSources: 'Projekcio: Equal Earth. Marbordoj: Natural Earth per world-atlas. Geokoditaj koncertejoj: © kontribuantoj de OpenStreetMap (ODbL).',
-    footerPrivacy: 'Neniuj kuketoj, neniu spurado, neniuj retaj petoj. Dosieroj, kiujn vi kontrolas, restas en ĉi tiu langeto.',
+    footerPrivacy: 'Neniuj kuketoj, neniu spurado, memstara. Dosieroj, kiujn vi kontrolas, restas en ĉi tiu langeto.',
     dropFiles: 'Demetu dosierojn de bandoj por kontroli ilin',
     dropFilesNote: 'Kontrolataj en via retumilo. Nenio estas alŝutata.',
     loading: 'Ŝargante turneajn datojn…',

@@ -99,7 +99,7 @@ export const fi: Messages = {
     mapControls: 'Kartan säätimet',
     timelineControls: 'Aikajanan säätimet',
     footerSources: 'Projektio: Equal Earth. Rantaviivat: Natural Earth world-atlasin kautta. Geokoodatut keikkapaikat: © OpenStreetMapin tekijät (ODbL).',
-    footerPrivacy: 'Ei evästeitä, ei seurantaa, ei verkkopyyntöjä. Tarkistamasi tiedostot pysyvät tällä välilehdellä.',
+    footerPrivacy: 'Ei evästeitä, ei seurantaa, täysin itsenäinen. Tarkistamasi tiedostot pysyvät tällä välilehdellä.',
     dropFiles: 'Tarkista yhtyetiedostoja pudottamalla ne tähän',
     dropFilesNote: 'Tarkistus tehdään selaimessasi. Mitään ei lähetetä.',
     loading: 'Ladataan kiertuepäiviä…',

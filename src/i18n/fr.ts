@@ -99,7 +99,7 @@ export const fr: Messages = {
     mapControls: 'Commandes de la carte',
     timelineControls: 'Commandes de la frise',
     footerSources: 'Projection : Equal Earth. Côtes : Natural Earth via world-atlas. Salles géocodées : © contributeurs OpenStreetMap (ODbL).',
-    footerPrivacy: 'Aucun cookie, aucun pistage, aucune requête réseau. Tout fichier que vous vérifiez reste dans cet onglet.',
+    footerPrivacy: 'Aucun cookie, aucun pistage, entièrement autonome. Tout fichier que vous vérifiez reste dans cet onglet.',
     dropFiles: 'Déposez des fichiers de groupes pour les vérifier',
     dropFilesNote: 'Vérifiés dans votre navigateur. Rien n’est envoyé.',
     loading: 'Chargement des dates de tournée…',

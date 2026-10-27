@@ -99,7 +99,7 @@ export const es: Messages = {
     mapControls: 'Controles del mapa',
     timelineControls: 'Controles de la línea de tiempo',
     footerSources: 'Proyección: Equal Earth. Costas: Natural Earth vía world-atlas. Salas geocodificadas: © colaboradores de OpenStreetMap (ODbL).',
-    footerPrivacy: 'Sin cookies, sin rastreo, sin peticiones de red. Los archivos que revisas se quedan en esta pestaña.',
+    footerPrivacy: 'Sin cookies, sin rastreo, autónomo. Los archivos que revisas se quedan en esta pestaña.',
     dropFiles: 'Suelta archivos de bandas para revisarlos',
     dropFilesNote: 'Se comprueban en tu navegador. No se sube nada.',
     loading: 'Cargando fechas de gira…',
