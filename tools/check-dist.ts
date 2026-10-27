@@ -5,6 +5,7 @@ import { parseArguments, runCli, UsageError } from './shared/files.ts';
 import { STYLES, STYLE_FONT_FAMILIES, type Style } from '../src/data/styles.ts';
 import { loadOrderProblems } from './vite/loadOrder.ts';
 import { SOCIAL_CARD_FILE, socialCardProblems } from './vite/socialCard.ts';
+import { WEB_APP_FILES, webAppProblems } from './vite/webApp.ts';
 
 const USAGE = `Usage: node tools/check-dist.ts <dist-dir> [--budget-kb <n>] [--require-social-card]
 
@@ -12,6 +13,8 @@ Checks the build output: index.html with every script and style inlined (the sty
 first in <head>, the script last in <body>) plus self-hosted fonts next to it, no remote
 resources, no storage or network APIs, and a transfer size
 (gzipped HTML + the fonts of the heaviest style) within the budget (default 800 kB).
+The web app manifest and its icons, which browsers fetch only to install the app, are
+checked for what installing needs and are outside the budget.
 og-card.png, when present, must be the 1200x630 image the OpenGraph tags name; crawlers
 fetch it, browsers never do, so it is outside the budget. --require-social-card fails
 when the tags or the image are missing (the deploy build sets TOUR_ATLAS_SITE_URL).`;
@@ -48,9 +51,10 @@ runCli(USAGE, () => {
     .map((entry) => relative(distDir, join(entry.parentPath, entry.name)));
   const fonts = files.filter((file) => FONT_FILE.test(file));
   const logos = files.filter((file) => LOGO_FILE.test(file));
-  const unexpected = files.filter((file) => file !== 'index.html' && file !== SOCIAL_CARD_FILE && !FONT_FILE.test(file) && !LOGO_FILE.test(file));
+  const named = new Set(['index.html', SOCIAL_CARD_FILE, ...WEB_APP_FILES]);
+  const unexpected = files.filter((file) => !named.has(file) && !FONT_FILE.test(file) && !LOGO_FILE.test(file));
   if (!files.includes('index.html')) problems.push('index.html is missing');
-  if (unexpected.length > 0) problems.push(`only index.html, *.woff2 fonts, *.webp logos and ${SOCIAL_CARD_FILE} are expected, found also: ${unexpected.join(', ')}`);
+  if (unexpected.length > 0) problems.push(`only index.html, *.woff2 fonts, *.webp logos, ${[SOCIAL_CARD_FILE, ...WEB_APP_FILES].join(', ')} are expected, found also: ${unexpected.join(', ')}`);
   for (const logo of logos) {
     const kb = statSync(join(distDir, logo)).size / 1000;
     if (kb > MAX_LOGO_KB) problems.push(`${logo} is ${kb.toFixed(1)} kB; logos must stay under ${MAX_LOGO_KB} kB`);
@@ -64,6 +68,7 @@ runCli(USAGE, () => {
   problems.push(...loadOrderProblems(html));
   const socialCard = files.includes(SOCIAL_CARD_FILE) ? readFileSync(join(distDir, SOCIAL_CARD_FILE)) : null;
   problems.push(...socialCardProblems(html, socialCard, args.flags.has('require-social-card')));
+  problems.push(...webAppProblems(html, files, (file) => readFileSync(join(distDir, file))));
   if (!/<link rel="icon" type="image\/svg\+xml" href="data:image\/svg\+xml,/.test(html)) problems.push('has no inline SVG favicon; browsers would request /favicon.ico');
   for (const font of fonts) {
     if (!html.includes(font)) problems.push(`${font} is not referenced by index.html`);

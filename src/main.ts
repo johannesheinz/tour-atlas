@@ -20,7 +20,7 @@ import { closesSelectList, h, prefersReducedMotion, requireElement } from './vie
 import { MAP_SETTINGS, createMapView } from './view/map.ts';
 import { createSearch } from './view/search.ts';
 import type { SearchEntry } from './view/searchIndex.ts';
-import { applyStyle, applyThemePreference, readThemeTokens, watchSystemTheme, type ThemeTokens } from './view/theme.ts';
+import { applyStyle, applyThemeColor, applyThemePreference, readThemeTokens, watchSystemTheme, type ThemeTokens } from './view/theme.ts';
 import { DAY_MS } from './view/timeScale.ts';
 import { TIMELINE_SETTINGS, createTimeline, fitDomain } from './view/timeline.ts';
 import { FRAME_LAYOUT_QUERY, MAP_SHARE, PHONE_LAYOUT_QUERY, PHONE_MAP_SHARE } from './view/layout.ts';
@@ -92,6 +92,7 @@ dataStore.subscribe(() => state.set({ bundled: dataStore.listBands() }));
 const derive = createDeriver();
 const select = createSelectors(MAP_SETTINGS.maxBandsWithRoutes);
 let theme: ThemeTokens = readThemeTokens('auto');
+applyThemeColor(theme.panel);
 
 const idsOf = (shows: readonly ShowRef[] | null): ReadonlySet<string> => new Set((shows ?? []).map((ref) => ref.show.id));
 const NO_PLACES: ReadonlySet<PlaceKey> = new Set();
@@ -1073,6 +1074,7 @@ function createNavigation() {
 
 function refreshTheme() {
   theme = readThemeTokens(state.get().theme);
+  applyThemeColor(theme.panel);
   renderAll();
 }
 

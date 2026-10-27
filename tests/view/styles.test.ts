@@ -95,3 +95,12 @@ describe('styles', () => {
     }
   }
 });
+
+describe('theme-color in index.html', () => {
+  it("starts as Stage lights' panel for each system theme, as src/view/theme.ts later sets it", () => {
+    const html = readText('index.html');
+    const tag = (scheme: string) => new RegExp(`<meta name="theme-color" content="(#[0-9a-f]{6})" media="\\(prefers-color-scheme: ${scheme}\\)" />`).exec(html)?.[1];
+    expect(tag('light')).toBe(colour(light(DEFAULT_STYLE), '--panel'));
+    expect(tag('dark')).toBe(colour(systemDark(DEFAULT_STYLE), '--panel'));
+  });
+});

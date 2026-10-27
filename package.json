@@ -22,6 +22,7 @@
     "logos": "node tools/logos.ts data/bands",
     "logo:preview": "node tools/logos.ts --preview",
     "og-card": "node tools/og-card.ts",
+    "app-icons": "node tools/app-icons.ts",
     "feature-clips": "npm run build && node tools/feature-clips.ts",
     "tags": "node tools/tags.ts",
     "review": "node tools/review.ts",
