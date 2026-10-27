@@ -99,7 +99,7 @@ export const de: Messages = {
     mapControls: 'Kartensteuerung',
     timelineControls: 'Zeitleistensteuerung',
     footerSources: 'Projektion: Equal Earth. Küstenlinien: Natural Earth über world-atlas. Geokodierte Spielorte: © OpenStreetMap-Mitwirkende (ODbL).',
-    footerPrivacy: 'Keine Cookies, kein Tracking, in sich geschlossen. Geprüfte Dateien bleiben in diesem Tab.',
+    footerPrivacy: 'Keine Cookies, kein Tracking, autark. Geprüfte Dateien bleiben in diesem Tab.',
     dropFiles: 'Banddateien hier ablegen, um sie zu prüfen',
     dropFilesNote: 'Die Prüfung läuft im Browser. Nichts wird hochgeladen.',
     loading: 'Tourdaten werden geladen …',
