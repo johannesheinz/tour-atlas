@@ -170,6 +170,7 @@ export const eo: Messages = {
     heights: { closed: 'Listo fermita', half: 'Listo duonalta', full: 'Listo plenalta' },
     opened: (title) => `${title}, montrata en la panelo sub la mapo`,
   },
+  update: { ready: 'Ĝisdatigo kun la plej novaj turneaj datoj estas preta.', reload: 'Reŝargi', later: 'Poste' },
   shows,
   bands,
   noShowsInRange: 'Neniuj koncertoj en ĉi tiu periodo',

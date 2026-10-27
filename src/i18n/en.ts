@@ -38,6 +38,7 @@ export const en: Messages = {
     heights: { closed: 'List closed', half: 'List at half height', full: 'List at full height' },
     opened: (title) => `${title}, shown in the panel below the map`,
   },
+  update: { ready: 'An update with the latest tour dates is ready.', reload: 'Reload', later: 'Later' },
   shows,
   bands,
   noShowsInRange: 'No shows in this time range',

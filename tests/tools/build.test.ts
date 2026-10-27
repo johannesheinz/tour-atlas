@@ -17,6 +17,7 @@ describe('injectContentSecurityPolicy', () => {
     expect(result).toContain("default-src 'none'");
     expect(result).toContain("connect-src 'none'");
     expect(result).toContain("manifest-src 'self'");
+    expect(result).toContain("worker-src 'self'");
     expect(result).toMatch(/script-src 'sha256-[A-Za-z0-9+/=]+'/);
     expect(result).toMatch(/style-src 'sha256-[A-Za-z0-9+/=]+'/);
     expect(result.indexOf('Content-Security-Policy')).toBeLessThan(result.indexOf('<script'));

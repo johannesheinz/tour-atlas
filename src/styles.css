@@ -960,6 +960,50 @@ a {
   color: var(--on-selected-fill);
 }
 
+/* A newer build is ready (src/view/updateNotice.ts): above the page and, on phones, above the closed sheet. */
+
+.update-notice {
+  position: fixed;
+  left: 50%;
+  bottom: calc(24px + var(--safe-bottom));
+  z-index: 22;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: max-content;
+  max-width: calc(100% - 2 * var(--gutter) - var(--safe-left) - var(--safe-right));
+  padding: 8px 8px 8px 14px;
+  border: var(--rule) solid var(--line);
+  border-radius: var(--radius-control);
+  background: var(--panel);
+  box-shadow: var(--shadow-pop);
+  transform: translateX(-50%);
+}
+
+.update-notice-text {
+  margin: 0;
+}
+
+.update-notice-reload {
+  flex: none;
+  min-height: 34px;
+  padding: 6px 14px;
+  border: 0;
+  border-radius: var(--radius-control);
+  background: var(--selected-fill);
+  color: var(--on-selected-fill);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.update-notice-reload:disabled {
+  cursor: progress;
+}
+
+.update-notice .icon-button {
+  flex: none;
+}
+
 /* Pop-ups: a card printed with a hard ink offset */
 
 .popover {
@@ -2956,6 +3000,10 @@ input[type='search']::placeholder {
     min-height: 0;
     padding-bottom: calc(var(--sheet-handle) + var(--rule-heavy) + var(--safe-bottom));
     overflow: hidden;
+  }
+
+  .update-notice {
+    bottom: calc(var(--sheet-handle) + var(--rule-heavy) + var(--safe-bottom) + 12px);
   }
 
   /* Above the sheet, so the search results and the header's popovers open over it. */

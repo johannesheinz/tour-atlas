@@ -36,6 +36,8 @@ import { createGenreList } from './view/genreList.ts';
 import { createSelectionPanel, type SelectionHeading } from './view/selectionPanel.ts';
 import { createSidebar } from './view/sidebar.ts';
 import { createBottomSheet } from './view/sheet.ts';
+import { createUpdateNotice } from './view/updateNotice.ts';
+import { keepOfflineCopy } from './serviceWorkerUpdates.ts';
 import { cityKey, describePlaces, showsAtPlaces, type PlaceKey } from './places.ts';
 import { countryName, formatDate, formatList } from './view/format.ts';
 import { localeChoice, t, useLocale } from './i18n/index.ts';
@@ -985,9 +987,14 @@ function currentHash(): string {
   });
 }
 
+/** Checked files live in this page only, so a reload asks first while there are any. */
+function confirmReload(): boolean {
+  return state.get().previewResults.length === 0 || window.confirm(t().settings.reloadLosesPreviews);
+}
+
 /** The language, clock and distance unit apply at start-up, so changing them reloads the page with the choice in the URL. */
 function reloadWithLocale(choice: LocaleChoice) {
-  if (state.get().previewResults.length > 0 && !window.confirm(t().settings.reloadLosesPreviews)) return;
+  if (!confirmReload()) return;
   const hash = serializeUrlState({ ...parseUrlState(currentHash()), ...choice });
   history.replaceState(history.state, '', `${location.pathname}${location.search}${hash}`);
   location.reload();
@@ -1086,5 +1093,20 @@ requireElement(document, '#home-link', HTMLAnchorElement).addEventListener('clic
   event.preventDefault();
   navigation.goHome();
 });
+// After load, so saving the offline copy does not compete with the fonts and logos the page shows.
+if (import.meta.env.PROD && 'serviceWorker' in navigator) {
+  const serviceWorkers = navigator.serviceWorker;
+  const updateNotice = createUpdateNotice(requireElement(document, '#update-notice', HTMLDivElement), confirmReload);
+  window.addEventListener('load', () => {
+    keepOfflineCopy(serviceWorkers, {
+      onUpdateReady: (apply) => updateNotice.show(apply),
+      reload: () => location.reload(),
+      onResume: (listener) =>
+        document.addEventListener('visibilitychange', () => {
+          if (document.visibilityState === 'visible') listener();
+        }),
+    }).catch((error: unknown) => console.warn('Tour Atlas keeps no offline copy:', error));
+  }, { once: true });
+}
 renderAll();
 startup.finishAfterFirstFrame();

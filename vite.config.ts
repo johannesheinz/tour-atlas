@@ -7,6 +7,7 @@ import { cspPlugin } from './tools/vite/csp.ts';
 import { hostedAssetsPlugin } from './tools/vite/hostedAssets.ts';
 import { loadOrderPlugin } from './tools/vite/loadOrder.ts';
 import { logoSizesPlugin } from './tools/vite/logoSizes.ts';
+import { serviceWorkerPlugin } from './tools/vite/serviceWorker.ts';
 import { parseSiteUrl, socialCardPlugin } from './tools/vite/socialCard.ts';
 import { webAppPlugin } from './tools/vite/webApp.ts';
 import { worldTopologyPlugin } from './tools/vite/worldTopology.ts';
@@ -31,6 +32,7 @@ export default defineConfig({
     hostedAssetsPlugin(),
     loadOrderPlugin(),
     cspPlugin(),
+    serviceWorkerPlugin(resolve('src/sw/serviceWorker.ts')),
   ],
   build: {
     target: 'es2023',

@@ -112,6 +112,7 @@ export const sv: Messages = {
     heights: { closed: 'Listan stängd', half: 'Listan på halv höjd', full: 'Listan på full höjd' },
     opened: (title) => `${title}, visas i panelen under kartan`,
   },
+  update: { ready: 'En uppdatering med de senaste turnédatumen är klar.', reload: 'Ladda om', later: 'Senare' },
   shows,
   bands,
   noShowsInRange: 'Inga konserter under den här perioden',

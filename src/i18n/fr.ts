@@ -112,6 +112,7 @@ export const fr: Messages = {
     heights: { closed: 'Liste fermée', half: 'Liste à mi-hauteur', full: 'Liste en pleine hauteur' },
     opened: (title) => `${title} : à voir dans le panneau sous la carte`,
   },
+  update: { ready: 'Une mise à jour avec les dernières dates de tournée est prête.', reload: 'Recharger', later: 'Plus tard' },
   shows,
   bands,
   noShowsInRange: 'Aucun concert sur cette période',

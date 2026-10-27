@@ -13,7 +13,7 @@
     "build": "vite build && node tools/check-dist.ts dist",
     "build:budget": "node tools/budget.ts",
     "preview": "vite preview",
-    "typecheck": "tsc -p tsconfig.app.json && tsc -p tsconfig.node.json",
+    "typecheck": "tsc -p tsconfig.app.json && tsc -p tsconfig.node.json && tsc -p tsconfig.sw.json",
     "test": "vitest run",
     "test:watch": "vitest",
     "validate": "node tools/validate.ts data/bands",

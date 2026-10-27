@@ -171,6 +171,7 @@ export const la: Messages = {
     heights: { closed: 'Index clausus', half: 'Index dimidia altitudine', full: 'Index tota altitudine' },
     opened: (title) => `${title} infra chartam ostenditur`,
   },
+  update: { ready: 'Renovatio cum novissimis diebus itinerum parata est.', reload: 'Renova', later: 'Postea' },
   shows,
   bands,
   noShowsInRange: 'Nulli concentus hoc spatio temporis',

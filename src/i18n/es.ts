@@ -112,6 +112,7 @@ export const es: Messages = {
     heights: { closed: 'Lista cerrada', half: 'Lista a media altura', full: 'Lista a altura completa' },
     opened: (title) => `${title}, en el panel bajo el mapa`,
   },
+  update: { ready: 'Hay una actualización con las últimas fechas de gira.', reload: 'Recargar', later: 'Más tarde' },
   shows,
   bands,
   noShowsInRange: 'Sin conciertos en este periodo',

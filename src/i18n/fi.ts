@@ -112,6 +112,7 @@ export const fi: Messages = {
     heights: { closed: 'Lista suljettu', half: 'Lista puolikorkeudella', full: 'Lista täydellä korkeudella' },
     opened: (title) => `${title} näkyy kartan alla olevassa paneelissa`,
   },
+  update: { ready: 'Päivitys uusimmilla kiertuepäivillä on valmis.', reload: 'Lataa uudelleen', later: 'Myöhemmin' },
   shows,
   bands,
   noShowsInRange: 'Ei keikkoja tällä aikavälillä',
