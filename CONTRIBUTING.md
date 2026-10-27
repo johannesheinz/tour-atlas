@@ -130,8 +130,9 @@ npm run check   # typecheck, validate, normalize --check, tests, build
 ```
 
 - Runtime dependencies are an allowlist (see `CLAUDE.md`). Justify any addition in the pull request.
-- The app makes no network requests and stores nothing on the device. `tools/check-dist.ts` fails the
-  build if a storage or network API shows up in the bundle.
+- The app makes no network requests and stores nothing on the device but its own files, which the service
+  worker (`sw.js`) keeps for offline use. `tools/check-dist.ts` fails the build if a storage or network API
+  shows up in the page, or if the worker reaches for anything but the site's own files.
 - The validator in `src/data/validate.ts` is the only validator. The CLI tools, the build and the
   in-app preview all call it; future upload paths must too.
 - Format changes: follow `.claude/skills/change-schema/SKILL.md`.

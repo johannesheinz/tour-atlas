@@ -4,8 +4,8 @@ How Tour Atlas is built, configured and deployed. For adding or changing band da
 [CONTRIBUTING.md](../CONTRIBUTING.md) and [DATA_FORMAT.md](DATA_FORMAT.md).
 
 The app is a static site: one `index.html` with every script, style, coastline and tour date inlined, plus
-self-hosted `.woff2` fonts and the band logo `.webp` files next to it. No backend, and no network requests at
-runtime.
+self-hosted `.woff2` fonts and the band logo `.webp` files next to it, and the files that make it an installable
+app that works offline. No backend, and no network requests at runtime beyond the site's own files.
 
 ## Getting started
 
@@ -63,11 +63,38 @@ wordmark README.md shows for GitHub's light and dark themes; commit them too.
 
 To look at the build, serve it locally: `npm run preview` (http://localhost:4173). Opening
 `dist/index.html` from disk (`file://`) also works as long as the font files stay next to it; a browser
-that blocks local fonts falls back to system fonts and nothing else changes.
+that blocks local fonts falls back to system fonts, and there is no offline copy (service workers need
+`http://localhost` or `https:`); nothing else changes.
+
+## Installable app and offline copy
+
+The build also writes what browsers need to install the site and open it without a connection:
+
+- `manifest.webmanifest` (`tools/vite/webApp.ts`): standalone display, relative `start_url` and `scope` so it
+  works below any path, the page's description, and the icons. `<head>` links it and `apple-touch-icon.png`,
+  which iOS uses instead of the manifest's icons. The icons in `src/brand/` (192, 512, maskable 512, touch
+  180) are rendered from the mark by `npm run app-icons` (sharp, run by hand after changing the mark; commit
+  them). `theme-color` starts as Stage lights' panel and follows the active style and theme.
+- `sw.js` (`src/sw/serviceWorker.ts`, compiled by `tools/vite/serviceWorker.ts` after every other plugin):
+  its first line lists every file of the build except `og-card.png` with a hash of their contents, so each
+  deploy changes the worker. It precaches them all on install and answers opening the app and those files
+  from the cache; everything else goes to the network. The page registers it after load, in production
+  builds only.
+- Updates (`src/serviceWorkerUpdates.ts`): browsers look for a new `sw.js` when the page opens, and the
+  installed app also asks each time it resumes. A newer build installs in the background and waits; the
+  page shows a note with Reload (`src/view/updateNotice.ts`) that switches to it.
+
+`check-dist` checks the manifest's fields and the icons' sizes, and that `sw.js` lists exactly the files in
+`dist/` with their current hash, so an installed app always learns about a deploy. Fetching and Cache Storage
+are allowed in `sw.js` only, and only for the site's own files. The CSP allows `manifest-src 'self'` and
+`worker-src 'self'`.
+
+To try it, `npm run preview`, open the page, reload it once the worker has installed (DevTools →
+Application → Service workers), then switch DevTools' Network panel to offline and reload again.
 
 `npm run build:budget` builds the same app with a synthetic 50 bands / 5,000 shows dataset and fails above
 800 kB transferred (gzipped HTML plus every font file of the heaviest style; browsers download only the
-active style's fonts, and the extended Latin files only for letters like ĉ or Č). It is currently about 774 kB.
+active style's fonts, and the extended Latin files only for letters like ĉ or Č). It is currently about 796 kB.
 
 ## Feature clips
 
