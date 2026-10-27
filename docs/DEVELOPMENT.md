@@ -73,7 +73,7 @@ The build also writes what browsers need to install the site and open it without
 - `manifest.webmanifest` (`tools/vite/webApp.ts`): standalone display, relative `start_url` and `scope` so it
   works below any path, the page's description, and the icons. `<head>` links it and `apple-touch-icon.png`,
   which iOS uses instead of the manifest's icons. The icons in `src/brand/` (192, 512, maskable 512, touch
-  180) are rendered from the mark by `npm run app-icons` (sharp, run by hand after changing the mark; commit
+  180, and a transparent monochrome 512 that Android 13+ tints for themed icons) are rendered from the mark by `npm run app-icons` (sharp, run by hand after changing the mark; commit
   them). `theme-color` starts as Stage lights' panel and follows the active style and theme.
 - `sw.js` (`src/sw/serviceWorker.ts`, compiled by `tools/vite/serviceWorker.ts` after every other plugin):
   its first line lists every file of the build except `og-card.png` with a hash of their contents, so each

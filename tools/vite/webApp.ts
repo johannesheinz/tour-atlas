@@ -13,7 +13,8 @@ export const APP_NAME = 'Tour Atlas';
 /** Stage lights' slate ink, as on the social card: the icons' background and the splash screen. */
 export const APP_BACKGROUND = '#1f2a35';
 
-export type IconPurpose = 'any' | 'maskable';
+/** Monochrome: Android 13+ reads only its alpha and tints it to match the wallpaper (themed icons). */
+export type IconPurpose = 'any' | 'maskable' | 'monochrome';
 
 export interface AppIcon {
   readonly file: string;
@@ -25,6 +26,7 @@ export const MANIFEST_ICONS: readonly AppIcon[] = [
   { file: 'icon-192.png', size: 192, purpose: 'any' },
   { file: 'icon-512.png', size: 512, purpose: 'any' },
   { file: 'icon-maskable-512.png', size: 512, purpose: 'maskable' },
+  { file: 'icon-monochrome-512.png', size: 512, purpose: 'monochrome' },
 ];
 /** iOS ignores the manifest's icons and rounds the corners of this one itself. */
 export const APPLE_TOUCH_ICON: AppIcon = { file: 'apple-touch-icon.png', size: 180, purpose: 'any' };
@@ -115,6 +117,7 @@ export function webAppProblems(html: string, files: readonly string[], read: (fi
   if (!has('192x192', 'any')) problems.push(`${MANIFEST_FILE} needs a 192x192 icon`);
   if (!has('512x512', 'any')) problems.push(`${MANIFEST_FILE} needs a 512x512 icon`);
   if (!has('512x512', 'maskable')) problems.push(`${MANIFEST_FILE} needs a 512x512 maskable icon`);
+  if (!has('512x512', 'monochrome')) problems.push(`${MANIFEST_FILE} needs a 512x512 monochrome icon`);
   return problems;
 }
 

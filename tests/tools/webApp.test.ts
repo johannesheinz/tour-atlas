@@ -15,6 +15,7 @@ describe('webAppManifest', () => {
       'icon-192.png 192x192 any',
       'icon-512.png 512x512 any',
       'icon-maskable-512.png 512x512 maskable',
+      'icon-monochrome-512.png 512x512 monochrome',
     ]);
   });
 });
@@ -40,6 +41,12 @@ describe('injectWebAppLinks', () => {
 describe('the committed icons', () => {
   it('have the sizes the manifest and the touch icon link promise', () => {
     for (const icon of APP_ICONS) expect(pngDimensions(brandFile(icon.file)), icon.file).toEqual({ width: icon.size, height: icon.size });
+  });
+
+  it('keep transparency only in the monochrome icon, which launchers tint by its alpha', () => {
+    const colourType = (file: string) => brandFile(file)[25];
+    const RGBA = 6;
+    for (const icon of APP_ICONS) expect(colourType(icon.file) === RGBA, icon.file).toBe(icon.purpose === 'monochrome');
   });
 });
 
@@ -72,7 +79,7 @@ describe('webAppProblems', () => {
 
   it('reports a manifest browsers would not install', () => {
     const manifest = { ...webAppManifest('Tour dates.'), display: 'browser', start_url: '/', name: '' };
-    manifest.icons = manifest.icons.filter((icon) => icon.purpose !== 'maskable').map((icon) => ({ ...icon, sizes: icon.sizes === '192x192' ? '512x512' : icon.sizes }));
+    manifest.icons = manifest.icons.filter((icon) => icon.purpose === 'any').map((icon) => ({ ...icon, sizes: icon.sizes === '192x192' ? '512x512' : icon.sizes }));
     expect(problems(distFiles(JSON.stringify(manifest)))).toEqual([
       'manifest.webmanifest must set start_url to "./"',
       'manifest.webmanifest must set display to "standalone"',
@@ -80,6 +87,7 @@ describe('webAppProblems', () => {
       'icon-192.png is 192x192; it must be 512x512',
       'manifest.webmanifest needs a 192x192 icon',
       'manifest.webmanifest needs a 512x512 maskable icon',
+      'manifest.webmanifest needs a 512x512 monochrome icon',
     ]);
     expect(problems(distFiles('{'))).toEqual(['manifest.webmanifest is not JSON']);
   });
