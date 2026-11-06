@@ -18,7 +18,7 @@ export const SHEET_SETTINGS = {
 
 export interface SheetMeasures {
   readonly viewportHeight: number;
-  /** The closed sheet: its handle only. */
+  /** The closed sheet: its handle only, above the system's bottom inset. */
   readonly handleHeight: number;
   /** Where the full sheet's top stops, measured from the top of the window: just below the search. */
   readonly ceiling: number;

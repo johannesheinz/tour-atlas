@@ -20,7 +20,7 @@ import { closesSelectList, h, prefersReducedMotion, requireElement } from './vie
 import { MAP_SETTINGS, createMapView } from './view/map.ts';
 import { createSearch } from './view/search.ts';
 import type { SearchEntry } from './view/searchIndex.ts';
-import { applyStyle, applyThemePreference, readThemeTokens, watchSystemTheme, type ThemeTokens } from './view/theme.ts';
+import { applyStyle, applyThemeColor, applyThemePreference, readThemeTokens, watchSystemTheme, type ThemeTokens } from './view/theme.ts';
 import { DAY_MS } from './view/timeScale.ts';
 import { TIMELINE_SETTINGS, createTimeline, fitDomain } from './view/timeline.ts';
 import { FRAME_LAYOUT_QUERY, MAP_SHARE, PHONE_LAYOUT_QUERY, PHONE_MAP_SHARE } from './view/layout.ts';
@@ -36,6 +36,8 @@ import { createGenreList } from './view/genreList.ts';
 import { createSelectionPanel, type SelectionHeading } from './view/selectionPanel.ts';
 import { createSidebar } from './view/sidebar.ts';
 import { createBottomSheet } from './view/sheet.ts';
+import { createUpdateNotice } from './view/updateNotice.ts';
+import { keepOfflineCopy } from './serviceWorkerUpdates.ts';
 import { cityKey, describePlaces, showsAtPlaces, type PlaceKey } from './places.ts';
 import { countryName, formatDate, formatList } from './view/format.ts';
 import { localeChoice, t, useLocale } from './i18n/index.ts';
@@ -92,6 +94,7 @@ dataStore.subscribe(() => state.set({ bundled: dataStore.listBands() }));
 const derive = createDeriver();
 const select = createSelectors(MAP_SETTINGS.maxBandsWithRoutes);
 let theme: ThemeTokens = readThemeTokens('auto');
+applyThemeColor(theme.panel);
 
 const idsOf = (shows: readonly ShowRef[] | null): ReadonlySet<string> => new Set((shows ?? []).map((ref) => ref.show.id));
 const NO_PLACES: ReadonlySet<PlaceKey> = new Set();
@@ -984,9 +987,14 @@ function currentHash(): string {
   });
 }
 
+/** Checked files live in this page only, so a reload asks first while there are any. */
+function confirmReload(): boolean {
+  return state.get().previewResults.length === 0 || window.confirm(t().settings.reloadLosesPreviews);
+}
+
 /** The language, clock and distance unit apply at start-up, so changing them reloads the page with the choice in the URL. */
 function reloadWithLocale(choice: LocaleChoice) {
-  if (state.get().previewResults.length > 0 && !window.confirm(t().settings.reloadLosesPreviews)) return;
+  if (!confirmReload()) return;
   const hash = serializeUrlState({ ...parseUrlState(currentHash()), ...choice });
   history.replaceState(history.state, '', `${location.pathname}${location.search}${hash}`);
   location.reload();
@@ -1073,6 +1081,7 @@ function createNavigation() {
 
 function refreshTheme() {
   theme = readThemeTokens(state.get().theme);
+  applyThemeColor(theme.panel);
   renderAll();
 }
 
@@ -1084,5 +1093,20 @@ requireElement(document, '#home-link', HTMLAnchorElement).addEventListener('clic
   event.preventDefault();
   navigation.goHome();
 });
+// After load, so saving the offline copy does not compete with the fonts and logos the page shows.
+if (import.meta.env.PROD && 'serviceWorker' in navigator) {
+  const serviceWorkers = navigator.serviceWorker;
+  const updateNotice = createUpdateNotice(requireElement(document, '#update-notice', HTMLDivElement), confirmReload);
+  window.addEventListener('load', () => {
+    keepOfflineCopy(serviceWorkers, {
+      onUpdateReady: (apply) => updateNotice.show(apply),
+      reload: () => location.reload(),
+      onResume: (listener) =>
+        document.addEventListener('visibilitychange', () => {
+          if (document.visibilityState === 'visible') listener();
+        }),
+    }).catch((error: unknown) => console.warn('Tour Atlas keeps no offline copy:', error));
+  }, { once: true });
+}
 renderAll();
 startup.finishAfterFirstFrame();

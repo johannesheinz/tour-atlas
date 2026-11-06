@@ -49,6 +49,13 @@ export interface Messages {
     /** Announced when a band, place or other selection opens in the sheet. */
     readonly opened: (title: string) => string;
   };
+  /** Offered once a newer build has been saved for offline use (src/view/updateNotice.ts). */
+  readonly update: {
+    readonly ready: Text;
+    readonly reload: Text;
+    /** The name of the button that closes the notice. */
+    readonly later: Text;
+  };
   readonly shows: Count;
   readonly bands: Count;
   readonly noShowsInRange: Text;

@@ -37,6 +37,7 @@ when, and what's coming up near you.
 
   ![On a phone, the bottom sheet is dragged from closed to half and full height, a band opens in it above its route on the map, and Back to bands returns to the list](docs/features/mobile.webp)
 
+- **Install and offline:** add it to your home screen (Android: Chrome menu, *Install app*; iPhone and iPad: Safari, Share, *Add to Home Screen*) and it opens like an app, also without a connection on the train; when new tour dates are out, it offers to reload
 - **Keyboard and screen readers:** skip link, keyboard cursors on the map and timeline that announce each show, live announcements for results and counts, visible focus
 - **Your way:** four styles in light and dark (all meet WCAG AA contrast), eight languages, local date formats, km, miles or Swedish mil, less animation on request
 
@@ -44,7 +45,7 @@ when, and what's coming up near you.
 
 ## Privacy in mind
 
-- No account, no cookies, no tracking, no analytics, nothing stored in your browser.
+- No account, no cookies, no tracking, no analytics. The only thing your browser keeps is the app itself, for offline use.
 - "Near me" uses your location only in the open tab; it never leaves your device and never goes into a link.
 - Shared links carry the view, not you: your language and format settings stay out of them.
 - Band files you check are read in your browser and never uploaded.
@@ -52,7 +53,8 @@ when, and what's coming up near you.
 ## Static by design
 
 Tour Atlas is a snapshot, not a live feed. The tour dates come from each band's own pages, are reviewed, and
-reach the site when it is rebuilt; nothing updates on its own while you look at it. Every show links to its
+reach the site when it is rebuilt; nothing updates on its own while you look at it, and the app saved for
+offline use offers to reload once a newer build is out. Every show links to its
 source, and to tickets where the band lists them.
 
 ## Add or update a band

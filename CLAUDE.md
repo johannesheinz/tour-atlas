@@ -4,7 +4,8 @@ Static web app: concert tour dates of many bands on a world map with an aligned,
 No backend, no runtime network requests. Band data lives in `data/bands/*.json`, is produced upstream
 (LLM pipeline), reviewed via pull requests, and inlined into `dist/index.html`; only the self-hosted
 `.woff2` fonts and the band logo `.webp` files ship as separate files next to it (`tools/vite/hostedAssets.ts`),
-plus `og-card.png` for link previews when the build has `TOUR_ATLAS_SITE_URL` (`tools/vite/socialCard.ts`).
+plus `og-card.png` for link previews when the build has `TOUR_ATLAS_SITE_URL` (`tools/vite/socialCard.ts`),
+and the installable app's `manifest.webmanifest`, icons and offline service worker `sw.js`.
 
 ## Commands
 
@@ -14,7 +15,7 @@ npm run build          # inlined build + fonts, then dist checks (CSP, no remote
 npm run preview        # serve dist/ on http://localhost:4173
 npm run build:budget   # build with a synthetic 50 bands / 5,000 shows dataset, must stay < 800 kB gzipped
 npm test               # Vitest
-npm run typecheck      # app (DOM) and node (tools/tests) projects separately
+npm run typecheck      # app (DOM), node (tools/tests) and service worker (WebWorker) projects separately
 npm run validate       # tools/validate.ts data/bands  (errors fail, warnings inform)
 npm run normalize      # rewrite data/bands in canonical form; add --check to only verify
 npm run geocode        # fill missing geo via Nominatim; reads NOMINATIM_CONTACT from .env.local (ask the user)
@@ -24,6 +25,7 @@ npm run logos          # download band.logoUrl images once into data/logos/<id>.
 npm run logo:preview -- <band-id> <url>   # check a candidate logo; previews in .cache/logo-previews
 npm run feature-clips  # build, then record the README clips docs/features/*.webp (needs ffmpeg, img2webp and a Playwright Chromium)
 npm run og-card        # rebuild src/brand/og-card.svg/.png (the social card image); commit both
+npm run app-icons      # rebuild the app icons src/brand/icon-*.png and apple-touch-icon.png from the mark; commit them
 npm run check          # everything CI runs, in order
 ```
 
@@ -65,6 +67,15 @@ npm run check          # everything CI runs, in order
   `<body>` (check-dist enforces it), so slow connections paint the header and the loading note at once.
   `<html class="is-loading">` hides the half-built interface until `src/startup.ts` ends it after the first render;
   a start-up error shows `page.startupFailed` instead.
+- Installable app (`tools/vite/webApp.ts`): the build writes `manifest.webmanifest` (relative `start_url`/`scope`,
+  description from `index.html`), copies the icons from `src/brand/` and links them in `<head>` (build only, so dev
+  requests nothing it lacks). `theme-color` follows the active style (`applyThemeColor` in `src/view/theme.ts`);
+  `--safe-*` tokens pad for notches and the home indicator (`viewport-fit=cover`).
+- Offline copy: `src/sw/serviceWorker.ts` precaches the whole build and answers from the cache first;
+  `tools/vite/serviceWorker.ts` compiles it last and writes the file list and content hash as the first line of
+  `sw.js`, so every deploy changes it. `src/sw/offlineCache.ts` is the pure part shared by worker, page, build
+  and check-dist. `src/serviceWorkerUpdates.ts` registers it after load (production only) and offers a waiting
+  build through `src/view/updateNotice.ts`. `check-dist` requires the list to match `dist/` and its hash.
 - `src/share.ts` builds share links from the current state, without `lang`/`clock`/`units`; `src/view/sharePanel.ts` is the popover.
 
 ## Skills
@@ -82,11 +93,12 @@ Only for work that needs judgement; everything checkable is a tool or a CI job.
   d3-transition, d3-quadtree, topojson-client, world-atlas, @fontsource/league-gothic, @fontsource/archivo,
   @fontsource/inter-tight (Stage lights: text, headings and the two-weight wordmark in one family),
   @fontsource/charis-sil.
-  Justify any addition in the PR. `sharp` is a dev dependency for tools/logos.ts and tools/og-card.ts only; it never runs at build time and never reaches the bundle.
+  Justify any addition in the PR. `sharp` is a dev dependency for tools/logos.ts, tools/og-card.ts and tools/app-icons.ts only; it never runs at build time and never reaches the bundle.
   `playwright-core` is a dev dependency for tools/feature-clips.ts only, likewise.
 - No network at runtime, no CDNs, no cookies, no localStorage/sessionStorage/IndexedDB. View state lives in
-  the URL hash only. `tools/check-dist.ts` fails the build otherwise; the CSP sets `connect-src 'none'` and
-  `font-src 'self'`.
+  the URL hash only. Cache Storage and `fetch` belong to `sw.js` alone, for the site's own files only.
+  `tools/check-dist.ts` fails the build otherwise; the CSP sets `connect-src 'none'`, `font-src 'self'`,
+  `manifest-src 'self'` and `worker-src 'self'`.
 - Never use `innerHTML` with data. Render text with `textContent`; links only for http(s) URLs with
   `rel="noopener noreferrer"`.
 - Unknown data is `null`, never guessed. Never invent tour dates; sample data uses fictional bands and

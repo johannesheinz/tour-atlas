@@ -11,6 +11,8 @@ export interface ThemeTokens {
   readonly inkSoft: string;
   readonly inkMuted: string;
   readonly past: string;
+  /** The header's background, which browsers and the installed app continue into their bars. */
+  readonly panel: string;
   /** The style's text font family, for the canvas text that is not a lane label. */
   readonly textFont: string;
   /** Canvas font shorthands for the timeline's lane labels. */
@@ -53,10 +55,18 @@ export function readThemeTokens(preference: ThemePreference): ThemeTokens {
     inkSoft: token('--ink-soft'),
     inkMuted: token('--ink-muted'),
     past: token('--past'),
+    panel: token('--panel'),
     textFont: token('--font-text'),
     laneFont: token('--lane-font'),
     compactLaneFont: token('--lane-font-compact'),
   };
+}
+
+/** index.html starts with Stage lights' panel for each system theme; the active style and theme replace both. */
+export function applyThemeColor(colour: string): void {
+  const tags = document.querySelectorAll<HTMLMetaElement>('meta[name="theme-color"]');
+  if (tags.length === 0) throw new Error('index.html has no <meta name="theme-color">');
+  for (const tag of tags) tag.content = colour;
 }
 
 export function watchSystemTheme(onChange: () => void): () => void {

@@ -36,6 +36,8 @@ export function injectContentSecurityPolicy(html: string): string {
     "img-src 'self' data: blob:",
     "font-src 'self'",
     "connect-src 'none'",
+    "manifest-src 'self'",
+    "worker-src 'self'",
     "base-uri 'none'",
     "form-action 'none'",
   ].join('; ');

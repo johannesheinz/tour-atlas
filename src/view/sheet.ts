@@ -89,7 +89,8 @@ export function createBottomSheet(parts: BottomSheetParts, layout: MediaQueryLis
     viewportHeight = window.innerHeight;
     sizes = sheetSizes({
       viewportHeight,
-      handleHeight: handle.offsetHeight + sheet.clientTop,
+      // The sheet's bottom padding keeps the handle above the home indicator of phones without a home button.
+      handleHeight: handle.offsetHeight + sheet.clientTop + Number.parseFloat(getComputedStyle(sheet).paddingBottom),
       ceiling: ceiling.getBoundingClientRect().bottom,
       halfFloor: mapControls.getBoundingClientRect().bottom + RISER_GAP_PX,
     });
