@@ -17,7 +17,7 @@ import {
   type Language,
   type LocaleChoice,
 } from '../i18n/locale.ts';
-import type { ThemePreference } from '../model.ts';
+import { THEME_PREFERENCES, type ThemePreference } from '../model.ts';
 import { h } from './dom.ts';
 import { attachPopover } from './popover.ts';
 
@@ -41,7 +41,6 @@ export interface SettingsView {
   render(props: SettingsProps): void;
 }
 
-const THEMES: readonly ThemePreference[] = ['auto', 'light', 'dark'];
 const AUTOMATIC_VALUE = 'auto';
 const EIGHT_PM = Date.UTC(1970, 0, 1, 20, 0);
 
@@ -56,7 +55,7 @@ export function createSettings(trigger: HTMLButtonElement, panel: HTMLElement, c
     callbacks.onStyle(style.value);
   });
 
-  const themeInputs = THEMES.map((value) => {
+  const themeInputs = THEME_PREFERENCES.map((value) => {
     const input = h('input', { type: 'radio', name: 'theme', value });
     input.addEventListener('change', () => {
       if (input.checked) callbacks.onTheme(value);

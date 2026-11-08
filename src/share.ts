@@ -13,11 +13,11 @@ export interface NavigatorLike {
 }
 
 /**
- * The page's address with the given view hash. Language, clock and distance unit are left out, so the
- * person who opens the link sees it in their own settings.
+ * The page's address with the given view hash. Language, clock, distance unit and theme are left out, so
+ * the person who opens the link sees it in their own settings.
  */
 export function shareLink(pageHref: string, hash: string): string {
-  const sharedHash = serializeUrlState({ ...parseUrlState(hash), language: null, clock: null, distance: null });
+  const sharedHash = serializeUrlState({ ...parseUrlState(hash), language: null, clock: null, distance: null, theme: 'auto' });
   return new URL(sharedHash, pageHref).href;
 }
 

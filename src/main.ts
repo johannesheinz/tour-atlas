@@ -57,6 +57,7 @@ const urlState = parseUrlState(location.hash);
 useLocale({ language: urlState.language, clock: urlState.clock, distance: urlState.distance }, navigator.languages);
 localizePage(document);
 applyStyle(urlState.style);
+applyThemePreference(urlState.theme);
 if (needsIosZoomGuard((property, value) => CSS.supports(property, value))) document.documentElement.classList.add(IOS_ZOOM_GUARD_CLASS);
 
 const dataStore = createBundledStore();
@@ -86,14 +87,14 @@ const state = createStore<AppState>({
   userPosition: null,
   locationStatus: null,
   style: urlState.style,
-  theme: 'auto',
+  theme: urlState.theme,
   today: localToday(new Date()),
 });
 dataStore.subscribe(() => state.set({ bundled: dataStore.listBands() }));
 
 const derive = createDeriver();
 const select = createSelectors(MAP_SETTINGS.maxBandsWithRoutes);
-let theme: ThemeTokens = readThemeTokens('auto');
+let theme: ThemeTokens = readThemeTokens(urlState.theme);
 applyThemeColor(theme.panel);
 
 const idsOf = (shows: readonly ShowRef[] | null): ReadonlySet<string> => new Set((shows ?? []).map((ref) => ref.show.id));
@@ -983,6 +984,7 @@ function currentHash(): string {
     around: aroundOf(current.mapView),
     globe: current.mapMode === 'globe',
     style: current.style,
+    theme: current.theme,
     ...localeChoice(),
   });
 }
@@ -1064,7 +1066,7 @@ function createNavigation() {
       clearTimeout(urlTimer);
       writeUrlState();
       const leaving = location.hash;
-      const home = serializeUrlState({ ...parseUrlState(''), style: state.get().style, ...localeChoice() });
+      const home = serializeUrlState({ ...parseUrlState(''), style: state.get().style, theme: state.get().theme, ...localeChoice() });
       search.clear();
       placeList.clearFilter();
       sidebar.showTab('bands');

@@ -1,6 +1,6 @@
 import { DATE_PATTERN } from './data/ids.ts';
 import { isCalendarDate } from './data/dates.ts';
-import type { BandSort } from './model.ts';
+import { isThemePreference, type BandSort, type ThemePreference } from './model.ts';
 import { PRESET_IDS, type TimePreset } from './view/timePresets.ts';
 import type { TourPacing } from './view/tourClock.ts';
 import { PLACE_KEY_PATTERN } from './places.ts';
@@ -32,6 +32,7 @@ export interface UrlState {
   readonly around: Area | null;
   readonly globe: boolean;
   readonly style: Style;
+  readonly theme: ThemePreference;
   /** Set only when picked in the settings; otherwise the browser decides. */
   readonly language: Language | null;
   readonly clock: Clock | null;
@@ -74,6 +75,7 @@ export function parseUrlState(hash: string): UrlState {
     around: parseAround(params.get('around'), params.get('radius')),
     globe: params.get('globe') === '1',
     style: oneOf(params.get('style'), isStyle) ?? DEFAULT_STYLE,
+    theme: oneOf(params.get('theme'), isThemePreference) ?? 'auto',
     language: oneOf(params.get('lang'), isLanguage),
     clock: oneOf(params.get('clock'), isClock),
     distance: oneOf(params.get('units'), isDistanceUnit),
@@ -106,6 +108,7 @@ export function serializeUrlState(state: UrlState): string {
   }
   if (state.globe) params.set('globe', '1');
   if (state.style !== DEFAULT_STYLE) params.set('style', state.style);
+  if (state.theme !== 'auto') params.set('theme', state.theme);
   if (state.language !== null) params.set('lang', state.language);
   if (state.clock !== null) params.set('clock', state.clock);
   if (state.distance !== null) params.set('units', state.distance);
