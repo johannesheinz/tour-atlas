@@ -8,12 +8,13 @@ import { SOCIAL_CARD_FILE, socialCardProblems } from './vite/socialCard.ts';
 import { WEB_APP_FILES, webAppProblems } from './vite/webApp.ts';
 import { serviceWorkerProblems } from './vite/serviceWorker.ts';
 import { SERVICE_WORKER_FILE } from '../src/sw/offlineCache.ts';
+import { SESSION_STORAGE_KEY } from '../src/sessionState.ts';
 
 const USAGE = `Usage: node tools/check-dist.ts <dist-dir> [--budget-kb <n>] [--require-social-card]
 
 Checks the build output: index.html with every script and style inlined (the stylesheet
 first in <head>, the script last in <body>) plus self-hosted fonts next to it, no remote
-resources, no storage or network APIs, and a transfer size
+resources, no storage or network APIs except the installed app's saved view, and a transfer size
 (gzipped HTML + the fonts of the heaviest style) within the budget (default 800 kB).
 The web app manifest and its icons, which browsers fetch only to install the app, are
 checked for what installing needs. sw.js must list exactly the files of the build and
@@ -31,7 +32,6 @@ const FORBIDDEN_PATTERNS: readonly [RegExp, string][] = [
   [/<script[^>]+\bsrc=/i, 'external <script src>'],
   [/<link[^>]+\bhref=["']?(?:https?:)?\/\//i, 'remote <link href>'],
   [/url\(\s*["']?(?:https?:)?\/\//i, 'remote url() in CSS'],
-  [/\blocalStorage\b/, 'localStorage'],
   [/\bsessionStorage\b/, 'sessionStorage'],
   [/\bindexedDB\b/, 'indexedDB'],
   [/document\.cookie/, 'document.cookie'],
@@ -69,6 +69,10 @@ runCli(USAGE, () => {
   const html = readFileSync(join(distDir, 'index.html'), 'utf8');
   for (const [pattern, description] of FORBIDDEN_PATTERNS) {
     if (pattern.test(html)) problems.push(`contains ${description}`);
+  }
+  // Only the installed app may use localStorage, and only for its one saved view.
+  if (/\blocalStorage\b/.test(html) && (!html.includes(SESSION_STORAGE_KEY) || !html.includes('(display-mode: standalone)'))) {
+    problems.push(`uses localStorage for something other than the installed app's saved view (${SESSION_STORAGE_KEY})`);
   }
   if (!html.includes('http-equiv="Content-Security-Policy"')) problems.push('has no Content-Security-Policy meta tag');
   problems.push(...loadOrderProblems(html));

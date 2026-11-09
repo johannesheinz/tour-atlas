@@ -50,8 +50,8 @@ npm run build
 ```
 
 Writes `dist/index.html` and the `.woff2` fonts next to it, then checks the output: everything else inlined,
-a Content-Security-Policy that blocks all network requests except the page's own fonts, no storage APIs,
-and the size budget. The fonts are separate so browsers cache them across data updates.
+a Content-Security-Policy that blocks all network requests except the page's own fonts, no storage APIs
+apart from the installed app's saved view, and the size budget. The fonts are separate so browsers cache them across data updates.
 
 With `TOUR_ATLAS_SITE_URL` set, the build also writes one social card for the whole site: OpenGraph and
 Twitter tags (texts in the `<!-- social-card -->` block in `index.html`, band and show counts filled in at
@@ -83,6 +83,11 @@ The build also writes what browsers need to install the site and open it without
 - Updates (`src/serviceWorkerUpdates.ts`): browsers look for a new `sw.js` when the page opens, and the
   installed app also asks each time it resumes. A newer build installs in the background and waits; the
   page shows a note with Reload (`src/view/updateNotice.ts`) that switches to it.
+- Installed app state (`src/sessionState.ts`): in standalone display mode the app keeps the last view,
+  theme, style and locale choice in localStorage under `tour-atlas.view`, and restores them when it opens
+  without a hash. A shared link or bookmark still wins for the view it names, while saved settings fill in
+  what the link leaves out. The web version never reads or writes that key. The installed app also gets a
+  reset button in the header, which does what the wordmark does: back to the default view.
 
 `check-dist` checks the manifest's fields and the icons' sizes, and that `sw.js` lists exactly the files in
 `dist/` with their current hash, so an installed app always learns about a deploy. Fetching and Cache Storage
@@ -227,13 +232,17 @@ above the closed bottom sheet and never move; the page itself does not scroll. T
 
 ## Privacy, technically
 
-- No cookies, no localStorage, sessionStorage or IndexedDB, no analytics, no third-party fonts or scripts;
+- No cookies, no sessionStorage or IndexedDB, no analytics, no third-party fonts or scripts;
   the fonts and band logos are served from the same place as the page. Logos are downloaded once by
   `npm run logos`; the page never contacts the original image hosts.
-- View state (hidden bands, time window, selection) lives in the URL hash only, so a view can be shared
+- View state (hidden bands, time window, selection) lives in the URL hash, so a view can be shared
   as a link. The hash is never sent to a server. `src/share.ts` builds the share link from the app state
   (`currentHash()`), not from the address bar, whose hash is written with a 300 ms delay. Shared links leave
   out the language, time format, distance and theme settings; the "Near me" position is never put in the URL at all.
+- The installed app (standalone display mode) also keeps the last view and settings between sessions in
+  localStorage under the single key `tour-atlas.view` (`src/sessionState.ts`). The web version never reads or
+  writes it. A shared link still wins for the view it names, while saved settings fill in what the link leaves
+  out, so opening a link in the installed app does not reset the language or theme.
 - Previewed files are read in the browser and kept in memory until the tab closes.
 - The Content-Security-Policy sets `connect-src 'none'`, so the page cannot make requests even by mistake.
   Ticket and source links open in a new tab without a referrer.

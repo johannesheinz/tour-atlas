@@ -3202,6 +3202,28 @@ input[type='search']::placeholder {
   }
 }
 
+/* The installed app's reset adds a fourth header action; narrow phones shrink the header instead of wrapping it. */
+@media (max-width: 379px) {
+  .is-installed-app .wordmark {
+    font-size: 28px;
+  }
+}
+
+@media (max-width: 355px) {
+  .is-installed-app .wordmark {
+    font-size: 24px;
+  }
+
+  .is-installed-app .masthead-actions {
+    gap: 2px;
+  }
+
+  .is-installed-app .masthead-actions .icon-button {
+    width: 28px;
+    height: 28px;
+  }
+}
+
 /* Short phones, held sideways: the search shares the header's row. */
 @media (max-width: 820px) and (max-height: 520px) {
   .masthead {

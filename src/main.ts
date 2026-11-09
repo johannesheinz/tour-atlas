@@ -11,6 +11,7 @@ import { HOME_ENTRY, asDrillDownEntry, drillDownEntry, historyStep, isHomeEntry 
 import { createStore } from './state.ts';
 import { createBundledStore } from './store/bundled.ts';
 import { aroundOf, mapViewFromUrl, parseUrlState, serializeUrlState, type UrlState } from './urlState.ts';
+import { isInstalledApp, loadSessionView, restoreSessionView, saveSessionView, type SessionStorage } from './sessionState.ts';
 import { createCountryLocator, type CountryLocator } from './data/countryLocator.ts';
 import { NO_GENRE, TAG_VOCABULARY } from './data/tags.ts';
 import { exportAll, mergePreviews, normalizedFileText, processPreviewFile, type PreviewResult } from './preview.ts';
@@ -30,7 +31,7 @@ import { createMapControls } from './view/mapControls.ts';
 import { createSettings } from './view/settings.ts';
 import { createSharePanel } from './view/sharePanel.ts';
 import { shareCapabilities, shareLink, shareText } from './share.ts';
-import { icon } from './view/icons.ts';
+import { icon, iconButton } from './view/icons.ts';
 import { createPlaceList } from './view/placeList.ts';
 import { createGenreList } from './view/genreList.ts';
 import { createSelectionPanel, type SelectionHeading } from './view/selectionPanel.ts';
@@ -53,7 +54,23 @@ const WINDOW_DEBOUNCE_MS = 150;
 const URL_DEBOUNCE_MS = 300;
 const SEARCH_FOCUS_TIMEOUT_MS = 1500;
 
-const urlState = parseUrlState(location.hash);
+/** Only the installed app keeps state between sessions; the web version never touches browser storage. */
+const installedApp = isInstalledApp(
+  (navigator as Navigator & { readonly standalone?: boolean }).standalone === true,
+  (query) => window.matchMedia(query).matches,
+);
+const installedStorage = installedApp ? openLocalStorage() : null;
+if (installedApp) document.documentElement.classList.add('is-installed-app');
+
+function openLocalStorage(): SessionStorage | null {
+  try {
+    return window.localStorage;
+  } catch {
+    return null;
+  }
+}
+
+const urlState = parseUrlState(restoreSessionView(location.hash, loadSessionView(installedStorage)));
 useLocale({ language: urlState.language, clock: urlState.clock, distance: urlState.distance }, navigator.languages);
 localizePage(document);
 applyStyle(urlState.style);
@@ -952,6 +969,7 @@ function scheduleUrlUpdate() {
 
 function writeUrlState() {
   const hash = currentHash();
+  saveSessionView(installedStorage, hash);
   if (hash === location.hash || (hash === '' && location.hash === '')) return;
   const url = `${location.pathname}${location.search}${hash}`;
   try {
@@ -960,6 +978,17 @@ function writeUrlState() {
     location.replace(hash === '' ? '#' : hash);
   }
 }
+
+/** Phones can close an installed app without another render, so a pending debounce is written before hiding. */
+function flushUrlUpdate() {
+  clearTimeout(urlTimer);
+  writeUrlState();
+}
+
+window.addEventListener('pagehide', flushUrlUpdate);
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'hidden') flushUrlUpdate();
+});
 
 function currentHash(): string {
   const current = state.get();
@@ -999,6 +1028,7 @@ function reloadWithLocale(choice: LocaleChoice) {
   if (!confirmReload()) return;
   const hash = serializeUrlState({ ...parseUrlState(currentHash()), ...choice });
   history.replaceState(history.state, '', `${location.pathname}${location.search}${hash}`);
+  saveSessionView(installedStorage, hash);
   location.reload();
 }
 
@@ -1090,11 +1120,19 @@ function refreshTheme() {
 state.set({ timeWindow: startWindow(state.get()) });
 state.subscribe(renderAll);
 const navigation = createNavigation();
-requireElement(document, '#home-link', HTMLAnchorElement).addEventListener('click', (event) => {
+const homeLink = requireElement(document, '#home-link', HTMLAnchorElement);
+homeLink.addEventListener('click', (event) => {
   if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
   event.preventDefault();
   navigation.goHome();
 });
+// The installed app has no browser reload or home button, so the logo's reset gets a visible button of its own.
+if (installedApp) {
+  const reset = iconButton('home', t().page.homeTitle);
+  reset.id = 'reset-button';
+  reset.addEventListener('click', () => navigation.goHome());
+  shareButton.before(reset);
+}
 // After load, so saving the offline copy does not compete with the fonts and logos the page shows.
 if (import.meta.env.PROD && 'serviceWorker' in navigator) {
   const serviceWorkers = navigator.serviceWorker;
