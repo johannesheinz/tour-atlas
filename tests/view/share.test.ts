@@ -11,8 +11,8 @@ describe('shareLink', () => {
     expect(shareLink('https://example.org/tour-atlas/#band=old', '#band=alpha,beta&view=europe')).toBe('https://example.org/tour-atlas/#band=alpha,beta&view=europe');
   });
 
-  it('leaves out language, clock and distance unit and keeps the style and everything else', () => {
-    const link = shareLink('https://example.org/tour-atlas/', '#band=alpha&from=2026-01-01&to=2026-03-31&globe=1&style=atlas&lang=de&clock=24&units=mil');
+  it('leaves out language, clock, distance unit and theme and keeps the style and everything else', () => {
+    const link = shareLink('https://example.org/tour-atlas/', '#band=alpha&from=2026-01-01&to=2026-03-31&globe=1&style=atlas&theme=dark&lang=de&clock=24&units=mil');
     expect(link).toBe('https://example.org/tour-atlas/#from=2026-01-01&to=2026-03-31&band=alpha&globe=1&style=atlas');
   });
 

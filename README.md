@@ -47,7 +47,7 @@ when, and what's coming up near you.
 
 - No account, no cookies, no tracking, no analytics. The only thing your browser keeps is the app itself, for offline use.
 - "Near me" uses your location only in the open tab; it never leaves your device and never goes into a link.
-- Shared links carry the view, not you: your language and format settings stay out of them.
+- Shared links carry the view, not you: your language, format and theme settings stay out of them.
 - Band files you check are read in your browser and never uploaded.
 
 ## Static by design

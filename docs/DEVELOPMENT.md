@@ -233,7 +233,7 @@ above the closed bottom sheet and never move; the page itself does not scroll. T
 - View state (hidden bands, time window, selection) lives in the URL hash only, so a view can be shared
   as a link. The hash is never sent to a server. `src/share.ts` builds the share link from the app state
   (`currentHash()`), not from the address bar, whose hash is written with a 300 ms delay. Shared links leave
-  out the language, time format and distance settings; the "Near me" position is never put in the URL at all.
+  out the language, time format, distance and theme settings; the "Near me" position is never put in the URL at all.
 - Previewed files are read in the browser and kept in memory until the tab closes.
 - The Content-Security-Policy sets `connect-src 'none'`, so the page cannot make requests even by mistake.
   Ticket and source links open in a new tab without a referrer.

@@ -28,6 +28,12 @@ export type BandSort = 'name' | 'next-show' | 'show-count';
 export type ThemeMode = 'light' | 'dark';
 export type ThemePreference = 'auto' | 'light' | 'dark';
 
+export const THEME_PREFERENCES: readonly ThemePreference[] = ['auto', 'light', 'dark'];
+
+export function isThemePreference(value: string): value is ThemePreference {
+  return THEME_PREFERENCES.some((preference) => preference === value);
+}
+
 export function bandColor(band: BandEntry, mode: ThemeMode): string {
   return band.color[mode];
 }
