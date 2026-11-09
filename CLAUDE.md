@@ -56,6 +56,9 @@ npm run check          # everything CI runs, in order
   `src/styles.css` sets every token per style, light and dark, and `tests/view/styles.test.ts` checks that each
   style sets them all and meets WCAG AA contrast. Components use tokens only, never a style's colours directly.
 - `src/main.ts` wires views to `src/state.ts`; `src/appState.ts` and `src/selectors.ts` memoise derived data.
+  `src/sessionState.ts` keeps the installed app's last view and settings in one localStorage key; the web
+  version never touches storage and reads the URL hash only. The installed app also gets a header button
+  that resets to the default view, as the wordmark does.
 - `tools/`: Node CLIs (TypeScript run directly by Node's type stripping, so use `.ts` import specifiers and
   erasable syntax only); never shipped. `tools/vite/` holds the build plugins (data validation, CSP, slim topology,
   brand mark and inline favicon from `src/brand/`, social card, logo sizes read from the `.webp` headers).
@@ -95,8 +98,11 @@ Only for work that needs judgement; everything checkable is a tool or a CI job.
   @fontsource/charis-sil.
   Justify any addition in the PR. `sharp` is a dev dependency for tools/logos.ts, tools/og-card.ts and tools/app-icons.ts only; it never runs at build time and never reaches the bundle.
   `playwright-core` is a dev dependency for tools/feature-clips.ts only, likewise.
-- No network at runtime, no CDNs, no cookies, no localStorage/sessionStorage/IndexedDB. View state lives in
-  the URL hash only. Cache Storage and `fetch` belong to `sw.js` alone, for the site's own files only.
+- No network at runtime, no CDNs, no cookies, no sessionStorage/IndexedDB. View state lives in
+  the URL hash only. The one exception is the installed app (standalone display mode), which keeps the last
+  view and settings in localStorage under the single key `tour-atlas.view` (`src/sessionState.ts`); the web
+  version never reads or writes it, and localStorage is used for nothing else. Cache Storage and `fetch`
+  belong to `sw.js` alone, for the site's own files only.
   `tools/check-dist.ts` fails the build otherwise; the CSP sets `connect-src 'none'`, `font-src 'self'`,
   `manifest-src 'self'` and `worker-src 'self'`.
 - Never use `innerHTML` with data. Render text with `textContent`; links only for http(s) URLs with
